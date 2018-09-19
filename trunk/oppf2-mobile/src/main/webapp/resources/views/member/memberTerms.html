@@ -1,0 +1,55 @@
+<ion-view view-title="회원가입">
+	<ion-content>
+		<form name="$root.memberTerms">
+			<div class="container page_membership"> <!-- 회원가입 페이지 -->
+				<div class="vi_area join_stage">
+					<ul>
+						<li class="stage_01 active">약관및본인인증</li>
+						<li class="stage_02">회원정보입력</li>
+						<li class="stage_03">완료</li>
+					</ul>
+				</div>
+				<div class="inner_cont type2">
+					<h2 class="title_h2">약관동의</h2>
+					<div class="agreement_area"> <!-- 약관동의 -->
+						<!-- 전체동의 -->
+						<div class="all_check">
+							<div class="form_input">
+								<input type="checkbox" id="all_ck" name="all_ck" ng-model="vm.allTerms" ng-click="vm.allCheck();">
+								<label for="all_ck">전체동의</label>
+							</div>
+						</div>
+						<!--// 전체동의 -->
+						<!-- 약관동의 List -->
+						<div class="accordian-menu" accordion ng-repeat="item in vm.termsList">
+							<!-- loop -->
+							<div class="accordian-cont cont_wrap">
+								<a href="#none" class="btn_bar">{{item.customerTermsTypeName}}에 동의합니다.</a>
+								<div class="detail_cont">
+									<ion-content>
+										<pre class="scroll_box" ng-bind-html="item.customerTermsContent | trustedHtml"></pre>
+									</ion-content>
+								</div>
+								<div class="form_input">
+									<input type="checkbox" id="agree1" name="agree1" ng-model="item.checked" ng-click="vm.checkValid();"><label for="agree1"></label>
+								</div>
+							</div>
+						</div>
+						<!--// 약관동의 List -->
+					</div>
+					<div class="txt_error" ng-messages="$root.memberTerms.all_ck.$error">
+						<div class="txt_error" ng-show="!vm.allTerms">약관에 모두 동의하셔야 합니다.</div> <!-- add class : hide_set : display:none; 처리  -->
+					</div>
+				</div>
+			</div>
+		</form>
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<div class="button_area btn_bottom_area">
+			<button ng-click="vm.termsListAgree();"
+					ng-class="vm.customerVerifyStep ? 'btn_middle btn_black_org' : 'btn_middle btn_black_org disabled'">휴대폰 인증</button><!-- disabled event 넣어야 함 -->
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+</ion-view>

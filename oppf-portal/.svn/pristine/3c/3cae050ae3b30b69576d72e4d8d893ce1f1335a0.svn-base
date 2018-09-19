@@ -1,0 +1,424 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.aptUsr.service.impl.AptUserManageDAO">
+
+  	<typeAlias alias="AptUserManageVO" type="kr.co.koscom.oppf.apt.aptUsr.service.AptUserManageVO"/>
+  	
+  	<!-- admin 포털 회원 목록 조회조건 -->
+    <sql id="fromWhereAnd">
+        <!-- 구분 -->
+        <isNotEmpty property="searchKeyword">
+            <!-- 이름 -->
+            <isEqual property="searchCondition" compareValue="name" prepend="and">
+                (
+                    a.admin_name_kor like concat('%', #searchKeyword#, '%') or
+                    a.admin_name_eng like concat('%', #searchKeyword#, '%')
+                )
+            </isEqual>
+            <!-- id -->
+            <isEqual property="searchCondition" compareValue="id" prepend="and">
+                a.admin_id like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <!-- 이메일 -->
+            <isEqual property="searchCondition" compareValue="email" prepend="and">
+                dec_char_sel(a.admin_email,10,'ARIA','com_admin_profile','admin_email',user(),connection_id()) like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <!-- 전체 -->
+            <isEqual property="searchCondition" compareValue="all" prepend="and">
+                (
+                    a.admin_name_kor like concat('%', #searchKeyword#, '%') or
+                    a.admin_name_eng like concat('%', #searchKeyword#, '%') or
+                    a.admin_id like concat('%', #searchKeyword#, '%') or
+                    dec_char_sel(a.admin_email,10,'ARIA','com_admin_profile','admin_email',user(),connection_id()) like concat('%', #searchKeyword#, '%')
+                )
+            </isEqual>
+        </isNotEmpty>
+        
+        <!-- 계정상태 -->
+        <isNotEmpty property="schDeleteType">
+            <!-- 활성 -->
+            <isEqual property="schDeleteType" compareValue="N" prepend="and">
+                a.delete_date is null
+            </isEqual>
+            <!-- 비활성 -->
+            <isEqual property="schDeleteType" compareValue="Y" prepend="and">
+                a.delete_date is not null
+            </isEqual>
+        </isNotEmpty>
+        
+        <!-- 조회일 -->
+        <isNotEmpty property="schDateType">
+            <!-- 등록일 -->
+            <isEqual property="schDateType" compareValue="create" prepend="and">
+                ifnull(date_format(a.create_date, '%Y%m%d'), '') between replace(#schDateFrom#, '-', '') and replace(#schDateTo#, '-', '')
+            </isEqual>
+            <!-- 수정일 -->
+            <isEqual property="schDateType" compareValue="update" prepend="and">
+                ifnull(date_format(a.update_date, '%Y%m%d'), '') between replace(#schDateFrom#, '-', '') and replace(#schDateTo#, '-', '')
+            </isEqual>
+            <!-- 삭제일 -->
+            <isEqual property="schDateType" compareValue="delete" prepend="and">
+                ifnull(date_format(a.delete_date, '%Y%m%d'), '') between replace(#schDateFrom#, '-', '') and replace(#schDateTo#, '-', '')
+            </isEqual>
+        </isNotEmpty>     
+         
+    </sql>
+  	
+	<!--
+     * @Method Name        : apt.AptUserManageDAO.selectAptUserList
+     * @Method description : admin 포털 회원 목록을 조회한다.
+     * @param              : AptUserManageVO
+     * @return             : AptUserManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.AptUserManageDAO.selectAptUserList" parameterClass="AptUserManageVO" resultClass="AptUserManageVO">
+		select  rownum,
+		        a.admin_profile_reg_no as adminProfileRegNo,
+		        a.admin_name_kor as adminNameKor,
+		        a.admin_name_eng as adminNameEng,
+		        a.admin_id as adminId,
+		        a.admin_email as adminEmail,
+		        a.admin_phone_no as adminPhoneNo,
+		        a.admin_tel_no as adminTelNo,
+		        a.deleteType,
+		        a.create_date as createDate,
+		        a.update_date as updateDate,
+		        a.delete_date as deleteDate
+		from(
+		    select  @RNUM := @RNUM + 1 as rownum,
+		            a.admin_profile_reg_no,
+		            a.admin_name_kor,
+		            a.admin_name_eng,
+		            a.admin_id,
+		            dec_char_sel(
+	                    a.admin_email,
+	                    10,
+	                    'ARIA',
+	                    'com_admin_profile',
+	                    'admin_email',
+	                    user(),
+	                    connection_id()
+	                ) as admin_email,
+	                dec_char_sel(
+                        a.admin_phone_no,
+                        10,
+                        'ARIA',
+                        'com_admin_profile',
+                        'admin_phone_no',
+                        user(),
+                        connection_id()
+                    ) as admin_phone_no,
+                    dec_char_sel(
+                        a.admin_tel_no,
+                        10,
+                        'ARIA',
+                        'com_admin_profile',
+                        'admin_tel_no',
+                        user(),
+                        connection_id()
+                    ) as admin_tel_no,
+		            if(ifnull(a.delete_date, '') = '', '활성', '비활성') as deleteType,
+		            ifnull(date_format(a.create_date, '%Y-%m-%d %H:%i'), '') as create_date,
+		            ifnull(date_format(a.update_date, '%Y-%m-%d %H:%i'), '') as update_date,
+		            ifnull(date_format(a.delete_date, '%Y-%m-%d %H:%i'), '') as delete_date
+		    from com_admin_profile a, ( SELECT @RNUM := 0 ) R
+		    where 1=1
+		    <include refid="fromWhereAnd"/>
+		    order by a.create_date desc
+		) a
+		<include refid="CmmnFuncDAO.CmmnPaging"/>
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptUserManageDAO.selectAptUserListCnt
+     * @Method description : admin 포털 회원 목록의 총 개수를 조회한다.
+     * @param              : AptUserManageVO
+     * @return             : AptUserManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.AptUserManageDAO.selectAptUserListCnt" parameterClass="AptUserManageVO" resultClass="int">
+        select  count(admin_profile_reg_no) as totalCount
+        from com_admin_profile a
+        where 1=1
+        <include refid="fromWhereAnd"/>
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptUserManageDAO.selectAptUserListExcel
+     * @Method description : admin 포털 회원 Excel 목록을 조회한다.
+     * @param              : AptUserManageVO
+     * @return             : AptUserManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.AptUserManageDAO.selectAptUserListExcel" parameterClass="AptUserManageVO" resultClass="AptUserManageVO">
+        select  rownum,
+                a.admin_profile_reg_no as adminProfileRegNo,
+                a.admin_name_kor as adminNameKor,
+                a.admin_name_eng as adminNameEng,
+                a.admin_id as adminId,
+                a.admin_email as adminEmail,
+                a.admin_phone_no as adminPhoneNo,
+                a.admin_tel_no as adminTelNo,
+                a.deleteType,
+                a.create_date as createDate,
+                a.update_date as updateDate,
+                a.delete_date as deleteDate
+        from(
+            select  @RNUM := @RNUM + 1 as rownum,
+                    a.admin_profile_reg_no,
+                    a.admin_name_kor,
+                    a.admin_name_eng,
+                    a.admin_id,
+                    dec_char_sel(
+                        a.admin_email,
+                        10,
+                        'ARIA',
+                        'com_admin_profile',
+                        'admin_email',
+                        user(),
+                        connection_id()
+                    ) as admin_email,
+                    dec_char_sel(
+                        a.admin_phone_no,
+                        10,
+                        'ARIA',
+                        'com_admin_profile',
+                        'admin_phone_no',
+                        user(),
+                        connection_id()
+                    ) as admin_phone_no,
+                    dec_char_sel(
+                        a.admin_tel_no,
+                        10,
+                        'ARIA',
+                        'com_admin_profile',
+                        'admin_tel_no',
+                        user(),
+                        connection_id()
+                    ) as admin_tel_no,
+                    if(ifnull(a.delete_date, '') = '', '활성', '비활성') as deleteType,
+                    ifnull(date_format(a.create_date, '%Y-%m-%d %H:%i'), '') as create_date,
+                    ifnull(date_format(a.update_date, '%Y-%m-%d %H:%i'), '') as update_date,
+                    ifnull(date_format(a.delete_date, '%Y-%m-%d %H:%i'), '') as delete_date
+            from com_admin_profile a, ( SELECT @RNUM := 0 ) R
+            where 1=1
+            <isEqual property="excelType" compareValue="excel">
+                <include refid="fromWhereAnd"/>
+            </isEqual>
+            order by a.create_date desc
+        ) a
+        order by a.create_date desc
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptUserManageDAO.selectAptUserDtl
+     * @Method description : admin 포털 회원 상세를 조회한다.
+     * @param              : AptUserManageVO
+     * @return             : AptUserManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.AptUserManageDAO.selectAptUserDtl" parameterClass="AptUserManageVO" resultClass="AptUserManageVO">
+		select  a.admin_profile_reg_no as adminProfileRegNo,
+		        a.admin_name_kor          as adminNameKor,
+		        a.admin_name_eng          as adminNameEng,
+		        a.admin_id as adminId,
+		        dec_char_sel(
+                    a.admin_email,
+                    10,
+                    'ARIA',
+                    'com_admin_profile',
+                    'admin_email',
+                    user(),
+                    connection_id()
+                )                          as adminEmail,
+                dec_char_sel(
+                    a.admin_phone_no,
+                    10,
+                    'ARIA',
+                    'com_admin_profile',
+                    'admin_phone_no',
+                    user(),
+                    connection_id()
+                )                          as adminPhoneNo,
+                dec_char_sel(
+                    a.admin_tel_no,
+                    10,
+                    'ARIA',
+                    'com_admin_profile',
+                    'admin_tel_no',
+                    user(),
+                    connection_id()
+                )                          as adminTelNo,
+		        if(ifnull(a.delete_date, 'N') = 'N', 'N', 'Y') as deleteType,
+		        ifnull(date_format(a.create_date, '%Y-%m-%d %H:%i'), '') as createDate,
+		        ifnull(date_format(a.update_date, '%Y-%m-%d %H:%i'), '') as updateDate,
+		        ifnull(date_format(a.delete_date, '%Y-%m-%d %H:%i'), '') as deleteDate
+		from com_admin_profile a
+		where admin_profile_reg_no = #adminProfileRegNo#        
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptUserManageDAO.updateAptUser
+     * @Method description : admin 포털 회원정보 수정
+     * @param              : AptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="apt.AptUserManageDAO.updateAptUser" parameterClass="AptUserManageVO">
+		update com_admin_profile set
+		admin_name_kor = #adminNameKor#,
+		admin_name_eng = #adminNameEng#,
+		admin_email = enc_char_ins(#adminEmail#,10,'ARIA','com_admin_profile','admin_email',user(),connection_id()),
+		admin_phone_no = enc_char_ins(#adminPhoneNo#,10,'ARIA','com_admin_profile','admin_phone_no',user(),connection_id()),
+		admin_tel_no = enc_char_ins(#adminTelNo#,10,'ARIA','com_admin_profile','admin_tel_no',user(),connection_id()),
+		<isEqual property="deleteType" compareValue="Y">
+		    delete_date = sysdate(),
+		</isEqual>
+		<isNotEqual property="deleteType" compareValue="Y">
+            delete_date = null,
+        </isNotEqual>
+		update_date = sysdate(),
+		update_id = #updateId#
+		where admin_profile_reg_no = #adminProfileRegNo#        
+    </update>
+    
+    <!--
+     * @Method Name        : apt.AptUserManageDAO.insertAptUsertHist
+     * @Method description : admin 포털 회원정보 수정 hist를 insert한다.
+     * @param              : AptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="apt.AptUserManageDAO.insertAptUsertHist" parameterClass="AptUserManageVO">
+        insert into com_admin_profile_hist(
+            admin_profile_reg_no,
+            admin_seq,
+            admin_name_kor,
+            admin_name_eng,
+            admin_id,
+            admin_password,
+            admin_temp_password_yn,
+            admin_chg_password_date,
+            admin_expire_password_date,
+            admin_final_password_date,
+            admin_password_fail_cnt,
+            admin_phone_no,
+            admin_tel_no,
+            admin_email,
+            delete_date,
+            create_date,
+            create_id
+        )
+        select  admin_profile_reg_no,
+                ifnull((
+                    select ifnull(max(cast(admin_seq as SIGNED)), 0) + 1
+                    from com_admin_profile_hist
+                    where admin_profile_reg_no = a.admin_profile_reg_no
+                ), 1),
+                admin_name_kor,
+                admin_name_eng,
+                admin_id,
+                admin_password,
+                admin_temp_password_yn,
+                admin_chg_password_date,
+                admin_expire_password_date,
+                admin_final_password_date,
+                admin_password_fail_cnt,
+                admin_phone_no,
+                admin_tel_no,
+                admin_email,
+                delete_date,
+                update_date,
+                update_id
+        from com_admin_profile a        
+        where admin_profile_reg_no = #adminProfileRegNo#    
+    </insert>
+    
+    <!--
+     * @Method Name        : apt.AptUserManageDAO.updateAptUserTmpPwd
+     * @Method description : 임시비밀번호 발급
+     * @param              : AptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="apt.AptUserManageDAO.updateAptUserTmpPwd" parameterClass="AptUserManageVO">
+		update com_admin_profile set
+			admin_password = enc_char_ins(#adminPassword#,10,'SHA','com_admin_profile','admin_password',user(),connection_id()),
+			admin_temp_password_yn = 'Y',
+			admin_chg_password_date = sysdate(),
+			admin_expire_password_date = date_format(date_add(sysdate(), interval #adminExpirePasswordDate# month), '%Y%m%d'),
+            admin_final_password_date = date_format(date_add(sysdate(), interval #adminFinalPasswordDate# month), '%Y%m%d'),
+            admin_password_fail_cnt = 0,
+			admin_email = enc_char_ins(#adminEmail#,10,'ARIA','com_admin_profile','admin_email',user(),connection_id()),
+			update_date = sysdate(),
+			update_id = #updateId#
+		where admin_profile_reg_no = #adminProfileRegNo#        
+    </update>
+    
+    <!--
+     * @Method Name        : apt.AptUserManageDAO.selectAptUserIdChk
+     * @Method description : admin 포털 id 중복확인
+     * @param              : AptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="apt.AptUserManageDAO.selectAptUserIdChk" parameterClass="AptUserManageVO" resultClass="int">
+        select count(*) as idchk
+		from com_admin_profile
+		where admin_id = #adminId#
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptUserManageDAO.insertAptUserReg
+     * @Method description : admin 포털 회원 등록
+     * @param              : AptUserManageVO
+     * @return             : string
+     * @throws             : Exception
+     -->
+    <insert id="apt.AptUserManageDAO.insertAptUserReg" parameterClass="AptUserManageVO">
+        <selectKey keyProperty="adminProfileRegNo" resultClass="java.lang.String">
+			select  concat('A', date_format(sysdate(),'%Y%m%d'), 
+			        lpad((
+			                select ifnull( max(cast(right(admin_profile_reg_no,3) as signed)), 0)+1 
+			                from com_admin_profile 
+			                where left(admin_profile_reg_no,9) = concat('A', date_format(sysdate(),'%Y%m%d'))
+			            ), 3, '0')
+			        ) as adminProfileRegNo /* admin 프로파일 등록번호 */
+        </selectKey>
+		insert into com_admin_profile(
+		    admin_profile_reg_no,
+		    admin_name_kor,
+		    admin_name_eng,
+		    admin_id,
+		    admin_password,
+		    admin_temp_password_yn,
+		    admin_chg_password_date,
+		    admin_password_fail_cnt,
+		    admin_phone_no,
+		    admin_tel_no,
+		    admin_email,
+		    create_date,
+		    create_id,
+		    update_date,
+		    update_id
+		)values(
+		    #adminProfileRegNo#,
+            #adminNameKor#,
+            #adminNameEng#,
+            #adminId#,
+            enc_char_ins(#adminPassword#,10,'SHA','com_admin_profile','admin_password',user(),connection_id()),
+            'Y',
+            sysdate(),
+            0,
+            enc_char_ins(#adminPhoneNo#,10,'ARIA','com_admin_profile','admin_phone_no',user(),connection_id()),
+            enc_char_ins(#adminTelNo#,10,'ARIA','com_admin_profile','admin_tel_no',user(),connection_id()),
+            enc_char_ins(#adminEmail#,10,'ARIA','com_admin_profile','admin_email',user(),connection_id()),
+            sysdate(),
+            #createId#,
+            sysdate(),
+            #createId#
+		)        
+    </insert>
+    
+</sqlMap>

@@ -1,0 +1,27 @@
+<ion-view view-title="">
+	<ion-content> <!-- bg color -->
+		<div class="container"> <!-- 계좌 페이지 -->
+			<div class="top_txt_complete">
+				<div class="logo"><img src="/resources/images/logo_qara.png"></div>
+				<h2 class="title_h2 mt18"><span class="ft_org">QARA</span>에 제공하게될 정보</h2>
+			</div>
+			<div class="inner_cont type2">
+				<div class="offer_info">
+					<ul class="dot_list">
+						<li>이름, 전화번호, 이메일</li>
+						<li>계좌번호, 종목코드</li>
+					</ul>
+					<p>허용을 클릭하시면 <span class="ft_org">QARA</span>에서 회원님의 정보를 사용하도록 허용하게 됩니다.</p>
+				</div>
+			</div>
+		</div>
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<div class="button_area btn_both btn_bottom_area">  <!-- btn_both : 2개일때 / btn_three : 3개일때 -->
+			<a href="#go" class="btn_middle btn_black">거부</a>
+			<a href="#go" class="btn_middle btn_black_org">허용</a> 
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+</ion-view>

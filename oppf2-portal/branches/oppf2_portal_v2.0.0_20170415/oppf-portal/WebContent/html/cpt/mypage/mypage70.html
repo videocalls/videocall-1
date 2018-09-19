@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>기업 | koscom OpenAPI Platform </title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="stylesheet" href="../../../css/cpt/import.css">
+	<!-- IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	  <script src="../../../js/cmm/html5shiv.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="../../../js/cmm/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../../../js/cmm/jquery-ui.js"></script>
+	<script type="text/javascript" src="../../../js/cpt/common_pub.js"></script>
+	<script>
+	$(function() {
+		// 달력
+	    $("#datepicker1, #datepicker2").datepicker({
+	      showOn: "button",
+	      buttonImage: "../../../images/cpt/common/calendar.png",
+	      buttonImageOnly: true,
+	      buttonText: "달력보기"
+	    });
+	});
+	</script>
+</head>
+
+<body>
+
+<div class="wrap">
+
+	<!-- header -->
+	<header class="header">
+		<div class="header_area">
+			<div class="skip_navi">
+				<a href="#gnb">메뉴 바로가기</a>
+				<a href="#content">본문 바로가기</a>		
+			</div>
+
+			<ol class="util">
+				<li class="menu"><a href="#none">로그인</a></li>
+				<li class="menu"><a href="#none">마이페이지</a></li>
+				<li class="site"><a href="#none">개인</a></li>
+				<li class="site on"><a href="#none">기업/금투사</a></li>
+				<li class="site"><a href="#none">핀테크 테스트베드</a></li>
+			</ol>
+
+			<nav id="gnb">
+				<h1 class="logo"><a href="#none"><img src="../../../images/cpt/common/logo.png" alt="Koscom OpenAPI Platform"></a></h1>
+
+				<div class="gnb_menu">					
+					<ul>
+						<li><a href="#none">오픈플랫폼 </a></li>
+						<li><a href="#none">핀테크 서비스</a></li>
+						<li><a href="#none">서비스 소개</a></li>
+						<li><a href="#none">서비스 지원</a></li>
+					</ul>					
+				</div>
+			</nav>
+		</div>
+	</header>
+	<!-- // header -->
+
+	<!-- section -->
+	<section>
+		<!-- location -->
+		<div class="location">
+			<ul>
+				<li class="home"><a href="#none">홈</a></li>
+				<li><a href="#none">마이 페이지</a></li>
+				<li class="on">회원정보</li>
+			</ul>
+		</div>
+		<!-- // location -->
+
+		<div class="container">
+			<!-- lnb -->
+			<article class="lnb">				
+				<h2>마이 페이지</h2>
+				<ul>
+					<li><a href="#none">API 관리</a></li>
+					<li><a href="#none">통계 조회</a></li>
+					<li><a href="#none">동의서 조회</a></li>
+					<li><a href="#none" class="on">회원정보</a></li>
+				</ul>
+			</article>
+			<!-- // lnb -->
+
+			<!-- content -->
+			<article id="content">
+
+				<div class="sub_title">
+					<h3>회원정보</h3>					
+				</div>
+
+				<!-- con -->
+				<div class="con">
+
+					<div class="title_wrap">
+						<p class="title_01">기업 회원정보</p>
+						<p class="right"><span class="icon_basic">*</span><span class="point03">필수사항 입니다</span></p>
+					</div>	
+
+					<!-- tbtype_form -->
+					<table class="tbtype_form">
+						<caption>회사명, 회사코드, 아이디, 비밀번호, 비밀번호 확인, 담당자명, 부서명, 담당자 이메일, 담당자 휴대폰, 사업자 등록번호, 분류, 대표자 명, 회사 주소, 등록일 정보 및 입력</caption>
+						<colgroup>
+							<col style="width:20%;">
+							<col style="width:30%;">
+							<col style="width:20%;">
+							<col style="width:30%;">
+						</colgroup>
+						<tbody>
+						<tr>
+							<th scope="row">회사명</th>
+							<td>네이버</td>
+							<th scope="row">회사코드</th>
+							<td>00001</td>
+						</tr>
+						<tr>
+							<th scope="row">아이디<span class="icon_basic">*필수입력</span></th>
+							<td colspan="3">naver</td>
+						</tr>
+						<tr>
+							<th scope="row"><label for="user_pw">비밀번호</label></th>
+							<td colspan="3"><input type="password" id="user_pw" style="width:238px;"><span class="info_msg">8~15자의 영문 대/소문자, 숫자, 특수문자 중 2개 이상의 조합</span></td>
+						</tr>
+						<tr>
+							<th scope="row"><label for="user_pw2">비밀번호 확인</label></th>
+							<td colspan="3"><input type="password" id="user_pw2" style="width:238px;"><span class="info_msg">사용자의 아이디와 동일한 비밀번호는 사용불가</span></td>
+						</tr>
+						<tr>
+							<th scope="row">담당자명</th>
+							<td>홍길동</td>
+							<th scope="row">부서명</th>
+							<td>핀테크 사업부</td>
+						</tr>
+						<tr>
+							<th scope="row"><label for="user_email">담당자 이메일<span class="icon_basic">*필수입력</span></label></th>
+							<td colspan="3">
+								<input type="text" id="user_email" style="width:154px;" value="ganada"><span class="dot">@</span><input type="text" id="" style="width:174px;" value="gmail.com">
+								<span class="sel_box1">
+									<select title="이메일주소 선택">
+										<option>직접입력</option>
+										<option>네이버</option>
+										<option>다음</option>
+										<option>지메일</option>
+										<option>야후</option>
+									</select>
+								</span>									
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><label for="user_phone">담당자 휴대폰<span class="icon_basic">*필수입력</span></label></th>
+							<td colspan="3">
+								<span class="sel_box1">
+									<select id="user_phone" title="휴대폰번호 첫자리 선택">
+										<option>선택</option>
+										<option selected="selected">010</option>
+									</select>
+								</span>	
+								<span class="dot">-</span>
+								<input type="text" style="width:97px;" value="1234">
+								<span class="dot">-</span>
+								<input type="text" style="width:97px;" value="5678">
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">사업자 등록번호</th>
+							<td>220-81-62517</td>
+							<th scope="row">분류</th>
+							<td>핀테크 스타트업</td>
+						</tr>
+						<tr>
+							<th scope="row">대표자 명</th>
+							<td colspan="3">김상헌</td>
+						</tr>
+						<tr>
+							<th scope="row">회사 주소</th>
+							<td colspan="3">경기도 성남시 분당구 불정로 6 NAVER그린팩토리</td>
+						</tr>
+						<tr>
+							<th scope="row">등록일</th>
+							<td colspan="3">2016-08-15 14:02:05</td>
+						</tr>
+
+
+
+						<!--
+						<tr>
+							<th scope="row"><label for="user_birth">생년월일</label></th>
+							<td>
+								<span class="sel_box1">
+									<select id="user_birth" title="년 선택" style="min-width:95px;">
+										<option>선택</option>
+										<option>2016</option>
+									</select>
+								</span>
+								년
+								<span class="sel_box1">
+									<select title="월 선택">
+										<option>선택</option>
+									</select>
+								</span>
+								월
+								<span class="sel_box1">
+									<select title="일 선택">
+										<option>선택</option>
+									</select>
+								</span>
+								일								
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">성별</th>
+							<td>
+								<input type="radio" id="user_man" name="gender" checked="checked"><label for="user_man" class="radio_box">남</label>	
+								<input type="radio" id="user_women" name="gender"><label for="user_women" class="radio_box">여</label>	
+							</td>
+						</tr>
+
+						
+						
+						-->
+						</tbody>
+					</table>					
+					<!-- // tbtype_form -->
+
+					<div class="btn_area">
+						<a href="#none" class="btn_type2">취소</a>
+						<a href="#none" class="btn_type1">정보수정</a>
+					</div>
+
+				</div>
+				<!-- // con -->
+
+			</article>
+			<!-- // content -->
+		</div>
+	</section>
+	<!-- section -->
+
+	<!-- layer_popup -->
+	<div class="layer_popup">	
+
+		<div class="dimm"></div>
+
+		<!-- #layer01 -->
+		<div class="layer_box" id="layer01" style="width:600px;">
+			<div class="layer_tit">약관동의</div>
+
+			<div class="layer_con">
+				
+				<!-- banking_agree_area -->
+				<div class="banking_agree_area">
+					<p class="title_pop">금융거래 정보 제공동의서</p>
+					
+					<div class="agree_box">
+						<ol>
+							<li>1. 정보를 제공받을 기관명 : <span class="point04">위버플 (F7028)</span></li>
+							<li>2. 정보제공의 범위와 사용목적
+								<p>○ 정보제공 범위 : <span class="point04">증권거래내역에 관한 자료</span></p>
+								<p>○ 사용목적</p>
+								<ul class="list_type02">
+									<li>금융실명거래 및 비밀보장에 관한 법률시행령 제8조 제1항에 의거 정보제공 동의자의 <span class="point04">자본시장 핀테크 서비스에 필요한 증권거래내역 제공</span></li>
+								</ul>
+							</li>
+							<li>3. 유효기간 : <span class="point04">2016</span>년 <span class="point04">5</span>월 <span class="point04">3</span>일 ~ <span class="point04">2021</span>년 <span class="point04">5</span>월 <span class="point04">2</span>일 <span class="point04">(5년간)</span></li>
+							<li>4. 금융거래 정보 제공 동의자 인적 사항
+								<table class="table">
+									<caption>성명, 이메일, 생년월일 정보</caption>
+									<colgroup>
+										<col style="width:15%;">
+										<col style="width:35%;">
+										<col style="width:15%;">
+										<col style="width:35%;">
+									</colgroup>
+									<tbody>
+									<tr>
+										<th scope="row">성명</th>
+										<td>홍길동</td>
+										<th scope="row">이메일</th>
+										<td>hong@gildong.com</td>
+									</tr>
+									<tr>
+										<th scope="row">생년월일</th>
+										<td colspan="3">1985년 8월 25일</td>
+									</tr>
+									</tbody>
+								</table>
+							</li>
+							<li>5. 정보제공 금융기관명
+								<p>○ <span class="point04">삼성증권</span></p>
+								<p>○ <span class="point04">대신증권</span></p>
+								<p>○ <span class="point04">키움증권</span></p>
+							</li>
+						</ol>
+						<div class="bottom">
+							「금융실명거래 및 비밀보장에 관한 법률 시행령」 제8조에 따라 본인의 금융거래에 대한 정보를 제공해주실 것을 요청하며, 그에 따른 금융거래 정보 등의 제공사실에 대한 명의인 통보를 받지 않는 데 동의합니다.
+							<div class="date">
+								<span class="point04">2016</span>년
+								<span class="point04">5</span>월
+								<span class="point04">3</span>일
+							</div>
+							<div class="for"><span class="point04">위버플 귀하</span></div>
+						</div>
+					</div>
+					
+					<!-- 삭제
+					<div class="mt10">
+						<input type="checkbox" id="chk1"><label for="chk1" class="chk_box">금융거래정보제공에 동의합니다. (필수)</label>                                               
+					</div>
+
+					<table class="tbtype_form mt20">
+						<caption>공인인증서 인증 정보(이름, 주민번호) 입력</caption>
+						<colgroup>
+							<col style="width:25%;">
+							<col style="">
+						</colgroup>
+						<tbody>
+						<tr>
+							<th scope="row"><label for="user_name">공인인증서 인증</label></th>
+							<td>
+								<input type="text" id="user_name" title="이름 입력" placeholder="이름" style="width:150px;">
+								<input type="text" title="주민번호 입력" placeholder="주민번호('-'없이 입력)" style="width:220px;">
+							</td>
+						</tr>
+						</tbody>
+					</table>
+					-->
+
+					<ul class="list_style_01">
+						<li>
+							<span>참고사항 :</span>
+							<ul>
+								<li>- 본 동의서는 동의서 폐기 전까지 유효합니다.</li>
+								<li>- 동의 확인 : 본인 공인인증서의 전자서명 및 TSA</li>
+							</ul>
+						</li>
+					</ul>
+
+					<div class="btn_area">
+						<a href="#none" class="btn_type5 type2">취소</a>
+						<a href="#none" class="btn_type5">공인인증서 인증</a>
+					</div>	
+				</div>
+				<!-- // banking_agree_area -->
+
+			</div>
+
+			<a href="#none" class="layer_close">레이어팝업 닫기</a>
+		</div>
+	</div>
+	<!-- // layer_popup -->
+
+	<!-- footer -->
+	<footer class="footer">
+		<div class="footer_area">
+			<ul class="link">
+				<li><a href="#none">서비스이용약관</a></li>
+				<li class="point"><a href="#none">개인정보취급방침</a></li>
+			</ul>
+			<address>
+				서울시 영등포구 여의나루로 76 ㈜코스콤  대표전화 : 02-767-7114  이메일 : master@koscom.openplatform.com
+				<span class="copy">COPYRIGHT 2016. KOSCOM CORP. ALL RIGHTS RESERVED.</span>
+			</address>
+
+			<div class="family_site">
+				<!-- selBox2 -->
+				<span class="sel_box2">
+					<select style="min-width:150px">
+						<option>코스콤 사이트</option>
+					</select>
+				</span>
+				<!-- selBox2 -->
+				<span class="sel_box2">
+					<select style="min-width:170px">
+						<option>관련 사이트</option>
+					</select>
+				</span>				
+			</div>
+
+		</div>
+	</footer>
+	<!-- // footer -->
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,28 @@
+<ion-view view-title="정보제공">
+    <ion-content>
+        <div class="container"> <!-- 계좌 페이지 -->
+            <div class="top_txt_complete">
+                <div class="logo"><img src="{{vm.finTechInfo.appImg}}" onerror="this.src='/resources/images/appicon_basic.png'" style="width: 75px;height: 74px;"></div>
+                <h2 class="title_h2 mt18"><span class="ft_org">{{vm.finTechInfo.appName}}</span>에 제공하게될 정보</h2>
+            </div>
+            <div class="inner_cont type2">
+                <div class="offer_info">
+                    <ul class="dot_list">
+                        <li ng-if="vm.finTechInfo.scope.toLowerCase().indexOf(data.codeNameKor.toLowerCase()) > -1" ng-repeat="data in vm.scopeList">
+                            {{data.codeExtend1}}
+                        </li>
+                    </ul>
+                    <p>허용을 클릭하시면 <span class="ft_org">{{vm.finTechInfo.appName}}</span>에서 회원님의 정보를 사용하도록 허용하게 됩니다.</p>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+    <ion-footer-bar>
+        <!-- 하단 버튼 -->
+        <div class="button_area btn_both btn_bottom_area">  <!-- btn_both : 2개일때 / btn_three : 3개일때 -->
+            <a href="" class="btn_middle btn_black" ng-click="vm.revoke();">거부</a>
+            <a href="" class="btn_middle btn_black_org" ng-click="vm.grant();">허용</a>
+        </div>
+        <!--// 하단 버튼 -->
+    </ion-footer-bar>
+</ion-view>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+
+<configuration scan="true" scanPeriod="30 seconds" >
+
+  <property name="LOG_PATH" value="${catalina.home}" />
+  <property name="CATALINA_FILE_NAME" value="catalina" />
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <layout class="ch.qos.logback.classic.PatternLayout">
+      <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS, GMT+9:00}] %-5level [%thread] %logger{36}[%method:%line] - %msg%n</pattern>
+    </layout>
+  </appender>
+
+  <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>${LOG_PATH}/logs/${CATALINA_FILE_NAME}.out</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${LOG_PATH}/logs/%d{yyyy,aux}/%d{MM,aux}/${CATALINA_FILE_NAME}.%d{yyyy-MM-dd}.log</fileNamePattern>
+    </rollingPolicy>
+    <encoder>
+      <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS, GMT+9:00}] %-5level [%thread] %logger{36}[%method:%line] - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <logger name="org.springframework" level="info" additivity="false">
+    <appender-ref ref="FILE" />
+  </logger>
+  <logger name="kr.co.koscom.oppf" level="debug" additivity="false">
+    <appender-ref ref="FILE" />
+  </logger>
+
+  <Logger name="org.mybatis" level="info" additivity="false">
+    <appender-ref ref="console" />
+    <appender-ref ref="FILE" />
+  </Logger>
+
+  <logger name="java.sql" level="info" additivity="false">
+    <appender-ref ref="FILE" />
+  </logger>
+  <logger name="java.sql.Connection" level="info" additivity="false">
+    <appender-ref ref="FILE" />
+  </logger>
+  <logger name="java.sql.PreparedStatement" level="info" additivity="false">
+    <appender-ref ref="FILE" />
+  </logger>
+  <logger name="java.sql.ResultSet" level="WARN" additivity="false">
+    <appender-ref ref="FILE" />
+  </logger>
+  <logger name="jdbc" level="WARN" additivity="false">
+    <appender-ref ref="FILE" />
+  </logger>
+
+  
+  <root level="info">
+    <appender-ref ref="FILE" />
+  </root>
+ 
+</configuration>

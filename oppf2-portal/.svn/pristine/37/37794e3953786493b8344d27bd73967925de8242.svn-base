@@ -1,0 +1,9 @@
+#매일 오전 7시에 메일 처리
+#0 7 * * * /opt/portal-www/term_mail.py
+
+# 1분마가 오핀 푸시 메시지 전송
+* * * * * /opt/portal-www/batch_min_push.sh
+# 매일 04:30에 비회원 만료 / 삭제 , 
+30 4 * * * /opt/portal-www/daily_member_process.sh
+30 6 * * * /opt/portal-www/term_mail.sh
+

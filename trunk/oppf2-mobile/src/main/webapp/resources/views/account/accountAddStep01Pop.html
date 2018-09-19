@@ -1,0 +1,31 @@
+<ion-view view-title="금융투자회사 선택">
+	<ion-content>
+		<div class="container">
+			<div class="vi_area acc_stage">
+				<ul>
+					<li class="stage_01 active">금융투자회사 선택</li>
+					<li class="stage_02 ">계좌정보 입력</li>
+				</ul>
+			</div>
+			<div class="inner_cont type2">
+				<h2 class="title_h2">금융투자회사 선택</h2>
+				<ul class="biz_cho"> <!-- 금융투자회사 선택 3쌍씩 맞춰주세요 -->
+					<li ng-repeat="item in vm.comCompanyProfileResList">
+						<div ng-if="item.issueAccountlist == 'Y' || item.issueAccountlist == 'X' || item.issueAccountlist == null">
+						<a ng-click="vm.makeAccount(item.companyProfileRegNo,item.companyCodeId);">{{item.companyNameKorAlias}}</a></div>
+						<div ng-if="item.issueAccountlist == 'N' "><a ng-click="vm.makeAccount2(item.companyProfileRegNo,item.companyCodeId);">{{item.companyNameKorAlias}}</a></div>
+					</li> 
+					
+				</ul>
+			</div>
+		</div>
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<div class="button_area btn_bottom_area">
+			<a href="#go" class="btn_middle btn_black_org" ng-click="vm.cancel();">취소</a>
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+</ion-view>
+

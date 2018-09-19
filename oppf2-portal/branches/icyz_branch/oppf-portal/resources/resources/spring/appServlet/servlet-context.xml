@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util 
+        http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/tx 
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+<!--    <context:component-scan base-package="kr.co.koscom.oppf" /> -->
+    
+    <context:component-scan base-package="kr.co.koscom.oppf">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+    
+    <mvc:annotation-driven />
+    <context:mbean-export registration="ignoreExisting" />
+
+    <mvc:resources mapping="/js/**" location="/js/" />
+    <mvc:resources mapping="/images/**" location="/images/" />
+    <mvc:resources mapping="/css/**" location="/css/" />
+    <mvc:resources mapping="/html/**" location="/html/" />
+    <mvc:resources mapping="/jqwidgets-ver4.1.2/**" location="/jqwidgets-ver4.1.2/" />
+    <mvc:resources mapping="/AOS2/**" location="/AOS2/" />
+    <mvc:resources mapping="/error/**" location="/error/" />
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**" />
+            <bean class="kr.co.koscom.oppf.cmm.xss.XSSInterceptor" />
+        </mvc:interceptor>
+    </mvc:interceptors>
+    
+    <bean id="beanNameViewResolver" class="org.springframework.web.servlet.view.BeanNameViewResolver" p:order="1"/>
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver" p:order="2">
+        <property name="prefix" value="/WEB-INF/view/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
+        
+    <bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+
+    <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName"    value="net.sf.log4jdbc.DriverSpy" />
+        <property name="url"                value="${jdbc.portal.url}" />
+        <property name="username"           value="${jdbc.portal.name}" />
+        <property name="password"           value="${jdbc.portal.password}" />
+        <property name="maxActive"          value="10" />
+        <property name="maxIdle"            value="5" />
+        <property name="maxWait"            value="10000" />
+        <property name="initialSize"        value="5" />
+        <property name="validationQuery"    value="select 1 from dual" />
+        <property name="testOnBorrow"       value="false" />
+        <property name="testOnReturn"       value="false" />
+        <property name="testWhileIdle"      value="false" />
+        <property name="timeBetweenEvictionRunsMillis"  value="3000" />
+        <property name="removeAbandoned"                value="false" />
+        <property name="removeAbandonedTimeout"         value="60" />
+        <property name="logAbandoned"                   value="true" />
+    </bean>
+    
+    <bean id="fixDataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName"    value="net.sf.log4jdbc.DriverSpy" />
+        <property name="url"                value="${jdbc.fix.url}" />
+        <property name="username"           value="${jdbc.fix.name}" />
+        <property name="password"           value="${jdbc.fix.password}" />
+        <property name="maxActive"          value="10" />
+        <property name="maxIdle"            value="5" />
+        <property name="maxWait"            value="10000" />
+        <property name="initialSize"        value="5" />
+        <property name="validationQuery"    value="select 1 from dual" />
+        <property name="testOnBorrow"       value="false" />
+        <property name="testOnReturn"       value="false" />
+        <property name="testWhileIdle"      value="false" />
+        <property name="timeBetweenEvictionRunsMillis"  value="3000" />
+        <property name="removeAbandoned"                value="false" />
+        <property name="removeAbandonedTimeout"         value="60" />
+        <property name="logAbandoned"                   value="true" />
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+    
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManager1"/>
+
+    <bean id="transactionManager1" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="fixDataSource" />
+    </bean>
+
+<!-- 
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <bean id="secondSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="fixDataSource" />
+    </bean>
+        <bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="close">
+        <constructor-arg ref="sqlSessionFactory" />
+    </bean>
+
+    <bean id="sqlSession1" class="org.mybatis.spring.SqlSessionTemplate" destroy-method="close">
+        <constructor-arg ref="secondSqlSessionFactory" />
+    </bean>
+ -->
+ 
+    <bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+<!--        <property name="configLocation" value="classpath:config/sqlmap-config.xml"/> -->
+<!--        <property name="configLocation" value="classpath:sqlmap/config/sqlmap-config.xml"/> -->
+        <property name="configLocations">
+            <list>
+                
+                <value>classpath:/resources/sqlmap/config/mysql/cmm/sql-map-config-mysql-cmm.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/cmm/sql-map-config-mysql-sample.xml</value>
+                
+                <value>classpath:/resources/sqlmap/config/mysql/apt/sql-map-config-mysql-apt-api.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/apt/sql-map-config-mysql-apt-app.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/apt/sql-map-config-mysql-apt-cmm.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/apt/sql-map-config-mysql-apt-contract.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/apt/sql-map-config-mysql-apt-plan.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/apt/sql-map-config-mysql-apt-terms.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/apt/sql-map-config-mysql-apt-setting.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/apt/sql-map-config-mysql-apt-aptUsr.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/apt/sql-map-config-mysql-apt-sptUsr.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/apt/sql-map-config-mysql-apt-cptUsr.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/apt/sql-map-config-mysql-apt-myp.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/apt/sql-map-config-mysql-apt-stats.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/apt/sql-map-config-mysql-apt-newUsr.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/apt/sql-map-config-mysql-apt-mock.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/apt/sql-map-config-mysql-apt-dataSet.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/apt/sql-map-config-mysql-apt-stock.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/apt/sql-map-config-mysql-apt-push.xml</value>
+
+                <value>classpath:/resources/sqlmap/config/mysql/cpt/sql-map-config-mysql-cpt-cmm.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/cpt/sql-map-config-mysql-cpt-myp.xml</value>
+                
+                <value>classpath:/resources/sqlmap/config/mysql/spt/sql-map-config-mysql-spt-cmm.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/spt/sql-map-config-mysql-spt-myp.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/spt/sql-map-config-mysql-spt-usr.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/spt/sql-map-config-mysql-spt-direct.xml</value>
+            </list>
+        </property>
+        
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <bean id="fixSqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+        <property name="configLocations">
+            <list>
+                <value>classpath:/resources/sqlmap/config/mysql/cmm/sql-map-config-mysql-cmm.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/cmm/sql-map-config-mysql-sample.xml</value>
+                
+                <value>classpath:/resources/sqlmap/config/mysql/apt/sql-map-config-mysql-apt-fix.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/apt/sql-map-config-mysql-apt-fixMsg.xml</value>
+                <value>classpath:/resources/sqlmap/config/mysql/apt/sql-map-config-mysql-apt-simulator.xml</value>
+            </list>
+        </property>
+        <property name="dataSource" ref="fixDataSource"/>
+    </bean>
+
+    <bean id="sqlMapClientTemplate" class="org.springframework.orm.ibatis.SqlMapClientTemplate">
+         <property name="sqlMapClient" ref="sqlMapClient" />
+    </bean>
+
+    <bean id="sqlMapClientFixTemplate" class="org.springframework.orm.ibatis.SqlMapClientTemplate">
+        <property name="sqlMapClient" ref="fixSqlMapClient" />
+    </bean>
+    
+    <!-- 환경설정 기본정보를 globals.properties 에서 참조하도록 propertyConfigurer 설정  -->
+    <bean id="propertyConfigurer"
+        class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:/resources/props/globals.properties</value>
+            </list>
+        </property>
+    </bean>
+    
+    <!-- 메시지소스빈 설정 -->
+    <bean id="oppfMessageSource" class="kr.co.koscom.oppf.cmm.service.impl.OppfMessageSource">
+        <property name="reloadableResourceBundleMessageSource">
+            <ref bean="messageSource" />
+        </property> 
+    </bean>
+
+    <!-- 프로퍼티 파일 위치 설정 -->
+    <bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+        <property name="defaultEncoding" value="UTF-8" />
+        <property name="basenames">
+            <list>
+                <value>classpath:/resources/message/com/message-common_ko</value>
+                <value>classpath:/resources/props/globals</value>
+            </list>
+        </property>
+        <property name="cacheSeconds">
+            <value>60</value>
+        </property>
+    </bean>
+    
+    <!-- MULTIPART RESOLVERS -->
+    <!-- regular spring resolver -->    
+    <bean id="spring.RegularCommonsMultipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <property name="maxUploadSize" value="100000000" />
+        <property name="maxInMemorySize" value="100000000" />
+    </bean>
+    <!-- custom multi file resolver -->    
+    <bean id="local.MultiCommonsMultipartResolver" class="kr.co.koscom.oppf.cmm.web.CmmMultipartResolver">
+        <property name="maxUploadSize" value="100000000" />
+        <property name="maxInMemorySize" value="100000000" />
+    </bean>
+    <!-- choose one from above and alias it to the name Spring expects -->
+    <!-- alias name="local.MultiCommonsMultipartResolver" alias="multipartResolver" /-->
+    <alias name="spring.RegularCommonsMultipartResolver" alias="multipartResolver" />
+
+</beans>

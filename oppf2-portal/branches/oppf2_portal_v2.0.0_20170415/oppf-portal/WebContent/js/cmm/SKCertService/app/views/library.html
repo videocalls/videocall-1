@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <!-- 임시로 지움. -->
+    <!--<meta charset="UTF-8">-->
+    <title>vestsign_loading</title>
+    
+    <script>
+        (function (){
+            try{
+                //console.log("page documnet.domain: " + document.domain);
+                parent.document.location;
+            }catch(e) {
+                if (document.domain.indexOf(".co.kr") != -1) {
+                    //co.kr
+                    var domainArr = document.domain.split(".");
+                    //console.log("arr:" + domainArr);
+                    document.domain = domainArr[domainArr.length - 3] + ".co.kr";
+                }
+                else if (document.domain.indexOf(".com") != -1) {
+                    //com
+                    var domainArr = document.domain.split(".");
+                    //console.log("arr:" + domainArr);
+                    document.domain = domainArr[domainArr.length - 2] + ".com";
+                }
+            }
+        })();
+    </script>
+    
+    <script type="text/javascript" src="../library/json3.min.js"></script>
+    <script type="text/javascript" src="../library/iecompatibility.js"></script>
+    
+    <script type="text/javascript" src="../library/moment.min.js"></script>
+
+    <script type="text/javascript" src="../library/jsrose_crypto.js"></script>
+    <script type="text/javascript" src="../library/jsrose.js"></script>
+    <script type="text/javascript" src="../library/webToken.js"></script>
+
+    <script type="text/javascript" src="../library/vestsign.core.js"></script>
+    <script type="text/javascript" src="../library/vestsign.util.js"></script>
+    
+    <script type="text/javascript" src="../library/vestsign.error.js"></script>
+    <script type="text/javascript" src="../language/vestsign.error.js"></script>
+</head>
+<body>
+    안녕하세요.
+</body>
+</html>
+
+<script>
+    parent.window.vest = vest;
+</script>

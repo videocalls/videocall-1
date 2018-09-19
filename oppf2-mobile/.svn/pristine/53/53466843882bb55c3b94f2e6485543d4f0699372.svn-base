@@ -1,0 +1,146 @@
+<ion-view view-title="회원정보 입력">
+    <ion-content>
+    	<form name="$root.memberCreate">
+        <div class="container page_membership"> <!-- 회원가입 페이지 -->
+            <div class="vi_area join_stage">
+                <ul>
+                    <li class="stage_01">약관 및 본인인증</li>
+                    <li class="stage_02 active">회원정보입력</li>
+                    <li class="stage_03">완료</li>
+                </ul>
+            </div>
+            <div class="inner_cont type2">
+                <h2 class="title_h2">회원 정보 입력</h2>
+                <!-- 정보입력 -->
+                <ul class="entry_area">
+                    <li>
+                        <div class="title_s">아이디<span class="ft_org">*</span></div>
+                        <div class="input_area">
+                        	<input type="text"
+                                   name="customerId"
+                                   ng-model="vm.customerId"
+                                   placeholder="아이디" required minlength="4" maxlength="15" id-valid/>
+                        </div>
+                        <div ng-messages="memberCreate.customerId.$error" ng-show="!memberCreate.customerId.$pristine">
+                        	<div class="txt_error" ng-message="required">아이디를 입력하세요.</div>
+                        	<div class="txt_error" ng-message="starteng">아이디는 영문으로 시작해야 합니다.</div>
+                        	<div class="txt_error" ng-message="onlyeng">한글은 포함될 수 없습니다.</div>
+                        	<div class="txt_error" ng-message="already">사용할 수 없는 아이디입니다.</div>
+                        	<div class="txt_error" ng-message="err">서버에서 아이디 체크 에러가 발생했습니다.</div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="title_s">비밀번호<span class="ft_org">*</span></div>
+                        <div class="input_area">
+                        	<input type="password"
+                                   name="passwordDisplayText"
+                                   ng-click="vm.passwordKeypadOpen()" required
+                                   ng-blur="vm.passwordErrorMsg = vm.passwordDisplayText == '' ? '새 비밀번호를 입력해주세요' : '';
+                                       vm.passwordError = vm.passwordDisplayText == '' ? true : false;"
+                                   ng-model="vm.passwordDisplayText" readonly pwd-valid
+                                   placeholder="비밀번호 입력" minlength="8" maxlength="15"/>
+                        </div>
+                        <div class="txt_error" class="err" ng-show="vm.passwordErrorMsg">{{vm.passwordErrorMsg}}</div>
+                    </li>
+                    <li>
+                        <div class="title_s" >비밀번호 확인<span class="ft_org">*</span></div>
+                        <div class="input_area">
+                            <input type="password"
+                                   placeholder="비밀번호 확인"
+                                   name="passwordConfirmDisplayText" required
+                                   ng-model="vm.passwordConfirmDisplayText" readonly
+                                   ng-blur="vm.passwordConfirmErrorMsg = vm.passwordConfirmDisplayText == '' ? '비밀번호 확인을 입력해주세요' : '';
+                                        vm.passwordConfirmError = vm.passwordConfirmDisplayText == '' ? true : false;"
+                                   ng-click="vm.passwordConfirmKeypadOpen()"
+                                   minlength="8" maxlength="15" />
+                        </div>
+                        <div class="txt_error" class="err" ng-show="vm.passwordConfirmErrorMsg">{{vm.passwordConfirmErrorMsg}}</div>
+                    </li>
+                    <li>
+                        <div class="title_s">
+                            <div class="tips" tooltips>
+                                이메일<span class="ft_org">*</span>
+                                <span class="icon_tip">i</span>
+                                <div class="detail_tip">
+                                    서비스 및 정책 관련 중요 정보는 수신 여부와 관계없이 발송됩니다.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="email_area">
+                            <div class="top_box">
+                                <div class="input_area">
+                                	<input type="text" name="customerEmailId"
+                                           ng-click="vm.emailValidMsg = true" ng-model="vm.customerEmailId"
+                                           required ng-change="vm.customerEmailChange();"/>
+                                </div>
+                                <span class="txt_at">@</span>
+                                <div class="input_area">
+                                	<input type="text" name="emailPath"
+                                           ng-click="vm.emailValidMsg = true"
+                                           ng-readonly="!!vm.emailPathSelect"
+                                           ng-model="vm.emailPath"
+                                           required  ng-change="vm.customerEmailChange();" />
+                                </div>
+                            </div>
+                            <div class="select_box">
+                                <select ng-model="vm.emailPathSelect"
+                                        ng-change="vm.emailChange();"
+                                        ng-click="vm.emailValidMsg = true"
+                                        ng-options="data.data as data.name for data in vm.emailPathSelectList">
+                                </select>
+                            </div>
+                            <input type="hidden" name="customerEmail" ng-model="vm.customerEmail" required email-valid />
+                        </div>
+                        <div ng-messages="memberCreate.customerEmail.$error" ng-show="vm.emailValidMsg">
+                        	<div class="txt_error" ng-message="required">이메일을 입력하세요.</div>
+                        	<div class="txt_error" ng-message="syntax">이메일 형식이 일치 하지 않습니다.</div>
+                        	<div class="txt_error" ng-message="already">이미 존재하는 이메일 입니다.</div>
+                        	<div class="txt_error" ng-message="err">서버에서 이메일 체크 에러가 발생했습니다.</div>
+                        </div>
+                        <!-- 수신동의 -->
+                        <div class="receive_check">
+                            <div class="form_input">
+                                <input type="checkbox" id="receive_ck" name="customerEmailReceiveYn"
+                                       ng-model="vm.customerEmailReceiveYn" ng-true-value="'Y'" ng-false-value="'N'">
+                                <label for="receive_ck">수신동의 (뉴스/이벤트 등)</label>
+                            </div>
+                        </div>
+                        <!--// 수신동의 -->
+                    </li>
+                    <!--<li>
+                        <div class="title_s">
+                            <div class="tips" tooltips>
+                                스마트 OTP
+                                <span class="icon_tip">i</span>
+                                <div class="detail_tip">
+                                    &lt;등록 방법&gt;<br><br>
+                                    1. Smartkey Pass앱에 보이는 '사이트 인증 등록' 번호를 입력하시고 ‘확인’ 버튼을 클릭해주세요.<br><br>
+                                    2. Smartkey Pass앱에 하단에 'OK' 버튼을 누르면 등록 됩니다.<br><br>
+                                    <span class="ft_org">*스마트 OTP를 사용하기 위해서는 스마트폰에 Smartkey Pass앱이 설치되어 있어야 합니다.</span><br><br>
+                                </div>
+                            </div>
+                            <label class="toggle">
+                                <input type="checkbox" ng-model="vm.otpUseYn" ng-true-value="true" ng-false-value="false">
+                                <div class="track">
+                                    <div class="handle"></div>
+                                </div>
+                            </label>
+                            <div class="btm_enter smt_otp" ng-if="vm.otpUseYn">
+                                <div class="input_area"><input type="text" placeholder="스마트 OTP 번호 입력"/></div>
+                                <button type="button" class="btn_send" ng-click="vm.otpConfirm()">확인</button>
+                            </div>
+                        </div>
+                    </li>-->
+                </ul>
+            </div>
+        </div>
+        </form>
+    </ion-content>
+    <ion-footer-bar>
+        <!-- 하단 버튼 -->
+        <div class="button_area btn_bottom_area">
+            <button class="btn_middle btn_black_org" ng-click="vm.submit()" ng-disabled="$root.memberCreate.$invalid || vm.passwordError || vm.passwordConfirmError">다음</button>
+        </div>
+        <!--// 하단 버튼 -->
+    </ion-footer-bar>
+</ion-view>

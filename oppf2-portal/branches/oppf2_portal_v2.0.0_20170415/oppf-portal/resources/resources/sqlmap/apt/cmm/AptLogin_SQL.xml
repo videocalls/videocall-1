@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.cmm.service.impl.AptLoginDAO">
+
+  	<typeAlias alias="AptLoginVO" type="kr.co.koscom.oppf.apt.cmm.service.AptLoginVO"/>
+  	
+	<!--
+     * @Method Name        : apt.LoginDAO.selectLoginProfile
+     * @Method description : 로그인 정보를 조회한다.
+     * @param              : AptLoginVO
+     * @return             : AptLoginVO
+     * @throws             : Exception
+     -->
+    <select id="apt.LoginDAO.selectLoginProfile" parameterClass="AptLoginVO" resultClass="AptLoginVO">
+		select  admin_profile_reg_no,                                                         /* admin 프로파일 등록번호 */
+		        admin_id,                                                                     /* admin ID */
+		        admin_name_kor,                                                               /* 운영자명 한글 */
+		        admin_name_eng,                                                               /* 운영자명 영문 */
+		        if(
+		        admin_password = enc_char_ins(#admin_password#,10,'SHA','com_admin_profile','admin_password',user(),connection_id()),
+		        'Y', 'N'
+		        ) as admin_password_yn,         /* 운영자 패스워드 유효여부 */
+		        admin_temp_password_yn,                                                       /* 임시비밀번호여부 */
+		        admin_password_fail_cnt,                                                      /* 비밀번호 실패 카운트 */
+		        /* 비밀번호 변경 예정일 이내 여부 */
+		        if(DATE_FORMAT(now(), '%Y%m%d') <![CDATA[>=]]> admin_expire_password_date, 'Y', 'N') as admin_expire_password_yn,
+		        /* 비밀번호 변경 최종 예정일 이내 여부 */
+		        if(DATE_FORMAT(now(), '%Y%m%d') <![CDATA[>=]]> admin_final_password_date, 'Y', 'N') as admin_final_password_yn,
+		        if(ifnull(delete_date, 'N') = 'N', 'N', 'Y') as delete_yn                     /* 탈퇴여부 */
+		from com_admin_profile
+		where admin_id = #admin_id#
+    </select>
+    
+    <!--
+     * @Method Name        : apt.LoginDAO.updateLoginFailCnt
+     * @Method description : 로그인 실패 카운트를 update한다.
+     * @param              : AptLoginVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="apt.LoginDAO.updateLoginFailCnt" parameterClass="AptLoginVO">
+		update com_admin_profile set
+		admin_password_fail_cnt = if(#admin_password_fail_type# = 'Y', admin_password_fail_cnt + 1, 0),
+		update_date = now(),
+		update_id = #admin_id#
+		where admin_profile_reg_no = #admin_profile_reg_no#
+    </update>
+    
+    <!--
+     * @Method Name        : apt.LoginDAO.insertLoginHist
+     * @Method description : 로그인 hist를 insert한다.
+     * @param              : AptLoginVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="apt.LoginDAO.insertLoginHist" parameterClass="AptLoginVO">
+		insert into com_admin_profile_hist(
+		    admin_profile_reg_no,
+		    admin_seq,
+		    admin_name_kor,
+		    admin_name_eng,
+		    admin_id,
+		    admin_password,
+		    admin_temp_password_yn,
+		    admin_chg_password_date,
+		    admin_expire_password_date,
+		    admin_final_password_date,
+		    admin_password_fail_cnt,
+		    admin_phone_no,
+		    admin_email,
+		    delete_date,
+		    create_date,
+		    create_id
+		)
+		select  admin_profile_reg_no,
+		        ifnull((
+		            select ifnull(max(cast(admin_seq as SIGNED)), 0) + 1
+		            from com_admin_profile_hist
+		            where admin_profile_reg_no = a.admin_profile_reg_no
+		        ), 1),
+		        admin_name_kor,
+		        admin_name_eng,
+		        admin_id,
+		        admin_password,
+		        admin_temp_password_yn,
+		        admin_chg_password_date,
+		        admin_expire_password_date,
+		        admin_final_password_date,
+		        admin_password_fail_cnt,
+		        admin_phone_no,
+		        admin_email,
+		        delete_date,
+		        update_date,
+		        update_id
+		from com_admin_profile a        
+		where admin_profile_reg_no = #admin_profile_reg_no#    
+    </insert>
+    
+    <!--
+     * @Method Name        : apt.LoginDAO.selectIdFind
+     * @Method description : 아이디 찾기
+     * @param              : AptLoginVO
+     * @return             : AptLoginVO
+     * @throws             : Exception
+     -->
+    <select id="apt.LoginDAO.selectIdFind" parameterClass="AptLoginVO" resultClass="AptLoginVO">
+        select concat(substr(admin_id, 1, length(admin_id)-3), '***') as admin_id
+        from com_admin_profile
+        where (
+            admin_name_kor = #searchName# or
+            admin_name_eng = #searchName#
+        )
+        and admin_email = enc_char_ins(#searchEmail#,10,'ARIA','com_admin_profile','admin_email',user(),connection_id())
+        order by admin_profile_reg_no desc /* 최근의 탈퇴회원이나 최근에 가입 및 재가입한 회원 */
+        limit 0,1
+    </select>
+    
+    <!--
+     * @Method Name        : apt.LoginDAO.selectPwFind
+     * @Method description : 비밀번호 찾기
+     * @param              : AptLoginVO
+     * @return             : AptLoginVO
+     * @throws             : Exception
+     -->
+    <select id="apt.LoginDAO.selectPwFind" parameterClass="AptLoginVO" resultClass="AptLoginVO">
+        select  admin_profile_reg_no,
+                dec_char_sel(admin_email,10,'ARIA','com_admin_profile','admin_email',user(),connection_id()) as admin_email
+        from com_admin_profile
+        where (
+            admin_name_kor = #searchName# or
+            admin_name_eng = #searchName#
+        )
+        and admin_id = #searchId#
+        and admin_email = enc_char_ins(#searchEmail#,10,'ARIA','com_admin_profile','admin_email',user(),connection_id())
+        order by admin_profile_reg_no desc /* 최근의 탈퇴회원이나 최근에 가입 및 재가입한 회원 */
+        limit 0,1
+    </select>
+    
+    <!--
+     * @Method Name        : apt.LoginDAO.updateTmpPassword
+     * @Method description : 임시비밀번호 발급
+     * @param              : AptLoginVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="apt.LoginDAO.updateTmpPassword" parameterClass="AptLoginVO">
+        update com_admin_profile set
+            admin_password = enc_char_ins(#admin_password#,10,'SHA','com_admin_profile','admin_password',user(),connection_id()),
+            admin_temp_password_yn = 'Y',
+            admin_chg_password_date = sysdate(),
+            admin_expire_password_date = date_format(date_add(sysdate(), interval #admin_expire_password_date# month), '%Y%m%d'),
+            admin_final_password_date = date_format(date_add(sysdate(), interval #admin_final_password_date# month), '%Y%m%d'),
+            admin_password_fail_cnt = 0,
+            update_date = sysdate(),
+            update_id = #admin_profile_reg_no#
+        where admin_profile_reg_no = #admin_profile_reg_no#
+    </update>
+        
+</sqlMap>

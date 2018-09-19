@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>	
+   <settings 
+   	enhancementEnabled="true" 
+   	cacheModelsEnabled="true"
+   	lazyLoadingEnabled="true"
+   	useStatementNamespaces="true"   	
+   />
+   
+   <sqlMap resource="resources/sqlmap/apt/sptUsr/SptUserManage_SQL.xml"/>           <!-- 일반회원 관리 -->
+   <sqlMap resource="resources/sqlmap/apt/sptUsr/SptUserServiceTerms_SQL.xml"/>     <!-- 금융정보제공 동의서 -->
+   <sqlMap resource="resources/sqlmap/apt/sptUsr/SptUserService_SQL.xml"/>          <!-- 서비스연결현황 -->
+   <sqlMap resource="resources/sqlmap/apt/sptUsr/SptUserAccount_SQL.xml"/>          <!-- 일반회원 가상계좌 -->
+   
+   <sqlMap resource="resources/sqlmap/apt/sptUsr/AptUserEmailManage_SQL.xml"/>      <!-- admin 포털 메일발송 이력관리 -->
+   <sqlMap resource="resources/sqlmap/apt/sptUsr/SptSvcAppl_SQL.xml"/>
+    
+</sqlMapConfig>

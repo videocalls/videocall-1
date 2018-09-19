@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<meta charset="UTF-8">
+<!-- saved from url=(0014)about:internet -->
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+<script type="text/javascript" src="../app/vestsign.js"></script>
+<script type="text/javascript" src="../app/js/koscom.js"></script>
+<script type="text/javascript" src="../app/activexAdp.js"></script>
+
+<script type="text/javascript">
+
+    function relayExport() {
+        var CertManX;
+        if (ytMain) {
+            CertManX = ytMain;
+        }
+
+        if (CertManX.doubleClickBlock(arguments.callee)) return;
+        CertManX.relayExport(function (result) {
+            if (result == "") {
+                alert("relayExport 실패 : [" + CertManX.GetLastErrorCode() + "]" + CertManX.GetLastErrorMsg());
+                return;
+            }
+            alert("스마트폰에서 인증서 가져오기 버튼을 눌러서 인증서를 스마트폰에 저장하세요.");
+
+        });
+    }
+
+    function relayImport() {
+        var CertManX;
+        if(ytMain){
+            CertManX = ytMain;
+        }
+
+        if (CertManX.doubleClickBlock(arguments.callee)) return;
+        CertManX.relayImport(function (result) {
+            if (result == "") {
+                alert("relayImport 실패 : [" + CertManX.GetLastErrorCode() + "]" + CertManX.GetLastErrorMsg());
+                return;
+            }
+            alert("인증서 저장이 완료되었습니다.");
+
+        });
+
+    }
+
+
+</script>
+
+<form name="form" method="post">
+    <BR>
+    <HR align="left" size="5" width="100%" noshade>
+    <FONT size="7">
+        <center> 인증서 복사 </center>
+    </FONT>
+    <HR align="left" size="5" width="100%" noshade>
+    <BR>
+
+    <table width="100%" border="1">
+
+        <tr>
+            <td>
+                <center>
+                    <BR>
+                    <BR>
+                    <input type=button id="Envelop" onclick="relayExport()" value="relayExport Test" style="height:50; width:400">
+                    <BR>
+                    <BR>
+                    <BR>
+                    <input type=button id="Develop" onclick="relayImport()" value="relayImport Test" style="height:50; width:400">
+                    <BR>
+                    <BR>
+                    <BR>
+                </center>
+
+            </td>
+
+        </tr>
+
+    </table>
+</form>

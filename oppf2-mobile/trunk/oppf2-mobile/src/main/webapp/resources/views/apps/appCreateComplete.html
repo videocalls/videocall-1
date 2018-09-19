@@ -1,0 +1,69 @@
+<ion-view view-title="{{vm.title}}" hide-back-button="true">
+	<ion-content> <!-- bg color -->
+		<div class="container"> <!-- 앱신청 완료 페이지 -->
+			<div class="inner_cont type2">
+				<div class="complete_app_area">
+					<div class="top_txt_complete" ng-show="!vm.type"><span class="ft_org">{{vm.appDtl.appName}}</span> 앱 사용 신청이<br>완료되었습니다.</div>
+					<div class="top_txt_complete" ng-show="vm.type"><span class="ft_org">{{vm.appDtl.appName}}</span> 신청 정보<br>수정이 완료되었습니다.</div>					
+					<div class="acclist_area application_complete"> <!-- 앱신청 완료 -->
+						<!-- 아코디언 메뉴 -->
+						<div class="accordian-menu" accordion><!-- accordion -->
+							<!-- loop -->
+							<div class="accordian-cont cont_wrap active"><!-- add active :열림 -->
+								<button type="button" class="btn_bar"></button>
+								<div class="detail_head">
+									연결계좌
+								</div>
+								<div class="detail_cont">
+									<ul>
+										<li ng-repeat="appAccountRes in vm.AppAccountList">
+											<p class="title_s">{{appAccountRes.pubCompanyName}}</p>
+											<label for="acc1-1" ng-repeat="vtAccountRes in appAccountRes.vtAccountResList">
+												{{vtAccountRes.customerVtaccountAlias}}
+												<span class="num_right">{{vtAccountRes.customerVtaccountNo}}</span>
+											</label>
+										</li>
+									</ul>
+								</div>
+							</div>
+							<!--// loop -->
+							<div class="accordian-cont cont_wrap active"><!-- add active :열림 -->
+								<button type="button" class="btn_bar"></button>
+								<div class="detail_head">
+									금융거래정보 제공 동의
+									<button type="button" class="btn_info_pop" ng-click="vm.termsInfo(vm.appDtl.appId, 'detail')">정보제공팝업</button>
+									<button type="button" class="btn_time_pop" ng-show="vm.appDtl.reSyncYn=='Y'" ng-click="vm.termsInfo(vm.appDtl.appId, 'reSync')" ng-if="!isAppToApp">정보제공동의팝업</button>
+								</div>
+								<div class="detail_cont">
+									<ul>
+										<li>
+											<label for="acc_time">
+												유효기간
+												<span class="num_right">{{vm.appDtl.termsStartData}} ~ {{vm.appDtl.termsEndDate}}</span>
+											</label>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<!--// 아코디언 메뉴 -->
+					</div>
+					<!-- 비회원 일경우 -->
+					<div class="guest_inifo" ng-class="{hide_set: !isAppToApp}" > <!-- add class :  hide_set : 숨김처리됩니다. -->
+						<p class="title">안내</p>
+						<div>정보제공 권한 허용에 동의하셔야 <span>{{vm.appDtl.appName}}</span>앱 서비스 이용이 가능합니다. 아래 버튼을 클릭해주세요. </div>
+					</div>
+					<!--// 비회원 일경우 -->
+				</div>
+			</div>
+		</div>
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<div class="button_area btn_bottom_area"> <!-- btn_both : 2개일때 / btn_three : 3개일때 -->
+			<a href="#" class="btn_middle btn_black" ng-click="vm.goMain()" ng-if="!isAppToApp">확인</a>
+			<a href="#" class="btn_middle btn_black" ng-click="vm.goScope()" ng-if="isAppToApp">정보제공 권한 허용</a>
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+</ion-view>

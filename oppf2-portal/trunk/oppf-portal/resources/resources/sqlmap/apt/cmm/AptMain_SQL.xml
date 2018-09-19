@@ -1,0 +1,1996 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.cmm.service.impl.AptMainDAO">
+
+  	<typeAlias alias="AptMainVO" type="kr.co.koscom.oppf.apt.cmm.service.AptMainVO"/>
+  	
+    <!-- 통계의 데이터 포멧(60컬럼 기준으로 잡는다.) -->
+	<sql id="searchDayStd">
+	    <!-- 분 : 조회시간 기준 - 5시간(12 * 5) -->
+        <isEqual property="searchType" compareValue="min">
+			select  concat(a.std_date, b.std_date) as std_date,
+					 date_format(str_to_date(concat(a.std_date, b.std_date), '%Y%m%d%H%i'), '%d일 %H:%i') as Date
+			from(
+				select  concat(searchDate, searchTime) as std_date
+				from(
+					select searchDate
+					from(
+						select date_format(adddate(date_format(str_to_date(#searchDateTimeFrom#, '%Y%m%d%H'), '%Y%m%d'), t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m%d') searchDate
+						from
+						(select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+						(select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+						(select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+						(select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+						(select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+						) v
+						where searchDate <![CDATA[<=]]> #searchDateTimeTo#
+					) a,
+					(
+						select '00' as searchTime
+						union select '01' union select '02' union select '03' union select '04' union select '05' union select '06'
+						union select '07' union select '08' union select '09' union select '10' union select '11' union select '12'
+						union select '13' union select '14' union select '15' union select '16' union select '17' union select '18'
+						union select '19' union select '20' union select '21' union select '22' union select '23'
+				) b
+				where concat(searchDate, searchTime)
+				between #searchDateTimeFrom# and #searchDateTimeTo#
+			) a,
+			(
+				select '00' as std_date union select '05' union
+				select '10' as std_date union select '15' union
+				select '20' as std_date union select '25' union
+				select '30' as std_date union select '35' union
+				select '40' as std_date union select '45' union
+				select '50' as std_date union select '55'
+			) b
+        </isEqual>
+        
+        <!-- 시간 : 조회시간 기준 - 59시간(60 시간) -->
+        <isEqual property="searchType" compareValue="hourly">
+		    select  concat(searchDate, searchTime) as std_date,
+		            date_format(str_to_date(concat(searchDate, searchTime), '%Y%m%d%H'), '%d일 %H시') as Date
+		    from(
+		        select searchDate
+		        from(
+			select date_format(adddate(date_format(str_to_date(#searchDateTimeFrom#, '%Y%m%d%H'), '%Y%m%d'), t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m%d') searchDate
+		            from
+		            (select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+		            (select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+		            (select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+		            (select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+		            (select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+		        ) v
+				where searchDate <![CDATA[<=]]> #searchDateTimeTo#
+		    ) a,
+		    (
+		        select '00' as searchTime
+		        union select '01' union select '02' union select '03' union select '04' union select '05' union select '06'
+		        union select '07' union select '08' union select '09' union select '10' union select '11' union select '12'
+		        union select '13' union select '14' union select '15' union select '16' union select '17' union select '18'
+		        union select '19' union select '20' union select '21' union select '22' union select '23'
+		    ) b
+		    where concat(searchDate, searchTime)
+			between #searchDateTimeFrom# and #searchDateTimeTo#
+        </isEqual>
+        
+        <!-- 일 : 조회시간 기준 - 59일 -->
+        <isEqual property="searchType" compareValue="daily">
+			select  searchDate as std_date,
+			        date_format(str_to_date(searchDate, '%Y%m%d'), '%m월%d일') as Date
+			from(
+			    select date_format(adddate(date_format(#searchDateTimeFrom#, '%Y%m%d'),t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m%d') searchDate
+			    from
+			    (select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+			    (select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+			    (select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+			    (select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+			    (select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+			) v
+			where searchDate
+			between #searchDateTimeFrom# and #searchDateTimeTo#
+			<!--
+			between date_format(str_to_date(#searchDateTime#, '%Y%m%d') - INTERVAL 59 DAY, '%Y%m%d')
+			and date_format(str_to_date(#searchDateTime#, '%Y%m%d'), '%Y%m%d')
+			     -->
+        </isEqual>
+        
+        <!-- 개월 : 조회시간 기준 - 59개월 -->
+        <isEqual property="searchType" compareValue="monthly">
+            select  searchDate as std_date,
+                    date_format(str_to_date(concat(searchDate,'01'), '%Y%m%d'), '%Y년%m월') as Date
+            from(
+                select date_format(adddate(date_format(concat(#searchDateTimeFrom#, '01'), '%Y%m%d'),t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m') searchDate
+                from
+                (select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+                (select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+                (select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+                (select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+                (select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+            ) v
+            where searchDate 
+            between #searchDateTimeFrom# and #searchDateTimeTo#
+            group by searchDate
+        </isEqual>
+	</sql>
+
+	<!-- 통계의 데이터 포멧(60컬럼 기준으로 잡는다.) -->
+	<sql id="searchDayStdForService">
+		<!-- 분 : 조회시간 기준 - 5시간(12 * 5) -->
+		<isEqual property="searchType" compareValue="min">
+			select  concat(a.std_date, b.std_date) as std_date,
+					 date_format(str_to_date(concat(a.std_date, b.std_date), '%Y%m%d%H%i'), '%d일 %H:%i') as Date
+			from(
+				select date_format(str_to_date(#searchDateTime#, '%Y%m%d%H'), '%Y%m%d%H')                   as std_date
+				union all
+				select date_format(str_to_date(#searchDateTime#, '%Y%m%d%H') - INTERVAL 1 HOUR, '%Y%m%d%H') as std_date
+				union all
+				select date_format(str_to_date(#searchDateTime#, '%Y%m%d%H') - INTERVAL 2 HOUR, '%Y%m%d%H') as std_date
+				union all
+				select date_format(str_to_date(#searchDateTime#, '%Y%m%d%H') - INTERVAL 3 HOUR, '%Y%m%d%H') as std_date
+				union all
+				select date_format(str_to_date(#searchDateTime#, '%Y%m%d%H') - INTERVAL 4 HOUR, '%Y%m%d%H') as std_date
+			) a,
+			(
+				select '00' as std_date union select '05' union
+				select '10' as std_date union select '15' union
+				select '20' as std_date union select '25' union
+				select '30' as std_date union select '35' union
+				select '40' as std_date union select '45' union
+				select '50' as std_date union select '55'
+			) b
+		</isEqual>
+
+		<!-- 시간 : 조회시간 기준 - 59시간(60 시간) -->
+		<isEqual property="searchType" compareValue="hourly">
+			select  concat(searchDate, searchTime) as std_date,
+					 date_format(str_to_date(concat(searchDate, searchTime), '%Y%m%d%H'), '%d일 %H시') as Date
+			from(
+				select searchDate
+				from(
+					select date_format(adddate(date_format(str_to_date(#searchDateTime#, '%Y%m%d%H') - INTERVAL 59 HOUR, '%Y%m%d'),t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m%d') searchDate
+					from
+					(select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+					(select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+					(select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+					(select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+					(select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+				) v
+				where searchDate
+				between date_format(str_to_date(#searchDateTime#, '%Y%m%d%H') - INTERVAL 59 HOUR, '%Y%m%d')
+				and date_format(str_to_date(#searchDateTime#, '%Y%m%d%H'), '%Y%m%d')
+			) a,
+			(
+				select '00' as searchTime
+				union select '01' union select '02' union select '03' union select '04' union select '05' union select '06'
+				union select '07' union select '08' union select '09' union select '10' union select '11' union select '12'
+				union select '13' union select '14' union select '15' union select '16' union select '17' union select '18'
+				union select '19' union select '20' union select '21' union select '22' union select '23'
+			) b
+			where concat(searchDate, searchTime)
+			between date_format(str_to_date(#searchDateTime#, '%Y%m%d%H') - INTERVAL 59 HOUR, '%Y%m%d%H')
+			and date_format(str_to_date(#searchDateTime#, '%Y%m%d%H'), '%Y%m%d%H')
+		</isEqual>
+
+		<!-- 일 : 조회시간 기준 - 59일 -->
+		<isEqual property="searchType" compareValue="daily">
+			select  searchDate as std_date,
+					date_format(str_to_date(searchDate, '%Y%m%d'), '%m월%d일') as Date
+			from(
+				select date_format(adddate(date_format(str_to_date(#searchDateTime#, '%Y%m%d') - INTERVAL 59 DAY, '%Y%m%d'),t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m%d') searchDate
+				from
+				(select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+				(select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+				(select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+				(select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+				(select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+			) v
+			where searchDate
+			between date_format(str_to_date(#searchDateTime#, '%Y%m%d') - INTERVAL 59 DAY, '%Y%m%d')
+			and date_format(str_to_date(#searchDateTime#, '%Y%m%d'), '%Y%m%d')
+		</isEqual>
+
+		<!-- 개월 : 조회시간 기준 - 59개월 -->
+		<isEqual property="searchType" compareValue="monthly">
+			select  searchDate as std_date,
+					 date_format(str_to_date(concat(searchDate,'01'), '%Y%m%d'), '%Y년%m월') as Date
+			from(
+				select date_format(adddate(date_format(str_to_date(#searchDateTime#, '%Y%m%d') - INTERVAL 59 MONTH, '%Y%m%d'),t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m') searchDate
+				from
+				(select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+				(select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+				(select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+				(select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+				(select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+			) v
+			where searchDate
+			between date_format(str_to_date(#searchDateTime#, '%Y%m%d%H') - INTERVAL 59 MONTH, '%Y%m')
+			and date_format(str_to_date(#searchDateTime#, '%Y%m%d%H'), '%Y%m')
+			group by searchDate
+		</isEqual>
+	</sql>
+	
+	<!--
+	 *************************************************************************************************
+     * API 트래픽 현황 start
+     *************************************************************************************************
+	-->
+        
+    <!--
+     * @Method Name        : apt.AptMainDAO.selectMainStatsTraffic
+     * @Method description : API 트래픽 요약 - 전체건수 조회
+     * @param              : AptMainVO
+     * @return             : java.util.HashMap
+     * @throws             : Exception
+     -->
+    <select id="apt.AptMainDAO.selectMainStatsTraffic" parameterClass="AptMainVO" resultClass="java.util.HashMap" remapResults="true">
+		select  a.std_date                      as stdDate,
+		        a.Date                          as Date,
+		        ifnull(b.cnt_api_duration_y, 0) as cntApiDurationY,
+		        ifnull(b.cnt_api_duration_n, 0) as cntApiDurationN
+		from(
+		    <include refid="searchDayStd"/>
+		) a
+		left join(
+		    select  a.std_date,
+		            sum(ifnull(a.cnt_api_duration_y, 0)) as cnt_api_duration_y,
+		            sum(ifnull(a.cnt_api_duration_n, 0)) as cnt_api_duration_n
+		    from(
+		        select  a.std_date,
+		                a.app_id, 
+		                a.api_id,
+		                sum(
+		                    case 
+		                        when a.response_result_yn = 'Y' then a.cnt_api_duration else 0 
+		                    end 
+		                )as  cnt_api_duration_y,
+		                sum(
+		                    case 
+		                        when a.response_result_yn = 'N' then a.cnt_api_duration else 0 
+		                    end 
+		                )as  cnt_api_duration_n
+		        from $searchTable$ a
+		        where 1=1
+		        $searchTableCondition$
+		        group by a.std_date, a.app_id, a.api_id
+		    ) a
+		    join (
+		        select  a.app_id, a.api_id
+		        from(
+		            select  a.app_id,
+		                    a.api_id,
+		                    a.api_plan_id
+		            from com_app_apilist_view a
+		            join com_app_view b on a.app_id = b.app_id
+					<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+							b.company_code_id
+							<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchSubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+		            join com_app_info c on a.app_id = c.app_id
+		            join com_company_profile company on b.company_code_id = company.company_code_id
+		        ) a
+		        join com_api_view b on a.api_id = b.api_id
+		        join com_api_info c on a.api_id = c.api_id
+				<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+					<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+						c.company_code_id
+						<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+							#searchPubCompanyCodeId[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+		        join com_company_profile company on c.company_code_id = company.company_code_id
+		    ) b
+		    on a.app_id = b.app_id
+		    and a.api_id = b.api_id
+		    group by a.std_date
+		) b
+		on a.std_date = b.std_date
+		order by a.std_date asc
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptMainDAO.selectMainStatsTrafficDtl
+     * @Method description : API 트래픽 요약 - 상세건수 조회
+     * @param              : AptMainVO
+     * @return             : java.util.HashMap
+     * @throws             : Exception
+     -->
+    <select id="apt.AptMainDAO.selectMainStatsTrafficDtl" parameterClass="AptMainVO" resultClass="java.util.HashMap" remapResults="true">
+		select  a.std_date                      as stdDate,
+		        a.Date                          as Date
+		        $sql1$
+		from(
+		    <include refid="searchDayStd"/>
+		) a
+		left join (
+		    select  a.std_date
+		            $sql2$
+		    from(
+		        select  a.std_date,
+		                a.app_id, 
+		                a.api_id,
+		                sum(a.cnt_api_duration) as cnt_api_duration
+		        from $searchTable$ a
+                where 1=1
+                $searchTableCondition$
+		        group by a.std_date, a.app_id, a.api_id
+		    ) a
+		    join (
+		        select  a.app_id, a.api_id,
+		                c.api_category
+		        from(
+		            select  a.app_id,
+		                    a.api_id,
+		                    a.api_plan_id
+		            from com_app_apilist_view a
+		            join com_app_view b on a.app_id = b.app_id
+					<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+							b.company_code_id
+							<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchSubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+		            join com_app_info c on a.app_id = c.app_id
+		            join com_company_profile company on b.company_code_id = company.company_code_id
+		        ) a
+		        join com_api_view b on a.api_id = b.api_id
+		        join com_api_info c on a.api_id = c.api_id
+				<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+					<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+						c.company_code_id
+						<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+							#searchPubCompanyCodeId[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+		        join com_company_profile company on c.company_code_id = company.company_code_id
+		    ) b
+		    on a.app_id = b.app_id
+		    and a.api_id = b.api_id
+		    group by a.std_date
+		) b
+		on a.std_date = b.std_date
+		order by a.std_date asc    
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptMainDAO.selectMainStatsTrafficApiTraffic
+     * @Method description : API 서비스별 트래픽 현황(요약) 조회
+     * @param              : AptMainVO
+     * @return             : java.util.HashMap
+     * @throws             : Exception
+     -->
+    <select id="apt.AptMainDAO.selectMainStatsTrafficApiTraffic" parameterClass="AptMainVO" resultClass="java.util.HashMap" remapResults="true">
+		select  a.api_category                as apiCategory,
+		        a.api_category_name           as apiCategoryName,
+		        ifnull(b.cnt_api_duration, 0) as cntApiDuration
+		from(
+		    select  concat(system_grp_code, system_code) as api_category,
+		            code_name_kor as api_category_name,
+		            code_seq
+		    from com_system_code
+		    where system_grp_code = 'G026'
+		    and delete_date is null
+		) a
+		left join(
+		    select  a.api_category,
+		            round(ifnull(a.cnt_api_duration, 0) / ifnull(b.tot_api_duration, 0) * 100) as cnt_api_duration
+		    from(            
+		        select  b.api_category,
+		                sum(a.cnt_api_duration) as cnt_api_duration
+		        from(
+		            select  a.std_date,
+		                    a.app_id, 
+		                    a.api_id,
+		                    sum(a.cnt_api_duration) as cnt_api_duration
+		            from $searchTable$ a
+	                where 1=1
+	                $searchTableCondition$
+		            group by a.std_date, a.app_id, a.api_id
+		        ) a
+		        join (
+		            select  a.app_id, a.api_id,
+		                    c.api_category
+		            from(
+		                select  a.app_id,
+		                        a.api_id,
+		                        a.api_plan_id
+		                from com_app_apilist_view a
+		                join com_app_view b on a.app_id = b.app_id
+						<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+							<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+								b.company_code_id
+								<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+									#searchSubCompanyCodeId[]#
+								</iterate>
+							</isNotEqual>
+						</isNotEmpty>
+		                join com_app_info c on a.app_id = c.app_id
+		                join com_company_profile company on b.company_code_id = company.company_code_id
+		            ) a
+		            join com_api_view b on a.api_id = b.api_id
+		            join com_api_info c on a.api_id = c.api_id
+					<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+							c.company_code_id
+							<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchPubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+		            join com_company_profile company on c.company_code_id = company.company_code_id
+		        ) b
+		        on a.app_id = b.app_id
+		        and a.api_id = b.api_id
+		        group by b.api_category
+		    ) a,
+		    (
+		        select  sum(a.cnt_api_duration) as tot_api_duration
+		        from(
+		            select  a.std_date,
+		                    a.app_id, 
+		                    a.api_id,
+		                    sum(a.cnt_api_duration) as cnt_api_duration
+		            from $searchTable$ a
+	                where 1=1
+	                $searchTableCondition$
+		            group by a.std_date, a.app_id, a.api_id
+		        ) a
+		        join (
+		            select  a.app_id, a.api_id,
+		                    c.api_category
+		            from(
+		                select  a.app_id,
+		                        a.api_id,
+		                        a.api_plan_id
+		                from com_app_apilist_view a
+		                join com_app_view b on a.app_id = b.app_id
+						<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+							<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+								b.company_code_id
+								<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+									#searchSubCompanyCodeId[]#
+								</iterate>
+							</isNotEqual>
+						</isNotEmpty>
+		                join com_app_info c on a.app_id = c.app_id
+		                join com_company_profile company on b.company_code_id = company.company_code_id
+		            ) a
+		            join com_api_view b on a.api_id = b.api_id
+		            join com_api_info c on a.api_id = c.api_id
+					<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+							c.company_code_id
+							<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchPubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+		            join com_company_profile company on c.company_code_id = company.company_code_id
+		        ) b
+		        on a.app_id = b.app_id
+		        and a.api_id = b.api_id
+		    ) b
+		) b on a.api_category = b.api_category
+		order by cntApiDuration desc, a.code_seq asc
+		limit 10
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptMainDAO.selectMainStatsTrafficServiceTraffic
+     * @Method description : 서비스 제동자별 트래픽 현황(요약) 조회
+     * @param              : AptMainVO
+     * @return             : java.util.HashMap
+     * @throws             : Exception
+     -->
+    <select id="apt.AptMainDAO.selectMainStatsTrafficServiceTraffic" parameterClass="AptMainVO" resultClass="java.util.HashMap" remapResults="true">
+		select  a.company_code_id               as companyCodeId,
+		        company.company_name_kor_alias  as companyName,
+		        ifnull(cntApiDuration, 0)       as cntApiDuration
+		from(        
+		    select  a.company_code_id,
+		            round(ifnull(a.cnt_api_duration, 0) / ifnull(b.tot_api_duration, 0) * 100) as cntApiDuration
+		    from(
+		        select  b.company_code_id,
+		                sum(a.cnt_api_duration) as cnt_api_duration
+		        from(
+		            select  a.std_date,
+		                    a.app_id, 
+		                    a.api_id,
+		                    sum(a.cnt_api_duration) as cnt_api_duration
+		            from $searchTable$ a
+                    where 1=1
+                    $searchTableCondition$
+		            group by a.std_date, a.app_id, a.api_id
+		        ) a
+		        join (
+		            select  a.app_id, a.api_id,
+		                    company.company_code_id
+		            from(
+		                select  a.app_id,
+		                        a.api_id,
+		                        a.api_plan_id
+		                from com_app_apilist_view a
+		                join com_app_view b on a.app_id = b.app_id
+						<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+							<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+								b.company_code_id
+								<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+									#searchSubCompanyCodeId[]#
+								</iterate>
+							</isNotEqual>
+						</isNotEmpty>
+		                join com_app_info c on a.app_id = c.app_id
+		                join com_company_profile company on b.company_code_id = company.company_code_id
+		            ) a
+		            join com_api_view b on a.api_id = b.api_id
+		            join com_api_info c on a.api_id = c.api_id
+					<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+							c.company_code_id
+							<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchPubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+		            join com_company_profile company on c.company_code_id = company.company_code_id
+		        ) b
+		        on a.app_id = b.app_id
+		        and a.api_id = b.api_id
+		        group by b.company_code_id
+		    ) a,
+		    (
+		        select  sum(a.cnt_api_duration) as tot_api_duration
+		        from(
+		            select  a.std_date,
+		                    a.app_id, 
+		                    a.api_id,
+		                    sum(a.cnt_api_duration) as cnt_api_duration
+		            from $searchTable$ a
+                    where 1=1
+                    $searchTableCondition$
+		            group by a.std_date, a.app_id, a.api_id
+		        ) a
+		        join (
+		            select  a.app_id, a.api_id,
+		                    company.company_code_id
+		            from(
+		                select  a.app_id,
+		                        a.api_id,
+		                        a.api_plan_id
+		                from com_app_apilist_view a
+		                join com_app_view b on a.app_id = b.app_id
+						<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+							<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+								b.company_code_id
+								<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+									#searchSubCompanyCodeId[]#
+								</iterate>
+							</isNotEqual>
+						</isNotEmpty>
+		                join com_app_info c on a.app_id = c.app_id
+		                join com_company_profile company on b.company_code_id = company.company_code_id
+		            ) a
+		            join com_api_view b on a.api_id = b.api_id
+		            join com_api_info c on a.api_id = c.api_id
+					<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+							c.company_code_id
+							<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchPubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+		            join com_company_profile company on c.company_code_id = company.company_code_id
+		        ) b
+		        on a.app_id = b.app_id
+		        and a.api_id = b.api_id
+		    ) b
+		) a    
+		left join com_company_profile company on a.company_code_id = company.company_code_id
+		order by cntApiDuration desc, company.exposure_order asc, company.company_name_kor_alias asc
+		limit 10
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptMainDAO.selectMainStatsTrafficAppTraffic
+     * @Method description : 핀테크 앱 별 트래픽 현황(요약) 조회
+     * @param              : AptMainVO
+     * @return             : java.util.HashMap
+     * @throws             : Exception
+     -->
+    <select id="apt.AptMainDAO.selectMainStatsTrafficAppTraffic" parameterClass="AptMainVO" resultClass="java.util.HashMap" remapResults="true">
+		select  a.app_id                    as appID,
+		        b.app_name                  as appName,
+		        ifnull(cnt_api_duration, 0) as cntApiDuration
+		from(
+		    select  a.app_id,
+		            round(ifnull(a.cnt_api_duration, 0) / ifnull(b.tot_api_duration, 0) * 100) as cnt_api_duration
+		    from(
+		        select  a.app_id,
+		                sum(a.cnt_api_duration) as cnt_api_duration
+		        from(
+		            select  a.std_date,
+		                    a.app_id, 
+		                    a.api_id,
+		                    sum(a.cnt_api_duration) as cnt_api_duration
+		            from $searchTable$ a
+                    where 1=1
+                    $searchTableCondition$
+		            group by a.std_date, a.app_id, a.api_id
+		        ) a
+		        join (
+		            select  a.app_id, a.api_id,
+		                    company.company_code_id
+		            from(
+		                select  a.app_id,
+		                        a.api_id,
+		                        a.api_plan_id
+		                from com_app_apilist_view a
+		                join com_app_view b on a.app_id = b.app_id
+						<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+							<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+								b.company_code_id
+								<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+									#searchSubCompanyCodeId[]#
+								</iterate>
+							</isNotEqual>
+						</isNotEmpty>
+		                join com_app_info c on a.app_id = c.app_id
+		                join com_company_profile company on b.company_code_id = company.company_code_id
+		            ) a
+		            join com_api_view b on a.api_id = b.api_id
+		            join com_api_info c on a.api_id = c.api_id
+					<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+							c.company_code_id
+							<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchPubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+		            join com_company_profile company on c.company_code_id = company.company_code_id
+		        ) b
+		        on a.app_id = b.app_id
+		        and a.api_id = b.api_id
+		        group by a.app_id
+		    ) a,
+		    (
+		        select  sum(a.cnt_api_duration) as tot_api_duration
+		        from(
+		            select  a.std_date,
+		                    a.app_id, 
+		                    a.api_id,
+		                    sum(a.cnt_api_duration) as cnt_api_duration
+		            from $searchTable$ a
+                    where 1=1
+                    $searchTableCondition$
+		            group by a.std_date, a.app_id, a.api_id
+		        ) a
+		        join (
+		            select  a.app_id, a.api_id,
+		                    company.company_code_id
+		            from(
+		                select  a.app_id,
+		                        a.api_id,
+		                        a.api_plan_id
+		                from com_app_apilist_view a
+		                join com_app_view b on a.app_id = b.app_id
+						<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+							<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+								b.company_code_id
+								<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+									#searchSubCompanyCodeId[]#
+								</iterate>
+							</isNotEqual>
+						</isNotEmpty>
+		                join com_app_info c on a.app_id = c.app_id
+		                join com_company_profile company on b.company_code_id = company.company_code_id
+		            ) a
+		            join com_api_view b on a.api_id = b.api_id
+		            join com_api_info c on a.api_id = c.api_id
+					<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+							c.company_code_id
+							<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchPubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+		            join com_company_profile company on c.company_code_id = company.company_code_id
+		        ) b
+		        on a.app_id = b.app_id
+		        and a.api_id = b.api_id
+		    ) b
+		) a
+		join com_app_view b on a.app_id = b.app_id
+		join com_app_info c on a.app_id = c.app_id
+		order by cntApiDuration desc, c.exposure_order asc, b.app_name asc
+		limit 10
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptMainDAO.selectMainStatsTrafficPlanTraffic
+     * @Method description : 사용 Plan 별 트래픽 현황(요약) 조회
+     * @param              : AptMainVO
+     * @return             : java.util.HashMap
+     * @throws             : Exception
+     -->
+    <select id="apt.AptMainDAO.selectMainStatsTrafficPlanTraffic" parameterClass="AptMainVO" resultClass="java.util.HashMap" remapResults="true">
+		select  a.api_plan_id                   as apiPlanId,
+		        a.plan_name                     as planName,
+		        ifnull(b.cnt_api_duration, 0)   as cntApiDuration
+		from(
+		    select  code_extend1 as api_plan_id,
+		            code_name_kor as plan_name,
+		            code_seq
+		    from com_system_code
+		    where system_grp_code = 'G024'
+		    and delete_date is null
+		) a
+		left join(
+		    select  a.api_plan_id,
+		            round(ifnull(a.cnt_api_duration, 0) / ifnull(b.tot_api_duration, 0) * 100) as cnt_api_duration
+		    from(
+		        select  b.api_plan_id,
+		                sum(a.cnt_api_duration) as cnt_api_duration
+		        from(
+		            select  a.std_date,
+		                    a.app_id, 
+		                    a.api_id,
+		                    sum(a.cnt_api_duration) as cnt_api_duration
+		            from $searchTable$ a
+                    where 1=1
+                    $searchTableCondition$
+		            group by a.std_date, a.app_id, a.api_id
+		        ) a
+		        join (
+		            select  a.app_id, a.api_id,
+		                    a.api_plan_id
+		            from(
+		                select  a.app_id,
+		                        a.api_id,
+		                        a.api_plan_id
+		                from com_app_apilist_view a
+		                join com_app_view b on a.app_id = b.app_id
+						<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+							<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+								b.company_code_id
+								<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+									#searchSubCompanyCodeId[]#
+								</iterate>
+							</isNotEqual>
+						</isNotEmpty>
+		                join com_app_info c on a.app_id = c.app_id
+		                join com_company_profile company on b.company_code_id = company.company_code_id
+		            ) a
+		            join com_api_view b on a.api_id = b.api_id
+		            join com_api_info c on a.api_id = c.api_id
+					<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+							c.company_code_id
+							<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchPubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+		            join com_company_profile company on c.company_code_id = company.company_code_id
+		        ) b
+		        on a.app_id = b.app_id
+		        and a.api_id = b.api_id
+		        group by b.api_plan_id
+		    ) a,
+		    (
+		        select  sum(a.cnt_api_duration) as tot_api_duration
+		        from(
+		            select  a.std_date,
+		                    a.app_id, 
+		                    a.api_id,
+		                    sum(a.cnt_api_duration) as cnt_api_duration
+		            from $searchTable$ a
+                    where 1=1
+                    $searchTableCondition$
+		            group by a.std_date, a.app_id, a.api_id
+		        ) a
+		        join (
+		            select  a.app_id, a.api_id,
+		                    a.api_plan_id
+		            from(
+		                select  a.app_id,
+		                        a.api_id,
+		                        a.api_plan_id
+		                from com_app_apilist_view a
+		                join com_app_view b on a.app_id = b.app_id
+						<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+							<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+								b.company_code_id
+								<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+									#searchSubCompanyCodeId[]#
+								</iterate>
+							</isNotEqual>
+						</isNotEmpty>
+		                join com_app_info c on a.app_id = c.app_id
+		                join com_company_profile company on b.company_code_id = company.company_code_id
+		            ) a
+		            join com_api_view b on a.api_id = b.api_id
+		            join com_api_info c on a.api_id = c.api_id
+					<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+							c.company_code_id
+							<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchPubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+		            join com_company_profile company on c.company_code_id = company.company_code_id
+		        ) b
+		        on a.app_id = b.app_id
+		        and a.api_id = b.api_id
+		    ) b
+		) b on a.api_plan_id = b.api_plan_id
+		order by cntApiDuration desc, a.code_seq asc, a.plan_name asc
+		limit 10
+    </select>
+    
+    <!--
+     *************************************************************************************************
+     * API 트래픽 현황 end
+     *************************************************************************************************
+    -->
+    
+    <!--
+     *************************************************************************************************
+     * API 트래픽 상세 현황 start
+     *************************************************************************************************
+    -->
+    
+    <!--
+     * @Method Name        : apt.AptMainDAO.selectMainStatsTrafficDtlReqCnt
+     * @Method description : API 트래픽 요약 - 요청 Count 조회
+     * @param              : AptMainVO
+     * @return             : java.util.HashMap
+     * @throws             : Exception
+     -->
+    <select id="apt.AptMainDAO.selectMainStatsTrafficDtlReqCnt" parameterClass="AptMainVO" resultClass="java.util.HashMap" remapResults="true">
+        select  a.std_date                              as stdDate,
+                a.Date                                  as Date,
+                ifnull(b.cnt_api_duration_total, 0)     as cntApiDurationTotal
+                $sql1$
+        from(
+            <include refid="searchDayStd"/>
+        ) a
+        left join (
+            select  a.std_date,
+                    sum(a.cnt_api_duration) as cnt_api_duration_total
+                    $sql2$
+            from(
+                select  a.std_date,
+                        a.app_id, 
+                        a.api_id,
+                        sum(a.cnt_api_duration) as cnt_api_duration
+                from $searchTable$ a
+                where 1=1
+                $searchTableCondition$
+                group by a.std_date, a.app_id, a.api_id
+            ) a
+            join (
+                select  a.app_id, a.api_id,
+                        c.api_category
+                from(
+                    select  a.app_id,
+                            a.api_id,
+                            a.api_plan_id
+                    from com_app_apilist_view a
+                    join com_app_view b on a.app_id = b.app_id
+					<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+							b.company_code_id
+							<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchSubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+                    join com_app_info c on a.app_id = c.app_id
+                    join com_company_profile company on b.company_code_id = company.company_code_id
+					and company.exposure_yn = 'Y'
+                ) a
+                join com_api_view b on a.api_id = b.api_id
+                join com_api_info c on a.api_id = c.api_id
+				<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+					<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+						c.company_code_id
+						<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+							#searchPubCompanyCodeId[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+                join com_company_profile company on c.company_code_id = company.company_code_id
+				and company.exposure_yn = 'Y'
+            ) b
+            on a.app_id = b.app_id
+            and a.api_id = b.api_id
+            group by a.std_date
+        ) b
+        on a.std_date = b.std_date
+        order by a.std_date asc    
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptMainDAO.selectMainStatsTrafficDtlAvgTime
+     * @Method description : API 트래픽 요약 - 평균 Time 조회
+     * @param              : AptMainVO
+     * @return             : java.util.HashMap
+     * @throws             : Exception
+     -->
+    <select id="apt.AptMainDAO.selectMainStatsTrafficDtlAvgTime" parameterClass="AptMainVO" resultClass="java.util.HashMap" remapResults="true">
+        select  a.std_date                              as stdDate,
+                a.Date                                  as Date,
+                round(ifnull(round(ifnull(b.avg_api_duration_total, 0) / ifnull(b.cnt_api_duration_total, 0), 3), 0), 2) as avgApiDurationTotal
+                $sql1$
+        from(
+            <include refid="searchDayStd"/>
+        ) a
+        left join (
+            select  a.std_date,
+                    sum(a.cnt_api_duration) as cnt_api_duration_total,
+                    sum(a.avg_api_duration) as avg_api_duration_total,
+					sum(a.cnt_cnt) as cnt_sum
+                    $sql2$
+            from(
+                select  a.std_date,
+                        a.app_id, 
+                        a.api_id,
+						count(a.cnt_api_duration) as cnt_cnt,
+                        sum(a.cnt_api_duration) as cnt_api_duration,
+						sum(round((CASE WHEN a.response_result_yn = 'Y' THEN a.avg_api_duration ELSE 0 END),3)*(case when a.response_result_yn = 'Y' then a.cnt_api_duration else 0 end)) +
+						sum(round((CASE WHEN a.response_result_yn = 'N' THEN a.avg_api_duration ELSE 0 END),3)*(case when a.response_result_yn = 'N' then a.cnt_api_duration else 0 end)) +
+						sum(round((CASE WHEN a.response_result_yn = 'Y' THEN a.avg_sif_duration ELSE 0 END),3)*(case when a.response_result_yn = 'Y' then a.cnt_sif_duration else 0 end)) +
+						sum(round((CASE WHEN a.response_result_yn = 'N' THEN a.avg_sif_duration ELSE 0 END),3)*(case when a.response_result_yn = 'N' then a.cnt_sif_duration else 0 end)) as avg_api_duration
+                from $searchTable$ a
+                where 1=1
+                $searchTableCondition$
+                group by a.std_date, a.app_id, a.api_id
+            ) a
+            join (
+                select  a.app_id, a.api_id,
+                        c.api_category
+                from(
+                    select  a.app_id,
+                            a.api_id,
+                            a.api_plan_id
+                    from com_app_apilist_view a
+                    join com_app_view b on a.app_id = b.app_id
+					<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+							b.company_code_id
+							<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchSubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+                    join com_app_info c on a.app_id = c.app_id
+                    join com_company_profile company on b.company_code_id = company.company_code_id
+					and company.exposure_yn = 'Y'
+                ) a
+                join com_api_view b on a.api_id = b.api_id
+                join com_api_info c on a.api_id = c.api_id
+				<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+					<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+						c.company_code_id
+						<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+							#searchPubCompanyCodeId[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+                join com_company_profile company on c.company_code_id = company.company_code_id
+				and company.exposure_yn = 'Y'
+            ) b
+            on a.app_id = b.app_id
+            and a.api_id = b.api_id
+            group by a.std_date
+        ) b
+        on a.std_date = b.std_date
+        order by a.std_date asc    
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptMainDAO.selectMainStatsTrafficDtlAccList
+     * @Method description : API 트래픽 현황 - 누적 조회
+     * @param              : AptMainVO
+     * @return             : java.util.HashMap
+     * @throws             : Exception
+     -->
+    <select id="apt.AptMainDAO.selectMainStatsTrafficDtlAccList" parameterClass="AptMainVO" resultClass="java.util.HashMap">
+		select  ifnull(a.cntApiDurationTotal, 0)    as cntApiDurationTotal_1,
+		        ifnull(a.cntApiDurationY, 0)        as cntApiDurationY_1,
+		        ifnull(a.cntApiDurationN, 0)        as cntApiDurationN_1,
+		        ifnull(b.cntApiDurationTotal, 0)    as cntApiDurationTotal_2,
+		        ifnull(b.cntApiDurationY, 0)        as cntApiDurationY_2,
+		        ifnull(b.cntApiDurationN, 0)        as cntApiDurationN_2
+		from(
+		    /* 누적 */
+		    select  sum(a.cnt_api_duration) as cntApiDurationTotal,
+		            sum(case when a.response_result_yn = 'Y' then a.cnt_api_duration else 0 end) as cntApiDurationY,
+		            sum(case when a.response_result_yn = 'N' then a.cnt_api_duration else 0 end) as cntApiDurationN
+		    from(
+		        select  a.std_date,
+		                a.app_id,
+		                a.api_id,
+		                a.cnt_api_duration,
+		                a.response_result_yn
+		        from adm_api_traffic_daily a
+		        where a.std_date between #searchDateTimeFrom# and #searchDateTimeTo#
+		    ) a
+		    join (
+		        select  a.app_id, a.api_id,
+		                c.api_category
+		        from(
+		            select  a.app_id,
+		                    a.api_id,
+		                    a.api_plan_id
+		            from com_app_apilist_view a
+		            join com_app_view b on a.app_id = b.app_id
+					<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+							b.company_code_id
+							<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchSubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+		            join com_app_info c on a.app_id = c.app_id
+		            join com_company_profile company on b.company_code_id = company.company_code_id
+					and company.exposure_yn = 'Y'
+		        ) a
+		        join com_api_view b on a.api_id = b.api_id
+		        join com_api_info c on a.api_id = c.api_id
+				<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+					<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+						c.company_code_id
+						<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+							#searchPubCompanyCodeId[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+		        join com_company_profile company on c.company_code_id = company.company_code_id
+				and company.exposure_yn = 'Y'
+		    ) b
+		    on a.app_id = b.app_id
+		    and a.api_id = b.api_id
+		) a,
+		(
+		    /* 전일 */
+		    select  sum(a.cnt_api_duration) as cntApiDurationTotal,
+		            sum(case when a.response_result_yn = 'Y' then a.cnt_api_duration else 0 end) as cntApiDurationY,
+		            sum(case when a.response_result_yn = 'N' then a.cnt_api_duration else 0 end) as cntApiDurationN
+		    from(
+		        select  a.std_date,
+		                a.app_id,
+		                a.api_id,
+		                a.cnt_api_duration,
+		                a.response_result_yn
+		        from adm_api_traffic_daily a
+		        where a.std_date = date_format(str_to_date(replace(#searchDateTimeTo#, '-', ''), '%Y%m%d') - INTERVAL 1 DAY, '%Y%m%d')
+		    ) a
+		    join (
+		        select  a.app_id, a.api_id,
+		                c.api_category
+		        from(
+		            select  a.app_id,
+		                    a.api_id,
+		                    a.api_plan_id
+		            from com_app_apilist_view a
+		            join com_app_view b on a.app_id = b.app_id
+					<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+							b.company_code_id
+							<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchSubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+		            join com_app_info c on a.app_id = c.app_id
+		            join com_company_profile company on b.company_code_id = company.company_code_id
+					and company.exposure_yn = 'Y'
+		        ) a
+		        join com_api_view b on a.api_id = b.api_id
+		        join com_api_info c on a.api_id = c.api_id
+				<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+					<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+						c.company_code_id
+						<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+							#searchPubCompanyCodeId[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+		        join com_company_profile company on c.company_code_id = company.company_code_id
+				and company.exposure_yn = 'Y'
+		    ) b
+		    on a.app_id = b.app_id
+		    and a.api_id = b.api_id
+		) b        
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptMainDAO.selectMainStatsTrafficDtlSvcCategoryList
+     * @Method description : API 트래픽 현황 - 개별(API 서비스 구분) 조회
+     * @param              : AptMainVO
+     * @return             : java.util.HashMap
+     * @throws             : Exception
+     -->
+    <select id="apt.AptMainDAO.selectMainStatsTrafficDtlSvcCategoryList" parameterClass="AptMainVO" resultClass="java.util.HashMap">
+		select  a.api_category                      as apiCategory,
+		        a.api_category_name                 as apiCategoryName,
+		        ifnull(b.cnt_api_duration_acc, 0)   as cntApiDurationAcc,
+		        ifnull(b.cnt_api_duration_yday, 0)  as cntApiDurationYday
+		from(
+		    select  concat(system_grp_code, system_code) as api_category,
+		            code_name_kor                        as api_category_name,
+		            code_seq
+		    from com_system_code
+		    where system_grp_code = 'G026'
+		    and delete_date is null
+		) a
+		left join(
+		    select  a.api_category,
+		            ifnull(a.cnt_api_duration, 0) as cnt_api_duration_acc,
+		            ifnull(b.cnt_api_duration, 0) as cnt_api_duration_yday
+		    from(
+		        /* 누적 */
+		        select  b.api_category              as api_category,
+		                sum(a.cnt_api_duration)     as cnt_api_duration
+		        from(
+		            select  a.std_date,
+		                    a.app_id,
+		                    a.api_id,
+		                    a.cnt_api_duration,
+		                    a.response_result_yn
+		            from adm_api_traffic_daily a
+		            where a.std_date between #searchDateTimeFrom# and #searchDateTimeTo#
+		        ) a
+		        join (
+		            select  a.app_id, a.api_id,
+		                    c.api_category
+		            from(
+		                select  a.app_id,
+		                        a.api_id,
+		                        a.api_plan_id
+		                from com_app_apilist_view a
+		                join com_app_view b on a.app_id = b.app_id
+						<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+							<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+								b.company_code_id
+								<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+									#searchSubCompanyCodeId[]#
+								</iterate>
+							</isNotEqual>
+						</isNotEmpty>
+		                join com_app_info c on a.app_id = c.app_id
+		                join com_company_profile company on b.company_code_id = company.company_code_id
+						and company.exposure_yn = 'Y'
+		            ) a
+		            join com_api_view b on a.api_id = b.api_id
+		            join com_api_info c on a.api_id = c.api_id
+					<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+							c.company_code_id
+							<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchPubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+		            join com_company_profile company on c.company_code_id = company.company_code_id
+					and company.exposure_yn = 'Y'
+		        ) b
+		        on a.app_id = b.app_id
+		        and a.api_id = b.api_id
+		        group by b.api_category
+		    ) a
+		    left join(
+		        /* 전일 */
+		        select  b.api_category              as api_category,
+		                sum(a.cnt_api_duration)     as cnt_api_duration
+		        from(
+		            select  a.std_date,
+		                    a.app_id,
+		                    a.api_id,
+		                    a.cnt_api_duration,
+		                    a.response_result_yn
+		            from adm_api_traffic_daily a
+		            where a.std_date = date_format(str_to_date(replace(#searchDateTimeTo#, '-', ''), '%Y%m%d') - INTERVAL 1 DAY, '%Y%m%d')
+		        ) a
+		        join (
+		            select  a.app_id, a.api_id,
+		                    c.api_category
+		            from(
+		                select  a.app_id,
+		                        a.api_id,
+		                        a.api_plan_id
+		                from com_app_apilist_view a
+		                join com_app_view b on a.app_id = b.app_id
+						<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+							<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+								b.company_code_id
+								<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+									#searchSubCompanyCodeId[]#
+								</iterate>
+							</isNotEqual>
+						</isNotEmpty>
+		                join com_app_info c on a.app_id = c.app_id
+		                join com_company_profile company on b.company_code_id = company.company_code_id
+						and company.exposure_yn = 'Y'
+		            ) a
+		            join com_api_view b on a.api_id = b.api_id
+		            join com_api_info c on a.api_id = c.api_id
+					<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+							c.company_code_id
+							<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchPubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+		            join com_company_profile company on c.company_code_id = company.company_code_id
+					and company.exposure_yn = 'Y'
+		        ) b
+		        on a.app_id = b.app_id
+		        and a.api_id = b.api_id
+		        group by b.api_category
+		    ) b
+		    on a.api_category = b.api_category
+		) b
+		on a.api_category = b.api_category
+		order by a.code_seq    
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptMainDAO.selectMainStatsTrafficDtlSvcSubcompanyList
+     * @Method description : API 트래픽 현황 - 개별(API 서비스  제공자) 조회
+     * @param              : AptMainVO
+     * @return             : java.util.HashMap
+     * @throws             : Exception
+     -->
+    <select id="apt.AptMainDAO.selectMainStatsTrafficDtlSvcSubcompanyList" parameterClass="AptMainVO" resultClass="java.util.HashMap">
+		select  a.company_code_id                   as companyCodeId,
+		        a.company_name_kor_alias            as companyName,
+		        ifnull(b.cnt_api_duration_acc, 0)   as cntApiDurationAcc,
+		        ifnull(b.cnt_api_duration_yday, 0)  as cntApiDurationYday
+		from(
+		    select  company_code_id,
+		            company_name_kor_alias,
+		            exposure_order
+		    from com_company_profile
+		    where delete_date is null
+		    and company_service_type in ('G002001', 'G002002')
+			and exposure_yn = 'Y'
+		) a
+		left join (
+		    select  a.company_code_id,
+		            ifnull(a.cnt_api_duration, 0) as cnt_api_duration_acc,
+		            ifnull(b.cnt_api_duration, 0) as cnt_api_duration_yday
+		    from (
+		        /* 누적 */
+		        select  b.company_code_id           as company_code_id,
+		                sum(a.cnt_api_duration)     as cnt_api_duration
+		        from(
+		            select  a.std_date,
+		                    a.app_id,
+		                    a.api_id,
+		                    a.cnt_api_duration,
+		                    a.response_result_yn
+		            from adm_api_traffic_daily a
+		            where a.std_date between #searchDateTimeFrom# and #searchDateTimeTo#
+		        ) a
+		        join (
+		            select  a.app_id, a.api_id,
+		                    company.company_code_id
+		            from(
+		                select  a.app_id,
+		                        a.api_id,
+		                        a.api_plan_id
+		                from com_app_apilist_view a
+		                join com_app_view b on a.app_id = b.app_id
+						<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+							<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+								b.company_code_id
+								<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+									#searchSubCompanyCodeId[]#
+								</iterate>
+							</isNotEqual>
+						</isNotEmpty>
+		                join com_app_info c on a.app_id = c.app_id
+		                join com_company_profile company on b.company_code_id = company.company_code_id
+		            ) a
+		            join com_api_view b on a.api_id = b.api_id
+		            join com_api_info c on a.api_id = c.api_id
+					<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+							c.company_code_id
+							<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchPubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+		            join com_company_profile company on c.company_code_id = company.company_code_id
+		        ) b
+		        on a.app_id = b.app_id
+		        and a.api_id = b.api_id
+		        group by b.company_code_id
+		    ) a 
+		    left join(
+		        /* 전일 */
+		        select  b.company_code_id           as company_code_id,
+		                sum(a.cnt_api_duration)     as cnt_api_duration
+		        from(
+		            select  a.std_date,
+		                    a.app_id,
+		                    a.api_id,
+		                    a.cnt_api_duration,
+		                    a.response_result_yn
+		            from adm_api_traffic_daily a
+		            where a.std_date = date_format(str_to_date(replace(#searchDateTimeTo#, '-', ''), '%Y%m%d') - INTERVAL 1 DAY, '%Y%m%d')
+		        ) a
+		        join (
+		            select  a.app_id, a.api_id,
+		                    company.company_code_id
+		            from(
+		                select  a.app_id,
+		                        a.api_id,
+		                        a.api_plan_id
+		                from com_app_apilist_view a
+		                join com_app_view b on a.app_id = b.app_id
+						<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+							<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+								b.company_code_id
+								<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+									#searchSubCompanyCodeId[]#
+								</iterate>
+							</isNotEqual>
+						</isNotEmpty>
+		                join com_app_info c on a.app_id = c.app_id
+		                join com_company_profile company on b.company_code_id = company.company_code_id
+		            ) a
+		            join com_api_view b on a.api_id = b.api_id
+		            join com_api_info c on a.api_id = c.api_id
+					<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+							c.company_code_id
+							<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchPubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+		            join com_company_profile company on c.company_code_id = company.company_code_id
+		        ) b
+		        on a.app_id = b.app_id
+		        and a.api_id = b.api_id
+		        group by b.company_code_id
+		    ) b
+		    on a.company_code_id = b.company_code_id
+		) b
+		on a.company_code_id = b.company_code_id
+		order by a.exposure_order asc, a.company_name_kor_alias    
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptMainDAO.selectMainStatsTrafficDtlSvcPubcompanyList
+     * @Method description : API 트래픽 현황 - 개별(핀테크 앱) 조회
+     * @param              : AptMainVO
+     * @return             : java.util.HashMap
+     * @throws             : Exception
+     -->
+    <select id="apt.AptMainDAO.selectMainStatsTrafficDtlSvcPubcompanyList" parameterClass="AptMainVO" resultClass="java.util.HashMap">
+		select  a.company_code_id                   as companyCodeId,
+		        a.company_name_kor_alias            as companyName,
+		        ifnull(b.cnt_api_duration_acc, 0)   as cntApiDurationAcc,
+		        ifnull(b.cnt_api_duration_yday, 0)  as cntApiDurationYday
+		from(
+		    select  company_code_id,
+		            company_name_kor_alias,
+		            exposure_order
+		    from com_company_profile
+		    where delete_date is null
+		    and company_service_type in ('G002001', 'G002003')
+			and exposure_yn = 'Y'
+		) a
+		left join (
+		    select  a.company_code_id,
+		            ifnull(a.cnt_api_duration, 0) as cnt_api_duration_acc,
+		            ifnull(b.cnt_api_duration, 0) as cnt_api_duration_yday
+		    from (
+		        /* 누적 */
+		        select  b.company_code_id           as company_code_id,
+		                sum(a.cnt_api_duration)     as cnt_api_duration
+		        from(
+		            select  a.std_date,
+		                    a.app_id,
+		                    a.api_id,
+		                    a.cnt_api_duration,
+		                    a.response_result_yn
+		            from adm_api_traffic_daily a
+		            where a.std_date between #searchDateTimeFrom# and #searchDateTimeTo#
+		        ) a
+		        join (
+		            select  a.app_id, a.api_id,
+		                    a.company_code_id
+		            from(
+		                select  a.app_id,
+		                        a.api_id,
+		                        a.api_plan_id,
+		                        b.company_code_id
+		                from com_app_apilist_view a
+		                join com_app_view b on a.app_id = b.app_id
+						<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+							<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+								b.company_code_id
+								<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+									#searchSubCompanyCodeId[]#
+								</iterate>
+							</isNotEqual>
+						</isNotEmpty>
+		                join com_app_info c on a.app_id = c.app_id
+		                join com_company_profile company on b.company_code_id = company.company_code_id
+		            ) a
+		            join com_api_view b on a.api_id = b.api_id
+		            join com_api_info c on a.api_id = c.api_id
+					<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+							c.company_code_id
+							<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchPubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+		            join com_company_profile company on c.company_code_id = company.company_code_id
+		        ) b
+		        on a.app_id = b.app_id
+		        and a.api_id = b.api_id
+		        group by b.company_code_id
+		    ) a 
+		    left join(
+		        /* 전일 */
+		        select  b.company_code_id           as company_code_id,
+		                sum(a.cnt_api_duration)     as cnt_api_duration
+		        from(
+		            select  a.std_date,
+		                    a.app_id,
+		                    a.api_id,
+		                    a.cnt_api_duration,
+		                    a.response_result_yn
+		            from adm_api_traffic_daily a
+		            where a.std_date = date_format(str_to_date(replace(#searchDateTimeTo#, '-', ''), '%Y%m%d') - INTERVAL 1 DAY, '%Y%m%d')
+		        ) a
+		        join (
+		            select  a.app_id, a.api_id,
+		                    a.company_code_id
+		            from(
+		                select  a.app_id,
+		                        a.api_id,
+		                        a.api_plan_id,
+		                        b.company_code_id
+		                from com_app_apilist_view a
+		                join com_app_view b on a.app_id = b.app_id
+						<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+							<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+								b.company_code_id
+								<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+									#searchSubCompanyCodeId[]#
+								</iterate>
+							</isNotEqual>
+						</isNotEmpty>
+		                join com_app_info c on a.app_id = c.app_id
+		                join com_company_profile company on b.company_code_id = company.company_code_id
+		            ) a
+		            join com_api_view b on a.api_id = b.api_id
+		            join com_api_info c on a.api_id = c.api_id
+					<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+							c.company_code_id
+							<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchPubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+		            join com_company_profile company on c.company_code_id = company.company_code_id
+		        ) b
+		        on a.app_id = b.app_id
+		        and a.api_id = b.api_id
+		        group by b.company_code_id
+		    ) b
+		    on a.company_code_id = b.company_code_id
+		) b
+		on a.company_code_id = b.company_code_id
+		order by a.exposure_order asc, a.company_name_kor_alias    
+    </select>
+    
+    <!--
+     *************************************************************************************************
+     * API 트래픽 상세 현황 end
+     *************************************************************************************************
+    -->
+        
+    <!--
+     *************************************************************************************************
+     * 회원가입 및 서비스 연결 현황 start
+     *************************************************************************************************
+    -->
+    
+    <!--
+     * @Method Name        : apt.AptMainDAO.selectMainStatsServiceUserService
+     * @Method description : 회원 가입 및 서비스 연결 현황 요약 조회
+     * @param              : AptMainVO
+     * @return             : java.util.HashMap
+     * @throws             : Exception
+     -->
+    <select id="apt.AptMainDAO.selectMainStatsServiceUserService" parameterClass="AptMainVO" resultClass="java.util.HashMap" remapResults="true">
+		select  a.std_date                      as stdDate,
+		        a.Date                          as Date,
+		        ifnull(b.user_cnt, 0)           as userCnt,
+		        ifnull(c.service_cnt, 0)        as serviceCnt
+		from(
+		    /* 구조 */
+		    <include refid="searchDayStdForService"/>
+		) a
+		left join (
+		    /* 회원가입 data */
+		    select  a.std_date,
+		            count(*) as user_cnt
+		    from(        
+		        select  a.customer_reg_no,
+		                a.customer_reg_status as reg_status
+		                $sql1$
+		        from spt_customer_info_profile a
+		        where a.customer_reg_status not in ('G005004') 
+		        and a.customer_step = 'G006005'   /* 완료까지 간 사용자만 */
+		        $searchTableCondition1$
+		        union all
+		        select  a.operator_profile_reg_no,
+		                a.operator_reg_status as reg_status
+		                $sql1$
+		        from com_company_operator_profile a
+		        join com_company_profile b on a.company_profile_reg_no = b.company_profile_reg_no
+		        where a.operator_reg_status not in ('G005004')
+		        $searchTableCondition1$
+		    ) a
+		    group by a.std_date
+		) b on a.std_date = b.std_date
+		left join (
+			/* 서비스 가입 data */
+			select  a.std_date,
+			        count(*) as service_cnt
+			from(
+			    select  a.*
+			    from(
+			        select  a.*, b.std_date
+			        from(
+			            select  a.customer_reg_no,
+			                    a.service_reg_no,
+			                    a.terms_reg_no,
+			                    a.app_id,
+			                    b.company_code_id as subcompany_code_id
+			            from (
+			                select *
+			                from spt_customer_service_profile
+			                where delete_date is null
+			                and terms_reg_no is not null   
+			            ) a
+			            join com_app_view b on a.app_id = b.app_id
+			        ) a
+			        join (
+			            select  a.customer_reg_no,
+			                    a.terms_reg_no,
+			                    a.subcompany_code_id
+			                    $sql2$
+			            from spt_customer_service_terms_profile a
+			            where a.delete_date is null
+			            and a.terms_auth_yn = 'N'   /* 동의완료 */
+			            $searchTableCondition2$
+			        ) b
+			        on a.customer_reg_no = b.customer_reg_no
+			        and a.terms_reg_no = b.terms_reg_no
+			        and a.subcompany_code_id = b.subcompany_code_id
+			    ) a
+			    join com_company_profile b on a.subcompany_code_id = b.company_code_id 
+			    join com_app_info c on a.app_id = c.app_id
+			) a
+			group by a.std_date 		       
+		) c on a.std_date = c.std_date
+		order by a.std_date		 
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptMainDAO.selectMainStatsServiceUserAccount
+     * @Method description : 가상계좌 발급 회원 현황(요약) 조회
+     * @param              : AptMainVO
+     * @return             : java.util.HashMap
+     * @throws             : Exception
+     -->
+    <select id="apt.AptMainDAO.selectMainStatsServiceUserAccount" parameterClass="AptMainVO" resultClass="java.util.HashMap" remapResults="true">
+		select  a.company_code_id           as companyCodeId,
+		        b.company_name_kor_alias    as companyName,
+		        ifnull(a.company_avg, 0)    as companyAvg
+		from(
+		    select  a.company_code_id,
+		            round(ifnull(a.company_cnt, 0) / ifnull(b.total_cnt, 0) * 100) as company_avg
+		    from(
+		        select  a.company_code_id,
+		                count(*) as company_cnt
+		        from spt_customer_account_profile a
+		        join com_company_profile b on a.company_code_id = b.company_code_id
+		        and b.exposure_yn = 'Y'
+		        where a.customer_vtaccount_expire_date is null
+		        and a.customer_vtaccount_status = 'G009002'     /* 사용 */
+		        $searchTableCondition1$
+		        group by a.company_code_id
+		    ) a,
+		    (
+		        select  count(*) as total_cnt
+		        from spt_customer_account_profile a
+		        join com_company_profile b on a.company_code_id = b.company_code_id
+		        and b.exposure_yn = 'Y'
+		        where a.customer_vtaccount_expire_date is null
+		        and a.customer_vtaccount_status = 'G009002'     /* 사용 */
+		        $searchTableCondition1$
+		    ) b
+		) a    
+		left join com_company_profile b on a.company_code_id = b.company_code_id
+		order by b.exposure_order asc, b.company_name_kor_alias asc    
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptMainDAO.selectMainStatsServiceUserApp
+     * @Method description : 핀테크 앱 연결 회원 현황(요약) 조회
+     * @param              : AptMainVO
+     * @return             : java.util.HashMap
+     * @throws             : Exception
+     -->
+    <select id="apt.AptMainDAO.selectMainStatsServiceUserApp" parameterClass="AptMainVO" resultClass="java.util.HashMap" remapResults="true">
+		select  a.app_id                as appId,
+		        a.app_name              as appName,
+		        ifnull(a.app_avg, 0)    as appAvg
+		from(
+		    select  a.app_id,
+		            a.app_name,
+		            round(ifnull(a.app_cnt, 0) / ifnull(b.app_total_cnt, 0) * 100) as app_avg
+		    from(
+		        select  a.app_id,
+		                a.app_name,
+		                count(*) as app_cnt
+		        from(
+		            select  a.customer_reg_no,
+		                    a.service_reg_no,
+		                    a.terms_reg_no,
+		                    a.app_id,
+		                    b.app_name,
+		                    b.company_code_id as subcompany_code_id
+		            from (
+		                select *
+		                from spt_customer_service_profile
+		                where delete_date is null
+		                and terms_reg_no is not null   
+		            ) a
+		            join com_app_view b on a.app_id = b.app_id
+		        ) a
+		        join (
+		            select  a.customer_reg_no,
+		                    a.terms_reg_no,
+		                    a.subcompany_code_id
+		            from spt_customer_service_terms_profile a
+		            where a.delete_date is null
+		            and a.terms_auth_yn = 'N'   /* 동의완료 */
+		            $searchTableCondition2$
+		        ) b
+		        on a.customer_reg_no = b.customer_reg_no
+		        and a.terms_reg_no = b.terms_reg_no
+		        and a.subcompany_code_id = b.subcompany_code_id
+		       	join com_company_profile c on c.company_code_id = b.subcompany_code_id
+		        and c.exposure_yn = 'Y'
+		        group by a.app_id, a.app_name
+		    ) a,
+		    (
+		        select  count(*) as app_total_cnt
+		        from(
+		            select  a.customer_reg_no,
+		                    a.service_reg_no,
+		                    a.terms_reg_no,
+		                    a.app_id,
+		                    b.app_name,
+		                    b.company_code_id as subcompany_code_id
+		            from (
+		                select *
+		                from spt_customer_service_profile
+		                where delete_date is null
+		                and terms_reg_no is not null   
+		            ) a
+		            join com_app_view b on a.app_id = b.app_id
+		        ) a
+		        join (
+		            select  a.customer_reg_no,
+		                    a.terms_reg_no,
+		                    a.subcompany_code_id
+		            from spt_customer_service_terms_profile a
+		            where a.delete_date is null
+		            and a.terms_auth_yn = 'N'   /* 동의완료 */
+		            $searchTableCondition2$
+		        ) b
+		        on a.customer_reg_no = b.customer_reg_no
+		        and a.terms_reg_no = b.terms_reg_no
+		        and a.subcompany_code_id = b.subcompany_code_id
+		        join com_company_profile c on c.company_code_id = b.subcompany_code_id
+		        and c.exposure_yn = 'Y'
+		    ) b
+		) a
+		left join com_app_info b on a.app_id = b.app_id
+		order by b.exposure_order asc, a.app_name asc    
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptMainDAO.selectMainStatsServiceSptUserList
+     * @Method description : 금융투자 핀테크 포털 회원 가입 현황 요약 조회
+     * @param              : AptMainVO
+     * @return             : java.util.HashMap
+     * @throws             : Exception
+     -->
+    <select id="apt.AptMainDAO.selectMainStatsServiceSptUserList" parameterClass="AptMainVO" resultClass="java.util.HashMap">
+		select  ifnull(a.customer_cnt, 0) as customerCntAcc,
+		        ifnull(b.customer_cnt, 0) as customerCntYday,
+				ifnull(c.operator_cnt, 0) as operatorCntAcc,
+				ifnull(d.operator_cnt, 0) as operatorCntYday
+		from(
+		    /* 누적 */
+		    select  count(*) as customer_cnt
+		    from spt_customer_info_profile a
+		    where a.customer_reg_status not in ('G005004')
+		    and a.customer_step = 'G006005'   /* 완료까지 간 사용자만 */
+		    and date_format(ifnull(a.update_date, a.create_date), '%Y%m%d') <![CDATA[<=]]> replace(#searchDate#, '-', '')
+		) a,
+		(
+		    /* 전일 */
+		    select  count(*) as customer_cnt
+		    from spt_customer_info_profile a
+		    where a.customer_reg_status not in ('G005004')
+		    and a.customer_step = 'G006005'   /* 완료까지 간 사용자만 */
+		    and date_format(ifnull(a.create_date, a.update_date), '%Y%m%d') = date_format(str_to_date(replace(#searchDate#, '-', ''), '%Y%m%d') - INTERVAL 1 DAY, '%Y%m%d')
+		) b ,
+    	(
+		    /* 누적 */
+		    select  count(*) as operator_cnt
+        	from com_company_operator_profile a
+		    where  a.operator_reg_status = 'G005002'   /* 활성화인 기업 회원만 */
+		    and date_format(ifnull(a.update_date, a.create_date), '%Y%m%d') <![CDATA[<=]]> replace(#searchDate#, '-', '')
+		) c,
+		(
+		    /* 전일 */
+		    select  count(*) as operator_cnt
+		    from com_company_operator_profile a
+		    where a.operator_reg_status = 'G005002'   /* 활성화인 기업 회원만 */
+		    and date_format(ifnull(a.update_date, a.create_date), '%Y%m%d') = date_format(str_to_date(replace(#searchDate#, '-', ''), '%Y%m%d') - INTERVAL 1 DAY, '%Y%m%d')
+		) d
+
+
+
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptMainDAO.selectMainStatsServiceCptUserList
+     * @Method description : 기업/금투사 포털 회원 가입 현황 요약 조회
+     * @param              : AptMainVO
+     * @return             : java.util.HashMap
+     * @throws             : Exception
+     -->
+    <select id="apt.AptMainDAO.selectMainStatsServiceCptUserList" parameterClass="AptMainVO" resultClass="java.util.HashMap">
+		select  ifnull(a.operator_cnt_G002001, 0) as operatorCntG002001Acc,
+                ifnull(a.operator_cnt_G002002, 0) as operatorCntG002002Acc,
+                ifnull(a.operator_cnt_G002003, 0) as operatorCntG002003Acc,
+                ifnull(b.operator_cnt_G002001, 0) as operatorCntG002001Yday,
+                ifnull(b.operator_cnt_G002002, 0) as operatorCntG002002Yday,
+                ifnull(b.operator_cnt_G002003, 0) as operatorCntG002003Yday
+		from(
+            /* 누적 */
+            select  1 as join_data,
+                sum(case when a.company_service_type = 'G002001' then a.operator_cnt else 0 end) as operator_cnt_G002001,
+                sum(case when a.company_service_type = 'G002002' then a.operator_cnt else 0 end) as operator_cnt_G002002,
+                sum(case when a.company_service_type = 'G002003' then a.operator_cnt else 0 end) as operator_cnt_G002003
+            from(
+                select  a.company_service_type,
+                        count(1) as operator_cnt
+                from com_company_profile a
+                where date_format(a.create_date, '%Y%m%d') <![CDATA[<=]]> replace(#searchDate#, '-', '')
+                group by a.company_service_type
+            ) a
+		) a
+		left join(
+            /* 전일 */
+            select  1 as join_data,
+                sum(case when a.company_service_type = 'G002001' then a.operator_cnt else 0 end) as operator_cnt_G002001,
+                sum(case when a.company_service_type = 'G002002' then a.operator_cnt else 0 end) as operator_cnt_G002002,
+                sum(case when a.company_service_type = 'G002003' then a.operator_cnt else 0 end) as operator_cnt_G002003
+            from(
+                select  a.company_service_type,
+                        count(*) as operator_cnt
+                from com_company_profile a
+                where date_format(a.create_date, '%Y%m%d') = date_format(str_to_date(replace(#searchDate#, '-', ''), '%Y%m%d') - INTERVAL 1 DAY, '%Y%m%d')
+                group by a.company_service_type
+            ) a
+		) b on a.join_data = b.join_data
+	</select>
+    
+    <!--
+     * @Method Name        : apt.AptMainDAO.selectMainStatsServiceUserAccountList
+     * @Method description : 금융투자 핀테크 포털 회원 가상 계좌 발급 및 서비스 연결 현황 요약 - 가상계좌 조회
+     * @param              : AptMainVO
+     * @return             : java.util.HashMap
+     * @throws             : Exception
+     -->
+    <select id="apt.AptMainDAO.selectMainStatsServiceUserAccountList" parameterClass="AptMainVO" resultClass="java.util.HashMap">
+		select  ifnull(a.account_cnt, 0) as accountCntAcc,
+		        ifnull(b.account_cnt, 0) as accountCntYday
+		from(
+		    /* 누적 */
+		    select  1 as join_data,
+		            count(*) as account_cnt
+		    from spt_customer_account_profile a
+		    join com_company_profile b on a.company_code_id = b.company_code_id
+		    and b.exposure_yn = 'Y'
+		    where a.customer_vtaccount_expire_date is null
+		    and a.customer_vtaccount_status = 'G009002'     /* 사용 */
+		    and date_format(ifnull(a.update_date, a.create_date), '%Y%m%d') <![CDATA[<=]]> replace(#searchDate#, '-', '')
+		) a
+		left join(
+		    /* 전일 */
+		    select  1 as join_data,
+		            count(*) as account_cnt
+		    from spt_customer_account_profile a
+		    join com_company_profile b on a.company_code_id = b.company_code_id
+		    and b.exposure_yn = 'Y'
+		    where a.customer_vtaccount_expire_date is null
+		    and a.customer_vtaccount_status = 'G009002'     /* 사용 */
+		    and date_format(ifnull(a.update_date, a.create_date), '%Y%m%d') = date_format(str_to_date(replace(#searchDate#, '-', ''), '%Y%m%d') - INTERVAL 1 DAY, '%Y%m%d')
+		) b on a.join_data = b.join_data
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptMainDAO.selectMainStatsServiceUserAccountCompanyList
+     * @Method description : 금융투자 핀테크 포털 회원 가상 계좌 발급 및 서비스 연결 현황 요약 - 서비스 제공자 조회
+     * @param              : AptMainVO
+     * @return             : java.util.HashMap
+     * @throws             : Exception
+     -->
+    <select id="apt.AptMainDAO.selectMainStatsServiceUserAccountCompanyList" parameterClass="AptMainVO" resultClass="java.util.HashMap">
+		select  a.company_code_id           as companyCodeId,
+		        c.company_name_kor_alias    as companyName,
+		        ifnull(a.account_cnt, 0)    as accountCntAcc,
+		        ifnull(b.account_cnt, 0)    as accountCntYday
+		from(
+		    /* 누적 */
+		    select  a.company_code_id,
+		            count(*) as account_cnt
+		    from spt_customer_account_profile a
+		    join com_company_profile b on a.company_code_id = b.company_code_id
+		    and b.exposure_yn = 'Y'
+		    where a.customer_vtaccount_expire_date is null
+		    and a.customer_vtaccount_status = 'G009002'     /* 사용 */
+		    and date_format(ifnull(a.update_date, a.create_date), '%Y%m%d') <![CDATA[<=]]> replace(#searchDate#, '-', '')
+		    group by company_code_id
+		) a
+		left join (
+		    /* 전일 */
+		    select  a.company_code_id,
+		            count(*) as account_cnt
+		    from spt_customer_account_profile a
+		    join com_company_profile b on a.company_code_id = b.company_code_id
+		    and b.exposure_yn = 'Y'
+		    where a.customer_vtaccount_expire_date is null
+		    and a.customer_vtaccount_status = 'G009002'     /* 사용 */
+		    and date_format(ifnull(a.update_date, a.create_date), '%Y%m%d') = date_format(str_to_date(replace(#searchDate#, '-', ''), '%Y%m%d') - INTERVAL 1 DAY, '%Y%m%d')
+		    group by company_code_id
+		) b on a.company_code_id = b.company_code_id
+		join com_company_profile c on a.company_code_id = c.company_code_id
+		order by c.exposure_order asc, c.company_name_kor_alias asc    
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptMainDAO.selectMainStatsServiceUserServiceAppList
+     * @Method description : 금융투자 핀테크 포털 회원 가상 계좌 발급 및 서비스 연결 현황 요약 - 앱 개발자 조회
+     * @param              : AptMainVO
+     * @return             : java.util.HashMap
+     * @throws             : Exception
+     -->
+    <select id="apt.AptMainDAO.selectMainStatsServiceUserServiceAppList" parameterClass="AptMainVO" resultClass="java.util.HashMap">
+		select  a.subcompany_code_id          as companyCodeId,
+		        c.company_name_kor_alias      as companyName,
+		        a.app_id                      as appId,
+		        a.app_name                    as appName,
+		        ifnull(a.app_cnt, 0)          as appCntAcc,
+		        ifnull(b.app_cnt, 0)          as appCntYday
+		from(
+		    /* 누계 */
+		    select  a.app_id,
+		            a.app_name,
+		            a.subcompany_code_id,
+		            count(*) as app_cnt
+		    from(
+		        select  a.customer_reg_no,
+		                a.service_reg_no,
+		                a.terms_reg_no,
+		                a.app_id,
+		                b.app_name,
+		                b.company_code_id as subcompany_code_id
+		        from (
+		            select *
+		            from spt_customer_service_profile
+		            where delete_date is null
+		            and terms_reg_no is not null   
+		        ) a
+		        join com_app_view b on a.app_id = b.app_id
+		    ) a
+		    join (
+		        select  a.customer_reg_no,
+		                a.terms_reg_no,
+		                a.subcompany_code_id
+		        from spt_customer_service_terms_profile a
+		        where a.delete_date is null
+		        and a.terms_auth_yn = 'N'   /* 동의완료 */
+		        and date_format(a.terms_chg_date, '%Y%m%d%H') <![CDATA[<=]]> replace(#searchDate#, '-', '')
+		    ) b
+		    on a.customer_reg_no = b.customer_reg_no
+		    and a.terms_reg_no = b.terms_reg_no
+		    and a.subcompany_code_id = b.subcompany_code_id
+		    group by a.app_id, a.app_name, a.subcompany_code_id
+		) a
+		left join (
+		    /* 전일 */
+		    select  a.app_id,
+		            a.app_name,
+		            a.subcompany_code_id,
+		            count(*) as app_cnt
+		    from(
+		        select  a.customer_reg_no,
+		                a.service_reg_no,
+		                a.terms_reg_no,
+		                a.app_id,
+		                b.app_name,
+		                b.company_code_id as subcompany_code_id
+		        from (
+		            select *
+		            from spt_customer_service_profile
+		            where delete_date is null
+		            and terms_reg_no is not null   
+		        ) a
+		        join com_app_view b on a.app_id = b.app_id
+		    ) a
+		    join (
+		        select  a.customer_reg_no,
+		                a.terms_reg_no,
+		                a.subcompany_code_id
+		        from spt_customer_service_terms_profile a
+		        where a.delete_date is null
+		        and a.terms_auth_yn = 'N'   /* 동의완료 */
+		        and date_format(a.terms_chg_date, '%Y%m%d%H') = date_format(str_to_date(replace(#searchDate#, '-', ''), '%Y%m%d') - INTERVAL 1 DAY, '%Y%m%d')
+		    ) b
+		    on a.customer_reg_no = b.customer_reg_no
+		    and a.terms_reg_no = b.terms_reg_no
+		    and a.subcompany_code_id = b.subcompany_code_id
+		    group by a.app_id, a.app_name, a.subcompany_code_id
+		) b
+		on a.app_id = b.app_id
+		and a.subcompany_code_id = b.subcompany_code_id
+		join com_company_profile c on a.subcompany_code_id = c.company_code_id
+		and c.exposure_yn = 'Y'
+		join com_app_info d on a.app_id = d.app_id
+		order by c.exposure_order asc, c.company_name_kor_alias asc, d.exposure_order asc, a.app_name asc    
+    </select>
+
+    <!--
+     *************************************************************************************************
+     * 회원가입 및 서비스 연결 현황 end
+     *************************************************************************************************
+    -->
+</sqlMap>

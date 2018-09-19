@@ -1,0 +1,648 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.sptUsr.service.impl.SptUserManageDAO">
+
+  	<typeAlias alias="SptUserManageVO" type="kr.co.koscom.oppf.apt.sptUsr.service.SptUserManageVO"/>
+  	
+  	<!-- admin 포털 회원 목록 조회조건 -->
+    <sql id="fromWhereAnd">
+        <!-- 구분 -->
+        <isNotEmpty property="searchKeyword">
+            <!-- 이름 -->
+            <isEqual property="searchCondition" compareValue="name" prepend="and">
+                (
+                    a.customer_name_kor like concat('%', #searchKeyword#, '%') or
+                    a.customer_name_eng like concat('%', #searchKeyword#, '%')
+                )
+            </isEqual>
+            <!-- id -->
+            <isEqual property="searchCondition" compareValue="id" prepend="and">
+                a.customer_id like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <!-- 이메일 -->
+            <isEqual property="searchCondition" compareValue="email" prepend="and">
+                dec_char_sel(a.customer_email,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id()) like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <!-- 전체 -->
+            <isEqual property="searchCondition" compareValue="all" prepend="and">
+                (
+                    a.customer_name_kor like concat('%', #searchKeyword#, '%') or
+                    a.customer_name_eng like concat('%', #searchKeyword#, '%') or
+                    a.customer_id like concat('%', #searchKeyword#, '%') or
+                    dec_char_sel(a.customer_email,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id()) like concat('%', #searchKeyword#, '%')
+                )
+            </isEqual>
+        </isNotEmpty>
+                
+        <!-- 계정상태 -->
+        <isNotEmpty property="searchCustomerRegStatus">
+            <isNotEqual property="searchCustomerRegStatus" compareValue="all" prepend="and">
+                a.customer_reg_status = #searchCustomerRegStatus#
+            </isNotEqual>
+        </isNotEmpty>
+        
+        <!-- 조회일 -->
+        <isNotEmpty property="searchDateType">
+            <!-- 등록일 -->
+            <isEqual property="searchDateType" compareValue="create" prepend="and">
+                ifnull(date_format(a.create_date, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '')
+            </isEqual>
+            <!-- 수정일 -->
+            <isEqual property="searchDateType" compareValue="update" prepend="and">
+                ifnull(date_format(a.update_date, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '')
+            </isEqual>
+            <!-- 삭제일 -->
+            <isEqual property="searchDateType" compareValue="delete" prepend="and">
+                ifnull(date_format(a.delete_date, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '')
+            </isEqual>
+        </isNotEmpty>     
+         
+    </sql>
+  	
+	<!--
+     * @Method Name        : apt.SptUserManageDAO.selectSptUserManageList
+     * @Method description : 일반 회원 목록을 조회한다.
+     * @param              : SptUserManageVO
+     * @return             : SptUserManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.SptUserManageDAO.selectSptUserManageList" parameterClass="SptUserManageVO" resultClass="SptUserManageVO">
+		select  a.customer_reg_no           as customerRegNo,
+		        a.customer_id               as customerId,
+		        a.customer_reg_status       as customerRegStatus,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.customer_reg_status           
+		        )                           as customerRegStatusName,
+		        a.customer_step             as customerStep,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.customer_step           
+		        )                           as customerStepName,
+		        a.customer_name_kor         as customerNameKor,
+		        a.customer_name_eng         as customerNameEng,
+		        dec_char_sel(
+		            a.customer_phone,
+		            10,
+		            'ARIA',
+		            'spt_customer_info_profile',
+		            'customer_phone',
+		            user(),
+		            connection_id()
+		        )                           as customerPhone,
+		        dec_char_sel(
+                    a.customer_email,
+                    10,
+                    'ARIA',
+                    'spt_customer_info_profile',
+                    'customer_email',
+                    user(),
+                    connection_id()
+                )                           as customerEmail,
+				case
+					when a.customer_withdrawal_proc_yn = 'Y'
+		 			then '처리' else '' end as customerWithdrawalProcYn,
+		        ifnull(date_format(a.create_date, '%Y-%m-%d %H:%i'), '') as createDate,
+		        ifnull(date_format(a.update_date, '%Y-%m-%d %H:%i'), '') as updateDate,
+		        ifnull(date_format(a.delete_date, '%Y-%m-%d %H:%i'), '') as deleteDate
+		from spt_customer_info_profile a
+		where 1=1
+		<include refid="fromWhereAnd"/>
+		<include refid="CmmnFuncDAO.CmmnPaging"/>
+    </select>
+    
+    <!--
+     * @Method Name        : apt.SptUserManageDAO.selectSptUserManageListCnt
+     * @Method description : 일반 회원 목록의 total cnt를 조회한다.
+     * @param              : SptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="apt.SptUserManageDAO.selectSptUserManageListCnt" parameterClass="SptUserManageVO" resultClass="int">
+        select  count(customer_reg_no) as totalCount
+        from spt_customer_info_profile a
+        where 1=1
+        <include refid="fromWhereAnd"/>
+    </select>
+    
+    <!--
+     * @Method Name        : apt.SptUserManageDAO.selectSptUserManageListExcel
+     * @Method description : 일반 회원 Excel목록을 조회한다.
+     * @param              : SptUserManageVO
+     * @return             : SptUserManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.SptUserManageDAO.selectSptUserManageListExcel" parameterClass="SptUserManageVO" resultClass="SptUserManageVO">
+        select  a.customer_reg_no           as customerRegNo,
+                a.customer_id               as customerId,
+                a.customer_reg_status       as customerRegStatus,
+                (
+                    select code_name_kor
+                    from com_system_code
+                    where concat(system_grp_code, system_code) = a.customer_reg_status           
+                )                           as customerRegStatusName,
+                a.customer_step             as customerStep,
+                (
+                    select code_name_kor
+                    from com_system_code
+                    where concat(system_grp_code, system_code) = a.customer_step           
+                )                           as customerStepName,
+                a.customer_name_kor         as customerNameKor,
+                a.customer_name_eng         as customerNameEng,
+                dec_char_sel(
+                    a.customer_phone,
+                    10,
+                    'ARIA',
+                    'spt_customer_info_profile',
+                    'customer_phone',
+                    user(),
+                    connection_id()
+                )                           as customerPhone,
+                dec_char_sel(
+                    a.customer_email,
+                    10,
+                    'ARIA',
+                    'spt_customer_info_profile',
+                    'customer_email',
+                    user(),
+                    connection_id()
+                )                           as customerEmail,
+				case
+				when a.customer_withdrawal_proc_yn = 'Y'
+				then '처리' else '' end as customerWithdrawalProcYn,
+                ifnull(date_format(a.create_date, '%Y-%m-%d %H:%i'), '') as createDate,
+                ifnull(date_format(a.update_date, '%Y-%m-%d %H:%i'), '') as updateDate,
+                ifnull(date_format(a.delete_date, '%Y-%m-%d %H:%i'), '') as deleteDate
+        from spt_customer_info_profile a
+        where 1=1
+        <isEqual property="excelType" compareValue="excel">
+            <include refid="fromWhereAnd"/>
+        </isEqual>
+        order by $listOrder$
+    </select>
+    
+    <!--
+     * @Method Name        : apt.SptUserManageDAO.selectSptUserManageDtl
+     * @Method description : 일반회원관리 상세 조회
+     * @param              : SptUserManageVO
+     * @return             : SptUserManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.SptUserManageDAO.selectSptUserManageDtl" parameterClass="SptUserManageVO" resultClass="SptUserManageVO">
+		select  a.customer_reg_no                                                           as customerRegNo,
+		        a.customer_id                                                               as customerId,
+		        a.customer_reg_status                                                       as customerRegStatus,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.customer_reg_status           
+		        )                                                                           as customerRegStatusName,
+		        a.customer_step                                                             as customerStep,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.customer_step           
+		        )                                                                           as customerStepName,
+		        a.customer_name_kor                                                         as customerNameKor,
+		        a.customer_name_eng                                                         as customerNameEng,
+		        dec_char_sel(
+                    a.customer_phone,
+                    10,
+                    'ARIA',
+                    'spt_customer_info_profile',
+                    'customer_phone',
+                    user(),
+                    connection_id()
+                )                                                                           as customerPhone,
+                dec_char_sel(
+                    a.customer_email,
+                    10,
+                    'ARIA',
+                    'spt_customer_info_profile',
+                    'customer_email',
+                    user(),
+                    connection_id()
+                )                                                                           as customerEmail,
+		        if(ifnull(a.customer_email_auth_yn, 'N') = 'N', '미동의', '동의')              as customerEmailAuthYn,
+		        a.customer_email_auth_yn													as customerEmailAuth,
+		        ifnull(date_format(a.customer_email_reg_date, '%Y-%m-%d %H:%i'), '')        as customerEmailRegDate,
+		        ifnull(date_format(
+			        dec_char_sel(
+	                    a.customer_birth_day,
+	                    10,
+	                    'ARIA',
+	                    'spt_customer_info_profile',
+	                    'customer_birth_day',
+	                    user(),
+	                    connection_id()
+	                ),                                                                           
+                '%Y-%m-%d'), '')                                                            as customerBirthDay,
+		        a.customer_sex                                                              as customerSex,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.customer_sex           
+		        )                                                                           as customerSexName,
+		        if(ifnull(a.customer_email_receive_yn, 'N') = 'N', '미동의', '동의')           as customerEmailReceiveYn,
+		        a.customer_email_receive_yn           										as customerEmailReceive,
+		        ifnull(date_format(a.customer_email_receive_date, '%Y-%m-%d %H:%i'), '')    as customerEmailReceiveDate,
+		        if(ifnull(ci.customer_verify, 'N') = 'N', '미동의', '동의')                    as ciCustomerVerifyYn,
+		        ci.customer_verify                    										as ciCustomerVerify,
+		        if(ifnull(ci.customer_verify, 'N') = 'N', 'N', 'Y')		                    as ciCustomerVerifyYnSbx,
+		        ifnull(ci.customer_verify_date, '')                                         as ciCustomerVerifyDate,
+		        ifnull(dn.customer_verify, '미동의')                                          as dnCustomerVerify,
+		        dn.customer_verify					                                        as dnCustomerVerifyValue,
+		        if(ifnull(dn.customer_verify, 'N') = 'N', 'N', 'Y')                         as dnCustomerVerifySbx,
+		        ifnull(dn.customer_verify_date, '')                                         as dnCustomerVerifyDate,
+		        if(ifnull(otp.customer_otp_id, 'N') = 'N', 'N', 'Y')                        as customerOtpYn,
+		        otp.customer_otp_status                                                     as customerOtpStatus,
+		        (
+                    select code_name_kor
+                    from com_system_code
+                    where concat(system_grp_code, system_code) = otp.customer_otp_status          
+                )                                                                           as customerOtpStatusName,
+		        otp.customer_otp_id                                                         as customerOtpId,
+		        otp.otp_chg_date                                                            as otpChgDate,
+		        ifnull(date_format(a.create_date, '%Y-%m-%d %H:%i'), '')                    as createDate,
+		        ifnull(date_format(a.update_date, '%Y-%m-%d %H:%i'), '')                    as updateDate,
+		        ifnull(date_format(a.delete_date, '%Y-%m-%d %H:%i'), '')                    as deleteDate,
+		        if(ifnull(a.customer_dataset_lock_yn, 'N') = 'N', 'N', 'Y')                 as customerDatasetLockYn,
+		        a.integration_account_yn							                        as integrationAccountYn,
+		        case
+				when a.customer_withdrawal_proc_yn = 'Y'
+				then '처리' else '미처리' end as customerWithdrawalProcYn
+		from spt_customer_info_profile a
+		left join (
+		    /* 본인 인증 상태 */
+		    select  customer_reg_no,
+		            customer_verify,
+		            ifnull(date_format(customer_verify_date, '%Y-%m-%d %H:%i'), '') as customer_verify_date
+		    from spt_customer_verify_profile
+		    where customer_reg_no = #customerRegNo#
+		    and customer_verify_type = 'G007001'
+		) as ci on a.customer_reg_no = ci.customer_reg_no
+		left join (
+		    /* 공인인증서 등록 */
+		    select  customer_reg_no,
+		            customer_verify,
+		            ifnull(date_format(customer_verify_date, '%Y-%m-%d %H:%i'), '') as customer_verify_date
+		    from spt_customer_verify_profile
+		    where customer_reg_no = #customerRegNo#
+		    and customer_verify_type = 'G007002'
+		) as dn on a.customer_reg_no = dn.customer_reg_no
+		left join (
+		    select  customer_reg_no,
+		            customer_otp_id,
+		            customer_otp_status,
+		            ifnull(date_format(otp_chg_date, '%Y-%m-%d %H:%i'), '') as otp_chg_date
+		    from spt_customer_otp_profile
+		    where customer_reg_no = #customerRegNo#
+		    and customer_otp_status != 'G019003'
+		) as otp on a.customer_reg_no = otp.customer_reg_no
+		where a.customer_reg_no = #customerRegNo#  
+    </select>
+    
+    <!--
+     * @Method Name        : apt.SptUserManageDAO.selectSptUserManageDtlTermsList
+     * @Method description : 일반회원관리 상세의 약관동의 목록 조회
+     * @param              : SptUserManageVO
+     * @return             : SptUserManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.SptUserManageDAO.selectSptUserManageDtlTermsList" parameterClass="SptUserManageVO" resultClass="SptUserManageVO">
+		select  b.customer_reg_no           as customerRegNo,
+		        b.customer_terms_type       as customerTermsType,
+		        a.code_name_kor             as customerTermsTypeName,
+		        b.customer_terms_auth_yn as customerTermsYn,
+		        ifnull(concat(
+		            if(ifnull(b.customer_terms_auth_yn, 'N') = 'N', '미동의', '동의'),
+		            '(', 
+		            '동의버전 : ver ', agree_ver, ', ',
+		            '최신 동의서 버전 : ver ', max_agree_ver,
+		            ')'
+		        ), '미동의')                                                            as customerTermsAuthYn,
+		        if(ifnull(b.customer_reg_no, 'X') = 'X', 
+		            'Y', 
+		            if(b.agree_ver = b.max_agree_ver, 'Y', 'N')
+		        )                                                                     as customerTermsAuthVerYn,		        
+		        ifnull(date_format(b.customer_terms_auth_date, '%Y-%m-%d %H:%i'), '') as customerTermsAuthDate
+		from com_system_code a
+		left join (
+		    select  a.*,
+		            (
+		                select customer_terms_content_ver
+		                from spt_customer_terms_content_profile
+		                where customer_terms_type = a.customer_terms_type
+		                and customer_terms_content_reg_seq = a.customer_terms_content_reg_seq
+		            ) as agree_ver,
+		            (
+		                select max(customer_terms_content_ver)
+		                from spt_customer_terms_content_profile
+		                where customer_terms_type = a.customer_terms_type
+		                and customer_terms_system_kind = 'G003002'    /*일반사용자용*/
+		            ) as max_agree_ver
+		    from spt_customer_terms_profile a
+		    where customer_reg_no = #customerRegNo#
+		) as b
+		on concat(a.system_grp_code, a.system_code) = b.customer_terms_type
+		where a.system_grp_code = 'G008'
+		and a.delete_date is null
+		and a.use_yn = 'Y'
+		and a.code_extend1 = 'Y'
+		order by a.code_seq asc     
+    </select>
+    
+    <!--
+     * @Method Name        : apt.SptUserManageDAO.selectSptUserManageDtlSvcTermsList
+     * @Method description : 일반회원관리 상세의 금융정보 제공동의 목록 조회
+     * @param              : SptUserManageVO
+     * @return             : SptUserManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.SptUserManageDAO.selectSptUserManageDtlSvcTermsList" parameterClass="SptUserManageVO" resultClass="SptUserManageVO">
+		select  a.customer_reg_no                       as customerRegNo,
+		        a.service_reg_no                        as serviceRegNo,
+		        a.app_id                                as appId,
+		        a.terms_reg_no                          as termsRegNo,
+		        a.terms_auth                            as termsAuth,
+		        a.terms_auth_name                       as termsAuthName,
+		        a.terms_start_date                      as termsStartDate,
+		        a.terms_expire_date                     as termsExpireDate,
+		        a.api_id                                as apiId,
+		        dec_char_sel(
+		            a.customer_realaccount_no,
+		            10,
+		            'ARIA',
+		            'spt_customer_account_profile',
+		            'costomer_realaccount_no',
+		            user(),
+		            connection_id()
+		        )                                       as customerRealaccountNo,
+		        a.app_name                              as appName,
+		        a.subcompany_code_id                    as subcompanyCodeId,
+		        sub.company_name_kor_alias              as subcompanyName,
+		        a.pubcompany_code_id                    as pubcompanyCodeId,
+		        pub.company_name_kor_alias              as pubcompanyName,
+		        b.customer_vtaccount_no                 as customerVtaccountNo,
+		        b.customer_vtaccount_alias              as customerVtaccountAlias        
+		from(
+		    select  a.*,
+		            b.api_name,
+		            c.company_code_id       as pubcompany_code_id,
+		            c.exposure_order        as pubexposure_order
+		    from(
+		        select  a.*,
+		                b.app_name,
+		                b.company_code_id   as subcompany_code_id,
+		                c.exposure_order    as subexposure_order
+		        from(
+		            select  a.*,
+		                    case 
+		                        when a.terms_auth = '0' then '미동의'
+		                        when a.terms_auth = '1' then '동의'
+		                        when a.terms_auth = '2' then '재동의'
+		                        when a.terms_auth = '3' then '폐기'
+		                    end as terms_auth_name,
+		                    b.api_id,
+		                    b.customer_realaccount_no
+		            from(
+		                select  a.*,
+		                        /* 미동의 : 0, 동의 : 1, 재동의 : 2, 폐기 : 3 */
+		                        case when a.delete_date is null then
+		                            /* 미동의 */
+		                            case when b.terms_auth_yn = 'Y' then
+		                                '0'
+		                            else
+		                                /* 동의 */
+		                                case when date_format(sysdate(), '%Y%m%d') between b.terms_start_date and b.terms_expire_date then
+		                                    '1'
+		                                /* 재동의 */
+		                                else
+		                                    '2'
+		                                end    
+		                            end
+		                        else
+		                            /* 동의서 폐기 */
+		                            '3'
+		                        end as terms_auth,
+		                        date_format(b.terms_start_date, '%Y-%m-%d') as terms_start_date,
+		                        date_format(b.terms_expire_date, '%Y-%m-%d') as terms_expire_date
+		                from(
+		                    select  customer_reg_no,
+		                            service_reg_no,
+		                            app_id,
+		                            terms_reg_no,
+		                            delete_date
+		                    from spt_customer_service_profile
+		                    where customer_reg_no = #customerRegNo#
+		                    and terms_reg_no is not null
+		                ) a
+		                left join spt_customer_service_terms_profile b 
+		                on a.customer_reg_no = b.customer_reg_no
+		                and a.terms_reg_no = b.terms_reg_no
+		            ) a, spt_customer_service_account_profile b
+		            where a.customer_reg_no = b.customer_reg_no
+		            and a.service_reg_no = b.service_reg_no
+		            and a.app_id = b.app_id
+		            and b.delete_date is null   
+		            and a.terms_auth != '3' 
+		        ) a
+		        left join com_app_view b on a.app_id = b.app_id
+		        left join com_app_info c on a.app_id = c.app_id
+		    ) a
+		    left join com_api_view b on a.api_id = b.api_id
+		    left join com_api_info c on a.api_id = c.api_id 
+		) a
+		left join(
+		    select *
+		    from spt_customer_account_profile
+		    where customer_reg_no = #customerRegNo#
+		    and customer_vtaccount_status = 'G009002'
+		) b
+		on a.pubcompany_code_id = b.company_code_id
+		and a.customer_realaccount_no = b.customer_realaccount_no
+		join com_company_profile as pub on a.pubcompany_code_id = pub.company_code_id and pub.delete_date is null and pub.exposure_yn = 'Y'  
+		join com_company_profile as sub on a.subcompany_code_id = sub.company_code_id and sub.delete_date is null and sub.exposure_yn = 'Y'
+		order by 
+		    ifnull(sub.exposure_order, 'Z') asc, sub.company_name_kor_alias asc, 
+			a.service_reg_no asc, a.terms_reg_no,
+		    ifnull(a.subexposure_order, 'Z') asc, a.app_name asc, 
+		    ifnull(pub.exposure_order, 'Z') asc, pub.company_name_kor_alias asc, 
+		    ifnull(a.pubexposure_order, 'Z') asc,  a.api_name asc,
+		    if(ifnull(a.delete_date, 1) = 1, 1, 0) asc
+        
+    </select>
+    
+    <!--
+     * @Method Name        : apt.SptUserManageDAO.selectSptUserManageDtlAccountList
+     * @Method description : 일반회원관리 상세의 가상계좌목록 조회
+     * @param              : SptUserManageVO
+     * @return             : SptUserManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.SptUserManageDAO.selectSptUserManageDtlAccountList" parameterClass="SptUserManageVO" resultClass="SptUserManageVO">
+		select  a.company_code_id           as companyCodeId,
+		        b.company_name_kor_alias    as companyCodeName,
+		        dec_char_sel(
+		            a.customer_realaccount_no,
+		            10,
+		            'ARIA',
+		            'spt_customer_account_profile',
+		            'costomer_realaccount_no',
+		            user(),
+		            connection_id()
+		        )                           as customerRealaccountNo,
+		        a.customer_vtaccount_no     as customerVtaccountNo,
+		        a.customer_vtaccount_alias  as customerVtaccountAlias
+		from spt_customer_account_profile a
+		left join com_company_profile as b on a.company_code_id = b.company_code_id and b.delete_date is null
+		where a.customer_reg_no = #customerRegNo#  
+		and a.customer_vtaccount_expire_date is null
+		and a.customer_vtaccount_status = 'G009002'
+		order by b.exposure_order asc, b.create_date desc    
+    </select>
+    
+    <!--
+     * @Method Name        : apt.SptUserManageDAO.updateSptUserManageDtl
+     * @Method description : 일반회원정보 수정
+     * @param              : SptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="apt.SptUserManageDAO.updateSptUserManageDtl" parameterClass="SptUserManageVO">
+        update spt_customer_info_profile set
+            customer_name_kor = #customerNameKor#,
+            customer_reg_status = #customerRegStatus#,
+            <!-- 탈퇴 -->
+            <isEqual property="customerRegStatus" compareValue="G005004">
+                delete_date = sysdate(),
+            </isEqual>
+            <!-- 활성 시 비밀번호 실패회수 초기화 -->
+            <isEqual property="customerRegStatus" compareValue="G005002">
+	            customer_password_fail_cnt = 0,
+	            customer_otp_fail_cnt = 0,
+            </isEqual>
+            <isNotEqual property="customerRegStatus" compareValue="G005004">
+                delete_date = null,
+            </isNotEqual>
+			<isNotEmpty property="integrationAccountYn">
+				integration_account_yn = #integrationAccountYn#, /* 통합계좌조회사용여부 */
+			</isNotEmpty>
+            customer_phone = enc_char_ins(#customerPhone#,10,'ARIA','spt_customer_info_profile','customer_phone',user(),connection_id()),
+            customer_email = enc_char_ins(#customerEmail#,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id()),
+            update_date = sysdate(),
+            update_id = #customerRegNo#
+        where customer_reg_no = #customerRegNo#      
+    </update>
+    
+    <!--
+     * @Method Name        : apt.SptUserManageDAO.insertSptUserManageDtlHist
+     * @Method description : 일반회원정보 수정 hist를 insert한다.
+     * @param              : SptUserManageVO
+     * @return             : void
+     * @throws             : Exception
+     -->
+    <insert id="apt.SptUserManageDAO.insertSptUserManageDtlHist" parameterClass="SptUserManageVO">
+        insert into spt_customer_info_profile_hist(
+            customer_seq,                  /* 순번 */
+            customer_reg_no,               /* 회원 OP 등록 번호 */
+            customer_id,                   /* 회원 아이디  */
+            customer_password,             /* 회원 비밀번호 */
+            customer_temp_password_yn,     /* 회원 비밀번호 임시여부 */
+            customer_chg_password_date,    /* 회원 비밀번호 변경일자 */
+            customer_password_fail_cnt,    /* 비밀번호 실패횟수 */
+            customer_otp_fail_cnt,         /* OTP 인증 실패 횟수 */ 
+            customer_reg_status,           /* 회원 가입 상태 */
+            customer_step,                 /* 회원 가입 Step */
+            customer_name_kor,             /* 회원명 한글 */
+            customer_name_eng,             /* 회원명 영문 */
+            customer_phone,                /* 회원 휴대폰 번호 */
+            customer_email,                /* 회원 이메일 주소 */
+            customer_email_auth_yn,        /* 회원 이메일 인증여부 */
+            customer_email_reg_date,       /* 회원 이메일 인증일시 */
+            customer_expire_password_date, /* 비밀번호 변경 예정일 */
+            customer_final_password_date,  /* 비밀번호 변경 최종 예정일 */
+            customer_birth_day,            /* 생년월일 */
+            customer_sex,                  /* 성별 */
+            customer_email_receive_yn,     /* 이메일 수신동의여부 */
+            customer_email_receive_date,   /* 이메일 수신동의 여부일시 */
+            customer_reg_date,             /* 회원가입일시 */
+            delete_date,                   /* 회원탈퇴일시 */
+            create_date,                   /* 생성일시 */
+            create_id,                     /* 생성자 ID */
+            customer_withdrawal_proc_yn,   /* 회원 탈퇴 처리 여부 */
+            integration_account_yn         /* 통합계좌조회사용여부 */
+        )
+        select 
+            ifnull((
+                select ifnull(max(cast(customer_seq as SIGNED)), 0) + 1
+                from spt_customer_info_profile_hist
+                where customer_reg_no = a.customer_reg_no
+            ), 1),                         /* 순번 */
+            customer_reg_no,               /* 회원 OP 등록 번호 */
+            customer_id,                   /* 회원 아이디  */
+            customer_password,             /* 회원 비밀번호 */
+            customer_temp_password_yn,     /* 회원 비밀번호 임시여부 */
+            customer_chg_password_date,    /* 회원 비밀번호 변경일자 */
+            customer_password_fail_cnt,    /* 비밀번호 실패횟수 */
+            customer_otp_fail_cnt,         /* OTP 인증 실패 횟수 */
+            customer_reg_status,           /* 회원 가입 상태 */
+            customer_step,                 /* 회원 가입 Step */
+            customer_name_kor,             /* 회원명 한글 */
+            customer_name_eng,             /* 회원명 영문 */
+            customer_phone,                /* 회원 휴대폰 번호 */
+            customer_email,                /* 회원 이메일 주소 */
+            customer_email_auth_yn,        /* 회원 이메일 인증여부 */
+            customer_email_reg_date,       /* 회원 이메일 인증일시 */
+            customer_expire_password_date, /* 비밀번호 변경 예정일 */
+            customer_final_password_date,  /* 비밀번호 변경 최종 예정일 */
+            customer_birth_day,            /* 생년월일 */
+            customer_sex,                  /* 성별 */
+            customer_email_receive_yn,     /* 이메일 수신동의여부 */
+            customer_email_receive_date,   /* 이메일 수신동의 여부일시 */
+            customer_reg_date,             /* 회원가입일시 */
+            delete_date,                   /* 회원탈퇴일시 */
+            create_date,                   /* 생성일시 */
+            create_id,                      /* 생성자 ID */
+            customer_withdrawal_proc_yn,   /* 회원 탈퇴 처리 여부 */
+            integration_account_yn         /* 통합계좌조회사용여부 */
+        from spt_customer_info_profile a
+        where customer_reg_no = #customerRegNo#
+    </insert>
+
+	<!--
+     * @Method Name        : apt.SptUserManageDAO.selectSptUserDeleteList
+     * @Method description : 탙퇴한 일반 회원중 발급한 가상계좌가 있는 회원 목록을 조회한다.
+     * @return             : SptUserManageVO
+     * @throws             : Exception
+     -->
+	<select id="apt.SptUserManageDAO.selectSptUserDeleteList" resultClass="SptUserManageVO">
+		SELECT a.customer_reg_no AS customerRegNo,
+				a.customer_id AS customerId
+		  FROM spt_customer_info_profile a
+		 WHERE a.customer_reg_status = 'G005004'
+		   AND a.customer_step = 'G006005'
+       AND a.customer_withdrawal_proc_yn = 'N'
+	</select>
+
+	<!--
+     * @Method Name        : apt.SptUserManageDAO.updateSptUserWithdrawal
+     * @Method description : 일반회원정보 수정 [탈퇴처리]
+     * @param              : SptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+	<update id="apt.SptUserManageDAO.updateSptUserWithdrawal" parameterClass="SptUserManageVO">
+		update spt_customer_info_profile set
+		customer_withdrawal_proc_yn = 'Y',
+		update_date = sysdate(),
+		update_id = #customerRegNo#
+		where customer_reg_no = #customerRegNo#
+		  and customer_reg_status = 'G005004'
+		  and customer_step = 'G006005'
+	</update>
+    
+</sqlMap>

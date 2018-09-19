@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.cptUsr.service.impl.CptUserManageDAO">
+
+  	<typeAlias alias="CptUserManageVO" type="kr.co.koscom.oppf.apt.cptUsr.service.CptUserManageVO"/>
+  	
+  	<!-- 기업 회원 목록 조회조건 -->
+    <sql id="fromWhereAnd">
+        from com_company_operator_profile a
+		join com_company_profile b on a.company_profile_reg_no = b.company_profile_reg_no and b.delete_date is null
+		where 1=1
+		<isNotEqual property="excelType" compareValue="down">
+		
+	        <!-- 구분 -->
+	        <isNotEmpty property="searchKeyword">
+	            <!-- 회사명 -->
+	            <isEqual property="searchCondition" compareValue="companyName" prepend="and">
+	                (
+	                    b.company_name_kor like concat('%', #searchKeyword#, '%') or
+	                    b.company_name_eng like concat('%', #searchKeyword#, '%') or
+	                    b.company_name_kor_alias like concat('%', #searchKeyword#, '%') or
+	                    b.company_name_eng_alias like concat('%', #searchKeyword#, '%')
+	                )
+	            </isEqual>
+	            <!-- 이름 -->
+	            <isEqual property="searchCondition" compareValue="name" prepend="and">
+	                (
+	                    a.operator_name_kor like concat('%', #searchKeyword#, '%') or
+	                    a.operator_name_eng like concat('%', #searchKeyword#, '%')
+	                )
+	            </isEqual>
+	            <!-- id -->
+	            <isEqual property="searchCondition" compareValue="id" prepend="and">
+	                a.operator_id like concat('%', #searchKeyword#, '%')
+	            </isEqual>
+	            <!-- 이메일 -->
+	            <isEqual property="searchCondition" compareValue="email" prepend="and">
+	                dec_char_sel(a.operator_email,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id()) like concat('%', #searchKeyword#, '%')
+	            </isEqual>
+	            <!-- 전체 -->
+	            <isEqual property="searchCondition" compareValue="all" prepend="and">
+	                (
+	                    b.company_name_kor like concat('%', #searchKeyword#, '%') or
+	                    b.company_name_eng like concat('%', #searchKeyword#, '%') or
+	                    b.company_name_kor_alias like concat('%', #searchKeyword#, '%') or
+	                    b.company_name_eng_alias like concat('%', #searchKeyword#, '%') or                    
+	                    a.operator_name_kor like concat('%', #searchKeyword#, '%') or
+	                    a.operator_name_eng like concat('%', #searchKeyword#, '%') or
+	                    a.operator_id like concat('%', #searchKeyword#, '%') or
+	                    dec_char_sel(a.operator_email,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id()) like concat('%', #searchKeyword#, '%')
+	                )
+	            </isEqual>
+	        </isNotEmpty>
+	                
+	        <!-- 계정상태 -->
+	        <isNotEmpty property="searchOperatorRegStatus">
+	            <isNotEqual property="searchOperatorRegStatus" compareValue="all" prepend="and">
+	                a.operator_reg_status = #searchOperatorRegStatus#
+	            </isNotEqual>
+	        </isNotEmpty>
+	        
+	        <!-- 조회일 -->
+	        <isNotEmpty property="searchDateType">
+	            <!-- 등록일 -->
+	            <isEqual property="searchDateType" compareValue="create" prepend="and">
+	                ifnull(date_format(a.create_date, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '')
+	            </isEqual>
+	            <!-- 수정일 -->
+	            <isEqual property="searchDateType" compareValue="update" prepend="and">
+	                ifnull(date_format(a.update_date, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '')
+	            </isEqual>
+	            <!-- 삭제일 -->
+	            <isEqual property="searchDateType" compareValue="delete" prepend="and">
+	                ifnull(date_format(a.delete_date, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '')
+	            </isEqual>
+	        </isNotEmpty>
+	            
+        </isNotEqual>
+    </sql>
+  	
+	<!--
+     * @Method Name        : apt.CptUserManageDAO.selectCptUserManageList
+     * @Method description : 기업 회원 목록을 조회한다.
+     * @param              : CptUserManageVO
+     * @return             : CptUserManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.CptUserManageDAO.selectCptUserManageList" parameterClass="CptUserManageVO" resultClass="CptUserManageVO">
+		select  a.company_profile_reg_no        as companyProfileRegNo,
+		        b.company_name_kor              as companyNameKor,
+		        b.company_name_eng              as companyNameEng,
+		        b.company_name_kor_alias        as companyNameKorAlias,
+		        b.company_name_eng_alias        as companyNameEngAlias,
+		        b.company_service_type          as companyServiceType,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = b.company_service_type
+		        )                               as companyServiceTypeName,
+		        a.operator_profile_reg_no       as operatorProfileRegNo,        
+		        a.operator_name_kor             as operatorNameKor,
+		        a.operator_name_eng             as operatorNameEng,
+		        a.operator_id                   as operatorId,
+		        dec_char_sel(
+		            a.operator_phone_no,
+		            10,
+		            'ARIA',
+		            'com_company_operator_profile',
+		            'operator_phone_no',
+		            user(),
+		            connection_id()
+		        )                               as operatorPhoneNo,
+		        dec_char_sel(
+                    a.operator_tel_no,
+                    10,
+                    'ARIA',
+                    'com_company_operator_profile',
+                    'operator_tel_no',
+                    user(),
+                    connection_id()
+                )                               as operatorTelNo,
+		        dec_char_sel(
+		            a.operator_email,
+		            10,
+		            'ARIA',
+		            'com_company_operator_profile',
+		            'operator_email ',
+		            user(),
+		            connection_id()
+		        )                               as operatorEmail,
+		        a.operator_reg_status           as operatorRegStatus,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.operator_reg_status
+		        )                               as operatorRegStatusName,
+		        ifnull(date_format(a.create_date, '%Y-%m-%d %H:%i'), '')        as createDate,
+		        ifnull(date_format(a.update_date, '%Y-%m-%d %H:%i'), '')        as updateDate,
+		        ifnull(date_format(a.delete_date, '%Y-%m-%d %H:%i'), '')        as deleteDate
+		<include refid="fromWhereAnd"/>
+		<include refid="CmmnFuncDAO.CmmnPaging"/>
+    </select>
+    
+    <!--
+     * @Method Name        : apt.CptUserManageDAO.selectCptUserManageListCnt
+     * @Method description : 기업 회원 목록의 total cnt를 조회한다.
+     * @param              : CptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="apt.CptUserManageDAO.selectCptUserManageListCnt" parameterClass="CptUserManageVO" resultClass="int">
+        select  count(*) as totalCount
+        <include refid="fromWhereAnd"/>
+    </select>
+    
+    <!--
+     * @Method Name        : apt.CptUserManageDAO.selectCptUserManageListExcel
+     * @Method description : 기업 회원 excel 목록을 조회한다.
+     * @param              : CptUserManageVO
+     * @return             : CptUserManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.CptUserManageDAO.selectCptUserManageListExcel" parameterClass="CptUserManageVO" resultClass="CptUserManageVO">
+        select  a.company_profile_reg_no        as companyProfileRegNo,
+                b.company_name_kor              as companyNameKor,
+                b.company_name_eng              as companyNameEng,
+                b.company_name_kor_alias        as companyNameKorAlias,
+                b.company_name_eng_alias        as companyNameEngAlias,
+                b.company_service_type          as companyServiceType,
+                (
+                    select code_name_kor
+                    from com_system_code
+                    where concat(system_grp_code, system_code) = b.company_service_type
+                )                               as companyServiceTypeName,
+                a.operator_profile_reg_no       as operatorProfileRegNo,        
+                a.operator_name_kor             as operatorNameKor,
+                a.operator_name_eng             as operatorNameEng,
+                a.operator_id                   as operatorId,
+                dec_char_sel(
+                    a.operator_phone_no,
+                    10,
+                    'ARIA',
+                    'com_company_operator_profile',
+                    'operator_phone_no',
+                    user(),
+                    connection_id()
+                )                               as operatorPhoneNo,
+                dec_char_sel(
+                    a.operator_tel_no,
+                    10,
+                    'ARIA',
+                    'com_company_operator_profile',
+                    'operator_tel_no',
+                    user(),
+                    connection_id()
+                )                               as operatorTelNo,
+                dec_char_sel(
+                    a.operator_email,
+                    10,
+                    'ARIA',
+                    'com_company_operator_profile',
+                    'operator_email ',
+                    user(),
+                    connection_id()
+                )                               as operatorEmail,
+                a.operator_reg_status           as operatorRegStatus,
+                (
+                    select code_name_kor
+                    from com_system_code
+                    where concat(system_grp_code, system_code) = a.operator_reg_status
+                )                               as operatorRegStatusName,
+                ifnull(date_format(a.create_date, '%Y-%m-%d %H:%i'), '')        as createDate,
+                ifnull(date_format(a.update_date, '%Y-%m-%d %H:%i'), '')        as updateDate,
+                ifnull(date_format(a.delete_date, '%Y-%m-%d %H:%i'), '')        as deleteDate
+        <include refid="fromWhereAnd"/>
+        order by $listOrder$
+    </select>
+    
+    <!--
+     * @Method Name        : apt.CptUserManageDAO.selectCptUserManageDtl
+     * @Method description : 기업회원조회 상세를 조회한다.
+     * @param              : CptUserManageVO
+     * @return             : CptUserManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.CptUserManageDAO.selectCptUserManageDtl" parameterClass="CptUserManageVO" resultClass="CptUserManageVO">
+		select  company_profile_reg_no          as companyProfileRegNo,
+		        operator_profile_reg_no         as operatorProfileRegNo,
+		        operator_name_kor               as operatorNameKor,
+		        operator_name_eng               as operatorNameEng,
+		        operator_id                     as operatorId,
+		        operator_reg_status             as operatorRegStatus,
+		        dec_char_sel(
+		            a.operator_phone_no,
+		            10,
+		            'ARIA',
+		            'com_company_operator_profile',
+		            'operator_phone_no',
+		            user(),
+		            connection_id()
+		        )                               as operatorPhoneNo,
+		        dec_char_sel(
+                    a.operator_tel_no,
+                    10,
+                    'ARIA',
+                    'com_company_operator_profile',
+                    'operator_tel_no',
+                    user(),
+                    connection_id()
+                )                               as operatorTelNo,
+		        dec_char_sel(
+		            a.operator_email,
+		            10,
+		            'ARIA',
+		            'com_company_operator_profile',
+		            'operator_email ',
+		            user(),
+		            connection_id()
+		        )                               as operatorEmail,
+		        ifnull(date_format(a.operator_email_auth_date, '%Y-%m-%d %H:%i'), '')         as operatorEmailAuthDate,
+		        ifnull(date_format(a.create_date, '%Y-%m-%d %H:%i'), '')                      as createDate,
+		        ifnull(date_format(a.update_date, '%Y-%m-%d %H:%i'), '')                      as updateDate,
+		        ifnull(date_format(a.delete_date, '%Y-%m-%d %H:%i'), '')                      as deleteDate,
+		        case when instr(a.create_id, 'A') > 0 then
+		            (
+		                select admin_name_kor
+		                from com_admin_profile
+		                where admin_profile_reg_no = a.create_id
+		            )
+		        else
+		            (
+		                select operator_name_kor
+		                from com_company_operator_profile
+		                where operator_profile_reg_no = a.create_id
+		            )
+		        end                                                                         as createIdName
+		from com_company_operator_profile a
+		where a.company_profile_reg_no = #companyProfileRegNo#
+		and a.operator_profile_reg_no = #operatorProfileRegNo#    
+    </select>
+    
+    <!--
+     * @Method Name        : apt.CptUserManageDAO.selectCptUserManageDtlCompany
+     * @Method description : 기업회원조회 상세의 기업정보를 조회한다.
+     * @param              : CptUserManageVO
+     * @return             : CptUserManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.CptUserManageDAO.selectCptUserManageDtlCompany" parameterClass="CptUserManageVO" resultClass="CptUserManageVO">
+		select  b.company_profile_reg_no                                    as companyProfileRegNo,
+		        ifnull(b.company_name_kor, a.company_name_kor)              as companyNameKor,
+		        ifnull(b.company_name_eng, a.company_name_eng)              as companyNameEng,
+		        ifnull(b.company_name_kor_alias, a.company_name_kor_alias)  as companyNameKorAlias,
+		        ifnull(b.company_name_eng_alias, a.company_name_eng_alias)  as companyNameEngAlias,
+		        ifnull(b.company_code_id, a.company_code_id)                as companyCodeId,
+		        a.company_code_kind                                         as companyCodeKind,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.company_code_kind
+		        )                                                           as companyCodeKindName,
+		        a.company_div_code                                          as companyDivCode,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.company_div_code
+		        )                                                           as companyDivCodeName,
+		        b.company_bizreg_no                                         as companyBizregNo,
+		        b.company_post_no                                           as companyPostNo,
+		        b.company_address                                           as companyAddress,
+		        b.company_address_dtl                                       as companyAddressDtl,
+		        b.company_service_type                                      as companyServiceType,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = b.company_service_type
+		        )                                                           as companyServiceTypeName,
+		        b.ceo_name                                                  as ceoName,
+		        b.issue_vtaccount                                           as issueVtaccount
+		from com_company_code a
+		join com_company_profile b on a.company_code_id = b.company_code_id and b.delete_date is null
+		where a.delete_date is null
+		and b.company_profile_reg_no = #companyProfileRegNo#    
+    </select>
+    
+    <!--
+     * @Method Name        : apt.CptUserManageDAO.checkCptUserManageOperatorId
+     * @Method description : 기업회원 ID 중복체크
+     * @param              : CptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="apt.CptUserManageDAO.checkCptUserManageOperatorId" parameterClass="CptUserManageVO" resultClass="int">
+        select count(*) as idchkCnt
+        from com_company_operator_profile
+        where operator_id = #operatorId#
+    </select>
+    
+    <!--
+     * @Method Name        : apt.CptUserManageDAO.checkCptUserManageOperatorEmail
+     * @Method description : 기업회원 email 중복체크
+     * @param              : CptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="apt.CptUserManageDAO.checkCptUserManageOperatorEmail" parameterClass="CptUserManageVO" resultClass="int">
+        select count(*) as emailChkCnt
+        from com_company_operator_profile
+        where 1=1
+        <isEmpty property="operatorProfileRegNo" prepend="and">
+            operator_id not in(#operatorId#)
+        </isEmpty>
+        <isNotEmpty property="operatorProfileRegNo" prepend="and">
+            operator_profile_reg_no not in (#operatorProfileRegNo#)
+        </isNotEmpty>
+        
+        and dec_char_sel(
+            operator_email,
+            10,
+            'ARIA',
+            'com_company_operator_profile',
+            'operator_email ',
+            user(),
+            connection_id()
+        ) = #operatorEmail#
+    </select>
+    
+    <!--
+     * @Method Name        : apt.CptUserManageDAO.insertCptUserManage
+     * @Method description : 기업회원 정보 insert
+     * @param              : CptUserManageVO
+     * @return             : string
+     * @throws             : Exception
+     -->
+    <insert id="apt.CptUserManageDAO.insertCptUserManage" parameterClass="CptUserManageVO">
+        <selectKey keyProperty="operatorProfileRegNo" resultClass="java.lang.String">
+            select  concat('O', date_format(sysdate(),'%Y%m%d'), 
+                    lpad((
+                            select ifnull( max(cast(right(operator_profile_reg_no,3) as signed)), 0)+1 
+                            from com_company_operator_profile 
+                            where left(operator_profile_reg_no,9) = concat('O', date_format(sysdate(),'%Y%m%d'))
+                        ), 3, '0')
+                    ) as operatorProfileRegNo
+        </selectKey>
+        insert into com_company_operator_profile(
+			company_profile_reg_no,
+			operator_profile_reg_no,
+			operator_name_kor,
+			operator_name_eng,
+			operator_id,
+			operator_password,
+			operator_temp_password_yn,
+			operator_chg_password_date,
+			operator_expire_password_date,
+			operator_final_password_date,
+			operator_password_fail_cnt,
+			operator_reg_status,
+			operator_phone_no,
+			operator_tel_no,
+			operator_email,
+			operator_email_auth_yn,
+			create_date,
+			create_id,
+			update_date,
+			update_id        
+        )values(
+            #companyProfileRegNo#,
+            #operatorProfileRegNo#,
+            #operatorNameKor#,
+            #operatorNameEng#,
+            #operatorId#,
+            enc_char_ins(#operatorPassword#,10,'SHA','com_company_operator_profile','operator_password',user(),connection_id()),
+            'Y',        /*임시비밀번호 발급 상태*/
+            sysdate(),
+            date_format(date_add(sysdate(), interval #operatorExpirePasswordDate# month), '%Y%m%d'),
+            date_format(date_add(sysdate(), interval #operatorFinalPasswordDate# month), '%Y%m%d'),
+            0,          
+            #operatorRegStatus#,
+            enc_char_ins(#operatorPhoneNo#,10,'ARIA','com_company_operator_profile','operator_phone_no',user(),connection_id()),
+            enc_char_ins(#operatorTelNo#,10,'ARIA','com_company_operator_profile','operator_tel_no',user(),connection_id()),
+            enc_char_ins(#operatorEmail#,10,'ARIA','com_company_operator_profile','operator_email',user(),connection_id()),
+            'N',
+            sysdate(),
+            #createId#,
+            sysdate(),
+            #createId#
+        )
+    </insert>
+    
+    <!--
+     * @Method Name        : apt.CptUserManageDAO.updateCptUserManage
+     * @Method description : 기업회원 정보 update
+     * @param              : CptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="apt.CptUserManageDAO.updateCptUserManage" parameterClass="CptUserManageVO">
+        update com_company_operator_profile set
+            operator_name_kor = #operatorNameKor#,
+            operator_name_eng = #operatorNameEng#,
+            operator_reg_status = #operatorRegStatus#,
+            <!-- 탈퇴 -->
+            <isEqual property="operatorRegStatus" compareValue="G005004">
+                delete_date = sysdate(),
+            </isEqual>
+            <!-- 활성 시 비밀번호 실패회수 초기화 -->
+            <isEqual property="operatorRegStatus" compareValue="G005002">
+                operator_password_fail_cnt = 0,
+            </isEqual>
+            <isNotEqual property="operatorRegStatus" compareValue="G005004">
+                delete_date = null,
+            </isNotEqual>
+            operator_phone_no = enc_char_ins(#operatorPhoneNo#,10,'ARIA','com_company_operator_profile','operator_phone_no',user(),connection_id()),
+            operator_tel_no = enc_char_ins(#operatorTelNo#,10,'ARIA','com_company_operator_profile','operator_tel_no',user(),connection_id()),
+            operator_email = enc_char_ins(#operatorEmail#,10,'ARIA','com_company_operator_profile','operator_email',user(),connection_id()),
+            update_date = sysdate(),
+            update_id = #createId#
+        where company_profile_reg_no = #companyProfileRegNo#
+        and operator_profile_reg_no = #operatorProfileRegNo#
+    </update>
+    
+    <!--
+     * @Method Name        : apt.CptUserManageDAO.insertCptUserManageHist
+     * @Method description : 기업회원 정보 hist insert
+     * @param              : CptUserManageVO
+     * @return             : string
+     * @throws             : Exception
+     -->
+    <insert id="apt.CptUserManageDAO.insertCptUserManageHist" parameterClass="CptUserManageVO">
+        insert into com_company_operator_profile_hist(
+			company_profile_reg_no,
+			operator_profile_reg_no,
+			operator_seq,
+			operator_name_kor,
+			operator_name_eng,
+			operator_id,
+			operator_password,
+			operator_temp_password_yn,
+			operator_chg_password_date,
+			operator_expire_password_date,
+			operator_final_password_date,
+			operator_password_fail_cnt,
+			operator_reg_status,
+			operator_phone_no,
+			operator_tel_no,
+			operator_email,
+			operator_email_auth_type,
+			operator_email_auth_yn,
+			operator_email_auth_date,
+			operator_reg_date,
+			delete_date,
+			create_date,
+			create_id
+        )    
+        select  company_profile_reg_no,
+                operator_profile_reg_no,
+                ifnull((
+                    select ifnull(max(cast(operator_seq as SIGNED)), 0) + 1
+                    from com_company_operator_profile_hist
+                    where company_profile_reg_no = a.company_profile_reg_no
+                    and operator_profile_reg_no = a.operator_profile_reg_no
+                ), 1),
+                operator_name_kor,
+	            operator_name_eng,
+	            operator_id,
+	            operator_password,
+	            operator_temp_password_yn,
+	            operator_chg_password_date,
+	            operator_expire_password_date,
+	            operator_final_password_date,
+	            operator_password_fail_cnt,
+	            operator_reg_status,
+	            operator_phone_no,
+	            operator_tel_no,
+	            operator_email,
+	            operator_email_auth_type,
+	            operator_email_auth_yn,
+	            operator_email_auth_date,
+	            operator_reg_date,
+	            delete_date,
+                update_date,
+                update_id
+        from com_company_operator_profile a
+        where company_profile_reg_no = #companyProfileRegNo#
+        and operator_profile_reg_no = #operatorProfileRegNo#
+    </insert>
+    
+    <!--
+     * @Method Name        : apt.CptUserManageDAO.saveCptUserManagePwd
+     * @Method description : 임시비밀번호 발급
+     * @param              : CptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="apt.CptUserManageDAO.saveCptUserManagePwd" parameterClass="CptUserManageVO">
+        update com_company_operator_profile set
+            operator_password = enc_char_ins(#operatorPassword#,10,'SHA','com_company_operator_profile','operator_password',user(),connection_id()),
+            operator_temp_password_yn = 'Y',
+            operator_chg_password_date = sysdate(),
+            operator_expire_password_date = date_format(date_add(sysdate(), interval #operatorExpirePasswordDate# month), '%Y%m%d'),
+            operator_final_password_date = date_format(date_add(sysdate(), interval #operatorFinalPasswordDate# month), '%Y%m%d'),
+            operator_password_fail_cnt = 0,
+            update_date = sysdate(),
+            update_id = #createId#
+        where company_profile_reg_no = #companyProfileRegNo#
+        and operator_profile_reg_no = #operatorProfileRegNo#
+    </update>
+    
+</sqlMap>

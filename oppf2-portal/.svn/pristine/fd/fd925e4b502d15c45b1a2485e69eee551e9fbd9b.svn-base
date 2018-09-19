@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.stats.service.impl.StatsServiceTrafficDAO">
+
+  	<typeAlias alias="StatsTrafficVO" type="kr.co.koscom.oppf.apt.stats.service.StatsTrafficVO"/>
+
+  	<select id="apt.StatsServiceTrafficDAO.selectStatsTrafficApiNameList" parameterClass="StatsTrafficVO" resultClass="StatsTrafficVO">
+		select b.api_id as apiId, a.api_name as apiName
+		  from com_api_view a,
+				com_api_info b
+		 where a.api_id = b.api_id
+		<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+			<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+				b.company_code_id
+				<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+					#searchPubCompanyCodeId[]#
+				</iterate>
+			</isNotEqual>
+		</isNotEmpty>
+	</select>
+
+	<select id="apt.StatsServiceTrafficDAO.selectStatsTrafficApiPlanNameList" parameterClass="StatsTrafficVO" resultClass="StatsTrafficVO">
+		select
+				code_name_kor as apiPlanName,
+				code_extend1 as apiPlanId
+		from 	com_system_code
+		where 	system_grp_code = 'G024'
+		and 	delete_date is null
+		and 	code_extend1 <![CDATA[<>]]> ''
+		order by code_seq asc, code_name_kor asc
+	</select>
+
+	<sql id="searchDayStd">
+		<!-- 분 -->
+		<isEqual property="searchTrafficType" compareValue="min">
+			select  concat(a.std_date, b.std_date) as std_date,
+					 date_format(str_to_date(concat(a.std_date, b.std_date), '%Y%m%d%H%i'), '%d일 %H:%i') as Date,
+					 date_format(str_to_date(concat(a.std_date, b.std_date), '%Y%m%d%H%i'), '%m/%d/%Y %H:%i') as dateForChart
+			from(
+					select  concat(searchDate, searchTime) as std_date
+					from(
+					select searchDate
+					from(
+					select date_format(adddate(date_format(str_to_date(#searchDateTimeFrom#, '%Y%m%d%H'), '%Y%m%d'), t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m%d') searchDate
+					from
+						(select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+						(select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+						(select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+						(select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+						(select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+			) v
+			where searchDate <![CDATA[<=]]> #searchDateTimeTo#
+			) a,
+			(
+					select '00' as searchTime
+					union select '01' union select '02' union select '03' union select '04' union select '05' union select '06'
+					union select '07' union select '08' union select '09' union select '10' union select '11' union select '12'
+					union select '13' union select '14' union select '15' union select '16' union select '17' union select '18'
+					union select '19' union select '20' union select '21' union select '22' union select '23'
+			) b
+			where concat(searchDate, searchTime)
+			between #searchDateTimeFrom# and #searchDateTimeTo#
+			) a,
+			(
+					select '00' as std_date union select '05' union
+					select '10' as std_date union select '15' union
+					select '20' as std_date union select '25' union
+					select '30' as std_date union select '35' union
+					select '40' as std_date union select '45' union
+					select '50' as std_date union select '55'
+			) b
+		</isEqual>
+
+		<!-- 시간 -->
+		<isEqual property="searchTrafficType" compareValue="hourly">
+			select  concat(searchDate, searchTime) as std_date,
+					 date_format(str_to_date(concat(searchDate, searchTime), '%Y%m%d%H'), '%d일 %H시') as Date,
+					 date_format(str_to_date(concat(searchDate, searchTime), '%Y%m%d%H'), '%m/%d/%Y %H:00') as dateForChart
+			from(
+					select searchDate
+					from(
+					select date_format(adddate(date_format(str_to_date(#searchDateTimeFrom#, '%Y%m%d%H'), '%Y%m%d'), t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m%d') searchDate
+					from
+						(select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+						(select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+						(select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+						(select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+						(select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+			) v
+			where searchDate <![CDATA[<=]]> #searchDateTimeTo#
+			) a,
+			(
+					select '00' as searchTime
+					union select '01' union select '02' union select '03' union select '04' union select '05' union select '06'
+					union select '07' union select '08' union select '09' union select '10' union select '11' union select '12'
+					union select '13' union select '14' union select '15' union select '16' union select '17' union select '18'
+					union select '19' union select '20' union select '21' union select '22' union select '23'
+			) b
+			where concat(searchDate, searchTime)
+			between #searchDateTimeFrom# and #searchDateTimeTo#
+		</isEqual>
+
+		<!-- 일 -->
+		<isEqual property="searchTrafficType" compareValue="daily">
+			select  searchDate as std_date,
+					 date_format(str_to_date(searchDate, '%Y%m%d'), '%m월%d일') as Date,
+					 date_format(str_to_date(searchDate, '%Y%m%d'), '%m/%d/%Y') as dateForChart
+			from(
+					select date_format(adddate(date_format(#searchDateTimeFrom#, '%Y%m%d'),t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m%d') searchDate
+					from
+						(select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+						(select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+						(select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+						(select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+						(select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+			) v
+			where searchDate
+			between #searchDateTimeFrom# and #searchDateTimeTo#
+		</isEqual>
+
+		<!-- 개월 -->
+		<isEqual property="searchTrafficType" compareValue="monthly">
+			select  searchDate as std_date,
+					 date_format(str_to_date(concat(searchDate,'01'), '%Y%m%d'), '%y년%m월') as Date,
+					 date_format(str_to_date(concat(searchDate,'01'), '%Y%m%d'), '%m/%d/%Y') as dateForChart
+			from(
+					select date_format(adddate(date_format(concat(#searchDateTimeFrom#, '01'), '%Y%m%d'),t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m') searchDate
+					from
+						(select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+						(select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+						(select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+						(select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+						(select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+			) v
+			where searchDate
+			between #searchDateTimeFrom# and #searchDateTimeTo#
+			group by searchDate
+		</isEqual>
+	</sql>
+
+	<select id="apt.StatsServiceTrafficDAO.searchDayStdList" parameterClass="StatsTrafficVO" resultClass="StatsTrafficVO">
+		<!-- 분 -->
+		<isEqual property="searchTrafficType" compareValue="min">
+			select  concat(a.std_date, b.std_date) as stdDate,
+					 date_format(str_to_date(concat(a.std_date, b.std_date), '%Y%m%d%H%i'), '%m/%d %H:%i') as Date,
+					 date_format(str_to_date(concat(a.std_date, b.std_date), '%Y%m%d%H%i'), '%m/%d/%Y %H:%i') as dateForChart
+			from(
+					select  concat(searchDate, searchTime) as std_date
+					from(
+					select searchDate
+					from(
+					select date_format(adddate(date_format(str_to_date(#searchDateTimeFrom#, '%Y%m%d%H'), '%Y%m%d'), t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m%d') searchDate
+					from
+						(select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+						(select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+						(select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+						(select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+						(select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+			) v
+			where searchDate <![CDATA[<=]]> #searchDateTimeTo#
+			) a,
+			(
+					select '00' as searchTime
+					union select '01' union select '02' union select '03' union select '04' union select '05' union select '06'
+					union select '07' union select '08' union select '09' union select '10' union select '11' union select '12'
+					union select '13' union select '14' union select '15' union select '16' union select '17' union select '18'
+					union select '19' union select '20' union select '21' union select '22' union select '23'
+			) b
+			where concat(searchDate, searchTime)
+			between #searchDateTimeFrom# and #searchDateTimeTo#
+			) a,
+			(
+					select '00' as std_date union select '05' union
+					select '10' as std_date union select '15' union
+					select '20' as std_date union select '25' union
+					select '30' as std_date union select '35' union
+					select '40' as std_date union select '45' union
+					select '50' as std_date union select '55'
+			) b
+		</isEqual>
+
+		<!-- 시간 -->
+		<isEqual property="searchTrafficType" compareValue="hourly">
+			select  concat(searchDate, searchTime) as stdDate,
+					 date_format(str_to_date(concat(searchDate, searchTime), '%Y%m%d%H'), '%d일 %H시') as Date,
+					 date_format(str_to_date(concat(searchDate, searchTime), '%Y%m%d%H'), '%m/%d/%Y %H:00') as dateForChart
+			from(
+					select searchDate
+					from(
+					select date_format(adddate(date_format(str_to_date(#searchDateTimeFrom#, '%Y%m%d%H'), '%Y%m%d'), t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m%d') searchDate
+					from
+						(select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+						(select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+						(select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+						(select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+						(select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+			) v
+			where searchDate <![CDATA[<=]]> #searchDateTimeTo#
+			) a,
+			(
+					select '00' as searchTime
+					union select '01' union select '02' union select '03' union select '04' union select '05' union select '06'
+					union select '07' union select '08' union select '09' union select '10' union select '11' union select '12'
+					union select '13' union select '14' union select '15' union select '16' union select '17' union select '18'
+					union select '19' union select '20' union select '21' union select '22' union select '23'
+			) b
+			where concat(searchDate, searchTime)
+			between #searchDateTimeFrom# and #searchDateTimeTo#
+		</isEqual>
+
+		<!-- 일 -->
+		<isEqual property="searchTrafficType" compareValue="daily">
+			select  searchDate as stdDate,
+					 date_format(str_to_date(searchDate, '%Y%m%d'), '%m월%d일') as Date,
+					 date_format(str_to_date(searchDate, '%Y%m%d'), '%m/%d/%Y') as dateForChart
+			from(
+					select date_format(adddate(date_format(#searchDateTimeFrom#, '%Y%m%d'),t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m%d') searchDate
+					from
+						(select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+						(select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+						(select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+						(select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+						(select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+			) v
+			where searchDate
+			between #searchDateTimeFrom# and #searchDateTimeTo#
+		</isEqual>
+
+		<!-- 개월 -->
+		<isEqual property="searchTrafficType" compareValue="monthly">
+			select  searchDate as stdDate,
+					 date_format(str_to_date(concat(searchDate,'01'), '%Y%m%d'), '%y년%m월') as Date,
+					 date_format(str_to_date(concat(searchDate,'01'), '%Y%m%d'), '%m/%d/%Y') as dateForChart
+			from(
+					select date_format(adddate(date_format(concat(#searchDateTimeFrom#, '01'), '%Y%m%d'),t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m') searchDate
+					from
+						(select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+						(select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+						(select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+						(select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+						(select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+			) v
+			where searchDate
+			between #searchDateTimeFrom# and #searchDateTimeTo#
+			group by searchDate
+		</isEqual>
+	</select>
+
+	<select id="apt.StatsServiceTrafficDAO.selectStatsTrafficListAll" parameterClass="StatsTrafficVO" resultClass="java.util.HashMap" remapResults="true">
+		SELECT    A.std_date						AS stdDate
+				 , A.Date							AS Date
+		         , A.dateForChart                   AS dateForChart
+				 , (ifnull(B.cnt_api_duration_y, 0) + ifnull(B.cnt_api_duration_n, 0)) AS cntApiDurationTotal
+				 , ifnull(B.cnt_api_duration_y, 0)  AS cntApiDurationY
+				 , ifnull(B.cnt_api_duration_n, 0)  AS cntApiDurationN
+				 /*, ifnull(B.api_duration_y, 0)      AS apiDurationY
+				 , ifnull(B.api_duration_n, 0)		AS apiDurationN
+				 , ifnull(B.sif_duration_y, 0)		AS sifDurationY
+				 , ifnull(B.sif_duration_n, 0)		AS sifDurationN*/
+				, ifnull(round((ifnull(B.total_api_avg_y, 0) / ifnull(B.cnt_api_duration_y, 0)), 3), 0) as apiDurationY
+				, ifnull(round((ifnull(B.total_api_avg_n, 0) / ifnull(B.cnt_api_duration_n, 0)), 3), 0) as apiDurationN
+				, ifnull(round((ifnull(B.total_sif_avg_y, 0) / ifnull(B.cnt_api_duration_y, 0)), 3), 0) as sifDurationY
+				, ifnull(round((ifnull(B.total_sif_avg_n, 0) / ifnull(B.cnt_api_duration_n, 0)), 3), 0) as sifDurationN
+		FROM(
+			<include refid="searchDayStd"/>
+		) A LEFT OUTER JOIN
+		(
+		  SELECT  A.std_date as std_date
+				, SUM(A.cnt_api_duration_y) as cnt_api_duration_y
+				, SUM(A.cnt_api_duration_n) as cnt_api_duration_n
+				/*, ROUND(AVG(A.api_duration_y),3) as api_duration_y
+				, ROUND(AVG(A.api_duration_n),3) as api_duration_n
+				, ROUND(AVG(A.sif_duration_y),3) as sif_duration_y
+				, ROUND(AVG(A.sif_duration_n),3) as sif_duration_n*/
+				, sum(A.total_api_avg_y) as total_api_avg_y
+				, sum(A.total_api_avg_n) as total_api_avg_n
+				, sum(A.total_sif_avg_y) as total_sif_avg_y
+				, sum(A.total_sif_avg_n) as total_sif_avg_n
+			FROM
+			 (
+			   SELECT
+					   A.std_date
+					 , A.app_id
+					 , A.api_id
+					 , SUM(CASE WHEN A.response_result_yn = 'Y' THEN A.cnt_api_duration else 0 END) AS cnt_api_duration_y
+					 , SUM(CASE WHEN A.response_result_yn = 'N' THEN A.cnt_api_duration else 0 END) AS cnt_api_duration_n
+					 /*, ROUND(AVG(CASE WHEN A.response_result_yn = 'Y' THEN A.avg_api_duration else 0 END),3) AS api_duration_y
+					 , ROUND(AVG(CASE WHEN A.response_result_yn = 'N' THEN A.avg_api_duration else 0 END),3) AS api_duration_n
+					 , ROUND(AVG(CASE WHEN A.response_result_yn = 'Y' THEN A.avg_sif_duration else 0 END),3) AS sif_duration_y
+					 , ROUND(AVG(CASE WHEN A.response_result_yn = 'N' THEN A.avg_sif_duration else 0 END),3) AS sif_duration_n*/
+					, sum(round((CASE WHEN A.response_result_yn = 'Y' THEN A.avg_api_duration ELSE 0 END),3)*(case when A.response_result_yn = 'Y' then A.cnt_api_duration else 0 end)) as total_api_avg_y
+					, sum(round((CASE WHEN A.response_result_yn = 'N' THEN A.avg_api_duration ELSE 0 END),3)*(case when A.response_result_yn = 'N' then A.cnt_api_duration else 0 end)) as total_api_avg_n
+					, sum(round((CASE WHEN A.response_result_yn = 'Y' THEN A.avg_sif_duration ELSE 0 END),3)*(case when A.response_result_yn = 'Y' then A.cnt_sif_duration else 0 end)) as total_sif_avg_y
+					, sum(round((CASE WHEN A.response_result_yn = 'N' THEN A.avg_sif_duration ELSE 0 END),3)*(case when A.response_result_yn = 'N' then A.cnt_sif_duration else 0 end)) as total_sif_avg_n
+				FROM $trafficTable$ A
+			   WHERE A.std_date BETWEEN #searchDateTimeFrom# and #searchDateTimeTo#
+			   GROUP BY A.std_date, A.app_id, A.api_id
+			 ) A
+			 INNER JOIN
+			 (
+				SELECT   A.app_id
+					    , A.api_id
+				  FROM (
+					SELECT   A.app_id
+						    , A.api_id
+						    , A.api_plan_id
+					  FROM com_app_apilist_view A
+					 INNER JOIN com_app_view B ON A.app_id = B.app_id
+					 INNER JOIN com_app_info C ON A.app_id = C.app_id
+					 INNER JOIN com_company_profile company ON B.company_code_id = company.company_code_id
+					 WHERE 1=1
+					<isNotEmpty property="searchApiPlanName" prepend="and">
+						<isNotEqual property="searchApiPlanNameAllYn" compareValue="Y">
+							A.api_plan_id
+							<iterate  property="searchApiPlanName" prepend="IN" open="(" close=")" conjunction=",">
+								#searchApiPlanName[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+					<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+							B.company_code_id
+							<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchSubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+					<isNotEmpty property="searchAppName" prepend="and">
+						<isNotEqual property="searchAppNameAllYn" compareValue="Y">
+							C.app_id
+							<iterate  property="searchAppName" prepend="IN" open="(" close=")" conjunction=",">
+								#searchAppName[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+				  ) A
+				 INNER JOIN com_api_view B ON A.api_id = B.api_id
+				 INNER JOIN com_api_info C ON A.api_id = C.api_id
+				<isNotEmpty property="searchApiName" prepend="and">
+					<isNotEqual property="searchApiNameAllYn" compareValue="Y">
+						C.api_id
+						<iterate  property="searchApiName" prepend="IN" open="(" close=")" conjunction=",">
+							#searchApiName[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+				 INNER JOIN com_company_profile company ON C.company_code_id = company.company_code_id
+				<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+					<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+						company.company_code_id
+						<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+							#searchPubCompanyCodeId[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+			 ) B
+			   ON A.app_id = B.app_id
+			  AND A.api_id = B.api_id
+			GROUP BY A.std_date
+		) B
+		ON A.std_date = B.std_date
+		ORDER BY A.std_date ASC
+	</select>
+
+	<select id="apt.StatsServiceTrafficDAO.selectStatsTrafficList" parameterClass="StatsTrafficVO" resultClass="java.util.HashMap" remapResults="true">
+		  SELECT  A.std_date as stdDate
+				, (ifnull(SUM(A.cnt_api_duration_y), 0) + ifnull(SUM(A.cnt_api_duration_n), 0)) AS cntApiDurationTotal
+				, ifnull(SUM(A.cnt_api_duration_y), 0) as cntApiDurationY
+				, ifnull(SUM(A.cnt_api_duration_n), 0) as cntApiDurationN
+				/*, ifnull(ROUND(AVG(A.api_duration_y),3), 0) as apiDurationY
+				, ifnull(ROUND(AVG(A.api_duration_n),3), 0) as apiDurationN
+				, ifnull(ROUND(AVG(A.sif_duration_y),3), 0) as sifDurationY
+				, ifnull(ROUND(AVG(A.sif_duration_n),3), 0) as sifDurationN*/
+				, ifnull(round((ifnull(sum(A.total_api_avg_y), 0) / ifnull(SUM(A.cnt_api_duration_y), 0)), 3), 0) as apiDurationY
+				, ifnull(round((ifnull(sum(A.total_api_avg_n), 0) / ifnull(SUM(A.cnt_api_duration_n), 0)), 3), 0) as apiDurationN
+				, ifnull(round((ifnull(sum(A.total_sif_avg_y), 0) / ifnull(SUM(A.cnt_api_duration_y), 0)), 3), 0) as sifDurationY
+				, ifnull(round((ifnull(sum(A.total_sif_avg_n), 0) / ifnull(SUM(A.cnt_api_duration_n), 0)), 3), 0) as sifDurationN
+				$sql1$
+			FROM
+			 (
+			   SELECT
+					   A.std_date
+					 , A.app_id
+					 , A.api_id
+					 , SUM(CASE WHEN A.response_result_yn = 'Y' THEN A.cnt_api_duration else 0 END) AS cnt_api_duration_y
+					 , SUM(CASE WHEN A.response_result_yn = 'N' THEN A.cnt_api_duration else 0 END) AS cnt_api_duration_n
+					 /*, ROUND(AVG(CASE WHEN A.response_result_yn = 'Y' THEN A.avg_api_duration else 0 END),3) AS api_duration_y
+					 , ROUND(AVG(CASE WHEN A.response_result_yn = 'N' THEN A.avg_api_duration else 0 END),3) AS api_duration_n
+					 , ROUND(AVG(CASE WHEN A.response_result_yn = 'Y' THEN A.avg_sif_duration else 0 END),3) AS sif_duration_y
+					 , ROUND(AVG(CASE WHEN A.response_result_yn = 'N' THEN A.avg_sif_duration else 0 END),3) AS sif_duration_n*/
+					, sum(round((CASE WHEN A.response_result_yn = 'Y' THEN A.avg_api_duration ELSE 0 END),3)*(case when A.response_result_yn = 'Y' then A.cnt_api_duration else 0 end)) as total_api_avg_y
+					, sum(round((CASE WHEN A.response_result_yn = 'N' THEN A.avg_api_duration ELSE 0 END),3)*(case when A.response_result_yn = 'N' then A.cnt_api_duration else 0 end)) as total_api_avg_n
+					, sum(round((CASE WHEN A.response_result_yn = 'Y' THEN A.avg_sif_duration ELSE 0 END),3)*(case when A.response_result_yn = 'Y' then A.cnt_sif_duration else 0 end)) as total_sif_avg_y
+					, sum(round((CASE WHEN A.response_result_yn = 'N' THEN A.avg_sif_duration ELSE 0 END),3)*(case when A.response_result_yn = 'N' then A.cnt_sif_duration else 0 end)) as total_sif_avg_n
+				FROM $trafficTable$ A
+			   WHERE A.std_date BETWEEN #searchDateTimeFrom# and #searchDateTimeTo#
+			   GROUP BY A.std_date, A.app_id, A.api_id
+			 ) A
+			 INNER JOIN
+			 (
+				SELECT   A.app_id
+						, A.app_name
+						, A.api_id
+						, C.company_code_id as pub_company_code_id
+						, company.company_name_kor_alias as pub_company_name
+						, B.api_name
+						, A.api_plan_id
+						, code.code_name_kor
+						, A.company_code_id as sub_company_code_id
+						, A.company_name_kor as sub_company_name
+				  FROM (
+					SELECT   A.app_id
+							, B.app_name
+							, A.api_id
+							, A.api_plan_id
+							, company.company_code_id
+							, company.company_name_kor
+					  FROM com_app_apilist_view A
+					 INNER JOIN com_app_view B ON A.app_id = B.app_id
+					 INNER JOIN com_app_info C ON A.app_id = C.app_id
+					 INNER JOIN com_company_profile company ON B.company_code_id = company.company_code_id
+					 WHERE 1=1
+					<isNotEmpty property="searchApiPlanName" prepend="and">
+						<isNotEqual property="searchApiPlanNameAllYn" compareValue="Y">
+							A.api_plan_id
+							<iterate  property="searchApiPlanName" prepend="IN" open="(" close=")" conjunction=",">
+								#searchApiPlanName[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+					<isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+						<isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+							B.company_code_id
+							<iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+								#searchSubCompanyCodeId[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+					<isNotEmpty property="searchAppName" prepend="and">
+						<isNotEqual property="searchAppNameAllYn" compareValue="Y">
+							C.app_id
+							<iterate  property="searchAppName" prepend="IN" open="(" close=")" conjunction=",">
+								#searchAppName[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+				  ) A
+				 INNER JOIN com_api_view B ON A.api_id = B.api_id
+				 INNER JOIN com_api_info C ON A.api_id = C.api_id
+				<isNotEmpty property="searchApiName" prepend="and">
+					<isNotEqual property="searchApiNameAllYn" compareValue="Y">
+						C.api_id
+						<iterate  property="searchApiName" prepend="IN" open="(" close=")" conjunction=",">
+							#searchApiName[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+				 INNER JOIN com_company_profile company ON C.company_code_id = company.company_code_id
+				<isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+					<isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+						company.company_code_id
+						<iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+							#searchPubCompanyCodeId[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+					LEFT OUTER JOIN (
+						select  concat(system_grp_code, system_code) as system_code,
+								 code_name_kor,
+								 code_extend1,
+								 code_seq
+						  from	 com_system_code
+						 where  system_grp_code = 'G024'
+						   and  delete_date is null
+					) code ON code.code_extend1 = A.api_plan_id
+			 ) B
+			   ON A.app_id = B.app_id
+			  AND A.api_id = B.api_id
+			  $sql2$
+	</select>
+
+
+</sqlMap>

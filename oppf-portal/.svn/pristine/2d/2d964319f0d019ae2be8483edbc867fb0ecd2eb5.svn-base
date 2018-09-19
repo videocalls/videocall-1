@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>개인 | koscom OpenAPI Platform </title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="stylesheet" href="../../../css/spt/import.css">
+	<!-- IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	  <script src="../../../js/cmm/html5shiv.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="../../../js/cmm/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../../../js/spt/common_pub.js"></script>
+</head>
+
+<body>
+
+<div class="wrap">
+
+	<!-- header -->
+	<header class="header">
+		<div class="header_area">
+			<div class="skip_navi">
+				<a href="#gnb">메뉴 바로가기</a>
+				<a href="#content">본문 바로가기</a>		
+			</div>
+
+			<ol class="util">
+				<li class="menu"><a href="#none">로그인</a></li>
+				<li class="menu"><a href="#none">회원가입</a></li>
+				<li class="site on"><a href="#none">개인</a></li>
+				<li class="site"><a href="#none">기업/금투사</a></li>
+			</ol>
+
+			<nav id="gnb">
+				<h1 class="logo"><a href="#none"><img src="../../../images/spt/common/logo.png" alt="Koscom OpenAPI Platform"></a></h1>
+
+				<div class="gnb_menu">
+					<ul>
+						<li><a href="#none">금융투자 핀테크 포털</a></li>
+						<li><a href="#none">핀테크 서비스</a></li>
+						<li><a href="#none">서비스 신청</a></li>
+						<li><a href="#none">서비스지원</a></li>
+					</ul>
+				</div>
+			</nav>
+		</div>
+	</header>
+	<!-- // header -->
+
+	<!-- section -->
+	<section>
+		<!-- location -->
+		<div class="location">
+			<ul>
+				<li class="home"><a href="#none">홈</a></li>
+				<li class="on">회원가입</li>
+			</ul>
+		</div>
+		<!-- // location -->
+
+		<div class="container">
+			<!-- lnb -->
+			<article class="lnb">				
+				<h2>로그인</h2>
+				<ul>
+					<li><a href="#none">로그인</a></li>
+					<li><a href="#none">아이디/비밀번호 찾기</a></li>
+					<li><a href="#none" class="on">회원가입</a></li>
+					<li><a href="#none">서비스이용약관</a></li>
+					<li><a href="#none">개인정보취급방침</a></li>
+				</ul>
+			</article>
+			<!-- // lnb -->
+
+			<!-- content -->
+			<article id="content">
+
+				<div class="sub_title">
+					<h3>회원가입</h3>									
+				</div>
+
+				<!-- con -->
+				<div class="con">
+					
+					<!-- 2016-06-01 수정 -->
+					<div class="step_area">
+						<ul>
+							<li class="pass"><div>본인인증</div></li><!-- 지나간step -->
+							<li class="pass"><div>공인인증서 등록</div></li><!-- 지나간step -->
+							<li class="on"><div>약관동의</div></li><!-- 현재step -->
+							<li><div>개인정보 입력</div></li>
+							<li class="last"><div>이메일 인증</div></li>
+						</ul>
+                    </div>
+					<!-- // 2016-06-01 수정 -->
+					
+					<div class="title_wrap">
+                        <p class="title_01">약관동의</p>
+                    </div>
+
+					<div class="total_chk">
+						<input type="checkbox" id="chk_total"><label for="chk_total" class="chk_box">서비스 이용약관, 개인정보취급방침, 개인정보 수집∙이용 동의에 모두 동의합니다.</label>						
+					</div>
+					
+					<div class="privercy_box marT0">
+                        <p class="privercy_tit">서비스 이용약관</p>
+                        <div class="privercy_con">
+							<!-- 2016-06-16 수정 -->
+							<textarea class="privercy_txt" disabled>
+서비스 이용약관
+
+① ㈜코스콤은 정보주체의 개인정보를 제1조(개인정보의 처리 목적)에서 명시한 범위 내에서만 처리하며, 정보주체의 동의, 법률의 특별한 규정 등 개인정보 보호법 제17조 및 제18조 에 해당하는 경우에만 개인정보를 제3자에게 제공합니다.
+② ㈜코스콤은 다음과 같이 개인정보를 제3자에게 제공하고 있습니다.
+							</textarea>
+							<!-- // 2016-06-16 수정 -->
+                            <!-- <div class="privercy_txt">
+                                <p class="txt_tit">서비스 이용약관</p>
+                                ① ㈜코스콤은 정보주체의 개인정보를 제1조(개인정보의 처리 목적)에서 명시한 범위 내에서만 처리하며, 정보주체의 동의, 법률의 특별한 규정 등 개인정보 보호법 제17조 및 제18조 에 해당하는 경우에만 개인정보를 제3자에게 제공합니다.<br />
+                                ② ㈜코스콤은 다음과 같이 개인정보를 제3자에게 제공하고 있습니다.
+                            </div> -->
+                            <div class="privercy_chk">
+                                <input type="checkbox" id="chk1"><label for="chk1" class="chk_box">서비스 이용약관에 동의합니다. (필수)</label>                                               
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="privercy_box">
+                        <p class="privercy_tit">개인정보취급방침</p>
+                        <div class="privercy_con">
+							<!-- 2016-06-16 수정 -->
+							<textarea class="privercy_txt" disabled>
+개인정보취급방침
+
+
+① ㈜코스콤은 정보주체의 개인정보를 제1조(개인정보의 처리 목적)에서 명시한 범위 내에서만 처리하며, 정보주체의 동의, 법률의 특별한 규정 등 개인정보 보호법 제17조 및 제18조 에 해당하는 경우에만 개인정보를 제3자에게 제공합니다.
+② ㈜코스콤은 다음과 같이 개인정보를 제3자에게 제공하고 있습니다.
+							</textarea>
+							<!-- // 2016-06-16 수정 -->
+                            <div class="privercy_chk">
+                                <input type="checkbox" id="chk2"><label for="chk2" class="chk_box">개인정보취급방침에 동의합니다. (필수)</label>                                               
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="privercy_box">
+                        <p class="privercy_tit">개인정보 수집&middot;이용 동의</p>
+                        <div class="privercy_con">
+							<!-- 2016-06-16 수정 -->
+							<textarea class="privercy_txt" disabled>
+개인정보 수집&middot;이용 동의
+
+
+1. 개인정보의 수집ㆍ이용 목적
+고객의 소리 처리 결과를 확인하기 위해 개인정보를 최소한의 범위 내에서 수집하고 있습니다.
+2. 수집하는 개인정보의 항목
+이름, 전화번호, 이메일
+							</textarea>
+						    <!-- // 2016-06-16 수정 -->
+                            <div class="privercy_chk">
+                                <input type="checkbox" id="chk3"><label for="chk3" class="chk_box">개인정보 수집∙이용에 동의합니다. (필수)</label>                                     
+                            </div>
+                        </div>
+                    </div>
+					
+					<!-- 2016-06-20 추가 -->
+					<div class="total_chk type2">
+						<input type="checkbox" id="chk_total2"><label for="chk_total2" class="chk_box">서비스 이용약관, 개인정보취급방침, 개인정보 수집∙이용 동의에 모두 동의합니다.</label>						
+					</div>
+					<!-- // 2016-06-20 추가 -->
+                    
+					<div class="btn_area">
+						<a href="#none" class="btn_type2">동의하지 않음</a>
+						<a href="#none" class="btn_type1">동의</a>
+					</div>
+
+				</div>
+				<!-- // con -->
+
+			</article>
+			<!-- // content -->
+		</div>
+	</section>
+	<!-- section -->
+
+	<!-- footer -->
+	<footer class="footer">
+		<div class="footer_area">
+			<ul class="link">
+				<li><a href="#none">서비스이용약관</a></li>
+				<li class="point"><a href="#none">개인정보취급방침</a></li>
+			</ul>
+			<address>
+				서울시 영등포구 여의나루로 76 ㈜코스콤  대표전화 : 02-767-7114 <span>이메일 : master@koscom.openplatform.com</span>
+				<span class="copy">COPYRIGHT 2016. KOSCOM CORP. ALL RIGHTS RESERVED.</span>
+			</address>
+
+			<div class="family_site">
+				<!-- selBox2 -->
+				<span class="sel_box2">
+					<select style="min-width:150px">
+						<option>코스콤 사이트</option>
+					</select>
+				</span>
+				<!-- selBox2 -->
+				<span class="sel_box2">
+					<select style="min-width:170px">
+						<option>관련 사이트</option>
+					</select>
+				</span>				
+			</div>
+
+		</div>
+	</footer>
+	<!-- // footer -->
+
+</div>
+
+</body>
+</html>

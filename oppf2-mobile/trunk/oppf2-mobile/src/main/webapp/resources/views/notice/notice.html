@@ -1,0 +1,119 @@
+<ion-view view-title="공지 사항">
+
+    <ion-content>
+        <ion-refresher pulling-text="" on-refresh="vm.searchPulling()" pulling-icon="ion-ios-refresh"></ion-refresher>
+	
+        <div class="container">
+<!-- 		<form name="$root.searchFoam" ng-submit="vm.search();"> -->
+            <div class="search_area">
+
+
+                <div class="select_box">
+            			<select ng-model="vm.searchParam.searchType" 
+                                ng-options="data.searchResCode as data.codeNameKor for data in vm.commonCodeList"  
+                                ng-init="vm.searchParam.searchType = 'G040001'">
+            			</select>
+                </div>
+			
+                <div class="input_area">
+                        <input type="text" ng-model="vm.searchParam.searchKeyword" 
+                                id="txtSearchKeyword" 
+                                placeholder="검색어를 입력하세요" 
+                                ng-keydown="vm.inputKeyDown($event)" 
+                                ng-blur="vm.search()" />
+                        <button type="button" class="btn_del" ng-click="vm.searchClear()" ng-show="vm.showClearBtn"></button>
+                </div>
+            </div>
+<!-- 		</form> -->
+
+
+            <div class="inner_cont type2">
+                <div class="hits"><span class="ft_org">{{vm.searchTotalCount}}</span> 건</div>
+                <!-- 아코디언 메뉴 -->
+                <div id="noticediv" class="notice_area">
+                    <div class="accordian-menu" accordion>
+                    
+                    
+                        <div ng-repeat="fixRes in vm.noticeFixList" class="accordian-cont cont_wrap fix_noti"> <!-- 고정일때 -->
+                            <a href="#none" class="btn_bar">
+                                <span class="title">{{fixRes.noticeTitle}}</span>
+                                <span class="date">{{fixRes.createDate.replace('-', '\.').replace('-', '\.')}}</span>
+                            </a>
+                            <div class="detail_cont">
+                                <div class="gray_box" ng-bind-html="fixRes.noticeContent">
+<!--                                     {{angular.element(fixRes.noticeContent)}} -->
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+<!--                         <div class="accordian-cont cont_wrap fix_noti"> 고정일때 -->
+<!--                             <a href="#none" class="btn_bar"> -->
+<!--                                 <span class="title">ARS 인증 안내ARS </span> -->
+<!--                                 <span class="date">2017.07.18</span> -->
+<!--                             </a> -->
+<!--                             <div class="detail_cont"> -->
+<!--                                 <div class="gray_box"> -->
+<!--                                     핀테크 포털의 정착을 위해 신규파트너를 모집하고 있습니다. 많은 관심부탁드립니다.핀테크 포털의 정착을 위해 신규파트너를 모집하고 있습니다. 많은 관심부탁드립니다.핀테크 포털의 정착을 위해 신규파트너를 모집하고 있습니다. 많은 관심부탁드립니다. 핀테크 포털의 정착을 위해 신규파트너를 모집하고 있습니다. 많은 관심부탁드립니다. -->
+<!--                                 </div> -->
+<!--                             </div> -->
+<!--                         </div> -->
+
+
+                        <div ng-repeat="listRes in vm.noticeList" class="accordian-cont cont_wrap"> <!-- 고정일때 -->
+                            <a href="#none" class="btn_bar">
+                                <span class="title">{{listRes.noticeTitle}}</span>
+                                <span class="date">{{listRes.createDate.replace('-', '\.').replace('-', '\.')}}</span>
+                            </a>
+                            <div class="detail_cont">
+                                <div class="gray_box" ng-bind-html="listRes.noticeContent">
+<!--                                     {{listRes.noticeContent}} -->
+                                </div>
+                            </div>
+                        </div>
+<!--                         <div collection-repeat="listRes in vm.noticeList" class="accordian-cont cont_wrap"> -->
+<!--                             <a href="#none" class="btn_bar"> -->
+<!--                                 <span class="title">{{listRes.noticeTitle}}</span> -->
+<!--                                 <span class="date">{{ listRes.createDate.replace('-', '\.').replace('-', '\.') }}</span> -->
+<!--                             </a> -->
+<!--                             <div class="detail_cont"> -->
+<!--                                 <div class="gray_box"> -->
+<!--                                     핀테크 포털의 정착을 위해 신규파트너를 모집하고 있습니다. 많은 관심부탁드립니다.핀테크 포털의 정착을 위해 신규파트너를 모집하고 있습니다. 많은 관심부탁드립니다.핀테크 포털의 정착을 위해 신규파트너를 모집하고 있습니다. 많은 관심부탁드립니다. 핀테크 포털의 정착을 위해 신규파트너를 모집하고 있습니다. 많은 관심부탁드립니다. -->
+<!--                                 </div> -->
+<!--                             </div> -->
+<!--                         </div> -->
+                        
+                        
+                        
+                    </div>
+
+                    <!-- 결과 없을때 -->
+                    <div ng-hide="vm.searchTotalCount" class="not_result">검색 결과가 없습니다.</div>
+                    <!--// 결과 없을때 -->
+
+                </div>
+                <!--// 아코디언 메뉴 -->
+            </div>
+<!--             <ion-infinite-scroll ng-if="!vm.noMoreItemsAvailable" on-infinite="vm.selectNoticeList(vm.noMoreItemsAvailable, vm.searchParam.page, vm.searchParam.size, vm.searchParam.searchType, vm.searchParam.searchKeyword)" distance="10%"> -->
+            <ion-infinite-scroll ng-if="!vm.noMoreItemsAvailable" on-infinite="vm.loadMore()" distance="10%">
+            </ion-infinite-scroll>
+                        
+            
+            
+        </div>
+	</ion-content>
+
+<!--        <div class="notice" > -->
+<!--            <ul class="list" > -->
+<!--                <li collection-repeat="listRes in vm.noticeList"> -->
+<!--                    <div ng-click="vm.alert(listRes.noticeTitle, listRes.noticeContent);">{{listRes.noticeTitle}}</div> -->
+<!--                    <div ng-show="vm.click" style="color:gray;"> -->
+<!--                        {{listRes.noticeContent}} -->
+<!--                    </div> -->
+<!--                </li> -->
+<!--            </ul> -->
+<!--             <ion-infinite-scroll ng-if="!vm.noMoreItemsAvailable" on-infinite="vm.selectNoticeList(vm.noMoreItemsAvailable, vm.searchParam.page, vm.searchParam.size, vm.searchParam.searchType, vm.searchParam.searchKeyword)" distance="10%"> -->
+<!--             </ion-infinite-scroll> -->
+<!--        </div> -->
+
+</ion-view>

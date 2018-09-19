@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="kr.co.koscom.oppf.spt.direct.terms.dao.TermsDAO" >
+  <typeAlias alias="TermsDTO"
+     type="kr.co.koscom.oppf.spt.direct.terms.dto.TermsDTO"/>
+   <typeAlias alias="TermsInfoDTO"
+     type="kr.co.koscom.oppf.spt.direct.terms.dto.TermsInfoDTO"/>
+   <typeAlias alias="TermsPubCompanyVO" type="kr.co.koscom.oppf.spt.usr.svcAppl.service.TermsPubCompanyVO"/>
+        
+  <select id="direct.TermsDAO.selectTerms" resultClass="TermsDTO" parameterClass="java.util.Map">
+        SELECT * FROM 
+            (
+                (
+                SELECT 
+                    company_code_id                 as companyCodeId,
+                    company_terms_type              as termsType,
+                    company_terms_content_reg_seq   as termsContentRegSeq,
+                    company_terms_content_ver       as termsContentVer,
+                    company_terms_content           as termsContent,
+                    create_date                     as createDate,
+                    create_id                       as createId,
+                    update_date                     as updateDate,
+                    update_id                       as updateId
+                FROM 
+                    spt_customer_company_terms_content_profile
+                )
+                union all
+                (
+                SELECT 
+                    ''                              as companyCodeId,
+                    customer_terms_type             as termsType,
+                    customer_terms_content_reg_seq  as termsContentRegSeq,
+                    customer_terms_content_ver      as termsContentVer,
+                    customer_terms_content          as termsContent,
+                    create_date                     as createDate,
+                    create_id                       as createId,
+                    update_date                     as updateDate,
+                    update_id                       as updateId
+                FROM 
+                    spt_customer_terms_content_profile
+                )
+            ) a
+         WHERE
+            a.companyCodeId = #comId#
+            AND a.termsType = #termsType#
+        ORDER BY a.termsContentRegSeq DESC
+        LIMIT 1       
+  </select>
+  <select id="direct.TermsDAO.selectLastestCustomerServiceTermsInfo" resultClass="TermsInfoDTO" parameterClass="java.util.Map">
+		SELECT 
+		  a.customer_reg_no as customerRegNo,
+		  a.terms_reg_no as termsRegNo,		
+		  a.terms_start_date as termsStartDate,
+		  a.terms_expire_date as termsEndDate,
+		  a.terms_start_date as termsDate,
+		  a.customer_name as customerUserNm,
+		  dec_char_sel(a.customer_email,10,'ARIA','spt_customer_service_terms_profile','customer_email',user(),connection_id())  as customerEmail,
+		  dec_char_sel(a.customer_birth_day,10,'ARIA','spt_customer_service_terms_profile','customer_birth_day',user(),connection_id())  as customerBirthDay,
+		  ifnull((SELECT customer_terms_content_ver FROM spt_customer_terms_content_profile WHERE customer_terms_type = 'G008020' AND a.terms_chg_date >= create_date ORDER BY create_date ASC LIMIT 0,1), '1') as version
+		FROM spt_customer_service_terms_profile a
+		WHERE a.customer_reg_no = #customerRegNo#
+		AND a.subcompany_code_id = #subcompanyCodeId#
+		AND terms_auth_type = 'G032001'
+		AND a.delete_date is not null    
+  </select>
+   <select id="direct.TermsDAO.selectLastestCustomerServiceTermsPubcompanyInfo" resultClass="TermsPubCompanyVO" parameterClass="java.util.Map">
+		SELECT
+		 customer_reg_no as customerRegNo,
+		 terms_reg_no as termsRegNo,
+		 terms_pubcompany_reg_no as termsPubCompanyRegNo,
+		 pubcompany_code_id as pubCompanyCodeId,
+		 pubcompany_name as pubCompanyName,
+		 terms_chg_date as termsChgDate
+		FROM spt_customer_service_terms_pubcompany_profile 
+		WHERE customer_reg_no = #customerRegNo#
+		AND terms_reg_no = #termsRegNo#
+		AND delete_date is null 
+  </select>  
+    
+</sqlMap>

@@ -1,0 +1,83 @@
+<ion-view view-title="비회원 인증">
+    <ion-content>
+        <div class="container"> <!-- 회원가입 페이지 -->
+            <form name="$root.memberTerms">
+                <div class="inner_cont type2 mt48">
+                    <h2 class="title_h2">약관동의</h2>
+                    <div class="agreement_area"> <!-- 약관동의 -->
+                        <!-- 전체동의 -->
+                        <div class="all_check">
+                            <div class="form_input"><input type="checkbox" id="all_ck" name="all_ck" ng-model="vm.allTerms" ng-click="vm.allCheck();"><label for="all_ck">전체동의</label></div>
+                        </div>
+                        <!--// 전체동의 -->
+                        <!-- 약관동의 List -->
+                        <div class="accordian-menu" accordion ng-repeat="item in vm.termsList">
+                            <!-- loop -->
+                            <div class="accordian-cont cont_wrap">
+                                <a href="#none" class="btn_bar">{{item.customerTermsTypeName}}에 동의합니다.</a>
+                                <div class="detail_cont">
+                                    <ion-content>
+                                        <pre class="scroll_box">{{item.customerTermsContent}}</pre>
+                                    </ion-content>
+                                </div>
+                                <div class="form_input">
+                                    <input type="checkbox" id="agree1" name="agree1" ng-model="item.checked" ng-click="vm.checkValid();" required><label for="agree1"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <!--// 약관동의 List -->
+                    </div>
+					<div class="txt_error" ng-messages="$root.memberTerms.all_ck.$error">
+                        <div class="txt_error" ng-show="!vm.allTerms">약관에 모두 동의하셔야 합니다.</div> <!-- add class : hide_set : display:none; 처리  -->
+                    </div>
+                    <ul class="entry_area mt48">
+                        <li>
+                            <div class="title_s">
+                                    이메일 정보 입력
+                            </div>
+                            <div class="email_area">
+                                <div class="top_box">
+                                    <div class="input_area">
+                                        <input type="text" name="customerEmailId"
+                                               ng-click="vm.emailValidMsg=true" ng-model="vm.customerEmailId"
+                                               required ng-change="vm.customerEmailChange();"/>
+                                    </div>
+                                    <span class="txt_at">@</span>
+                                    <div class="input_area">
+                                        <input type="text" name="emailPath"
+                                               ng-click="vm.emailValidMsg=true"
+                                               ng-readonly="!!vm.emailPathSelect"
+                                               ng-model="vm.emailPath"
+                                               required  ng-change="vm.customerEmailChange();" />
+                                    </div>
+                                </div>
+                                <div class="select_box">
+                                    <select ng-model="vm.emailPathSelect"
+                                            ng-change="vm.emailChange();"
+                                            ng-click="vm.emailValidMsg=true"
+                                            ng-options="data.data as data.name for data in vm.emailPathSelectList">
+                                    </select>
+                                </div>
+                                <input type="hidden" name="customerEmail" ng-model="vm.customerEmail" required email-valid />
+                            </div>
+                            <div ng-messages="memberTerms.customerEmail.$error" ng-show="vm.emailValidMsg">
+                                <div class="txt_error" ng-message="required">이메일을 입력하세요.</div>
+                                <div class="txt_error" ng-message="syntax">이메일 형식이 일치 하지 않습니다.</div>
+                                <div class="txt_error" ng-message="already">이미 존재하는 이메일 입니다.</div>
+                                <div class="txt_error" ng-message="err">서버에서 이메일 체크 에러가 발생했습니다.</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+        </ion-content>
+    </ion-content>
+    <ion-footer-bar>
+        <!-- 하단 버튼 -->
+        <div class="button_area btn_bottom_area">
+            <button class="btn_middle btn_black_org" ng-click="vm.termsListAgree();" ng-disabled="$root.memberTerms.$invalid">휴대폰 인증</button><!-- disabled event 넣어야 함 -->
+        </div>
+        <!--// 하단 버튼 -->
+    </ion-footer-bar>
+</ion-view>

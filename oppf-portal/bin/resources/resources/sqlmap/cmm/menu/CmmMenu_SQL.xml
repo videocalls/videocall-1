@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.setting.service.impl.MenuManageDAO">
+
+  	<typeAlias alias="CmmMenuVO" type="kr.co.koscom.oppf.cmm.menu.service.CmmMenuVO"/>
+  	
+  	
+	<!--
+     * @Method Name        : selectCmmMenuList
+     * @Method description : 메뉴 목록을 조회한다.
+     * @param              : CmmMenuVO
+     * @return             : CmmMenuVO
+     * @throws             : Exception
+     -->
+    <select id="cmm.CmmMenuDAO.selectCmmMenuList" parameterClass="CmmMenuVO" resultClass="CmmMenuVO">
+		select  a.system_kind_id      as systemKindId,
+		        a.menu_id             as menuId,
+		        a.parent_menu_id      as parentMenuId,
+		        a.menu_name           as menuName,
+		        a.menu_type           as menuType,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.menu_type
+		        )                     as menuTypeName,
+		        a.menu_order          as menuOrder,
+		        a.menu_url            as menuUrl,
+		        a.login_yn            as loginYn,
+		        a.use_yn              as useYn,
+		        a.menu_id             as treeMenuId,
+		        a.parent_menu_id      as treeParentMenuId,
+		        case when ifnull(c.menu_id, '') != '' then 
+		            '3'
+		        else
+		            case when ifnull(b.menu_id, '') != '' then 
+		                '2'
+		            else
+		                '1'
+		            end
+		        end as treeLvl,
+		        case when ifnull(c.menu_id, '') != '' then 
+	                concat(lpad(ifnull(c.menu_order, 0), 3, '0'), lpad(ifnull(b.menu_order, 0), 3, '0'), lpad(ifnull(a.menu_order, 0), 3, '0'))
+	            else
+	                case when ifnull(b.menu_id, '') != '' then 
+	                    concat(lpad(ifnull(b.menu_order, 0), 3, '0'), lpad(ifnull(a.menu_order, 0), 3, '0'), lpad(0, 3, '0'))
+	                else
+	                    concat(lpad(ifnull(a.menu_order, 0), 3, '0'), lpad(0, 3, '0'), lpad(0, 3, '0'))
+	                end
+	            end as treeOrder
+		from(
+		    select  system_kind_id,
+		            menu_id,
+		            parent_menu_id,
+		            menu_name,
+		            menu_type,
+		            menu_order,
+		            menu_url,
+		            login_yn,
+		            use_yn
+		    from com_menu_info
+		    where 1=1
+		    <isNotEmpty property="searchSystemKindId">
+		        and system_kind_id = #searchSystemKindId#
+		    </isNotEmpty>
+		    <isNotEmpty property="searchMenuId">
+		        and menu_id = #searchMenuId#
+		    </isNotEmpty>
+		    <isNotEmpty property="searchParentMenuId">
+		        and parent_menu_id = #searchParentMenuId#
+		    </isNotEmpty>
+		    <isNotEmpty property="searchMenuName">
+		        and menu_name = #searchMenuName#
+		    </isNotEmpty>
+		    <!-- 
+		    <isNotEmpty property="searchMenuType">
+		        and menu_type = #searchMenuType#
+		    </isNotEmpty>
+		     -->
+		    <isNotEmpty property="searchMenuTypeList">
+		        <iterate prepend="and menu_type IN" property="searchMenuTypeList" open="(" close=")" conjunction=",">
+	                #searchMenuTypeList[]#
+	            </iterate>
+	        </isNotEmpty>
+		    <isNotEmpty property="searchMenuUrl">
+		        and menu_url = #searchMenuUrl#
+		    </isNotEmpty>
+		    <isNotEmpty property="searchLoginYn">
+		        <isEqual property="searchLoginYn" compareValue="N">
+		            and login_yn = #searchLoginYn#
+		        </isEqual>
+		    </isNotEmpty>
+		    <isNotEmpty property="searchUseYn">
+		        and use_yn = #searchUseYn#
+		    </isNotEmpty>
+		) a 
+		left join com_menu_info as b on b.system_kind_id = a.system_kind_id and b.menu_id = a.parent_menu_id
+		left join com_menu_info as c on c.system_kind_id = b.system_kind_id and c.menu_id = b.parent_menu_id
+		order by treeOrder    	 		
+    </select>
+    
+	<!--
+     * @Method Name        : selectCmmMenuTopList
+     * @Method description : 메뉴 Top목록을 조회한다.
+     * @param              : CmmMenuVO
+     * @return             : CmmMenuVO
+     * @throws             : Exception
+     -->
+    <select id="cmm.CmmMenuDAO.selectCmmMenuTopList" parameterClass="CmmMenuVO" resultClass="CmmMenuVO">
+		select  a.system_kind_id      as systemKindId,
+		        a.menu_id             as menuId,
+		        a.parent_menu_id      as parentMenuId,
+		        a.menu_name           as menuName,
+		        a.menu_type           as menuType,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.menu_type
+		        )                     as menuTypeName,
+		        a.menu_order          as menuOrder,
+		        a.menu_url            as menuUrl,
+		        a.login_yn            as loginYn,
+		        a.mobile_yn           as mobileYn,
+		        a.use_yn              as useYn,
+		        a.menu_id             as treeMenuId,
+		        a.parent_menu_id      as treeParentMenuId,
+		        case when ifnull(c.menu_id, '') != '' then 
+		            '3'
+		        else
+		            case when ifnull(b.menu_id, '') != '' then 
+		                '2'
+		            else
+		                '1'
+		            end
+		        end as treeLvl,
+		        cast(
+		            case when ifnull(c.menu_id, '') != '' then 
+		                concat(ifnull(c.menu_order, 0), ifnull(b.menu_order, 0), ifnull(a.menu_order, 0))
+		            else
+		                case when ifnull(b.menu_id, '') != '' then 
+		                    concat(ifnull(b.menu_order, 0), ifnull(a.menu_order, 0), 0)
+		                else
+		                    concat(ifnull(a.menu_order, 0), 0, 0)
+		                end
+		            end 
+		        as UNSIGNED) as treeOrder
+		from(
+		    select  system_kind_id,
+		            menu_id,
+		            parent_menu_id,
+		            menu_name,
+		            menu_type,
+		            menu_order,
+		            menu_url,
+		            login_yn,
+		            mobile_yn,
+		            use_yn
+		    from com_menu_info
+		    where 1=1
+		    and menu_type = 'G020002' /* G020:메뉴형태(001:login,002:menu,003:mypage,004:mypage-핀테크,005:mypage-금투사) */
+		    <isNotEmpty property="searchSystemKindId">
+		        and system_kind_id = #searchSystemKindId#
+		    </isNotEmpty>
+		    <isNotEmpty property="searchMenuId">
+		        and menu_id = #searchMenuId#
+		    </isNotEmpty>
+		    <isNotEmpty property="searchParentMenuId">
+		        and parent_menu_id = #searchParentMenuId#
+		    </isNotEmpty>
+		    <isNotEmpty property="searchMenuName">
+		        and menu_name = #searchMenuName#
+		    </isNotEmpty>
+		    <!--
+		    <isNotEmpty property="searchMenuType">
+		        and menu_type = #searchMenuType#
+		    </isNotEmpty>
+		     -->
+		    <isNotEmpty property="searchMenuTypeList">
+		        <iterate prepend="and menu_type IN" property="searchMenuTypeList" open="(" close=")" conjunction=",">
+	                #searchMenuTypeList[]#
+	            </iterate>
+	        </isNotEmpty>
+		    <isNotEmpty property="searchMenuUrl">
+		        and menu_url = #searchMenuUrl#
+		    </isNotEmpty>
+		    <isNotEmpty property="searchLoginYn">
+		        <isEqual property="searchLoginYn" compareValue="N">
+		            and login_yn = #searchLoginYn#
+		        </isEqual>
+		    </isNotEmpty>
+		    <isEqual property="searchMobileYn" compareValue="Y">
+		        and mobile_yn = 'Y'
+		    </isEqual>
+		    <isNotEmpty property="searchUseYn">
+		        and use_yn = #searchUseYn#
+		    </isNotEmpty>
+		) a 
+		left join com_menu_info as b on b.system_kind_id = a.system_kind_id and b.menu_id = a.parent_menu_id
+		left join com_menu_info as c on c.system_kind_id = b.system_kind_id and c.menu_id = b.parent_menu_id
+		order by treeOrder    	 		
+    </select>
+    
+	<!--
+     * @Method Name        : selectCmmMenuLeftList
+     * @Method description : 메뉴 Left목록을 조회한다.
+     * @param              : CmmMenuVO
+     * @return             : CmmMenuVO
+     * @throws             : Exception
+     -->
+    <select id="cmm.CmmMenuDAO.selectCmmMenuLeftList" parameterClass="CmmMenuVO" resultClass="CmmMenuVO">
+		select  a.system_kind_id      as systemKindId,
+		        a.menu_id             as menuId,
+		        a.parent_menu_id      as parentMenuId,
+		        a.menu_name           as menuName,
+		        a.menu_type           as menuType,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.menu_type
+		        )                     as menuTypeName,
+		        a.menu_order          as menuOrder,
+		        a.menu_url            as menuUrl,
+		        a.login_yn            as loginYn,
+		        a.use_yn              as useYn,
+		        a.menu_id             as treeMenuId,
+		        a.parent_menu_id      as treeParentMenuId,
+		        case when ifnull(c.menu_id, '') != '' then 
+		            '3'
+		        else
+		            case when ifnull(b.menu_id, '') != '' then 
+		                '2'
+		            else
+		                '1'
+		            end
+		        end as treeLvl,
+		        cast(
+		            case when ifnull(c.menu_id, '') != '' then 
+		                concat(ifnull(c.menu_order, 0), ifnull(b.menu_order, 0), ifnull(a.menu_order, 0))
+		            else
+		                case when ifnull(b.menu_id, '') != '' then 
+		                    concat(ifnull(b.menu_order, 0), ifnull(a.menu_order, 0), 0)
+		                else
+		                    concat(ifnull(a.menu_order, 0), 0, 0)
+		                end
+		            end 
+		        as UNSIGNED) as treeOrder
+		from(
+		    select  system_kind_id,
+		            menu_id,
+		            parent_menu_id,
+		            menu_name,
+		            menu_type,
+		            menu_order,
+		            menu_url,
+		            login_yn,
+		            use_yn
+		    from com_menu_info
+		    where 1=1
+		    <isNotEmpty property="searchSystemKindId">
+		        and system_kind_id = #searchSystemKindId#
+		    </isNotEmpty>
+		    <isNotEmpty property="searchParentMenuId">
+		        and (menu_id = #searchParentMenuId# or parent_menu_id = #searchParentMenuId#)
+		    </isNotEmpty>
+		    <isNotEmpty property="searchMenuName">
+		        and menu_name = #searchMenuName#
+		    </isNotEmpty>
+		    <!-- 
+		    <isNotEmpty property="searchMenuType">
+		        and menu_type = #searchMenuType#
+		    </isNotEmpty>
+		     -->
+		    <isNotEmpty property="searchMenuTypeList">
+		        <iterate prepend="and menu_type IN" property="searchMenuTypeList" open="(" close=")" conjunction=",">
+	                #searchMenuTypeList[]#
+	            </iterate>
+	        </isNotEmpty>
+		    <isNotEmpty property="searchMenuUrl">
+		        and menu_url = #searchMenuUrl#
+		    </isNotEmpty>
+		    <isNotEmpty property="searchLoginYn">
+		        <isEqual property="searchLoginYn" compareValue="N">
+		            and login_yn = #searchLoginYn#
+		        </isEqual>
+		    </isNotEmpty>
+		    <isNotEmpty property="searchUseYn">
+		        and use_yn = #searchUseYn#
+		    </isNotEmpty>
+		) a 
+		left join com_menu_info as b on b.system_kind_id = a.system_kind_id and b.menu_id = a.parent_menu_id
+		left join com_menu_info as c on c.system_kind_id = b.system_kind_id and c.menu_id = b.parent_menu_id
+		order by treeOrder    	 		
+    </select>
+    
+    <!--
+     * @Method Name        : selectCmmMenuDtl
+     * @Method description : 메뉴의 상세정보를 조회한다.
+     * @param              : CmmMenuVO
+     * @return             : CmmMenuVO
+     * @throws             : Exception
+     -->
+    <select id="cmm.CmmMenuDAO.selectCmmMenuDtl" parameterClass="CmmMenuVO" resultClass="CmmMenuVO">
+		select  system_kind_id      as systemKindId,
+		        menu_id             as menuId,  
+		        parent_menu_id      as parentMenuId,
+		        menu_name           as menuName,
+		        menu_type           as menuType,
+		        menu_order          as menuOrder,
+		        menu_url            as menuUrl,
+		        login_yn            as loginYn,
+		        use_yn              as useYn,
+		        date_format(create_date, '%Y-%m-%d %H:%i')    as createDate,
+		        date_format(update_date, '%Y-%m-%d %H:%i')    as updateDate
+		from com_menu_info
+		where system_kind_id = #searchSystemKindId#
+		and menu_id = #searchMenuId#    
+    </select>
+    
+        
+</sqlMap>

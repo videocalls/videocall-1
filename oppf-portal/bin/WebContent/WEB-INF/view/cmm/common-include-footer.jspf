@@ -1,0 +1,4 @@
+<%@ page contentType="text/html; charset=utf-8"%>
+
+<%-- 각 시스템별 top include --%>
+<c:import url="/cmm/includeFooter.do" />

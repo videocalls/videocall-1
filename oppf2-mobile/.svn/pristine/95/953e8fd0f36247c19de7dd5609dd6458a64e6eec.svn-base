@@ -1,0 +1,90 @@
+<ion-view view-title="참여사 소개">
+	<ion-content  scroll="false" class="bg_gray"> <!-- bg color -->
+		<div class="container">
+			<div class="bizinfo_page">
+				<!-- tabs -->
+				<div class="tab-wrap">
+					<!-- 상단 -->
+					<ion-header-bar>
+						<ul class="btn_head tab-head tab_03">
+							<li ng-class="{active: vm.currentSlideIndex === 0}"><a href="#none" ng-click="vm.slideChange(0);$event.preventDefault();">금융투자회사</a></li>
+							<li ng-class="{active: vm.currentSlideIndex === 1}"><a href="#none" ng-click="vm.slideChange(1);$event.preventDefault();">금융/공공</a></li>
+							<li ng-class="{active: vm.currentSlideIndex === 2}"><a href="#none" ng-click="vm.slideChange(2);$event.preventDefault();">핀테크기업</a></li>
+						</ul>
+					</ion-header-bar>
+					<!--// 상단 -->
+					<ion-slide-box on-slide-changed="vm.slideChange2();" show-pager="false" does-continue="true" class="tab-body">
+						<!-- 금융투자회사 -->
+						<ion-slide>
+							<ion-content class="inner_cont_05"> <!-- 탭없는 -->
+								<div class="cont">
+									<ul class="fin_info_banner">
+										<li><div><a ng-click="vm.openUrl('http://m.ebestsec.co.kr')";><img src="/resources/images/info/img_banner_07.jpg" alt="이베스트투자증권"><p>이베스트투자증권</p></a></div></li>
+										<li><div><a ng-click="vm.openUrl('http://m.sks.co.kr')";><img src="/resources/images/info/img_banner_13.jpg" alt="SK증권"><p>SK증권</p></a></div></li>
+										<li><div><a ng-click="vm.openUrl('http://m.samsungpop.com')";><img src="/resources/images/info/img_banner_04.jpg" alt="samsungpop"><p>삼성증권</p></a></div></li>
+										<li><div><a ng-click="vm.openUrl('https://m.eugenefn.com')";><img src="/resources/images/info/img_banner_52.png" alt="유진투자증권"><p>유진투자증권</p></a></div></li>
+										<li><div><a ng-click="vm.openUrl('http://mo.dongbuhappy.com')";><img src="/resources/images/info/img_banner_02.jpg" alt="DB금융투자증권"><p>DB금융투자증권</p></a></div></li>
+										<li><div><a ng-click="vm.openUrl('http://m.daishin.com')";><img src="/resources/images/info/img_banner_01.jpg" alt="대신증권"><p>대신증권</p></a></div></li>
+										<li><div><a ng-click="vm.openUrl('http://m.shinhaninvest.com')";><img src="/resources/images/info/img_banner_05.jpg" alt="신한금융투자"><p>신한금융투자증권</p></a></div></li>
+										<li><div><a ng-click="vm.openUrl('http://m.hi-ib.com/')";><img src="/resources/images/info/img_banner_41.jpg" alt="하이투자증권"><p>하이투자증권</p></a></div></li>
+										<li><div><a ng-click="vm.openUrl('http://m.kbsec.com')";><img src="/resources/images/info/img_banner_36.jpg" alt="KB투자증권"><p>KB증권</p></a></div></li>
+										<li><div><a ng-click="vm.openUrl('http://m.nhqv.com')";><img src="/resources/images/info/img_banner_12.jpg" alt="NH투자증권"><p>NH투자증권</p></a></div></li>
+										<li><div><a ng-click="vm.openUrl('http://www.hygood.co.kr/')";><img src="/resources/images/info/img_banner_43.jpg" alt="한양증권"><p>한양증권</p></a></div></li>
+										<li><div><a ng-click="vm.openUrl('https://m.myasset.com')";><img src="/resources/images/info/img_banner_06.jpg" alt="유안타증권"><p>유안타증권</p></a></div></li>
+										<li><div><a ng-click="vm.openUrl('http://www.imeritz.com')";><img src="/resources/images/info/img_banner_03.jpg" alt="메리츠증권"><p>메리츠증권</p></a></div></li>
+										<li><div><a ng-click="vm.openUrl('http://www.kiwoom.com')";><img src="/resources/images/info/img_banner_08.jpg" alt="키움증권"><p>키움증권</p></a></div></li>
+										<!--<li><div><a ng-click="vm.openUrl('http://www.youfirst.co.kr')";><img src="/resources/images/info/img_banner_11.jpg" alt="현대증권"><p>현대증권</p></a></div></li>-->
+										<!--<li><div><a ng-click="vm.openUrl('http://www.truefriend.com')";><img src="/resources/images/info/img_banner_10.jpg" alt="한국투자증권"><p>한국투자증권</p></a></div></li>-->
+										<!--<li><div><a ng-click="vm.openUrl('https://www.hanaw.com')";><img src="/resources/images/info/img_banner_09.jpg" alt="하나금융투자"><p>하나금융투자</p></a></div></li>-->
+										<!--<li><div><a ng-click="vm.openUrl('https://www.miraeassetdaewoo.com/')";><img src="/resources/images/info/img_banner_26.jpg" alt="미래에셋대우"><p>미래에셋대우</p></a></div></li>-->
+										<!--<li><div><a ng-click="vm.openUrl('http://www.hmcib.com/')";><img src="/resources/images/info/img_banner_32.jpg" alt="현대차투자증권"><p>현대차투자증권</p></a></div></li>-->
+										<!--<li><div><a ng-click="vm.openUrl('http://www.bookook.co.kr/')";><img src="/resources/images/info/img_banner_28.jpg" alt="부국증권"><p>부국증권</p></a></div></li>-->
+										<!--<li><div><a ng-click="vm.openUrl('http://www.leading.co.kr/')";><img src="/resources/images/info/img_banner_25.jpg" alt="리딩투자"><p>리딩투자</p></a></div></li>-->
+										<!--<li><div><a ng-click="vm.openUrl('http://www.capefn.com/index.jsp')";><img src="/resources/images/info/img_banner_33.jpg" alt="LIG투자증권"><p>LIG투자증권</p></a></div></li>-->
+									</ul>
+								</div>
+							</ion-content>
+						</ion-slide>
+						<!--// 금융투자회사 -->
+						<!-- 핀테크기업 -->
+						<ion-slide>
+							<ion-content class="inner_cont_05">
+								<div class="cont">
+									<ul class="fin_info_banner">
+										<li><div><a ng-click="vm.openUrl('http://www.bccard.com')";><img src="/resources/images/info/img_banner_2-2.jpg" alt="BC카드"><p>BC카드</p></a></div></li>
+										<li><div><a ng-click="vm.openUrl('http://www.niceinfo.co.kr/main.nice')";><img src="/resources/images/info/img_nice.jpg" alt="나이스평가정보"><p>나이스평가정보</p></a></div></li>
+										<!--<li><div><a ng-click="vm.openUrl('http://www.kcredit.or.kr/')";><img src="/resources/images/info/img_banner_2-1.jpg" alt="한국신용정보원"><p>한국신용정보원</p></a></div></li>-->
+									</ul>
+								</div>
+							</ion-content>
+						</ion-slide>
+						<!--// 금융/공공 -->
+						<!-- 금융/공공 -->
+						<ion-slide>
+							<ion-content class="inner_cont_05">
+								<div class="cont">
+									<ul class="fin_info_banner">
+										<li><div><a ng-click="vm.openUrl('http://fabotinvest.com')";><img src="/resources/images/info/img_fabot.jpg" alt="fabot"><p>파봇투자자문</p></a></div></li>
+										<li><div><a ng-click="vm.openUrl('http://www.uberple.com')";><img src="/resources/images/info/img_banner_18.jpg" alt="위버플"><p>위버플</p></a></div></li>
+										<li><div><a ng-click="vm.openUrl('http://m.everspin.co.kr')";><img src="/resources/images/info/img_banner_17.jpg" alt="에버스핀"><p>에버스핀</p></a></div></li>
+										<li><div><a ng-click="vm.openUrl('https://wlfa.us/')";><img src="/resources/images/info/img_banner_53.png" alt="sevenfintech"><p>세븐핀테크</p></a></div></li>
+										<li><div><a ng-click="vm.openUrl('https://ibigtree.kr/')";><img src="/resources/images/info/img_bigtree.jpg" alt="bigtree"><p>빅트리</p></a></div></li>
+										<li><div><a ng-click="vm.openUrl('http://www.stockking.kr/')";><img src="/resources/images/info/img_totoline.jpg" alt="totoline"><p>투투나인</p></a></div></li>
+										<li><div><a ng-click="vm.openUrl('https://fastcall.co.kr/')";><img src="/resources/images/info/img_fastcall.jpg" alt="fastcall"><p>패스트콜</p></a></div></li>
+										<li><div><a ng-click="vm.openUrl('https://thecheat.co.kr/')";><img src="/resources/images/info/img_thecheat.jpg" alt="thecheat"><p>더치트</p></a></div></li>
+										<!--<li><div><a ng-click="vm.openUrl('http://www.qara.kr')";><img src="/resources/images/info/img_banner_51.jpg" alt="콰라"><p>콰라</p></a></div></li>-->
+										<!--<li><div><a ng-click="vm.openUrl('http://www.newsystock.com')";><img src="/resources/images/info/img_banner_14.jpg" alt="뉴지스탁"><p>뉴지스탁</p></a></div></li>-->
+										<!--<li><div><a ng-click="vm.openUrl('http://www.ganalytics.co.kr/')";><img src="/resources/images/info/img_banner_50.jpg" alt="garam"><p>가람애널리틱스</p></a></div></li>-->
+										<!--<li><div><a ng-click="vm.openUrl('http://dcamp.kr/startup/918')";><img src="/resources/images/info/img_banner_19.jpg" alt="지속가능발전소"><p>지속가능발전소</p></a></div></li>-->
+									</ul>
+								</div>
+							</ion-content>
+						</ion-slide>
+						<!--// 핀테크기업 -->
+					</ion-slide-box>
+				</div>
+				<!--// tabs  -->
+			</div>
+		</div>
+	</ion-content>
+</ion-view>

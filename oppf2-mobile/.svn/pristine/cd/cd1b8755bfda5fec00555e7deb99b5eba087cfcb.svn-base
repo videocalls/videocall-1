@@ -1,0 +1,23 @@
+<ion-view view-title="푸쉬 테스트">
+	<ion-content class="padding">
+		<h3>허영남's 폰과 테스트용 안드로이드폰으로만 전송됨</h3>
+		<form name="$root.pushForm" ng-submit="vm.submit();">
+			<fieldset>
+				<label>Message</label>
+				<textarea placeholder="내용을 입력하세요." name="content" ng-model="vm.message" required></textarea>
+				<div ng-messages="pushForm.content.$error" style="color:maroon" role="alert">
+				    <div ng-message="required">내용을 입력하세요.</div>
+				</div>
+			</fieldset>
+			<fieldset>
+				<label>Device</label>
+				<select ng-model="vm.device">
+					<option value="1">IOS - </option>
+					<option value="2">Android - </option>
+				</select>
+			</fieldset>
+			
+			<button ng-disabled="pushForm.$invalid">전송</button>
+		</form>
+	</ion-content>
+</ion-view>>

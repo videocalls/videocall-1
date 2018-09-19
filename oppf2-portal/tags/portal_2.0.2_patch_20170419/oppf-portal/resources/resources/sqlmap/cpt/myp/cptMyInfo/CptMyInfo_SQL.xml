@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 자본시장 공동 핀테크 오픈플랫폼 구축
+* @FileName : CptMyInfo_SQL.xml
+* @Comment  : [기업회원정보]정보관리를 위한 SQL XML
+* @author   : 포털 유제량
+* @since    : 2016.06.29
+* @version  : 1.0
+* @see
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2016.06.29   유제량        최초생성
+-->
+
+<sqlMap namespace="kr.co.koscom.oppf.cpt.myp.cptMyInfo.service.impl.CptMyInfoDAO">
+  	<typeAlias alias="CptMyInfoVO" type="kr.co.koscom.oppf.cpt.myp.cptMyInfo.service.CptMyInfoVO"/>
+  	
+  	 <!--
+     * @Method Name        : selectCptMyInfo
+     * @Method description : [기업회원정보상세:상세]정보를 조회한다.
+     * @param              : CptMyInfoVO
+     * @return             : CptMyInfoVO
+     * @throws             : Exception
+     -->
+    <select id="cpt.CptMyInfoDAO.selectCptMyInfo" parameterClass="CptMyInfoVO" resultClass="CptMyInfoVO">
+	    <![CDATA[
+	    select
+	        a.company_profile_reg_no                                                   as companyProfileRegNo,
+			a.operator_profile_reg_no                                                  as operatorProfileRegNo,              
+			a.operator_id                                                              as operatorId,
+			a.operator_temp_password_yn                                                as operatorTempPasswordYn,    
+			ifnull(date_format(a.operator_chg_password_date, '%Y-%m-%d %H:%i'), '')    as operatorChgPasswordDate,   
+			ifnull(date_format(a.operator_expire_password_date, '%Y-%m-%d %H:%i'), '') as operatorExpirePasswordDate,
+			ifnull(date_format(a.operator_final_password_date, '%Y-%m-%d %H:%i'), '')  as operatorFinalPasswordDate, 
+			a.operator_password_fail_cnt                                               as operatorPasswordFailCnt,   
+			a.operator_reg_status                                                      as operatorRegStatus,          
+			a.operator_name_kor                                                        as operatorNameKor,            
+			a.operator_name_eng                                                        as operatorNameEng,            
+			dec_char_sel(a.operator_phone_no,10,'ARIA','com_company_operator_profile','operator_phone_no',user(),connection_id())  as operatorPhoneNo,               
+			dec_char_sel(a.operator_email,10,'ARIA','com_company_operator_profile','operator_email',user(),connection_id())  as operatorEmail,               
+			a.operator_email_auth_yn                                                   as operatorEmailAuthYn,
+			ifnull(date_format(a.operator_reg_date, '%Y-%m-%d %H:%i'), '')             as operatorRegDate,            
+			ifnull(date_format(a.delete_date, '%Y-%m-%d %H:%i'), '')                   as deleteDate,                  
+			ifnull(date_format(a.create_date, '%Y-%m-%d %H:%i'), '')                   as createDate,                  
+			ifnull(a.create_id,'')                                                     as createId,                    
+			ifnull(date_format(a.update_date, '%Y-%m-%d %H:%i'), '')                   as updateDate,                  
+			ifnull(a.update_id,'')                                                     as updateId,
+			(
+                select code_name_kor
+                from com_system_code
+                where concat(system_grp_code, system_code) = c.company_div_code           
+            )                                                                          as companyDivCode,
+		    b.company_code_id                                                          as companyCodeId,
+		    b.company_name_kor                                                         as companyNameKor,
+		    b.company_bizreg_no                                                        as companyBizregNo,
+		    b.company_post_no                                                          as companyPostNo,
+		    b.company_address                                                          as companyAddress,
+		    b.company_address_dtl                                                      as companyAddressDtl,
+		    b.ceo_name                                                                 as ceoName,
+		    b.create_date                                                              as companyCreateDate,
+		    b.update_date                                                              as companyUpdateDate                    
+	    from com_company_operator_profile a, com_company_profile b, com_company_code c   
+	    where 1=1
+	    ]]>
+	    and a.company_profile_reg_no = #companyProfileRegNo#
+	    and a.operator_profile_reg_no = #operatorProfileRegNo#
+	    and a.company_profile_reg_no = b.company_profile_reg_no
+        and b.company_code_id = c.company_code_id
+    </select>
+  	
+  	<!--
+     * @Method Name        : selectCheckPw
+     * @Method description : [기업회원정보:ID중복확인]ID정보를 조회한다.
+     * @param              : String
+     * @return             : String
+     * @throws             : Exception
+     -->
+  	<select id="cpt.CptMyInfoDAO.selectCheckPw" parameterClass="CptMyInfoVO" resultClass="java.lang.String" >
+	  	select count(operator_password) as checkPw 
+	  	from com_company_operator_profile
+	  	where 1=1
+	  	and company_profile_reg_no = #companyProfileRegNo#
+        and operator_profile_reg_no = #operatorProfileRegNo#
+	  	and operator_password = enc_char_ins(#operatorPassword#,10,'SHA','com_company_operator_profile','operator_password',user(),connection_id())
+  	</select>
+  	
+    <!--
+     * @Method Name        : updateCptMyInfo
+     * @Method description : [기업회원정보:수정]을 한다.
+     * @param              : CptMyInfoVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="cpt.CptMyInfoDAO.updateCptMyInfo" parameterClass="CptMyInfoVO">
+	    update com_company_operator_profile set
+	        <isNotEmpty property="operatorPassword">
+		    operator_password = enc_char_ins(#operatorPassword#,10,'SHA','com_company_operator_profile','operator_password',user(),connection_id()),
+		    operator_temp_password_yn = 'N',
+		    operator_chg_password_date = sysdate(),
+			operator_expire_password_date = date_format(date_add(sysdate(), interval #operator_expire_password_date# month), '%Y%m%d'),
+			operator_final_password_date = date_format(date_add(sysdate(), interval #operator_final_password_date# month), '%Y%m%d'),
+	        operator_password_fail_cnt = 0,
+		    </isNotEmpty>
+		    operator_email = enc_char_ins(#operatorEmail#,10,'ARIA','com_company_operator_profile','operator_email',user(),connection_id()),
+		    operator_phone_no = enc_char_ins(#operatorPhoneNo#,10,'ARIA','com_company_operator_profile','operator_phone_no',user(),connection_id()),
+		    update_date = sysdate(),
+		    update_id = #operatorProfileRegNo#
+	    where 1=1
+	    and operator_id = #operatorId#
+	    and company_profile_reg_no = #companyProfileRegNo#
+	    and operator_profile_reg_no = #operatorProfileRegNo#
+    </update>
+    
+    <!--
+     * @Method Name        : updateCptMyPwMod
+     * @Method description : [기업회원정보:비밀번호변경]을 한다.
+     * @param              : CptMyInfoVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="cpt.CptMyInfoDAO.updateCptMyPwMod" parameterClass="CptMyInfoVO">
+	    update com_company_operator_profile set
+		    operator_password = enc_char_ins(#operatorPassword#,10,'SHA','com_company_operator_profile','operator_password',user(),connection_id()),
+		    operator_temp_password_yn = 'N',
+		    operator_chg_password_date = sysdate(),
+		    operator_expire_password_date = date_format(date_add(sysdate(), interval #operator_expire_password_date# month), '%Y%m%d'),
+            operator_final_password_date = date_format(date_add(sysdate(), interval #operator_final_password_date# month), '%Y%m%d'),
+            operator_password_fail_cnt = 0,
+		    update_date = sysdate(),
+		    update_id = #operatorProfileRegNo#
+	    where 1=1
+	    and company_profile_reg_no = #companyProfileRegNo#
+	    and operator_profile_reg_no = #operatorProfileRegNo#
+    </update>
+    
+    <!--
+     * @Method Name        : insertCptMyPwMod
+     * @Method description : [기업회원정보:비밀번호변경]을 한다.(history update)
+     * @param              : CptMyInfoVO
+     * @return             : int
+     * @throws             : Exception
+     -->    
+    <insert id="cpt.CptMyInfoDAO.insertCptMyPwMod" parameterClass="CptMyInfoVO">
+        insert into com_company_operator_profile_hist(
+            operator_seq,  
+            company_profile_reg_no,            
+            operator_profile_reg_no,
+            operator_id,                  
+            operator_password,            
+            operator_temp_password_yn,    
+            operator_chg_password_date,   
+            operator_expire_password_date,
+            operator_final_password_date, 
+            operator_password_fail_cnt,   
+            operator_reg_status,          
+            operator_name_kor,            
+            operator_name_eng,            
+            operator_phone_no,               
+            operator_email,               
+            operator_email_auth_yn,
+            operator_reg_date,            
+            delete_date,                  
+            create_date,                  
+            create_id
+        )            
+        select 
+        	ifnull((
+        	    select ifnull(max(cast(operator_seq as SIGNED)), 0) + 1
+        	    from com_company_operator_profile_hist
+        	    where operator_profile_reg_no = a.operator_profile_reg_no
+        	), 1),
+            company_profile_reg_no,
+            operator_profile_reg_no,           
+            operator_id,                  
+            operator_password,            
+            operator_temp_password_yn,    
+            operator_chg_password_date,                     
+            operator_expire_password_date,
+            operator_final_password_date, 
+            operator_password_fail_cnt,
+            operator_reg_status,          
+            operator_name_kor,            
+            operator_name_eng,            
+            operator_phone_no,               
+            operator_email,               
+            operator_email_auth_yn,
+            operator_reg_date,            
+            delete_date,                  
+            create_date,                  
+            operator_id                 
+        from com_company_operator_profile a
+        where 1=1
+        and company_profile_reg_no = #companyProfileRegNo#
+        and operator_profile_reg_no = #operatorProfileRegNo#                      
+    </insert>
+    
+    <!--
+     * @Method Name        : cpt.CptMyInfoDAO.updateCptMyInfoCompanyProfile
+     * @Method description : [기업회원정보:기업정보 변경]을 한다.
+     * @param              : CptMyInfoVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="cpt.CptMyInfoDAO.updateCptMyInfoCompanyProfile" parameterClass="CptMyInfoVO">
+        update com_company_profile set
+            company_bizreg_no = #companyBizregNo#,
+            company_post_no = #companyPostNo#,
+            company_address = #companyAddress#,
+            ceo_name = #ceoName#,
+            update_date = sysdate(),
+            update_id = #operatorProfileRegNo#
+        where company_profile_reg_no = #companyProfileRegNo#
+    </update>
+    
+    <!--
+     * @Method Name        : cpt.CptMyInfoDAO.insertCptMyInfoCompanyProfileHist
+     * @Method description : [기업회원정보:기업정보 변경]을 한다.(history insert)
+     * @param              : CptMyInfoVO
+     * @return             : string
+     * @throws             : Exception
+     -->
+    <insert id="cpt.CptMyInfoDAO.insertCptMyInfoCompanyProfileHist" parameterClass="CptMyInfoVO">
+        insert into com_company_profile_hist(
+            company_profile_reg_no,
+            company_seq,
+            company_code_id,
+            company_service_type,
+            issue_vtaccount,
+            issue_accountlist,
+            company_name_kor,
+            company_name_eng,
+            company_name_kor_alias,
+            company_name_eng_alias,
+            company_bizreg_no,
+            company_post_no,
+            company_address,
+            company_address_dtl,
+            company_ci,
+            ceo_name,
+            exposure_yn,
+            exposure_order,
+            delete_date,
+            create_date,
+            create_id
+        )    
+        select  company_profile_reg_no,
+                ifnull((
+                    select ifnull(max(cast(company_seq as SIGNED)), 0) + 1
+                    from com_company_profile_hist
+                    where company_profile_reg_no = a.company_profile_reg_no
+                ), 1),
+                company_code_id,
+                company_service_type,
+                issue_vtaccount,
+                issue_accountlist,
+                company_name_kor,
+                company_name_eng,
+                company_name_kor_alias,
+                company_name_eng_alias,
+                company_bizreg_no,
+                company_post_no,
+                company_address,
+                company_address_dtl,
+                company_ci,
+                ceo_name,
+                exposure_yn,
+                exposure_order,
+                delete_date,
+                update_date,
+                update_id
+        from com_company_profile a
+        where company_profile_reg_no = #companyProfileRegNo#           
+    </insert>
+    
+    <!--
+     * @Method Name        : selectCptOperatorInfoProfile
+     * @Method description : [기업회원정보:기본]정보를 조회한다.(마이페이지_회원정보 수정시 비밀번호 부분을 변경하였는지 여부 확인용 : 변경했으면 'Y')
+     * @param              : CptMyInfoVO
+     * @return             : CptMyInfoVO
+     * @throws             : Exception
+     -->
+    <select id="cpt.CptMyInfoDAO.selectCptOperatorInfoProfile" parameterClass="CptMyInfoVO" resultClass="CptMyInfoVO" >
+        select 
+            if(
+            i.operator_password = 
+            enc_char_ins(#operatorPassword#,10,'SHA','com_company_operator_profile','operator_password',user(),connection_id()),
+            'Y', 'N') as operatorPasswordYn                               /* 회원 패스워드 유효여부 */            
+        from com_company_operator_profile i/* 일반회원프로파일 */
+        where 1=1
+        and i.company_profile_reg_no = #companyProfileRegNo#
+        and i.operator_profile_reg_no = #operatorProfileRegNo#
+        order by i.operator_profile_reg_no desc /* 최근의 탈퇴회원이나 최근에 가입 및 재가입한 회원 */
+        limit 0,1
+    </select>
+    
+</sqlMap>

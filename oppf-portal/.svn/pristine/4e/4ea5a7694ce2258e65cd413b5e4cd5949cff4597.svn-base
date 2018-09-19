@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>LOGIN | CA</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width"> 
+	<style type="text/css">
+		* {margin:0; padding:0;}
+		html, body {margin:0; padding:0; background:#f5f5f5;}
+		ol, ul, dl{list-style:none;}
+		.ca_login {width:100%; background:#fff;}
+		.ca_login .header {padding:10px; text-align:center; border-bottom:1px solid #ddd;}
+		.ca_login .header h1 {width:320px; margin:0 auto; text-align:left;}
+
+		.ca_login .title {padding:20px 0 0; text-align:center;}
+		.ca_login .title h2 {font-size:13px;}
+		.ca_login .title .info {font-size:13px; color:#666; margin-top:20px;}
+
+		.ca_login .contents {width:320px; padding:20px 10px; margin:0 auto; }
+		.ca_login .contents .login_box {padding:10px 20px 30px; background:#f5f5f5;}
+		.ca_login .contents .login_box ul li label {display:block; font-size:13px; font-weight:bold; padding:15px 0 7px;}
+		.ca_login .contents .login_box ul li input {width:99%; height:35px; border:1px solid #666; text-indent:5px;}
+		.ca_login .contents .login_box p.chk {font-size:12px; margin-top:10px;}
+		.ca_login .contents .login_box p.chk input,
+		.ca_login .contents .login_box p.chk label {padding-left:5px; vertical-align:middle;}
+
+		.ca_login .contents .bottom_info {font-size:12px; color:#666; margin-top:10px;}
+		.ca_login .contents .bottom_info p {text-indent:-10px; padding-left:10px;}
+		.ca_login .contents .btn_wrap {text-align:center; margin-top:50px;}
+		.ca_login .contents .btn_wrap button {min-width:100px; font-size:14px; color:#fff; padding:10px; border:0; border-radius:3px; cursor:pointer;}
+		.ca_login .contents .btn_wrap .btn1 {background:#6d6d6d;}
+		.ca_login .contents .btn_wrap .btn2 {background:#f26522;}
+		.ca_login .footer {margin-top:60px; padding:20px; font-size:12px; line-height:20px; color:#666; background:#f5f5f5;}
+		.ca_login .footer a {color:#666;}
+	</style>
+
+</head>
+
+<body>
+
+<!-- ca_login -->
+<div class="ca_login">
+
+	<div class="header">
+		<h1><a href="http://open.koscom.co.kr" target="_blank" title="새창열림"><img src="logo.png" alt="Koscom OpenAPI Platform"></a></h1>
+	</div>
+	
+	<div class="title">
+		<h2>금융투자 핀테크 서비스를 이용하려면 로그인하세요.</h2>
+	</div>
+
+	<div class="contents">		
+		<div class="login_box">
+			<ul>
+				<li><label for="login_id">아이디</label><input type="text" id="login_id"></li>
+				<li><label for="login_pw">비밀번호/OTP</label><input type="password" id="login_pw"></li>
+			</ul>
+			<!-- 삭제요청 <p class="chk"><input type="checkbox" id="login_chk"><label for="login_chk">로그인 유지</label></p> -->
+		</div>
+
+		<div class="bottom_info">
+			<p>- 비밀번호 또는 OTP 앱 생성 번호를 입력하여 주세요.<br>(OTP 앱 생성 번호는 회원 가입 시 OTP 사용을 선택 하신 회원이어야 합니다.)</p>
+		</div>
+
+		
+
+		<div class="btn_wrap">
+			<button class="btn1">취소</button>
+			<button class="btn2">로그인</button>
+		</div>
+		
+	</div>
+
+	<div class="footer">
+		<p>서울시 영등포구 여의나루로 76 ㈜코스콤<br>이메일 : <a href="mailto:open@koscom.co.kr">open@koscom.co.kr</a></p>
+		<p>COPYRIGHT 2016. KOSCOM CORP. ALL RIGHTS RESERVED.</p>
+	</div>
+
+</div>
+<!-- // ca_login -->
+
+</body>
+</html>
+

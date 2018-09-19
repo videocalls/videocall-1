@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.sptUsr.service.impl.AptUserEmailManageDAO">
+
+  	<typeAlias alias="AptUserEmailManageVO" type="kr.co.koscom.oppf.apt.sptUsr.service.AptUserEmailManageVO"/>
+  	
+  	<!-- admin 포털 회원 목록 조회조건 -->
+    <sql id="fromWhereAnd">
+        <!-- 발신자 구분 -->
+        <isNotEmpty property="schKind" prepend="and">        
+            a.sender_kind = #schKind#            
+        </isNotEmpty>
+        
+        <!-- 메일 유형 -->
+        <isNotEmpty property="emailSendType" prepend="and">
+            a.email_send_type = #emailSendType#
+        </isNotEmpty>
+        
+        <!-- 발송일 -->
+        <isNotEmpty property="schDateFrom" prepend="and">
+            ifnull(date_format(a.send_result_date, '%Y%m%d'), '') between replace(#schDateFrom#, '-', '') and replace(#schDateTo#, '-', '')            
+        </isNotEmpty>
+        <isNotEmpty property="schDateTo" prepend="and">
+            ifnull(date_format(a.send_result_date, '%Y%m%d'), '') between replace(#schDateFrom#, '-', '') and replace(#schDateTo#, '-', '')            
+        </isNotEmpty>
+    </sql>
+  	
+	<!--
+     * @Method Name        : apt.AptUserEmailManageDAO.selectAptUserEmailManageList
+     * @Method description : [admin] 이메일 발송 이력을 조회한다.
+     * @param              : AptUserEmailManageVO
+     * @return             : AptUserEmailManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.AptUserEmailManageDAO.selectAptUserEmailManageList" parameterClass="AptUserEmailManageVO" resultClass="AptUserEmailManageVO">
+		select  rownum,
+		        a.email_reg_no as emailRegNo,               /* 이메일 발송 생성 번호 */
+		        a.email_send_type as emailSendType,         /* 이메일 유형 */
+		        a.email_ver as emailVer,                    /* 이메일 버전 */
+		        a.sender_kind as senderKind,                /* 발신자 종류 */
+		        a.sender_id as senderId,                    /* 발신자 ID */
+		        a.receiver_kind as receiverKind,            /* 수신자 종류 */
+		        a.receiver_id as receiverId,                /* 수신자 ID */
+		        a.receiver_email as receiverEmail,          /* 수신자 email */
+		        a.email_title as emailTitle,                /* 이메일 제목 */
+		        <!-- a.email_content as emailContent,            /* 이메일 내용 */ -->
+		        a.send_date as sendDate,                    /* 최초 발신일자 */
+		        a.send_id as sendId,                        /* 최초 발신자 ID */
+		        a.re_send_count as reSendCount,             /* 재발신 건수 */
+		        a.re_send_date as reSendDate,               /* 재발신 일자 */
+		        a.re_send_id as reSendId,                   /* 재발신자 ID */
+		        a.create_date as createDate,                /* 생성 일시 */
+		        a.create_id as createId,                    /* 생성자 ID */
+		        a.update_date as updateDate,                /* 변경 일시 */
+		        a.update_id as updateId,                    /* 변경자 ID */
+		        a.send_result as sendResult,                /* 발송결과 */
+		        a.send_result_date as sendResultDate,       /* 발송결과일자 */
+		        a.re_send_result as reSendResult,           /* 재발송결과 */
+		        a.re_send_result_date as reSendResultDate	/* 재발송결과일자 */	
+		from(
+		    select  @RNUM := @RNUM + 1 as rownum,
+		            a.email_reg_no,
+		            (
+	                    select code_name_kor
+	                    from com_system_code
+	                    where concat(system_grp_code, system_code) = a.email_send_type           
+	                )                           as email_send_type,    
+		            a.email_ver,
+		            (
+                        select code_name_kor
+                        from com_system_code
+                        where concat(system_grp_code, system_code) = a.sender_kind           
+                    )                           as sender_kind,     
+		            a.sender_id,          
+		            a.receiver_kind,      
+		            a.receiver_id,        
+		            a.receiver_email,     
+		            a.email_title,        
+		            <!-- a.email_content, -->      
+		            ifnull(date_format(a.send_date, '%Y-%m-%d %H:%i'), '') as send_date,          
+		            a.send_id,            
+		            a.re_send_count,      
+		            ifnull(date_format(a.re_send_date, '%Y-%m-%d %H:%i'), '') as re_send_date,       
+		            a.re_send_id,         
+		            ifnull(date_format(a.create_date, '%Y-%m-%d %H:%i'), '') as create_date,        
+		            a.create_id,          
+		            ifnull(date_format(a.update_date, '%Y-%m-%d %H:%i'), '') as update_date,        
+		            a.update_id,          
+		            a.send_result,        
+		            ifnull(date_format(ifnull(a.re_send_result_date, a.send_result_date), '%Y-%m-%d %H:%i'), '') as send_result_date,   
+		            a.re_send_result,     
+		            ifnull(date_format(a.re_send_result_date, '%Y-%m-%d %H:%i'), '') as re_send_result_date		    
+		    from com_email_send_info a, ( SELECT @RNUM := 0 ) R
+		    where 1=1
+		    <include refid="fromWhereAnd"/>
+		    order by ifnull(a.re_send_result_date, a.send_result_date) desc, a.email_send_type asc
+		) a
+		<include refid="CmmnFuncDAO.CmmnPaging"/>
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptUserEmailManageDAO.selectAptUserEmailManageListCnt
+     * @Method description : admin 포털 메일 발송 이력 목록의 총 개수를 조회한다.
+     * @param              : AptUserEmailManageVO
+     * @return             : AptUserEmailManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.AptUserEmailManageDAO.selectAptUserEmailManageListCnt" parameterClass="AptUserEmailManageVO" resultClass="int">
+        select  count(email_reg_no) as totalCount
+        from com_email_send_info a
+        where 1=1
+        <include refid="fromWhereAnd"/>
+    </select>
+    
+    <!--
+     * @Method Name        : selectAptUserEmailManageDtl
+     * @Method description : admin 포털 메일발송 이력조회 상세를 조회한다.
+     * @param              : AptUserEmailManageVO
+     * @return             : AptUserEmailManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.AptUserEmailManageDAO.selectAptUserEmailManageDtl" parameterClass="AptUserEmailManageVO" resultClass="AptUserEmailManageVO">
+		select  a.email_reg_no as emailRegNo,               /* 이메일 발송 생성 번호 */
+                a.email_send_type as emailSendType,         /* 이메일 유형 */
+                a.email_send_type2 as emailSendType2,       /* 이메일 유형(case 치환전) */
+                a.email_ver as emailVer,                    /* 이메일 버전 */
+                a.sender_kind as senderKind,                /* 발신자 종류 */
+                a.sender_kind2 as senderKind2,              /* 발신자 종류(case 치환전) */
+                a.sender_id as senderId,                    /* 발신자 ID */
+                a.receiver_kind as receiverKind,            /* 수신자 종류 */
+                a.receiver_id as receiverId,                /* 수신자 ID */
+                a.receiver_email as receiverEmail,          /* 수신자 email */
+                a.email_title as emailTitle,                /* 이메일 제목 */
+                a.email_content as emailContent,            /* 이메일 내용 */
+                a.send_date as sendDate,                    /* 최초 발신일자 */
+                a.send_id as sendId,                        /* 최초 발신자 ID */
+                a.re_send_count as reSendCount,             /* 재발신 건수 */
+                a.re_send_date as reSendDate,               /* 재발신 일자 */
+                a.re_send_id as reSendId,                   /* 재발신자 ID */
+                a.create_date as createDate,                /* 생성 일시 */
+                a.create_id as createId,                    /* 생성자 ID */
+                a.update_date as updateDate,                /* 변경 일시 */
+                a.update_id as updateId,                    /* 변경자 ID */
+                a.send_result as sendResult,                /* 발송결과 */
+                a.send_result_date as sendResultDate,       /* 발송결과일자 */
+                a.re_send_result as reSendResult,           /* 재발송결과 */
+                a.re_send_result_date as reSendResultDate   /* 재발송결과일자 */   
+        from(
+            select  a.email_reg_no,
+                    (
+                        select code_name_kor
+                        from com_system_code
+                        where concat(system_grp_code, system_code) = a.email_send_type           
+                    )                           as email_send_type,
+                    a.email_send_type as email_send_type2,    
+                    a.email_ver,
+                    (
+                        select code_name_kor
+                        from com_system_code
+                        where concat(system_grp_code, system_code) = a.sender_kind           
+                    )                           as sender_kind,
+                    a.sender_kind as sender_kind2,        
+                    a.sender_id,          
+                    a.receiver_kind,      
+                    a.receiver_id,        
+                    a.receiver_email,     
+                    a.email_title,        
+                    a.email_content,      
+                    ifnull(date_format(a.send_date, '%Y-%m-%d %H:%i'), '') as send_date,          
+                    a.send_id,            
+                    a.re_send_count,      
+                    ifnull(date_format(a.re_send_date, '%Y-%m-%d %H:%i'), '') as re_send_date,       
+                    a.re_send_id,         
+                    ifnull(date_format(a.create_date, '%Y-%m-%d %H:%i'), '') as create_date,        
+                    a.create_id,          
+                    ifnull(date_format(a.update_date, '%Y-%m-%d %H:%i'), '') as update_date,        
+                    a.update_id,          
+                    a.send_result,        
+                    ifnull(date_format(ifnull(a.re_send_result_date, a.send_result_date), '%Y-%m-%d %H:%i'), '') as send_result_date,
+                    a.re_send_result,     
+                    ifnull(date_format(a.re_send_result_date, '%Y-%m-%d %H:%i'), '') as re_send_result_date         
+            from com_email_send_info a            
+            where email_reg_no = #emailRegNo#
+        ) a		       
+    </select>
+    
+    <!--
+     * @Method Name        : updateAptUserEmailManage
+     * @Method description : [admin] 이메일 발송 이력 정보 수정
+     * @param              : AptUserEmailManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="apt.AptUserEmailManageDAO.updateAptUserEmailManage" parameterClass="AptUserEmailManageVO">
+		update com_email_send_info set
+		    <isNotEmpty property="senderKind">        
+	            sender_kind = #senderKind#,            
+	        </isNotEmpty>
+	        <isNotEmpty property="senderId">        
+                sender_id = #senderId#,            
+            </isNotEmpty>
+            <isNotEmpty property="receiverEmail">        
+                receiver_email = #receiverEmail#,            
+            </isNotEmpty>
+            <isNotEmpty property="emailSendType">        
+                email_send_type = #emailSendType#,            
+            </isNotEmpty>
+            <isNotEmpty property="emailContent">        
+                email_content = #emailContent#,            
+            </isNotEmpty>
+            update_date = sysdate(),
+            update_id = #updateId#
+		where email_reg_no = #emailRegNo#        
+    </update>
+    
+    <!--
+     * @Method Name        : apt.AptUserEmailManageDAO.selectAptUserEmailManageListExcel
+     * @Method description : [admin] 이메일 발송 이력을 조회한다.
+     * @param              : AptUserEmailManageVO
+     * @return             : AptUserEmailManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.AptUserEmailManageDAO.selectAptUserEmailManageListExcel" parameterClass="AptUserEmailManageVO" resultClass="AptUserEmailManageVO">
+        select  rownum,
+                a.email_reg_no as emailRegNo,               /* 이메일 발송 생성 번호 */
+                a.email_send_type as emailSendType,         /* 이메일 유형 */
+                a.sender_kind as senderKind,                /* 발신자 종류 */
+                a.sender_id as senderId,                    /* 발신자 ID */                
+                a.receiver_email as receiverEmail,          /* 수신자 email */                
+                a.send_result_date as sendResultDate        /* 발송결과일자 */   
+        from(
+            select  @RNUM := @RNUM + 1 as rownum,
+                    a.email_reg_no,
+                    (
+                        select code_name_kor
+                        from com_system_code
+                        where concat(system_grp_code, system_code) = a.email_send_type           
+                    )                           as email_send_type,
+                    (
+                        select code_name_kor
+                        from com_system_code
+                        where concat(system_grp_code, system_code) = a.sender_kind           
+                    )                           as sender_kind,     
+                    a.sender_id,
+                    a.receiver_email,     
+                    ifnull(date_format(a.send_result_date, '%Y-%m-%d %H:%i'), '') as send_result_date
+            from com_email_send_info a, ( SELECT @RNUM := 0 ) R
+            where 1=1
+            <include refid="fromWhereAnd"/>
+            order by a.create_date desc
+        ) a        
+    </select>
+    
+    <!--
+     * @Method Name        : selectAptUserEmailManageCustomerCheck
+     * @Method description : [admin] 관리자가 공통템플릿으로 메일발송을 할 때 등록되어 있는 사용자에게 이메일을 발송한 것인지 여부를 체크합니다.
+     * @param              : AptUserEmailManageVO
+     * @return             : AptUserEmailManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.AptUserEmailManageDAO.selectAptUserEmailManageCustomerCheck" parameterClass="AptUserEmailManageVO" resultClass="AptUserEmailManageVO" >
+        select
+            count(customer_password) as checkPw
+        from spt_customer_info_profile i /* 일반회원프로파일 */
+        where 1=1
+        and i.customer_name_kor = #receiverNmae#
+        and i.customer_email = enc_char_ins(#receiverEmail#,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id())
+        order by i.customer_reg_no desc /* 최근의 탈퇴회원이나 최근에 가입 및 재가입한 회원 */
+        limit 0,1
+    </select>
+    
+    <!--
+     * @Method Name        : selectMbrCustomerInfo
+     * @Method description : [admin] 메일 발송 이력 조회 상세화면에서 '관리자 수정 메일발송'을 위한 정보 조회
+     * @param              : AptUserEmailManageVO
+     * @return             : AptUserEmailManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.AptUserEmailManageDAO.selectMbrCustomerInfo" parameterClass="AptUserEmailManageVO" resultClass="AptUserEmailManageVO" >
+        select  a.customerRegNo, a.receiverNmae
+        from(
+			select  admin_profile_reg_no as customerRegNo, 
+			        admin_name_kor as receiverNmae
+			from com_admin_profile
+			where admin_profile_reg_no = #receiverId#
+			union all
+			select  operator_profile_reg_no as customerRegNo, 
+			        operator_name_kor       as receiverNmae
+			from com_company_operator_profile
+			where operator_profile_reg_no = #receiverId#
+			union all
+			select  customer_reg_no as customerRegNo, 
+			        customer_name_kor as receiverNmae
+			from spt_customer_info_profile
+			where customer_reg_no = #receiverId#
+        ) a
+        limit 0,1
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptUserManageDAO.insertAptUsertHist
+     * @Method description : admin 포털 회원정보 수정 hist를 insert한다.
+     * @param              : AptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <!-- <insert id="apt.AptUserManageDAO.insertAptUsertHist" parameterClass="AptUserManageVO">
+        insert into com_admin_profile_hist(
+            admin_profile_reg_no,
+            admin_seq,
+            admin_name_kor,
+            admin_name_eng,
+            admin_id,
+            admin_password,
+            admin_temp_password_yn,
+            admin_chg_password_date,
+            admin_expire_password_date,
+            admin_final_password_date,
+            admin_password_fail_cnt,
+            admin_phone_no,
+            admin_email,
+            delete_date,
+            create_date,
+            create_id
+        )
+        select  admin_profile_reg_no,
+                ifnull((
+                    select ifnull(max(cast(admin_seq as SIGNED)), 0) + 1
+                    from com_admin_profile_hist
+                    where admin_profile_reg_no = a.admin_profile_reg_no
+                ), 1),
+                admin_name_kor,
+                admin_name_eng,
+                admin_id,
+                admin_password,
+                admin_temp_password_yn,
+                admin_chg_password_date,
+                admin_expire_password_date,
+                admin_final_password_date,
+                admin_password_fail_cnt,
+                admin_phone_no,
+                admin_email,
+                delete_date,
+                update_date,
+                update_id
+        from com_admin_profile a        
+        where admin_profile_reg_no = #adminProfileRegNo#    
+    </insert> -->
+    
+    <!--
+     * @Method Name        : apt.AptUserManageDAO.updateAptUserTmpPwd
+     * @Method description : 임시비밀번호 발급
+     * @param              : AptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <!-- <update id="apt.AptUserManageDAO.updateAptUserTmpPwd" parameterClass="AptUserManageVO">
+		update com_admin_profile set
+			admin_password = #adminPassword#,
+			admin_temp_password_yn = 'Y',
+			admin_chg_password_date = sysdate(),
+			admin_email = #adminEmail#,
+			update_date = sysdate(),
+			update_id = #updateId#
+		where admin_profile_reg_no = #adminProfileRegNo#        
+    </update> -->
+    
+    <!--
+     * @Method Name        : apt.AptUserManageDAO.selectAptUserIdChk
+     * @Method description : admin 포털 id 중복확인
+     * @param              : AptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <!-- <select id="apt.AptUserManageDAO.selectAptUserIdChk" parameterClass="AptUserManageVO" resultClass="int">
+        select count(*) as idchk
+		from com_admin_profile
+		where admin_id = #adminId#
+    </select> -->
+    
+    <!--
+     * @Method Name        : apt.AptUserManageDAO.insertAptUserReg
+     * @Method description : admin 포털 회원 등록
+     * @param              : AptUserManageVO
+     * @return             : string
+     * @throws             : Exception
+     -->
+    <!-- <insert id="apt.AptUserManageDAO.insertAptUserReg" parameterClass="AptUserManageVO">
+        <selectKey keyProperty="adminProfileRegNo" resultClass="java.lang.String">
+			select  concat('A', date_format(sysdate(),'%Y%m%d'), 
+			        lpad((
+			                select ifnull( max(cast(right(admin_profile_reg_no,3) as signed)), 0)+1 
+			                from com_admin_profile 
+			                where left(admin_profile_reg_no,9) = concat('A', date_format(sysdate(),'%Y%m%d'))
+			            ), 3, '0')
+			        ) as adminProfileRegNo /* admin 프로파일 등록번호 */
+        </selectKey>
+		insert into com_admin_profile(
+		    admin_profile_reg_no,
+		    admin_name_kor,
+		    admin_name_eng,
+		    admin_id,
+		    admin_password,
+		    admin_temp_password_yn,
+		    admin_chg_password_date,
+		    admin_password_fail_cnt,
+		    admin_phone_no,
+		    admin_email,
+		    create_date,
+		    create_id,
+		    update_date,
+		    update_id
+		)values(
+		    #adminProfileRegNo#,
+            #adminNameKor#,
+            #adminNameEng#,
+            #adminId#,
+            #adminPassword#,
+            'Y',
+            sysdate(),
+            0,
+            #adminPhoneNo#,
+            #adminEmail#,
+            sysdate(),
+            #createId#,
+            sysdate(),
+            #createId#
+		)        
+    </insert> -->
+    
+</sqlMap>

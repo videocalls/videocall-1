@@ -1,0 +1,29 @@
+<ion-view view-title="OAuth 테스트 페이지">
+	<ion-content class="padding">
+		<h3>허영남's 폰과 테스트용 안드로이드폰으로만 전송됨</h3>
+		<form name="$root.oauthForm" ng-submit="vm.submit();">
+			<fieldset>
+				<label>clientId</label>
+				<input type="text" ng-model="vm.finTechInfo.clientId" style="border:1px solid gray;width:100%;"/>
+			</fieldset>
+			<fieldset>
+				<label>callbackUrl</label>
+				<input type="text" ng-model="vm.finTechInfo.callbackUrl" style="border:1px solid gray;width:100%;"/>
+			</fieldset>
+			<fieldset>
+				<label>scope</label>
+				<input type="text" ng-model="vm.finTechInfo.scope" style="border:1px solid gray;width:100%;"/>
+			</fieldset>
+			<fieldset>
+				<label>response_type</label>
+				<input type="text" ng-model="vm.finTechInfo.responseType" style="border:1px solid gray;width:100%;"/>
+			</fieldset>
+			<fieldset>
+				<label>state</label>
+				<input type="text" ng-model="vm.finTechInfo.state" style="border:1px solid gray;width:100%;"/>
+			</fieldset>
+			
+			<button ng-disabled="oauthForm.$invalid">전송</button>
+		</form>
+	</ion-content>
+</ion-view>>

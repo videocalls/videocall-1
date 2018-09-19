@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>기업 | koscom OpenAPI Platform </title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="stylesheet" href="../../../css/cpt/import.css">
+	<!-- IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	  <script src="../../../js/cmm/html5shiv.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="../../../js/cmm/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../../../js/cpt/common_pub.js"></script>
+</head>
+
+<body>
+
+<div class="wrap">
+
+	<!-- header -->
+	<header class="header">
+		<div class="header_area">
+			<div class="skip_navi">
+				<a href="#gnb">메뉴 바로가기</a>
+				<a href="#content">본문 바로가기</a>		
+			</div>
+
+			<ol class="util">
+				<li class="menu"><a href="#none">로그인</a></li>
+				<li class="menu"><a href="#none">마이페이지</a></li>
+				<li class="site"><a href="#none">개인</a></li>
+				<li class="site on"><a href="#none">기업/금투사</a></li>
+				<li class="site"><a href="#none">핀테크 테스트베드</a></li>
+			</ol>
+
+			<nav id="gnb">
+				<h1 class="logo"><a href="#none"><img src="../../../images/cpt/common/logo.png" alt="Koscom OpenAPI Platform"></a></h1>
+
+				<div class="gnb_menu">					
+					<ul>
+						<li><a href="#none">오픈플랫폼 </a></li>
+						<li><a href="#none">핀테크 APP.소개</a></li>
+						<li><a href="#none">서비스 소개</a></li>
+						<li><a href="#none">서비스 지원</a></li>
+					</ul>					
+				</div>
+			</nav>
+		</div>
+	</header>
+	<!-- // header -->
+
+	<!-- section -->
+	<section>
+		<!-- location -->
+		<div class="location">
+			<ul>
+				<li class="home"><a href="#none">홈</a></li>
+				<li><a href="#none">핀테크 APP.소개</a></li>
+				<li class="on">App.소개</li>
+			</ul>
+		</div>
+		<!-- // location -->
+
+		<div class="container">
+			<!-- lnb -->
+			<article class="lnb">				
+				<h2>핀테크 App.소개</h2>
+				<ul>
+					<li><a href="#none" class="on">App.소개</a></li>
+				</ul>
+			</article>
+			<!-- // lnb -->
+
+			<!-- content -->
+			<article id="content">
+
+				<div class="sub_title">
+					<h3>App.소개</h3>
+					<div class="sub_visual">
+						<img src="../../../images/cpt/common/img_sub_visual01.jpg" alt="">
+						<div class="txt">
+							<div class="service">
+								<div>
+									<p>
+										코스콤이 제공하는 증권 오픈API를 활용하여<br>
+										핀테크 기업들의 각종 정보가 더해진 다양한 증권용 핀테크 서비스를 제공합니다.
+									</p>
+								</div>
+							</div>
+						</div>
+					</div>					
+				</div>
+
+				<!-- con -->
+				<div class="con">
+
+					<!-- search_area -->
+					<div class="search_area">	
+						<span class="sel_box1 left">
+							<select style="min-width:;" title="카테고리 선택">
+								<option>전체</option>
+								<option>시세</option>
+								<option>뉴스</option>
+								<option>관심종목</option>
+								<option>거래내역</option>
+								<option>잔고현황</option>
+								<option>포트폴리오</option>
+							</select>
+						</span>
+						
+						<div class="search_box right">
+							<span class="sel_box1">
+								<select style="min-width:;" title="검색조건 선택">
+									<option>전체</option>
+									<option>핀테크 서비스</option>
+									<option>서비스</option>
+									<option>금융투자사</option>
+								</select>
+							</span>
+							<input type="text" style="min-width:170px;" title="검색어 입력">
+							<a href="#" class="btn_search">검색</a>
+						</div>
+					</div>
+					<!-- // search_area -->
+					
+					<!-- tbtype_list -->
+					<table class="tbtype_list type_hover">
+						<caption>구분, 핀테크 서비스, 주요서비스, 서비스신청 정보 리스트</caption>
+						<colgroup>
+							<col style="width:12%;">
+							<col style="width:17%;">
+							<col style="">
+						</colgroup>
+						<thead>
+							<tr>
+								<th scope="col">구분</th>
+								<th scope="col">핀테크 서비스</th>
+								<th scope="col">주요서비스</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>증권</td>
+								<td>
+									<div class="app_large">
+										<img src="../../../images/cpt/icon/icon_app_01.png" alt="카카오증권">
+										<p>카카오증권</p>
+									</div>
+								</td>
+								<td class="left tooltip_wrap">
+									<!-- tooltip_area -->
+									<div class="tooltip_area">
+										<!-- 2016-06-14 수정 -->
+										<textarea class="app_textarea" disabled>
+- 관심종목의 실시간 시세 조회
+- 종목별 뉴스, 공시정보 확인
+										</textarea>
+										<!-- // 2016-06-14 수정 -->
+									
+										<div class="tooltip">
+											<dl class="con">
+												<dt>금융투자사별 연계 서비스</dt>
+												<dd>
+													<table class="tbtype_tip">
+														<caption>금융투자사, 연계 서비스 정보</caption>
+														<colgroup>
+															<col style="width:45%;">
+															<col style="">
+														</colgroup>
+														<thead>
+															<tr>
+																<th scope="col">금융투자사</th>
+																<th scope="col">연계 서비스</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr>
+																<th scope="row" rowspan="2">삼성증권</th>
+																<td>계좌조회</td>
+															</tr>
+															<tr>
+																<td>주문</td>
+															</tr>
+															<tr>
+																<th scope="row" >이트레이드증권</th>
+																<td>포트폴리오</td>
+															</tr>
+															<tr>
+																<th scope="row">신한금융투자</th>
+																<td>잔고현황조회</td>
+															</tr>
+														</tbody>
+													</table>
+												</dd>
+											</dl>
+										</div>										
+									</div>		
+									<!-- // tooltip_area -->
+								</td>	
+							</tr>
+							<tr>
+								<td>뉴스</td>
+								<td>
+									<div class="app_large">
+										<img src="../../../images/cpt/icon/icon_app_02.png" alt="네이버증권">
+										<p>네이버증권</p>
+									</div>
+								</td>
+								<td class="left tooltip_wrap">
+									<!-- tooltip_area -->
+									<div class="tooltip_area">
+										<!-- 2016-06-14 수정 -->
+										<textarea class="app_textarea" disabled>
+- 주문기능 제공, 증권통 모의투자
+- 수익금,수익률 표시기능
+- 차트(가로보기/세로보기, 확대/축소, 이동평균선, 볼린저밴드, 스토캐스틱, MACD)
+- 관심종목 실시간 시세, 호가, 일별주가, 시간체결, 거래원, 기관외국인매매동향
+- 종목별 진단 동영상/ 실시간 이토마토 방송 보기
+										</textarea>
+										<!-- // 2016-06-14 수정 -->
+										<a href="#" class="btn_type7">서비스 신청</a>
+
+										<div class="tooltip">
+											<dl class="con">
+												<dt>금융투자사별 연계 서비스</dt>
+												<dd>
+													<table class="tbtype_tip">
+														<caption>금융투자사, 연계 서비스 정보</caption>
+														<colgroup>
+															<col style="width:45%;">
+															<col style="">
+														</colgroup>
+														<thead>
+															<tr>
+																<th scope="col">금융투자사</th>
+																<th scope="col">연계 서비스</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr>
+																<th scope="row" rowspan="2">삼성증권</th>
+																<td>계좌조회</td>
+															</tr>
+															<tr>
+																<td>주문</td>
+															</tr>
+															<tr>
+																<th scope="row" >이트레이드증권</th>
+																<td>포트폴리오</td>
+															</tr>
+															<tr>
+																<th scope="row">신한금융투자</th>
+																<td>잔고현황조회</td>
+															</tr>
+															<tr>
+																<th scope="row">신한금융투자</th>
+																<td>잔고현황조회</td>
+															</tr>
+															<tr>
+																<th scope="row">신한금융투자</th>
+																<td>잔고현황조회</td>
+															</tr>
+															<tr>
+																<th scope="row">신한금융투자</th>
+																<td>잔고현황조회</td>
+															</tr>
+															<tr>
+																<th scope="row">신한금융투자</th>
+																<td>잔고현황조회</td>
+															</tr>
+														</tbody>
+													</table>
+												</dd>
+											</dl>
+										</div>										
+									</div>		
+									<!-- // tooltip_area -->									
+								</td>								
+							</tr>
+							<tr>
+								<td>금융상품</td>
+								<td>
+									<div class="app_large">
+										<img src="../../../images/cpt/icon/icon_app_03.png" alt="증권스토리">
+										<p>증권스토리</p>
+									</div>
+								</td>
+								<td class="left tooltip_wrap">
+									<!-- tooltip_area -->
+									<div class="tooltip_area">
+										<ul class="list_type02">
+											<li>조건검색, 성과검증, 기술적/기본적 종목 분석</li>
+											<li>신호검색, 차트저장/불러오기, 종목 둘러보기 지원</li>
+											<li>HTS와 실시간 동기화, 모의투자 서비스</li>
+										</ul>
+									
+										<div class="tooltip">
+											<dl class="con">
+												<dt>금융투자사별 연계 서비스</dt>
+												<dd>
+													<table class="tbtype_tip">
+														<caption>금융투자사, 연계 서비스 정보</caption>
+														<colgroup>
+															<col style="width:45%;">
+															<col style="">
+														</colgroup>
+														<thead>
+															<tr>
+																<th scope="col">금융투자사</th>
+																<th scope="col">연계 서비스</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr>
+																<th scope="row" rowspan="2">삼성증권</th>
+																<td>계좌조회</td>
+															</tr>
+															<tr>
+																<td>주문</td>
+															</tr>
+															<tr>
+																<th scope="row" >이트레이드증권</th>
+																<td>포트폴리오</td>
+															</tr>
+															<tr>
+																<th scope="row">신한금융투자</th>
+																<td>잔고현황조회</td>
+															</tr>
+														</tbody>
+													</table>
+												</dd>
+											</dl>
+										</div>										
+									</div>		
+									<!-- // tooltip_area -->									
+								</td>
+							</tr>
+							<tr>
+								<td>증권</td>
+								<td>
+									<div class="app_large">
+										<img src="../../../images/cpt/icon/icon_app_04.png" alt="주식의 정석">
+										<p>주식의 정석</p>
+									</div>
+								</td>
+								<td class="left tooltip_wrap">
+									<!-- tooltip_area -->
+									<div class="tooltip_area">
+										<ul class="list_type02">
+											<li>차트(가로보기/세로보기, 확대/축소, 이동평균선, 볼린저밴드, 스토캐스틱, MACD)</li>
+											<li>관심종목 실시간 시세, 호가, 일별주가, 시간체결, 거래원, 기관외국인매매동향</li>
+										</ul>
+									
+										<div class="tooltip">
+											<dl class="con">
+												<dt>금융투자사별 연계 서비스</dt>
+												<dd>
+													<table class="tbtype_tip">
+														<caption>금융투자사, 연계 서비스 정보</caption>
+														<colgroup>
+															<col style="width:45%;">
+															<col style="">
+														</colgroup>
+														<thead>
+															<tr>
+																<th scope="col">금융투자사</th>
+																<th scope="col">연계 서비스</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr>
+																<th scope="row" rowspan="2">삼성증권</th>
+																<td>계좌조회</td>
+															</tr>
+															<tr>
+																<td>주문</td>
+															</tr>
+															<tr>
+																<th scope="row" >이트레이드증권</th>
+																<td>포트폴리오</td>
+															</tr>
+															<tr>
+																<th scope="row">신한금융투자</th>
+																<td>잔고현황조회</td>
+															</tr>
+														</tbody>
+													</table>
+												</dd>
+											</dl>
+										</div>										
+									</div>		
+									<!-- // tooltip_area -->									
+								</td>
+							</tr>
+							<tr>
+								<td>뉴스</td>
+								<td>
+									<div class="app_large">
+										<img src="../../../images/cpt/icon/icon_app_05.png" alt="주식차트">
+										<p>주식차트</p>
+									</div>
+								</td>
+								<td class="left tooltip_wrap">
+									<!-- tooltip_area -->
+									<div class="tooltip_area">										
+										<ul class="list_type02">
+											<li>관심종목의 실시간 시세 조회</li>
+											<li>종목별 뉴스, 공시정보 확인</li>
+											<li>종목 찾기, 실시간 차트 및 각종 보조지표 제공</li>
+											<li>증권사 연동거래 및 실시간 호가 보기</li>
+										</ul>
+									
+										<div class="tooltip">
+											<dl class="con">
+												<dt>금융투자사별 연계 서비스</dt>
+												<dd>
+													<table class="tbtype_tip">
+														<caption>금융투자사, 연계 서비스 정보</caption>
+														<colgroup>
+															<col style="width:45%;">
+															<col style="">
+														</colgroup>
+														<thead>
+															<tr>
+																<th scope="col">금융투자사</th>
+																<th scope="col">연계 서비스</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr>
+																<th scope="row" rowspan="2">삼성증권</th>
+																<td>계좌조회</td>
+															</tr>
+															<tr>
+																<td>주문</td>
+															</tr>
+															<tr>
+																<th scope="row" >이트레이드증권</th>
+																<td>포트폴리오</td>
+															</tr>
+															<tr>
+																<th scope="row">신한금융투자</th>
+																<td>잔고현황조회</td>
+															</tr>
+														</tbody>
+													</table>
+												</dd>
+											</dl>
+										</div>										
+									</div>		
+									<!-- // tooltip_area -->
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<!-- // tbtype_list -->
+
+					<!-- pagination -->
+					<div class="pagination">
+						<a href="#" class="page first"></a>
+						<a href="#" class="page prev"></a>
+						<a href="#" class="on">1</a>
+						<a href="#">2</a>
+						<a href="#">3</a>
+						<a href="#">4</a>
+						<a href="#">5</a>
+						<a href="#">6</a>
+						<a href="#">7</a>
+						<a href="#">8</a>
+						<a href="#">9</a>
+						<a href="#">10</a>
+						<a href="#" class="page next"></a>
+						<a href="#" class="page last"></a>
+					</div>
+					<!-- // pagination -->
+
+				</div>
+				<!-- // con -->
+
+			</article>
+			<!-- // content -->
+		</div>
+	</section>
+	<!-- section -->
+
+	<!-- footer -->
+	<footer class="footer">
+		<div class="footer_area">
+			<ul class="link">
+				<li><a href="#none">서비스이용약관</a></li>
+				<li class="point"><a href="#none">개인정보취급방침</a></li>
+			</ul>
+			<address>
+				서울시 영등포구 여의나루로 76 ㈜코스콤  대표전화 : 02-767-7114  이메일 : master@koscom.openplatform.com
+				<span class="copy">COPYRIGHT 2016. KOSCOM CORP. ALL RIGHTS RESERVED.</span>
+			</address>
+
+			<div class="family_site">
+				<!-- selBox2 -->
+				<span class="sel_box2">
+					<select style="min-width:150px">
+						<option>코스콤 사이트</option>
+					</select>
+				</span>
+				<!-- selBox2 -->
+				<span class="sel_box2">
+					<select style="min-width:170px">
+						<option>관련 사이트</option>
+					</select>
+				</span>				
+			</div>
+
+		</div>
+	</footer>
+	<!-- // footer -->
+
+</div>
+
+</body>
+</html>

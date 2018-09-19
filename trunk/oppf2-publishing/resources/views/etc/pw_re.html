@@ -1,0 +1,56 @@
+<ion-view view-title="">
+	<ion-content>
+		<div class="container"> <!-- 비밀번호 변경 -->
+			<div class="inner_cont type2">
+				<div class="top_vi_txt"> <!-- modify -->
+					소중한 개인정보 보호를 위해<br><span class="ft_org">주기적인 비밀번호 변경</span>을 권장합니다.
+				</div>
+				<!-- 정보입력 -->
+				<ul class="entry_area">
+					<li>
+						<div class="title_s">현재 비밀번호</div>
+						<div class="input_area"><input type="password" placeholder="현재 비밀빈호입력" /></div>
+						<div class="txt_error">현재 비밀번호를 입력해주세요</div> <!-- add class : hide_set : display:none; 처리  -->
+					</li>
+					<li>
+						<div class="title_s">새  비밀번호</div>
+						<div class="input_area"><input type="password" placeholder="새 비밀번호입력" /></div>
+						<div class="txt_error">새 비밀번호를 입력해주세요</div> <!-- add class : hide_set : display:none; 처리  -->
+						<div class="ft_gray">8~15자의 영문 대/소문자, 숫자, 특수문자 중 3개 이상의 조합</div>
+					</li>
+					<li>
+						<div class="title_s">새  비밀번호 확인</div>
+						<div class="input_area"><input type="password" placeholder="새 비밀번호확인" /></div>
+						<div class="txt_error">새 비밀번호 확인을 입력해주세요</div> <!-- add class : hide_set : display:none; 처리  -->
+						<div class="ft_gray"> 아이디와 동일한 비밀번호는 사용불가</div>
+					</li>
+				</ul>
+				<!--// 정보입력 -->
+				<!-- 아코디언 메뉴 -->
+				<div class="accordian-menu" accordion>
+					<div class="accordian-cont cont_wrap"> <!-- active -->
+						<a href="#none" class="btn_bar">안전한 비밀번호 변경</a> <!-- add class : not-active : 내용없을때 -->
+						<div class="detail_cont">
+							<div class="gray_box">
+								<ul class="dot_list">
+									<li>영문/숫자/기호 등의 조합으로 비밀번호를 구성해 주세요.</li>
+									<li>연속숫자, 연속문자, 동일숫자 또는 이름은 비밀번호로 사용할 수 없습니다.</li>
+									<li>쉽게 유추해 낼 수 있는 아이디/생일/핸드폰번호 등 개인정보와 관련된 문자, 숫자는 사용하지 않는 것이 좋습니다</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--// 아코디언 메뉴 -->
+			</div>
+		</div>
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<div class="button_area btn_both btn_bottom_area">
+			<a href="#go" class="btn_middle btn_black">다음에변경</a>
+			<a href="#go" class="btn_middle btn_black_org">비밀번호변경</a>
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+</ion-view>

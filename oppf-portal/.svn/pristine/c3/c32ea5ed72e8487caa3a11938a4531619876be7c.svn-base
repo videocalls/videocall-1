@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>이메일 | koscom OpenAPI Platform</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+</head>
+
+<body style="margin:0; padding:0;"> 
+
+<!-- 이메일 -->
+<div style="width:720px; margin:0 auto; padding:0; background:#e2e3e5; font-family:'돋움',Dotum;">
+	<div style="width:680px; margin:0 auto;padding-bottom:20px;">
+
+		<div style="padding:18px 30px; background:#f5f6f8;"><a href="#none"><img src="../../../images/cpt/email/logo.png" alt="Koscom OpenAPI Platform"></a></div>
+
+		<!-- contents -->
+		<div style="width:570px; padding:20px 55px 80px; background:#fff;">			
+			<img src="../../../images/cpt/email/icon_head_01.png" alt="">
+			<!-- 2016-06-25 수정 -->
+			<p style="margin-top:22px; font-size:23px; color:#0a2035; text-align:center;">금융투자 핀테크 포털 <strong>회원가입 인증메일</strong>입니다</p>
+			<!-- <p style="margin-top:22px; text-align:center;"><img src="../../../images/cpt/email/txt_head_01.png" alt="오픈플랫폼 금융거래 정보제공 동의갱신 및 약관 개정 안내"></p> -->	
+			<!-- // 2016-06-25 수정 -->
+			<p style="margin-top:80px; font-size:14px; line-height:28px; color:#0a2035;">
+				<strong style="font-size:18px;">신동준</strong> 회원님, 안녕하세요!<br><br>
+				금융투자 핀테크 포털의 가입을 위해서는 이메일 인증이 필요합니다.<br>
+				아래 <span style="text-decoration:underline;">‘이메일 인증하기’</span> 버튼을 클릭 하시고 이메일 인증을 완료해 주세요.<br><br>
+				이메일 인증 후 회원가입을 완료 하시면 <br>
+				금융투자 핀테크 포털의 다양한 서비스를 이용하실 수 있습니다.
+			</p>
+
+			<div style="text-align:center;">
+				<a href="#none" style="display:block; width:230px; height:50px; font-size:15px; font-weight:bold; line-height:50px; text-decoration:none; color:#fff; margin:0 auto; border-radius:5px; margin-top:30px; background:#fe4d0a">이메일 인증하기</a>
+			</div>			
+		</div>
+		<!-- // contents -->
+
+		<!-- footer -->
+		<div style="padding:30px; background:#fffae7;">
+			<p style="padding:10px 0 10px 50px; background:url('../../../images/cpt/email/icon_lock.png') 0 0 no-repeat; font-size:13px; color:#ed4737; line-height:18px; letter-spacing:-1px;">
+				본 메일은 고객님의 수신 동의와 관계없이 발송되는 발신 전용 메일로 회신하실 경우 답변이 되지 않습니다.<br>문의 사항은 웹마스터 메일(<a href="mailto:open@koscom.co.kr" style="color:#ed4737;">open@koscom.co.kr</a>)을 이용해 주시기 바랍니다.				
+			</p>
+			<p style="font-size:13px; color:#595c65; text-align:center; margin-top:40px;">서울시 영등포구 여의나루로 76 ㈜코스콤<br>이메일 : <a href="mailto:open@koscom.co.kr" style="color:#595c65;">open@koscom.co.kr</a></p>
+			<p style="font-size:12px; color:#0c1a3f; text-align:center; margin-top:15px;">Copyright 2016 ⓒ Koscom Corp. All rights reserved.</p>
+		</div>
+		<!-- // footer -->
+	</div>
+</div>
+<!-- // 이메일 -->
+
+</body>
+</html>

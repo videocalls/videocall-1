@@ -1,0 +1,73 @@
+<ion-view view-title="">
+	<ion-content class="bg_gray"> <!-- bg color -->
+		<div class="container authentication_admin">
+			<div class="tab-wrap" tabs>
+				<ul class="btn_head tab-head">
+					<li class="active"><a href="#none">인증서 목록</a></li>
+					<li><a href="#none">인증서 가져오기</a></li>
+				</ul>
+				<div class="tab-body">
+					<!-- 인증서 목록 -->
+					<div class="cont inner_cont">
+						<div class="authentication_view">
+							<a href="#go" class="signature_box">
+								<div class="auth_name"><strong>안지원</strong> 6832099</div>
+								<div class="auth_place">증권 / 보험용 / SignKorea CA2</div>
+								<div class="auth_date">만료일 <span>2018.02.28</span></div>
+							</a>
+						</div>
+
+						<div class="authentication_view red_alarm">
+							<a href="#go" class="signature_box">
+								<div class="auth_name"><strong>안지원</strong> 6832099</div>
+								<div class="auth_place">증권 / 보험용 / SignKorea CA2</div>
+								<div class="auth_date">만료일 <span>2018.02.28</span></div>
+							</a>
+						</div>
+
+						<div class="authentication_view disabled">
+							<a href="#go" class="signature_box">
+								<div class="auth_name"><strong>안지원</strong> 6832099</div>
+								<div class="auth_place">증권 / 보험용 / SignKorea CA2</div>
+								<div class="auth_date">만료일 <span>2018.02.28</span></div>
+							</a>
+						</div>
+
+						<!-- 결과 없을때 -->
+						<div class="not_result">스마트 기기에 저장된 <br><span class="ft_org">공인인증서가 없습니다. </span><br><br>인증서 가져오기 후 다시 시도해 주세요.</div>
+						<!--// 결과 없을때 -->
+					</div>
+					<!-- 인증서 가져오기 -->
+					<div class="inner_cont">
+						<div class="bring_area">
+							<h2 class="title_h2">인증번호 입력</h2>
+							<div class="num_code">
+								<span class="input_area"><input type="text" value="1134"></span>
+								<span class="input_area"><input type="text" value="1134"></span>
+								<span class="input_area"><input type="text" value="1134"></span>
+							</div>
+							<h2 class="title_h2">인증서 가져오기 안내</h2>
+								<p>고객님의 PC에 저장되어 있는 공인인증서를 단말기로 복사합니다. </p>
+								<ol>
+									<li>1. 거래 중인 증권사 홈페이지에 접속합니다.</li>
+									<li>2. 증권사의 공인인증서 관리 화면에 접속하여 PC→스마트폰 내보내기 또는 PC→스마트폰 복사 버튼을 클릭합니다.</li>
+									<li>3. 인증서 목록 창에서 가져오기할 인증서를 선택하신 후 비밀번호를 입력해주세요. </li>
+									<li>4. 공인인증서 비밀번호 인증이 완료되면 인증번호 입력창이 나옵니다. 해당 영역에 위 인증번호 12자리를 입력해주세요.</li>
+									<li>5. 인증번호가 일치하면 가져오기가 완료됩니다. </li>
+								</ol>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<div class="button_area btn_both btn_bottom_area"> <!-- 버튼 2개 btn_both / 버튼 3개 btn_three -->
+			<a href="#go" class="btn_middle btn_black">취소</a>
+			<a href="#go" class="btn_middle btn_black_org">확인</a>
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+</ion-view>

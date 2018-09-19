@@ -1,0 +1,169 @@
+<!-- 
+ * (C) Copyright AhnLab, Inc.
+ *
+ * Any part of this source code can not be copied with
+ * any method without prior written permission from
+ * the author or authorized person.
+ *
+ * @version		$Revision: 15816 $
+ *
+ -->
+
+<!DOCTYPE HTML> <!-- HTML5 -->
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="expires" content="-1" /> 
+<meta http-equiv="pragma" content="no-cache" /> 
+<meta http-equiv="cache-control" content="no-cache" /> 
+<title>astx2</title>
+
+<script src="include.js"></script>
+
+<style>
+form .num 		{ width:4em; }
+form .button	{ width:8em; }
+
+#cmd li { height: 1.8em; }
+</style>
+
+</head>
+<body>
+
+<p>AhnLab Safe Transaction</p>
+
+<form name="form1" id="form1" action="do_submit.jsp" method="post">
+<p>
+	<input type="text" name="cardno1" id="cardno1" e2e="true" class="num" onkeyup="onMoveFocus(this,'cardno2',4);"/> -
+	<input type="password" name="cardno2" id="cardno2" e2e_type="2" autocomplete="off" maxlength="4" class="num" onkeyup="onMoveFocus(this,'cardno3',4);"/> -
+	<input type="password" name="cardno3" id="cardno3" e2e_type="2" autocomplete="off" maxlength="4" class="num" onkeyup="onMoveFocus(this,'cardno4',4);"/> -
+	<input type="text" name="cardno4" id="cardno4" e2e_type="1" e2e_txtmsk="**00" maxlength="4" class="num" onkeyup="onMoveFocus(this,'btn1',4);"/>
+	&nbsp;<input type="button" name="btn" id="btn1" class="button" value="Submit1(form)" onclick="onSubmit1()"/>
+<p>
+</form>
+
+<form name="form2" id="form2" action="#">
+<p>
+	<input type="text" name="cardno1" id="cardno5" e2e_type="1" maxlength="4" class="num" onkeyup="onMoveFocus(this,'cardno6',4);"/> -
+	<input type="password" name="cardno2" id="cardno6" e2e_type="1" autocomplete="off" maxlength="4" class="num" onkeyup="onMoveFocus(this,'cardno7',4);"/> -
+	<input type="password" name="cardno3" id="cardno7" e2e_type="1" autocomplete="off" maxlength="4" class="num" onkeyup="onMoveFocus(this,'cardno8',4);"/> -
+	<input type="text" name="cardno4" id="cardno8" e2e_type="1" e2e_txtmsk="**00" maxlength="4" class="num" onkeyup="onMoveFocus(this,'btn2',4);"/>
+	&nbsp;<input name="btn" id="btn2" type="button" class="button" value="Submit2(ajax)" onclick="onSubmit2()"/>
+<p>
+</form>
+
+<div id="cmd">
+<ul>
+	<li><a href="#" onclick="doATX2CheckServer(); return false;">[doATX2CheckServer]</a></li>
+	<li><a href="#" onclick="doPopupWindow(); return false;">[doPopupWindow]</a></li>
+</ul>
+</div>
+
+<script>
+window.onload = function() 
+{
+	$_astxu.log('[onload] '+navigator.userAgent);
+	$_astxu.log('[onload] platform='+navigator.platform+',browser='+$ASTX2_CONST.BROWSER_VER);
+	
+	$ASTX2.setOption({autofocus:true});
+	
+	checkInstallASTX2(
+		function onSuccess() {
+			doATX2CheckServer();
+		}
+	);
+}
+
+function doATX2CheckServer()
+{
+	$ASTX2.checkServer(
+		function onSuccess() {
+			$_astxu.log('ASTX.checkServer() success');
+			
+			$ASTX2.initE2E();
+			$_astxj.hideOverlay();
+		}, 
+		function onFailure() {
+			$_astxu.log('ASTX.checkServer() failure: errno='+$ASTX2.getLastError());
+		}
+	);
+}
+
+function doPopupWindow()
+{
+	var url = "page_popup.html?rnd="+new Date().getTime();
+	var opt = "width=600,height=500,resizable=no,scrollbars=no,toobar=no,location=no,status=no;";
+	
+	window.open(url, "", opt);
+}
+
+function doTest() 
+{
+	$_astxu.log('[onTest]');
+}
+
+function onSubmit1()
+{
+	$_astxu.log('[onSubmit1]');
+	
+	if( true == $_astxu.isMacLinuxOS() )
+	{
+		document.form1.submit();
+	}
+	else
+	{
+		$ASTX2.getE2EData(
+			document.form1,
+			function onSuccess(data) {
+				$_astxu.log('ASTX.getE2EData() success');
+				
+				$ASTX2.setE2EData(document.form1, data, true);
+				document.form1.submit();
+			}, 
+			function onFailure() {
+				$_astxu.log('ASTX.getE2EData() failure: errno='+$ASTX2.getLastError());
+			}
+		);		
+	}
+	
+	return false;
+}
+
+function onSubmit2()
+{
+	$_astxu.log('[onSubmit2]');
+	
+	/*
+	$ASTX2.getE2EData(
+		document.form2,
+	*/
+	$ASTX2.getE2EDataIDs(
+		['cardno5','cardno6','cardno7','cardno8'],
+		function onSuccess(data) {
+			$_astxu.log('ASTX.getE2EData() success');
+			
+			jQuery.ajax({
+				 url:'do_submit_ajax.jsp',
+				 data: data,
+				 type: "POST",
+				 dataType: 'json',
+				 success:function(json)
+				 {
+					 //$_astxu.log('[ajax] '+$_astxu.jsonQstr(json));
+				 }
+			});
+			
+		}, 
+		function onFailure() {
+			$_astxu.log('ASTX.getE2EData() failure: errno='+$ASTX2.getLastError());
+		}
+	);
+}
+
+var debuger = new myDebuger();
+debuger.write_output(document, true);
+
+</script>
+
+</body>
+</html>

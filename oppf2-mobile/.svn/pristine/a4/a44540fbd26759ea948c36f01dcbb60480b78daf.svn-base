@@ -1,0 +1,14 @@
+<ion-view view-title="공지사항">
+	<ion-content class="padding">
+		<div class="notice">
+			<ul class="list">
+				<!-- <li ng-repeat="item in vm.items"> -->
+				<li collection-repeat="item in vm.items">
+					<a href="" ng-click="vm.test(item.faqSeq);">{{item.faqTitle}}</a>
+				</li>
+			</ul>
+			<ion-infinite-scroll ng-if="!vm.noMoreItemsAvailable" on-infinite="vm.loadMore()" distance="10%">
+			</ion-infinite-scroll>
+		</div>
+	</ion-content>
+</ion-view>>

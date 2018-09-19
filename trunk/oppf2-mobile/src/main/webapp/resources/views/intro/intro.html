@@ -1,0 +1,32 @@
+<ion-modal-view ng-controller="Intro as vm">
+	<ion-content scroll="false">
+		<div class="container">
+			<div class="app_guide">
+				<ion-slide-box show-pager="true">
+					<ion-slide>
+						<ion-content>
+							<div class="guide_step_01"></div>
+						</ion-content>
+					</ion-slide>
+					<ion-slide>
+						<ion-content>
+							<div class="guide_step_02"></div>
+						</ion-content>
+					</ion-slide>
+					<ion-slide>
+						<ion-content>
+							<div class="guide_step_03"></div>
+						</ion-content>
+					</ion-slide>
+					<ion-slide>
+						<ion-content>
+							<div class="guide_step_04">
+								<a ng-click="vm.close();" class="btn_start">시작하기</a>
+							</div>
+						</ion-content>
+					</ion-slide>
+				</ion-slide-box>
+			</div>
+		</div>
+	</ion-content>
+</ion-modal-view>

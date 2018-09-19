@@ -1,0 +1,570 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 자본시장 공동 핀테크 오픈플랫폼 구축
+* @FileName : NotiDAO.java
+* @Comment  : [마이페이지>신청서비스]정보관리를 위한 SQL XML
+* @author   : 신동진
+* @since    : 2016.06.11
+* @version  : 1.0
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2016.06.11   신동진        최초생성
+-->
+
+<sqlMap namespace="kr.co.koscom.oppf.spt.myp.svcAppl.service.impl.MypSvcApplDAO">
+       
+    <!-- 서비스신청 -->
+    <typeAlias alias="MypSvcApplVO" type="kr.co.koscom.oppf.spt.myp.svcAppl.service.MypSvcApplVO"/>
+    
+    <!--
+      * @Method Name        : spt.myp.svcAppl.MypSvcApplDAO.selectMypSvcApplList
+      * @Method description : [신청서비스] 신청서비스 목록을 조회한다.
+      * @param              : MypSvcApplVO
+      * @return             : MypSvcApplVO
+      * @throws             : Exception
+    -->
+    <select id="spt.myp.svcAppl.MypSvcApplDAO.selectMypSvcApplList" parameterClass="MypSvcApplVO" resultClass="MypSvcApplVO">
+        SELECT a.customer_reg_no as customerRegNo,
+                a.app_id as appId,
+                a.terms_reg_no as termsRegNo,
+                c.company_code_id as subcompanyCodeId,
+                sub.company_name_kor_alias as subcompanyName,
+                b.terms_auth_yn as termsAuthYn,
+                date_format(b.terms_start_date,'%Y-%m-%d') as termsStartDate,
+                date_format(b.terms_expire_date,'%Y-%m-%d') as termsExpireDate,
+                CASE
+                  WHEN
+                    <![CDATA[ date_format(sysdate(),'%Y%m%d') >= date_format(b.terms_expire_date - INTERVAL 1 MONTH,'%Y%m%d')
+                    AND date_format(sysdate(),'%Y%m%d') <= date_format(b.terms_expire_date,'%Y%m%d') ]]>
+                  THEN 'N'
+                ELSE 'Y'
+                END as termsAuthDateYn
+          FROM (
+                SELECT customer_reg_no,
+                terms_reg_no,
+                max(app_id) as app_id
+                FROM spt_customer_service_profile
+                WHERE customer_reg_no = #customerRegNo#
+                AND terms_reg_no IS NOT NULL
+                AND delete_date IS NULL
+                GROUP BY customer_reg_no, terms_reg_no
+                ) a
+
+                LEFT JOIN
+                spt_customer_service_terms_profile b
+                ON     a.customer_reg_no = b.customer_reg_no
+                AND a.terms_reg_no = b.terms_reg_no
+
+                LEFT JOIN com_app_view c ON a.app_id = c.app_id ,
+
+                com_company_profile sub
+
+          WHERE b.terms_auth_yn = 'N'
+            AND c.app_status = 'G022002'
+            AND c.company_code_id = sub.company_code_id
+            AND sub.delete_date IS NULL
+           ORDER BY sub.company_name_kor_alias
+    </select>
+
+    <!--
+      * @Method Name        : spt.myp.svcAppl.MypSvcApplDAO.selectMypSvcApplCompanyList
+      * @Method description : [신청서비스] 신청서비스 내역의 금투사 목록을 조회한다.
+      * @param              : MypSvcApplVO
+      * @return             : MypSvcApplVO
+      * @throws             : Exception
+    -->
+    <select id="spt.myp.svcAppl.MypSvcApplDAO.selectMypSvcApplCompanyList" parameterClass="MypSvcApplVO" resultClass="MypSvcApplVO">
+        select distinct
+                 a.customer_reg_no as customerRegNo,
+                 c.company_code_id as pubcompanyCodeId,
+                 d.company_name_kor_alias as pubcompanyName
+            from spt_customer_service_profile a,
+                 spt_customer_service_account_profile b,
+                 com_api_info c,
+                 com_company_profile d
+            where a.customer_reg_no = #customerRegNo#
+              and a.terms_reg_no = #termsRegNo#
+              and a.service_reg_no = b.service_reg_no
+              and a.customer_reg_no = b.customer_reg_no
+              and a.app_id = b.app_id
+              and b.api_id = c.api_id
+              and c.api_account_yn = 'Y'
+              and c.company_code_id = d.company_code_id
+              and d.delete_date is null
+    </select>
+
+    <!--
+      * @Method Name        : spt.myp.svcAppl.MypSvcApplDAO.selectMypSvcApplCompanyList
+      * @Method description : [신청서비스] 신청서비스 내역의 연결 앱 목록을 조회한다.
+      * @param              : MypSvcApplVO
+      * @return             : MypSvcApplVO
+      * @throws             : Exception
+    -->
+    <select id="spt.myp.svcAppl.MypSvcApplDAO.selectMypSvcApplAppList" parameterClass="MypSvcApplVO" resultClass="String">
+        SELECT b.app_name as appName
+                FROM spt_customer_service_profile a,
+                     com_app_view b
+                WHERE a.customer_reg_no = #customerRegNo#
+                AND a.terms_reg_no = #termsRegNo#
+                AND a.delete_date IS NULL
+                AND a.app_id = b.app_id
+                AND b.app_status = 'G022002'
+    </select>
+    
+    <!--
+      * @Method Name        : spt.myp.svcAppl.MypSvcApplDAO.selectFintechSvcDiscardList
+      * @Method description : [신청서비스] 폐기 정보제공동의 목록을 조회한다.
+      * @param              : MypSvcApplVO
+      * @return             : MypSvcApplVO
+      * @throws             : Exception
+    -->
+    <select id="spt.myp.svcAppl.MypSvcApplDAO.selectFintechSvcDiscardList" parameterClass="MypSvcApplVO" resultClass="MypSvcApplVO">
+		SELECT a.customer_reg_no as customerRegNo,
+                a.app_id as appId,
+                a.terms_reg_no as termsRegNo,
+                a.terms_discard_date as termsDiscardDate,
+                c.company_code_id as subcompanyCodeId,
+                sub.company_name_kor_alias as subcompanyName,
+                b.terms_auth_yn as termsAuthYn,
+                date_format(b.terms_start_date,'%Y-%m-%d') as termsStartDate,
+                date_format(b.terms_expire_date,'%Y-%m-%d') as termsExpireDate
+          FROM (
+                SELECT customer_reg_no,
+                terms_reg_no,
+                max(app_id) as app_id,
+                date_format(delete_date,'%Y-%m-%d %H:%i') AS terms_discard_date
+                FROM spt_customer_service_profile
+                WHERE customer_reg_no = #customerRegNo#
+                AND delete_date IS NOT NULL
+                AND terms_reg_no IS NOT NULL
+                GROUP BY customer_reg_no, terms_reg_no, date_format(delete_date,'%Y-%m-%d %H:%i')
+                ) a
+
+                LEFT JOIN
+                spt_customer_service_terms_profile b
+                ON     a.customer_reg_no = b.customer_reg_no
+                AND a.terms_reg_no = b.terms_reg_no
+                LEFT JOIN com_app_view c ON a.app_id = c.app_id ,
+
+                com_company_profile sub
+
+          WHERE b.terms_auth_yn = 'N'
+            AND c.app_status = 'G022002'
+            AND c.company_code_id = sub.company_code_id
+            AND sub.delete_date IS NULL
+           ORDER BY a.terms_discard_date desc
+    </select>
+
+    <select id="spt.myp.svcAppl.MypSvcApplDAO.selectFintechSvcDiscardListNew" parameterClass="MypSvcApplVO" resultClass="MypSvcApplVO">
+        select
+                a.customer_reg_no as customerRegNo
+               ,'' as appId
+               ,a.terms_reg_no as termsRegNo
+               ,date_format(a.delete_date,'%Y-%m-%d %H:%i') as termsDiscardDate
+               ,b.company_code_id as subcompanyCodeId
+               ,b.company_name_kor_alias as subcompanyName
+               ,a.terms_auth_yn as termsAuthYn
+               ,date_format(a.terms_start_date,'%Y-%m-%d') as termsStartDate
+               ,date_format(a.terms_expire_date,'%Y-%m-%d') as termsExpireDate
+        from spt_customer_service_terms_profile a,
+              com_company_profile b
+        where a.customer_reg_no = #customerRegNo#
+        and a.subcompany_code_id = b.company_code_id
+        and a.delete_date is not null
+        and b.delete_date is null
+        order by a.delete_date desc
+    </select>
+
+    <select id="spt.myp.svcAppl.MypSvcApplDAO.selectMypSvcApplCompanyListForDiscard" parameterClass="MypSvcApplVO" resultClass="MypSvcApplVO">
+        select a.customer_reg_no as customerRegNo
+               ,a.pubcompany_code_id as pubcompanyCodeId
+               ,b.company_name_kor_alias as pubcompanyName
+        from spt_customer_service_terms_pubcompany_profile a,
+              com_company_profile b
+        where terms_reg_no = #termsRegNo#
+        and a.customer_reg_no = #customerRegNo#
+        and a.pubcompany_code_id = b.company_code_id
+        and b.delete_date is null
+    </select>
+
+    <!--
+     * @Method Name        : spt.myp.svcAppl.MypSvcApplDAO.cancelMypSvcAppl
+     * @Method description : [신청서비스] 서비스 해지
+     * @param              : MypSvcApplVO
+     * @return             : int
+     * @throws             : Exception
+    -->
+    <update id="spt.myp.svcAppl.MypSvcApplDAO.cancelMypSvcAppl" parameterClass="MypSvcApplVO">
+        update spt_customer_service_profile set
+            delete_date = sysdate(),
+            update_date = sysdate(),
+            update_id = #createId#
+        where customer_reg_no = #customerRegNo#
+        and service_reg_no = #serviceRegNo#             
+    </update>
+    
+    <!--
+     * @Method Name        : spt.myp.svcAppl.MypSvcApplDAO.insertMypSvcApplHist
+     * @Method description : [신청서비스] spt_customer_service_profile_hist hist 저장
+     * @param              : MypSvcApplVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="spt.myp.svcAppl.MypSvcApplDAO.insertMypSvcApplHist" parameterClass="MypSvcApplVO">
+        insert into spt_customer_service_profile_hist(
+            customer_reg_no,
+            service_reg_no,
+            service_seq,
+            app_id,
+            terms_reg_no,
+            delete_date,
+            create_date,
+            create_id
+        )
+        select  customer_reg_no,
+                service_reg_no,
+                ifnull((
+                    select ifnull(max(cast(service_seq as SIGNED)), 0) + 1
+                    from spt_customer_service_profile_hist
+                    where customer_reg_no = a.customer_reg_no
+                    and service_reg_no = a.service_reg_no
+                ), 1),
+                app_id,
+                terms_reg_no,
+                delete_date,
+                update_date,
+                update_id
+        from spt_customer_service_profile a        
+        where customer_reg_no = #customerRegNo#
+        and service_reg_no = #serviceRegNo#
+    </insert>
+    
+    <!--
+     * @Method Name        : spt.myp.svcAppl.MypSvcApplDAO.selectCancelMypSvcApplTermsList
+     * @Method description : [신청서비스]서비스 해지 시 폐기될 동의서 목록 조회
+     * @param              : MypSvcApplVO
+     * @return             : MypSvcApplVO
+     * @throws             : Exception
+    -->
+    <select id="spt.myp.svcAppl.MypSvcApplDAO.selectCancelMypSvcApplTermsList" parameterClass="MypSvcApplVO" resultClass="MypSvcApplVO">
+		select  a.customer_reg_no   as customerRegNo,
+		        a.service_reg_no    as serviceRegNo,
+		        a.terms_reg_no      as termsRegNo,
+		        a.customer_id       as customerId
+		from(
+		    select  a.customer_reg_no,
+		            a.service_reg_no,
+		            a.terms_reg_no,
+		            b.customer_id,
+		            (
+		                select count(*)
+		                from spt_customer_service_profile
+		                where customer_reg_no = a.customer_reg_no
+		                and terms_reg_no = a.terms_reg_no
+		                and delete_date is null
+		            ) as terms_cnt
+		    from spt_customer_service_profile a, spt_customer_info_profile b
+		    where a.customer_reg_no = #customerRegNo#
+		    and a.service_reg_no = #serviceRegNo#
+		    and a.terms_reg_no is not null
+		    and a.customer_reg_no = b.customer_reg_no
+		) a
+		where terms_cnt = 1    
+    </select>
+    
+    <!--
+     * @Method Name        : spt.myp.svcAppl.MypSvcApplDAO.updateCancelMypSvcAppl
+     * @Method description : [신청서비스] 동의서 폐기 시 해당 서비스 해지
+     * @param              : MypSvcApplVO
+     * @return             : int
+     * @throws             : Exception
+    -->
+    <update id="spt.myp.svcAppl.MypSvcApplDAO.updateCancelMypSvcAppl" parameterClass="MypSvcApplVO">
+        update spt_customer_service_profile set
+            delete_date = sysdate(),
+            update_date = sysdate(),
+            update_id = #createId#
+        where customer_reg_no = #customerRegNo#
+        and terms_reg_no = #termsRegNo#
+    </update>
+    
+    <!--
+     * @Method Name        : spt.myp.svcAppl.MypSvcApplDAO.updateCancelMypSvcApplHist
+     * @Method description : [신청서비스] 동의서 폐기 시 해당 서비스 해지 hist 저장
+     * @param              : MypSvcApplVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="spt.myp.svcAppl.MypSvcApplDAO.updateCancelMypSvcApplHist" parameterClass="MypSvcApplVO">
+        insert into spt_customer_service_profile_hist(
+            customer_reg_no,
+            service_reg_no,
+            service_seq,
+            app_id,
+            terms_reg_no,
+            delete_date,
+            create_date,
+            create_id
+        )
+        select  customer_reg_no,
+                service_reg_no,
+                ifnull((
+                    select ifnull(max(cast(service_seq as SIGNED)), 0) + 1
+                    from spt_customer_service_profile_hist
+                    where customer_reg_no = a.customer_reg_no
+                    and service_reg_no = a.service_reg_no
+                ), 1),
+                app_id,
+                terms_reg_no,
+                delete_date,
+                update_date,
+                update_id
+        from spt_customer_service_profile a
+        where customer_reg_no = #customerRegNo#
+        and terms_reg_no = #termsRegNo#
+    </insert>
+    
+    <!--
+     * @Method Name        : spt.myp.svcAppl.MypSvcApplDAO.cancelMypSvcApplTerms
+     * @Method description : [신청서비스] 동의서 폐기
+     * @param              : MypSvcApplVO
+     * @return             : int
+     * @throws             : Exception
+    -->
+    <update id="spt.myp.svcAppl.MypSvcApplDAO.cancelMypSvcApplTerms" parameterClass="MypSvcApplVO">
+        update spt_customer_service_terms_profile set
+            delete_date = sysdate(),
+            update_date = sysdate(),
+            update_id = #createId#
+        where customer_reg_no = #customerRegNo#
+        and terms_reg_no = #termsRegNo#             
+    </update>
+    
+    <!--
+     * @Method Name        : spt.myp.svcAppl.MypSvcApplDAO.insertMypSvcApplTermsHist
+     * @Method description : [신청서비스] spt_customer_service_terms_profile hist 저장
+     * @param              : MypSvcApplVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="spt.myp.svcAppl.MypSvcApplDAO.insertMypSvcApplTermsHist" parameterClass="MypSvcApplVO">
+        insert into spt_customer_service_terms_profile_hist(
+            customer_reg_no,
+            terms_reg_no,
+            terms_seq,
+            subcompany_code_id,
+            subcompany_name,
+            customer_name,
+            customer_email,
+            customer_birth_day,
+            terms_policy,
+            terms_chg_date,
+            terms_start_date,
+            terms_expire_date,
+            terms_auth_yn,
+            terms_file_reg_no,
+            terms_file_status,
+            customer_sign_dn,   /* 약관 동의 공인인증서 */
+            customer_sign_data, /* 약관 동의 전자서명키 */
+            customer_tsa_data,  /* 약관 동의 시점확인키 */   
+            delete_date,
+            create_date,
+            create_id
+        )
+        select  customer_reg_no,
+                terms_reg_no,
+                ifnull((
+                    select ifnull(max(cast(terms_seq as SIGNED)), 0) + 1
+                    from spt_customer_service_terms_profile_hist
+                    where customer_reg_no = a.customer_reg_no
+                    and terms_reg_no = a.terms_reg_no
+                ), 1),
+                subcompany_code_id,
+                subcompany_name,
+                customer_name,
+                customer_email,
+                customer_birth_day,
+                terms_policy,
+                terms_chg_date,
+                terms_start_date,
+                terms_expire_date,
+                terms_auth_yn,
+                terms_file_reg_no,
+                terms_file_status,
+                customer_sign_dn,   /* 약관 동의 공인인증서 */
+	            customer_sign_data, /* 약관 동의 전자서명키 */
+	            customer_tsa_data,  /* 약관 동의 시점확인키 */   
+                delete_date,
+                update_date,
+                update_id
+        from spt_customer_service_terms_profile a        
+        where customer_reg_no = #customerRegNo#
+        and terms_reg_no = #termsRegNo#
+    </insert>
+    
+    <!--
+     * @Method Name        : spt.myp.svcAppl.MypSvcApplDAO.selectCustomerAccountProcList
+     * @Method description : [가상계좌 삭제 공통]삭제한 가상계좌로 신청한 서비스 목록을 가져온다.
+     * @param              : MypSvcApplVO
+     * @return             : MypSvcApplVO
+     * @throws             : Exception
+    -->
+    <select id="spt.myp.svcAppl.MypSvcApplDAO.selectCustomerAccountProcList" parameterClass="MypSvcApplVO" resultClass="MypSvcApplVO">
+        select  a.*
+        from(
+            select  a.service_reg_no    as serviceRegNo,
+                    a.terms_reg_no      as termsRegNo,
+                    (
+                        select count(*)
+                        from spt_customer_service_profile
+                        where delete_date is null 
+                        and customer_reg_no = a.customer_reg_no
+                        and terms_reg_no = a.terms_reg_no
+                    )                   as termsCnt,
+                    a.account_cnt       as accountCnt,
+                    b.customer_id as customerId
+            from(        
+                select  a.*,
+                        (
+                            select terms_reg_no
+                            from spt_customer_service_profile
+                            where delete_date is null 
+                            and customer_reg_no = a.customer_reg_no
+                            and service_reg_no = a.service_reg_no
+                        ) as terms_reg_no,
+                        (
+                            select count(*)
+                            from spt_customer_service_account_profile
+                            where delete_date is null 
+                            and customer_reg_no = a.customer_reg_no
+                            and service_reg_no = a.service_reg_no
+                        )                   as account_cnt
+                from(
+                    select  a.customer_reg_no,
+                            a.service_reg_no
+                    from spt_customer_service_profile a
+                    join (
+                        select *
+                        from spt_customer_service_account_profile
+                        where (customer_reg_no, service_reg_no) in (
+                            /* 삭제할 계좌 정보가 있는 서비스를 찾는다 */
+                            select  a.customer_reg_no,
+                                    a.service_reg_no
+                            from spt_customer_service_account_profile a
+                            join com_api_info b on a.api_id = b.api_id
+                            where a.delete_date is null
+                            and a.customer_reg_no = #customerRegNo#
+                            and a.customer_realaccount_no = enc_char_ins(
+                                #customerRealaccountNo#,
+                                10,
+                                'ARIA',
+                                'spt_customer_service_account_profile',
+                                'customer_realaccount_no',
+                                user(),
+                                connection_id()
+                            )
+                            and b.company_code_id = #companyCodeId#  
+                        )
+                        and delete_date is null
+                    ) b 
+                    on a.customer_reg_no = b.customer_reg_no 
+                    and a.service_reg_no = b.service_reg_no
+                    where a.customer_reg_no = #customerRegNo#
+                    and a.delete_date is null
+                    group by a.customer_reg_no, a.service_reg_no
+                ) a  
+            ) a , spt_customer_info_profile b
+            where a.customer_reg_no = b.customer_reg_no
+        ) a    
+        order by a.accountCnt asc, a.termsCnt asc    
+    </select>
+    
+    <!--
+     * @Method Name        : spt.myp.svcAppl.MypSvcApplDAO.selectCustomerAccountDeleteList
+     * @Method description : [가상계좌 삭제 공통]삭제할 서비스 가상계좌 목록을 조회한다. 
+     * @param              : MypSvcApplVO
+     * @return             : MypSvcApplVO
+     * @throws             : Exception
+    -->
+    <select id="spt.myp.svcAppl.MypSvcApplDAO.selectCustomerAccountDeleteList" parameterClass="MypSvcApplVO" resultClass="MypSvcApplVO">
+		select  a.customer_reg_no   as customerRegNo,
+		        a.service_reg_no    as serviceRegNo,
+		        a.account_reg_no    as accountRegNo
+		from spt_customer_service_account_profile a
+		join com_api_info b on a.api_id = b.api_id
+		where a.delete_date is null
+		and a.customer_reg_no = #customerRegNo#
+		and a.customer_realaccount_no = enc_char_ins(
+		    #customerRealaccountNo#,
+		    10,
+		    'ARIA',
+		    'spt_customer_service_account_profile',
+		    'customer_realaccount_no',
+		    user(),
+		    connection_id()
+		)
+		and b.company_code_id = #companyCodeId# 
+		group by a.customer_reg_no, a.service_reg_no, a.account_reg_no
+    </select>
+    
+    <!--
+     * @Method Name        : spt.myp.svcAppl.MypSvcApplDAO.deleteCustomerAccount
+     * @Method description : [가상계좌 삭제 공통] 서비스 가상계좌를 삭제한다.
+     * @param              : SptCustomerServiceAccountProfileVO
+     * @return             : int
+     * @throws             : Exception
+    -->
+    <update id="spt.myp.svcAppl.MypSvcApplDAO.deleteCustomerAccount" parameterClass="MypSvcApplVO">
+        update spt_customer_service_account_profile set
+            delete_date = sysdate(),
+            update_date = sysdate(),
+            update_id = #createId#
+        where customer_reg_no = #customerRegNo#
+        and service_reg_no = #serviceRegNo#
+        and account_reg_no = #accountRegNo#
+    </update>
+    
+    <!--
+     * @Method Name        : spt.myp.svcAppl.MypSvcApplDAO.insertCustomerAccountHist
+     * @Method description : [가상계좌 삭제 공통] 서비스 가상계좌 삭제 hist를 insert 한다.
+     * @param              : SptCustomerServiceAccountProfileVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="spt.myp.svcAppl.MypSvcApplDAO.insertCustomerAccountHist" parameterClass="MypSvcApplVO">
+        insert into spt_customer_service_account_profile_hist(
+            customer_reg_no,
+            service_reg_no,
+            account_reg_no,
+            account_seq,
+            app_id,
+            api_id,
+            customer_realaccount_no,
+            delete_date,
+            create_date,
+            create_id
+        )
+        select  customer_reg_no,
+                service_reg_no,
+                account_reg_no,
+                ifnull((
+                    select ifnull(max(cast(account_seq as SIGNED)), 0) + 1
+                    from spt_customer_service_account_profile_hist
+                    where customer_reg_no = a.customer_reg_no
+                    and service_reg_no = a.service_reg_no
+                    and account_reg_no = a.account_reg_no
+                ), 1),
+                app_id,
+                api_id,
+                customer_realaccount_no,
+                delete_date,
+                update_date,
+                update_id
+        from spt_customer_service_account_profile a        
+        where customer_reg_no = #customerRegNo#
+        and service_reg_no = #serviceRegNo#
+        and account_reg_no = #accountRegNo#
+    </insert>
+</sqlMap>

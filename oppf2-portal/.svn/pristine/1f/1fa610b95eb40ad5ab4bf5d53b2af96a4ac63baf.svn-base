@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="ko">
+<head>
+	<title>koscom OpenAPI Platform 통합관리시스템</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="stylesheet" href="../../css/apt/import.css">
+	<!-- IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	  <script src="../../js/cmm/html5shiv.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="../../js/cmm/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../../js/apt/common_pub.js"></script>
+
+	<script type="text/javascript">
+	<!--
+		$(document).ready(function(){
+			// layer_popup
+			$(".content #layer_open").each(function() {
+				$(this).click(function() {
+					//해당 레이어(ID) 노출
+					$(".layer_popup").show();
+					var layerBox = $(this).attr("href"); 
+					$(layerBox).show(); 
+					// layer_popup(화면 중앙정렬)
+					var width_size = $(".layer_box").innerWidth()/2;
+					$(".layer_box").css("margin-left",-width_size);
+					$("body").css("overflow-y","hidden");
+				});		
+
+				// layer_popup(닫기버튼 실행)
+				$(".layer_close").click(function() {
+					$(".layer_box").hide();
+					$(".layer_popup").hide();
+					$("body").css("overflow-y","auto");
+				});	
+
+				// layer_popup(화면 중앙정렬)
+				var width_size = $(".layer_box").innerWidth()/2;
+				$(".layer_box").css("margin-left",-width_size);
+			});
+		});
+	//-->
+	</script>
+
+</head>
+
+<body>
+	<header class="wrap_top">
+		<div>
+			<h1>
+                <a href="#none"><img src="../../images/apt/logo.png" alt="koscom OpenAPI Platform" /></a>
+				<span>서비스관리시스템</span>
+            </h1>
+			<div>
+				<div class="login_st1">
+					<span>관리자님</span><a href="#none" class="btn_logout">로그아웃</a>
+				</div>
+			</div>
+		</div>
+	</header>
+	<!-- // wrap_top -->
+	<article class="container">
+		<div>
+			<section class="lnbArea">
+				<nav>
+					<ul class="lnb">
+						<li><a href="#none">회원 관리</a><!-- 1depth -->
+							<ul>
+								<li><a href="#none">회원 조회</a></li><!-- 2depth -->
+								<li><a href="#none">메일 발송 이력 조회</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">운영자 관리</a>
+							<ul>
+								<li><a href="#none">운영자 조회</a></li>
+								<li><a href="#none">운영자 추가</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">API 관리</a>
+							<ul>
+								<li><a href="#none">API 조회</a></li>
+								<li><a href="#none">API 속성 추가</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">App. 관리</a>
+							<ul>
+								<li><a href="#none">App 조회</a></li>
+								<li><a href="#none">App 속성 추가</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">통계 관리</a></li>
+						<li><a href="#none">포털 관리</a></li>
+						<li><a href="#none">설정 관리</a></li>
+						<li><a href="#none">내 정보 관리</a></li>
+						<li><a href="#none">모니터링 정보</a></li>
+					</ul>
+				</nav>
+			</section>
+			<!-- // lnb -->
+			<section class="content">
+				<div class="location">
+					<h2>레이어팝업 가이드</h2>
+				</div>
+				<!-- // locatioin -->
+				
+				<span class="btn_gray1"><a href="#layer01" id="layer_open">가상 계좌 목록조회</a></span>
+
+			</section>
+			<!-- // content -->
+		</div>
+	</article>
+	<!-- // container -->
+
+
+
+	<!-- layer_popup -->
+	<div class="layer_popup">	
+
+		<div class="dimm"></div>
+
+		<!-- #layer01 -->
+		<div class="layer_box" id="layer01" style="width:620px;"><!-- 가로크기 직접제어, 세로는 최대 500px -->
+			<div class="layer_tit">계좌 추가</div>
+
+			<div class="layer_con">
+
+				<p class="info_right"><span class="icon_basic">*</span> 필수 입력사항</p>
+                
+				<div class="tb_write1">
+					<table>
+						<caption>계좌 정보 입력</caption>
+						<colgroup>
+							<col style="width:30%;">
+							<col style="width:*;">
+						</colgroup>
+						<tbody>
+                        <tr>
+							<th scope="row"><label for="chk1">아이디<span class="icon_basic">*필수입력</span></label></th>
+							<td class="txt_l"><input type="text" class="w100" id="chk1">&nbsp;<span class="btn_gray1"><a href="#1">확인</a></span></td>
+						</tr>
+						<tr>
+							<th scope="row">이름</th>
+							<td class="txt_l">-</td>
+						</tr>
+						<!-- 일치하는 아이디가 없을 경우 -->
+						<tr>
+							<th scope="row"><label for="chk2">아이디<span class="icon_basic">*필수입력</span></label></th>
+							<td class="txt_l"><input type="text" class="w100" id="chk2">&nbsp;<span class="btn_gray1"><a href="#1">재입력</a></span></td>
+						</tr>
+						<tr>
+							<th scope="row">이름</th>
+							<td class="txt_l">홍길동</td>
+						</tr>
+						<!--// 일치하는 아이디가 없을 경우 -->
+						<tr>
+							<th scope="row"><label for="chk3">서비스 제공자<span class="icon_basic">*필수입력</span></label></th>
+							<td class="txt_l">                                
+                                <select id="chk3" style="min-width:100px;">
+                                    <option>선택</option>
+                                </select>
+                            </td>
+						</tr>
+						<tr>
+							<th scope="row"><label for="chk4">유형<span class="icon_basic">*필수입력</span></label></th>
+							<td class="txt_l">                                
+                                <select id="chk4" style="min-width:100px;">
+                                    <option>종합</option>
+                                </select>
+                            </td>
+						</tr>
+						<tr>
+							<th scope="row"><label for="chk5">실계좌번호<span class="icon_basic">*필수입력</span></label></th>
+							<td class="txt_l">
+                                <input type="text" class="w200" id="chk5">
+								<input type="checkbox" class="ml10" name="cc" id="c1">
+								<label for="c1">직접입력</label>
+                            </td>
+						</tr>
+						<tr>
+							<th scope="row"><label for="info">가상계좌번호<span class="icon_basic">*필수입력</span></label></label></th>
+							<td class="txt_l">
+								<div class="wrap_input mb10">
+									<input type="radio" name="kk" id="k1" checked="checked">
+									<label for="k1">금투사 자체발급</label>
+									<input type="radio" name="kk" id="k2">
+									<label for="k2">코스콤발급 </label>
+									<input type="radio" name="kk" id="k3">
+									<label for="k3">직접입력</label>
+								</div>
+								<input readonly="readonly" type="text" class="w200" id="chk5">
+							</td>
+						</tr>
+						<!-- 직접 입력일 때 -->
+						<tr>
+							<th scope="row"><label for="info">가상계좌번호<span class="icon_basic">*필수입력</span></label></label></th>
+							<td class="txt_l">
+								<div class="wrap_input mb10">
+                                    <input type="radio" name="kk2" id="k4">
+									<label for="k4">금투사 자체발급</label>
+									<input type="radio" name="kk2" id="k5">
+									<label for="k5">코스콤발급 </label>
+									<input type="radio" name="kk2" id="k6" checked="checked">
+									<label for="k6">직접입력</label>
+                                </div>
+								<input type="text" class="w200" id="chk5">
+							</td>
+						</tr>
+						<!--// 직접 입력일 때 -->
+						<tr>
+							<th scope="row"><label for="info2">별칭<span class="icon_basic">*필수입력</span></label></th>
+							<td class="txt_l">
+								<input type="text" class="w200" id="info2" placeholder="종합 계좌">
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+                <div class="btn_type3">
+                   <span class="btn_gray1"><a href="#none">저장</a></span>
+				</div>
+				<!-- // btn_type3 -->
+				
+			</div>
+
+			<a href="#none" class="layer_close">레이어팝업 닫기</a>
+		</div>
+		
+	</div>
+	<!-- // layer_popup -->
+	
+</body>
+</html>

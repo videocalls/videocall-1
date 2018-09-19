@@ -1,0 +1,110 @@
+<!-- saved from url=(0014)about:internet -->
+
+<OBJECT classid=CLSID:EC5D5118-9FDE-4A3E-84F3-C2B711740E70
+        codeBase="http://www.signkorea.com/SKCommAX.cab#version=9,9,0,5"
+        id=CertManX width=1 height=1>
+</OBJECT>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+<script type="text/javascript" src="../app/library/json3.min.js"></script>
+<script type="text/javascript" src="../app/library/iecompatibility.js"></script>
+
+<!--<script type="text/javascript" src="../app/library/jquery.min.js"></script>-->
+<!--<script type="text/javascript" src="../app/library/moment.min.js"></script>-->
+
+<!--<script type="text/javascript" src="../app/library/jsrose_crypto.js"></script>-->
+<!--<script type="text/javascript" src="../app/library/jsrose.js"></script>-->
+
+<!--<script type="text/javascript" src="../app/scripts/vestsign.core.js"></script>-->
+
+<script type="text/javascript" src="../app/vestsign.js"></script>
+<script type="text/javascript" src="../app/js/koscom.js"></script>
+<script type="text/javascript" src="../app/activexAdp.js"></script>
+
+<SCRIPT language="javascript">
+
+    var i = 0;
+    var mode = 0;
+
+    function GetPCIdentity() {
+        var CertManX;
+
+        if(getCookieForActiveX() === "true"){
+            CertManX = loadActiveObject();
+        }else{
+            CertManX = ytMain;
+        }
+
+        if (CertManX.doubleClickBlock(arguments.callee)) return;
+        CertManX.UnSetMatchedContext(function () {
+            CertManX.SetServiceMode("www.signkorea.com", "dn");
+
+            // 단말정보획득을 위한 세션인증 ( 인증서 로그인 이후에는 세션인증 필요 없음 )
+            CertManX.SetSessionServicePort("2569362");
+
+            // 단말정보획득(LPCTSTR pszIn, long mode)
+            CertManX.GetPCIdentity("", mode, function (ret) {
+                if (ret == "") {
+                    var ErrCode = CertManX.GetLastErrorCode();
+                    if (ErrCode == 2044) {
+                        alert("단말정보획득 실패 : 세션인증이 되지 않았습니다.");
+                        return;
+                    }
+                    alert("단말정보획득 실패 : " + ErrCode);
+                    return;
+                }
+                form.nid.value = CertManX.GetToken(ret, "nid");		// 어댑터모델명
+                form.mac.value = CertManX.GetToken(ret, "mac");		// 네트워크 어댑터 물리적주소
+                form.nkey.value = CertManX.GetToken(ret, "nkey");	// 해쉬암호화 된 네트워크 어댑터 물리적주소
+                form.hdsn.value = CertManX.GetToken(ret, "hdsn");	// 하드디스크 시리얼번호
+                form.hkey.value = CertManX.GetToken(ret, "hkey");	// 해쉬안호화 된 하드디스크 시리얼번호
+                form.hdid.value = CertManX.GetToken(ret, "hdid");	// 하드디스크모델명
+                form.cpuid.value = CertManX.GetToken(ret, "cpuid");	// CPUID 문자열
+            });
+        });
+    }
+
+</SCRIPT>
+
+<FORM name="form">
+    <BR>
+    <HR align="left" size="5" width="100%" noshade>
+    <FONT size="7">
+        <center> 단말정보추출</center>
+    </FONT>
+    <HR align="left" size="5" width="100%" noshade>
+    <BR>
+
+
+    <TABLE align="CENTER" border="1">
+        <TBODY>
+        <TR>
+            <TD colspan="2" align=center><FONT size="5">인자값 선택</font><BR>
+                <INPUT name="opmode" onclick="mode=38" type="radio" value="6+32" checked>6+32
+                <INPUT name="opmode" onclick="mode=70" type="radio" value="6+64">6+64<BR>
+            </TD>
+        </TR>
+        <TR>
+            <TD colspan="2" align=center><INPUT style="width:200px;height:30" onclick="GetPCIdentity()" type="button"
+                                                value="단말정보획득"></TD>
+        </TR>
+        <TR>
+            <TD colspan="2">CPUID<BR><INPUT name="cpuid" type="text" size="66"></TD>
+        </TR>
+        <TR>
+            <TD>NKEY<BR><INPUT name="nkey" type="text" size="30"></TD>
+            <TD>HKEY<BR><INPUT name="hkey" type="text" size="30"></TD>
+        </TR>
+        <TR>
+            <TD>MAC<BR><INPUT name="mac" type="text" size="30"></TD>
+            <TD>HDID<BR><INPUT name="hdid" type="text" size="30"></TD>
+        </TR>
+        <TR>
+            <TD>NID<BR><INPUT name="nid" type="text" size="30"></TD>
+            <TD>HDSN<BR><INPUT name="hdsn" type="text" size="30"></TD>
+        </TR>
+        </TBODY>
+    </TABLE>
+</FORM>
+</BODY>
+</HTML>

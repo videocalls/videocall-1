@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 자본시장 공동 핀테크 오픈플랫폼 구축
+* @FileName : SptMyInfo_SQL.xml
+* @Comment  : [개인회원정보]정보관리를 위한 SQL XML
+* @author   : 포털 유제량
+* @since    : 2016.05.09
+* @version  : 1.0
+* @see
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2016.05.09   유제량        최초생성
+-->
+
+<sqlMap namespace="kr.co.koscom.oppf.spt.myp.sptMyInfo.service.impl.SptMyInfoDAO">
+  	<typeAlias alias="SptMyInfoVO" type="kr.co.koscom.oppf.spt.myp.sptMyInfo.service.SptMyInfoVO"/>
+  	
+  	 <!--
+     * @Method Name        : selectSptMyInfo
+     * @Method description : [개인회원정보상세:상세]정보를 조회한다.
+     * @param              : SptMyInfoVO
+     * @return             : SptMyInfoVO
+     * @throws             : Exception
+     -->
+    <select id="spt.SptMyInfoDAO.selectSptMyInfo" parameterClass="SptMyInfoVO" resultClass="SptMyInfoVO">
+	    <![CDATA[
+	    select
+			a.customer_reg_no                                                          as customerRegNo,              
+			a.customer_id                                                              as customerId,
+			a.customer_temp_password_yn                                                as customerTempPasswordYn,    
+			ifnull(date_format(a.customer_chg_password_date, '%Y-%m-%d %H:%i'), '')    as customerChgPasswordDate,   
+			ifnull(date_format(a.customer_expire_password_date, '%Y-%m-%d %H:%i'), '') as customerExpirePasswordDate,
+			ifnull(date_format(a.customer_final_password_date, '%Y-%m-%d %H:%i'), '')  as customerFinalPasswordDate, 
+			a.customer_password_fail_cnt                                               as customerPasswordFailCnt,   
+			a.customer_reg_status                                                      as customerRegStatus,          
+			a.customer_step                                                            as customerStep,                
+			a.customer_name_kor                                                        as customerNameKor,            
+			a.customer_name_eng                                                        as customerNameEng,            
+			dec_char_sel(a.customer_phone,10,'ARIA','spt_customer_info_profile','customer_phone',user(),connection_id())  as customerPhone,               
+			dec_char_sel(a.customer_email,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id())  as customerEmail,               
+			a.customer_email_auth_yn                                                   as customerEmailAuthYn,       
+			ifnull(date_format(a.customer_email_reg_date, '%Y-%m-%d %H:%i'), '')       as customerEmailRegDate,      
+			dec_char_sel(a.customer_birth_day,10,'ARIA','spt_customer_info_profile','customer_birth_day',user(),connection_id())  as customerBirthDay,           
+			a.customer_sex                                                             as customerSex,                 
+			a.customer_email_receive_yn                                                as customerEmailReceiveYn,    
+			ifnull(date_format(a.customer_email_receive_date, '%Y-%m-%d %H:%i'), '')   as customerEmailReceiveDate,
+			if(ifnull(otp.customer_otp_id, 'N') = 'N', 'N', 'Y')                       as customerOtpYn,
+            otp.customer_otp_id                                                        as customerOtpId,  
+            verify.customer_verify_dn                                                  as customerVerifyDn,
+			ifnull(date_format(a.customer_reg_date, '%Y-%m-%d %H:%i'), '')             as customerRegDate,            
+			ifnull(date_format(a.delete_date, '%Y-%m-%d %H:%i'), '')                   as deleteDate,                  
+			ifnull(date_format(a.create_date, '%Y-%m-%d %H:%i'), '')                   as createDate,                  
+			ifnull(a.create_id,'')                                                     as createId,                    
+			ifnull(date_format(a.update_date, '%Y-%m-%d %H:%i'), '')                   as updateDate,                  
+			ifnull(a.update_id,'')                                                     as updateId                    
+	    from spt_customer_info_profile a
+	    left join (
+            select  customer_reg_no,
+                    customer_otp_id
+            from spt_customer_otp_profile
+            where customer_otp_status not in('G019003') /*폐기 아님*/
+            and customer_reg_no = #customerRegNo#
+        ) as otp on a.customer_reg_no = otp.customer_reg_no
+        left join (
+			select  customer_reg_no,
+			        customer_verify as customer_verify_dn
+			from spt_customer_verify_profile
+			where delete_date is null
+			and customer_reg_no = #customerRegNo#
+			and customer_verify_type = 'G007002'        
+        ) as verify on a.customer_reg_no = verify.customer_reg_no
+	    where 1=1
+	    ]]>
+	    and a.customer_reg_no = #customerRegNo#
+    </select>
+  	
+  	<!--
+     * @Method Name        : selectCheckPw
+     * @Method description : [개인회원정보:ID중복확인]ID정보를 조회한다.
+     * @param              : String
+     * @return             : String
+     * @throws             : Exception
+     -->
+  	<select id="spt.SptMyInfoDAO.selectCheckPw" parameterClass="SptMyInfoVO" resultClass="java.lang.String" >
+	  	select count(customer_password) as checkPw 
+	  	from spt_customer_info_profile
+	  	where 1=1
+	  	and customer_id = #customerId#
+	  	and customer_reg_no = #customerRegNo#
+	  	and customer_password = enc_char_ins(#customerPassword#,10,'SHA','spt_customer_info_profile','customer_password',user(),connection_id())
+  	</select>
+  	
+    <!--
+     * @Method Name        : updateSptMyInfo
+     * @Method description : [개인회원정보:수정]을 한다.
+     * @param              : SptMyInfoVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="spt.SptMyInfoDAO.updateSptMyInfo" parameterClass="SptMyInfoVO">
+	    update spt_customer_info_profile set
+	        <isNotEmpty property="customerPassword">
+		    customer_password = enc_char_ins(#customerPassword#,10,'SHA','spt_customer_info_profile','customer_password',user(),connection_id()),
+		    customer_temp_password_yn = 'N',
+		    customer_chg_password_date = sysdate(),
+			customer_expire_password_date = date_format(date_add(sysdate(), interval #customer_expire_password_date# month), '%Y%m%d'),
+			customer_final_password_date = date_format(date_add(sysdate(), interval #customer_final_password_date# month), '%Y%m%d'),
+	        customer_password_fail_cnt = 0,
+	        customer_otp_fail_cnt = 0,
+		    </isNotEmpty>
+		    customer_email = enc_char_ins(#customerEmail#,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id()),
+		    customer_phone = enc_char_ins(#customerPhone#,10,'ARIA','spt_customer_info_profile','customer_phone',user(),connection_id()),
+		    <isNotEmpty property="customerBirthDay">
+		    customer_birth_day = enc_char_ins(#customerBirthDay#,10,'ARIA','spt_customer_info_profile','customer_birth_day',user(),connection_id()),
+		    </isNotEmpty>
+		    update_date = sysdate(),
+		    update_id = #customerRegNo#
+	    where 1=1
+	    and customer_id = #customerId#
+	    and customer_reg_no = #customerRegNo#
+    </update>
+    
+    <!--
+     * @Method Name        : updateSptMyPwMod
+     * @Method description : [개인회원정보:비밀번호변경]을 한다.
+     * @param              : SptMyInfoVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="spt.SptMyInfoDAO.updateSptMyPwMod" parameterClass="SptMyInfoVO">
+	    update spt_customer_info_profile set
+		    customer_password = enc_char_ins(#customerPassword#,10,'SHA','spt_customer_info_profile','customer_password',user(),connection_id()),
+		    customer_temp_password_yn = 'N',
+		    customer_chg_password_date = sysdate(),
+		    customer_expire_password_date = date_format(date_add(sysdate(), interval #customer_expire_password_date# month), '%Y%m%d'),
+            customer_final_password_date = date_format(date_add(sysdate(), interval #customer_final_password_date# month), '%Y%m%d'),
+            customer_password_fail_cnt = 0,
+            customer_otp_fail_cnt = 0,
+            customer_reg_status = 'G005002',
+		    update_date = sysdate(),
+		    update_id = #customerRegNo#
+	    where 1=1
+	    and customer_reg_no = #customerRegNo#
+    </update>
+    
+    <!--
+     * @Method Name        : insertSptMyPwMod
+     * @Method description : [개인회원정보:비밀번호변경]을 한다.(history update)
+     * @param              : SptMyInfoVO
+     * @return             : int
+     * @throws             : Exception
+     -->    
+    <insert id="spt.SptMyInfoDAO.insertSptMyPwMod" parameterClass="SptMyInfoVO">
+        insert into spt_customer_info_profile_hist(
+            customer_seq,              
+            customer_reg_no,
+            customer_id,                  
+            customer_password,            
+            customer_temp_password_yn,    
+            customer_chg_password_date,   
+            customer_expire_password_date,
+            customer_final_password_date, 
+            customer_password_fail_cnt,   
+            customer_otp_fail_cnt,
+            customer_reg_status,          
+            customer_step,                
+            customer_name_kor,            
+            customer_name_eng,            
+            customer_phone,               
+            customer_email,               
+            customer_email_auth_yn,       
+            customer_email_reg_date,      
+            customer_birth_day,           
+            customer_sex,                 
+            customer_email_receive_yn,    
+            customer_email_receive_date,  
+            customer_reg_date,            
+            delete_date,                  
+            create_date,                  
+            create_id
+        )            
+        select 
+        	ifnull((
+        	    select ifnull(max(cast(customer_seq as SIGNED)), 0) + 1
+        	    from spt_customer_info_profile_hist
+        	    where customer_reg_no = a.customer_reg_no
+        	), 1),
+            customer_reg_no,           
+            customer_id,                  
+            customer_password,            
+            customer_temp_password_yn,    
+            customer_chg_password_date,                     
+            customer_expire_password_date,
+            customer_final_password_date, 
+            customer_password_fail_cnt,
+            customer_otp_fail_cnt,
+            customer_reg_status,          
+            customer_step,                
+            customer_name_kor,            
+            customer_name_eng,            
+            customer_phone,               
+            customer_email,               
+            customer_email_auth_yn,       
+            customer_email_reg_date,      
+            customer_birth_day,           
+            customer_sex,                 
+            customer_email_receive_yn,   
+            customer_email_receive_date,  
+            customer_reg_date,            
+            delete_date,                  
+            create_date,                  
+            customer_id                 
+        from spt_customer_info_profile a
+        where 1=1
+        and customer_reg_no = #customerRegNo#                      
+    </insert>
+    
+    <!--
+     * @Method Name        : updateSptMbrSecesInfo
+     * @Method description : [개인회원정보:회원탈퇴]를 한다.
+     * @param              : SptMyInfoVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="spt.SptMyInfoDAO.updateSptMbrSecesInfo" parameterClass="SptMyInfoVO">
+        update spt_customer_info_profile set
+            customer_reg_status = #customerRegStatus#,
+            delete_date = sysdate(),  
+            update_date = sysdate(),
+            update_id = #customerRegNo#
+        where 1=1
+        and customer_reg_no = #customerRegNo#
+    </update>
+    
+    <!--
+     * @Method Name        : selectSptCustomerInfoProfile
+     * @Method description : [개인회원정보:기본]정보를 조회한다.(마이페이지_회원정보 수정시 비밀번호 부분을 변경하였는지 여부 확인용 : 변경했으면 'Y')
+     * @param              : SptMyInfoVO
+     * @return             : SptMyInfoVO
+     * @throws             : Exception
+     -->
+    <select id="spt.SptMyInfoDAO.selectSptCustomerInfoProfile" parameterClass="SptMyInfoVO" resultClass="SptMyInfoVO" >
+        select 
+            if(
+            i.customer_password = 
+            enc_char_ins(#customerPassword#,10,'SHA','spt_customer_info_profile','customer_password',user(),connection_id()),
+            'Y', 'N') as customerPasswordYn                               /* 회원 패스워드 유효여부 */            
+        from spt_customer_info_profile i/* 일반회원프로파일 */
+        where 1=1
+        and i.customer_reg_no = #customerRegNo#
+        order by i.customer_reg_no desc /* 최근의 탈퇴회원이나 최근에 가입 및 재가입한 회원 */
+        limit 0,1
+    </select>
+    
+    <!--
+      * @Method Name        : selectSptCustomerProfile
+      * @Method description : [개인회원정보상세:상세]정보를 조회한다.(탈퇴메일발송를 위한 정보를 조회해 온다.)
+      * @param              : SptMyInfoVO
+      * @return             : SptMyInfoVO
+      * @throws             : Exception
+     -->
+    <select id="spt.SptMyInfoDAO.selectSptCustomerProfile" parameterClass="SptMyInfoVO" resultClass="SptMyInfoVO" >
+        select 
+            a.customer_name_kor                                                        as customerNameKor, 
+            dec_char_sel(a.customer_email,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id())  as customerEmail        
+        from spt_customer_info_profile a/* 일반회원프로파일 */
+        where 1=1
+        and a.customer_reg_no = #customerRegNo#
+        order by a.customer_reg_no desc /* 최근의 탈퇴회원이나 최근에 가입 및 재가입한 회원 */
+        limit 0,1
+    </select>
+    
+</sqlMap>

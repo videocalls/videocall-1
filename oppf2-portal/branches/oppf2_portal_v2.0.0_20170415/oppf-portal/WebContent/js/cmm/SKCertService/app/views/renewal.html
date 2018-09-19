@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+<head>
+    <!-- 임시로 지움. -->
+    <!--<meta charset="UTF-8">-->
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <title>확인</title>
+    <link type="text/css" rel="stylesheet" href="../styles/css/common.css"/>
+    <!--[if IE 7]>
+    <link rel="stylesheet" type="text/css" href="../styles/css/ie7Debug.css"/>
+    <![endif]-->
+    <link rel="stylesheet" href="../styles/css/jquery-ui.css">
+    <script>
+        (function (){
+            try{
+                //console.log("page documnet.domain: " + document.domain);
+                parent.document.location;
+            }catch(e) {
+                if (document.domain.indexOf(".co.kr") != -1) {
+                    //co.kr
+                    var domainArr = document.domain.split(".");
+                    //console.log("arr:" + domainArr);
+                    document.domain = domainArr[domainArr.length - 3] + ".co.kr";
+                }
+                else if (document.domain.indexOf(".com") != -1) {
+                    //com
+                    var domainArr = document.domain.split(".");
+                    //console.log("arr:" + domainArr);
+                    document.domain = domainArr[domainArr.length - 2] + ".com";
+                }
+            }
+        })();
+    </script>
+    
+    <script type="text/javascript" src="../styles/js/jquery-1.11.0.min.js"></script>
+    <script src="../styles/js/jquery-ui.js"></script>
+    
+    <script type="text/javascript" src="../library/json3.min.js"></script>
+    <script type="text/javascript" src="../library/iecompatibility.js"></script>
+
+    <script src="../language/renewal.js"></script>
+</head>
+
+<script>
+    function dragCheck(){
+        if(window.navigator.userAgent.toLowerCase().indexOf('firefox') !== -1)
+            return;
+        addHandle(document.getElementById('titleText'), window);
+    }
+</script>
+<body onload="dragCheck()">
+<div class="CERT_titlebar">
+    <h1 id="titleText"><script>document.write(renewalLang(0))</script></h1>
+
+    <div id="versionText" class="CERT_util_version"></div>
+    <div class="CERT_util_btnClose" id="x_btn"><a href="#"></a></div>
+</div>
+<!--인증서 만료공지-->
+<div class="certWrap" id="dialogCertWarnnig">
+    <div style="width:382px;">
+        <div class="CERT_certWrapper">
+            <div class="CERT_txt1301">
+                <p><script>document.write(renewalLang(1))</script></p>
+
+                <p class="pb10 CERT_em"><script>document.write(renewalLang(2))</script><span id="warnnigTo"></span></p>
+            </div>
+            <p class="pb10"><script>document.write(renewalLang(3))</script></p>
+
+            <p class="CERT_dotline"></p>
+
+            <div class="CERT_txt1302 clfix">
+                <div class="CERT_txt1302_1"><script>document.write(renewalLang(4))</script></div>
+                <div class="CERT_txt1302_2">
+                    <p class="CERT_btnBg_sbtn"><a href="#" id="now_update"><script>document.write(renewalLang(5))</script></a></p>
+                </div>
+            </div>
+            <p class="CERT_dotline"></p>
+
+            <div class="CERT_txt1302 clfix">
+                <div class="CERT_txt1302_1"><script>document.write(renewalLang(6))</script></div>
+                <div class="CERT_txt1302_2">
+                    <p class="CERT_btnBg_sbtn"><a href="#" id="after_update"><script>document.write(renewalLang(8))</script></a></p>
+                </div>
+            </div>
+            <p class="CERT_dotline"></p>
+
+            <p class="CERT_txt1303">
+                <input type="checkbox" id="dialogCertWarnnig_clostBtn"><script>document.write(renewalLang(7))</script>
+            </p>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../library/json3.min.js"></script>
+<script type="text/javascript" src="../library/iecompatibility.js"></script>
+
+<script type="text/javascript" src="../scripts/renewal.js"></script>-
+<script type="text/javascript" src="../library/dragiframe.js"></script>
+</html>

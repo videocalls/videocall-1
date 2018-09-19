@@ -1,0 +1,34 @@
+<ion-view view-title="회원탈퇴">
+    <ion-content>
+        <div class="container"> <!-- 비밀번호 확인 -->
+            <div class="inner_cont type2">
+                <div class="top_ac">
+                    탈퇴하려는 아이디의 비밀번호를<br>한번 더 입력해주세요.
+                    <!-- 본인확인을 위해 탈퇴하려는 아이디의<br> 비밀번호를 한번 더 입력해주세요 --> <!-- 회원탈퇴시 -->
+                </div>
+                <!-- 정보입력 -->
+                <ul class="entry_area">
+                    <li>
+                        <div class="title_s">비밀번호입력</div>
+                        <div class="input_area">
+                            <input type="password"
+                                   placeholder="비밀번호를 입력해주세요"
+                                   ng-click="vm.keypadOpen();"
+                                   ng-model="vm.passwordDisplayText"
+                                   readonly
+                            />
+                        </div>
+                    </li>
+                </ul>
+                <!--// 정보입력 -->
+            </div>
+        </div>
+    </ion-content>
+    <ion-footer-bar>
+        <!-- 하단 버튼 -->
+        <div class="button_area btn_bottom_area">
+            <button class="btn_middle btn_black_org" ng-click="vm.withdrawConfirm();">확인</button>
+        </div>
+        <!--// 하단 버튼 -->
+    </ion-footer-bar>
+</ion-view>

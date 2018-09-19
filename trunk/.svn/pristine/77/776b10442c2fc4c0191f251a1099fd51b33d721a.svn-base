@@ -1,0 +1,25 @@
+<ion-view view-title="아이디 찾기 결과" hide-back-button="true">
+    <ion-content> <!-- bg color -->
+        <div class="container"> <!-- ID찾기 완료 페이지 -->
+            <div class="inner_cont type2">
+                <div class="complete_app_area">
+                    <div class="top_txt_complete mt50">
+                        <span class="ft_org">아이디 찾기 결과</span>는 다음과 같습니다.
+                        <div class="id_star">
+                            <p>{{vm.customerId}}</p>
+                        </div>
+                        <p class="ft_size13">개인정보보호를 위하여 아이디 일부를 숨김 처리합니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+    <ion-footer-bar>
+        <!-- 하단 버튼 -->
+        <div class="button_area btn_both btn_bottom_area">
+            <a class="btn_middle btn_black" href="#/findPassword">비밀번호 찾기</a>
+            <a class="btn_middle btn_black_org" href="#/login">로그인</a>
+        </div>
+        <!--// 하단 버튼 -->
+    </ion-footer-bar>
+</ion-view>

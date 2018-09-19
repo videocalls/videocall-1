@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="helloService" class="com.coderby.myapp.hello.service.HelloService" />
+	
+	<!--  
+	<bean id="helloController" class="com.coderby.myapp.hello.controller.HelloController">
+		<constructor-arg ref="helloService" />
+	</bean>
+	-->
+	 
+	<bean id="helloController" class="com.coderby.myapp.hello.controller.HelloController">
+		<property name="helloService" ref="helloService" />
+	</bean>
+	
+	<bean id="personBean" class="com.coderby.myapp.member.Person"> <!-- scope="prototype"-->
+		<property name="name" value="JinKyoung" />
+		<property name="age" value="30" />
+	</bean>
+
+	<bean id="customer" class="com.coderby.myapp.member.Customer">
+		<property name="lists">
+			<list>
+				<value>1</value>
+				<ref bean="personBean" />
+				<bean class="com.coderby.myapp.member.Person">
+					<property name="name" value="HyunJeong" />
+					<property name="age" value="12" />
+				</bean>
+			</list>
+		</property>
+
+		<property name="sets">
+			<set>
+				<value>2</value>
+				<ref bean="personBean" />
+				<bean class="com.coderby.myapp.member.Person">
+					<property name="name" value="HyunJun" />
+					<property name="age" value="11" />
+				</bean>
+			</set>
+		</property>
+
+		<property name="maps">
+			<map>
+				<entry key="Key1" value="3" />
+				<entry key="Key2" value-ref="personBean" />
+				<entry key="Key3">
+					<bean class="com.coderby.myapp.member.Person">
+						<property name="name" value="HyunSoo" />
+						<property name="age" value="8" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+
+		<property name="props">
+			<props>
+				<prop key="webmaster">webmaster@coderby.com</prop>
+				<prop key="support">support@coderby.com</prop>
+			</props>
+		</property>
+	</bean>
+</beans>

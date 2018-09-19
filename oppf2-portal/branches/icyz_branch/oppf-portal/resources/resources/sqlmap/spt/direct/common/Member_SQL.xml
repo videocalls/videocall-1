@@ -1,0 +1,695 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="kr.co.koscom.oppf.spt.direct.internal.dao.MemberDAO" >
+  <typeAlias alias="MemberDTO"
+     type="kr.co.koscom.oppf.spt.direct.internal.dto.MemberDTO"/>
+
+  <typeAlias alias="MemberRequest"
+     type="kr.co.koscom.oppf.spt.direct.internal.model.MemberRequest"/>
+     
+  <resultMap id="member" class="kr.co.koscom.oppf.spt.direct.internal.dto.MemberDTO" >
+    <result column="customer_reg_no" property="customerRegNo" jdbcType="VARCHAR" />
+    <result column="customer_id" property="customerId" jdbcType="VARCHAR" />
+    <result column="customer_password" property="customerPassword" jdbcType="VARCHAR" />
+    <result column="customer_temp_password_yn" property="customerTempPasswordYn" jdbcType="BOOLEAN" />
+    <result column="customer_chg_password_date" property="customerChgPasswordDate" jdbcType="TIMESTAMP" />
+    <result column="customer_expire_password_date" property="customerExpirePasswordDate" jdbcType="VARCHAR" />
+    <result column="customer_final_password_date" property="customerFinalPasswordDate" jdbcType="VARCHAR" />
+    <result column="customer_otp_fail_cnt" property="customerOtpFailCnt" jdbcType="INTEGER" />
+    <result column="customer_password_fail_cnt" property="customerPasswordFailCnt" jdbcType="INTEGER" />
+    <result column="customer_reg_status" property="customerRegStatus" jdbcType="VARCHAR" />
+    <result column="customer_step" property="customerStep" jdbcType="VARCHAR" />
+    <result column="customer_name_kor" property="customerNameKor" jdbcType="VARCHAR" />
+    <result column="customer_name_eng" property="customerNameEng" jdbcType="VARCHAR" />
+    <result column="customer_phone" property="customerPhone" jdbcType="VARCHAR" />
+    <result column="customer_email" property="customerEmail" jdbcType="VARCHAR" />
+    <result column="customer_email_auth_yn" property="customerEmailAuthYn" jdbcType="BOOLEAN" />
+    <result column="customer_email_reg_date" property="customerEmailRegDate" jdbcType="TIMESTAMP" />
+    <result column="customer_birth_day" property="customerBirthDay" jdbcType="VARCHAR" />
+    <result column="customer_sex" property="customerSex" jdbcType="VARCHAR" />
+    <result column="customer_email_receive_yn" property="customerEmailReceiveYn" jdbcType="BOOLEAN" />
+    <result column="customer_email_receive_date" property="customerEmailReceiveDate" jdbcType="TIMESTAMP" />
+    <result column="customer_mobile_push_yn" property="customerMobilePushYn" jdbcType="BOOLEAN" />
+    <result column="customer_dataset_lock_yn" property="customerDatasetLockYn" jdbcType="BOOLEAN" />
+    <result column="customer_withdrawal_proc_yn" property="customerWithdrawalProcYn" jdbcType="BOOLEAN" />
+    <result column="customer_join_type" property="customerJoinType" jdbcType="VARCHAR" />
+    <result column="temporary_member_yn" property="temporaryMemberYn" jdbcType="BOOLEAN" />
+    <result column="integration_account_yn" property="integrationAccountYn" jdbcType="BOOLEAN" />
+    <result column="customer_reg_date" property="customerRegDate" jdbcType="TIMESTAMP" />
+    <result column="delete_date" property="deleteDate" jdbcType="TIMESTAMP" />
+    <result column="create_date" property="createDate" jdbcType="TIMESTAMP" />
+    <result column="create_id" property="createId" jdbcType="VARCHAR" />
+    <result column="update_date" property="updateDate" jdbcType="TIMESTAMP" />
+    <result column="update_id" property="updateId" jdbcType="VARCHAR" />
+    <result column="user_ci" property="userCi" jdbcType="VARCHAR" />
+    <result column="user_dn" property="userDn" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <select id="direct.MemberDAO.selectMemberByCi" resultClass="MemberDTO" parameterClass="java.lang.String">
+      select 
+        customer_reg_no                 as customerRegNo,
+        customer_id                     as customerId,
+        customer_password               as customerPassword,
+        if(customer_temp_password_yn = 'Y', true, false) as cutomerTempPasswordYn,
+        customer_chg_password_date      as customerChgPasswordDate,
+        customer_expire_password_date   as customerExpirePasswordDate,
+        customer_final_password_date    as customerFinalPasswordDate,  
+        customer_otp_fail_cnt           as customerOtpFailCnt,
+        customer_password_fail_cnt      as customerPasswordFailCnt,
+        customer_reg_status             as customerRegStatus,
+        customer_step                   as customerStep,
+        customer_name_kor               as customerNameKor,
+        customer_name_eng               as customerNameEng,
+        dec_char_sel(customer_phone,10,'ARIA','spt_customer_info_profile','customer_phone',user(),connection_id())  as customerPhone,
+        dec_char_sel(customer_email,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id())  as customerEmail,
+        if(customer_email_auth_yn = 'Y', true, false) as customerEmailAuthYn,
+        customer_email_reg_date         as customerEmailRegDate,
+        dec_char_sel(customer_birth_day,10,'ARIA','spt_customer_info_profile','customer_birth_day',user(),connection_id())  as customerBirthDay,
+        customer_sex                    as customerSex,
+        if(customer_email_receive_yn = 'Y', true, false)    as customerEmailReceiveYn,
+        customer_email_receive_date     as customerEmailReceiveDate,
+        if(customer_mobile_push_yn = 'Y', true, false)      as customerMobilePushYn,
+        if(customer_dataset_lock_yn = 'Y', true, false)     as customerDatasetLockYn,
+        customer_reg_date               as customerRegDate,
+        delete_date                     as deleteDate,
+        if(customer_withdrawal_proc_yn = 'Y', true, false)  as customerWithdrawalProcYn,
+        customer_join_type              as customerJoinType,
+        if(temporary_member_yn = 'Y', true, false)          as temporaryMemberYn,
+        if(integration_account_yn = 'Y', true, false)       as integrationAccountYn,
+        create_date                     as createDate,
+        create_id                       as createId,
+        update_date                     as updateDate,
+        update_id                       as updateId,
+        user_ci                         as userCi,
+        (select customer_verify from spt_customer_verify_profile cvp where cvp.customer_reg_no = t1.customer_reg_no and cvp.customer_verify_type='G007002') as userDn
+        from (
+          select ip.*, a.customer_verify as user_ci
+          from spt_customer_verify_profile a, spt_customer_info_profile ip
+          where
+          a.customer_reg_no = ip.customer_reg_no
+          and a.customer_verify_type='G007001'
+          and a.customer_verify=#userCi#
+          and ip.customer_reg_status='G005002'
+        ) t1
+  </select>
+  <select id="direct.MemberDAO.selectFindUserId" parameterClass="java.lang.String" resultClass="int">
+          SELECT count(customer_id)
+            FROM spt_customer_info_profile
+           WHERE 1 = 1
+             AND customer_id = #customerId#
+  </select>
+  <insert id="direct.MemberDAO.insertMember" parameterClass="MemberDTO">
+        <selectKey keyProperty="customerRegNo" resultClass="java.lang.String">
+           select concat(#customerRegNoPrefix#, date_format(sysdate(),'%Y%m%d'), lpad( (select ifnull( max(cast(right(customer_reg_no,3) as signed)), 0)+1 from spt_customer_info_profile where left(customer_reg_no,9) = concat(#customerRegNoPrefix#, date_format(sysdate(),'%Y%m%d'))) , 3, '0')) as customerRegNo /* 회원 OP 등록 번호 */
+        </selectKey>
+        insert into spt_customer_info_profile(
+            customer_reg_no               /* 회원 OP 등록 번호 */
+        <isNotEmpty property="customerId">
+           ,customer_id                   /* 회원 아이디  */
+        </isNotEmpty>
+        <isNotEmpty property="customerPassword">
+           ,customer_password             /* 회원 비밀번호 */
+        </isNotEmpty>
+        <isNotEmpty property="customerTempPasswordYn">
+           ,customer_temp_password_yn     /* 회원 비밀번호 임시여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerChgPasswordDate">
+           ,customer_chg_password_date    /* 회원 비밀번호 변경일자 */
+        </isNotEmpty>
+        <isNotEmpty property="customerExpirePasswordDate">
+           ,customer_expire_password_date /* 비밀번호 변경 예정일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerFinalPasswordDate">
+           ,customer_final_password_date  /* 비밀번호 변경 최종 예정일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerOtpFailCnt">
+           ,customer_otp_fail_cnt    /* OTP 실패횟수 */
+        </isNotEmpty>
+        <isNotEmpty property="customerPasswordFailCnt">
+           ,customer_password_fail_cnt    /* 비밀번호 실패횟수 */
+        </isNotEmpty>
+        <isNotEmpty property="customerRegStatus">
+           ,customer_reg_status           /* 회원 가입 상태 */
+        </isNotEmpty>
+        <isNotEmpty property="customerStep">
+           , customer_step                  /* 회원 가입 단계 */
+        </isNotEmpty>
+        <isNotEmpty property="customerNameKor">
+           ,customer_name_kor             /* 회원명 한글 */
+        </isNotEmpty>
+        <isNotEmpty property="customerNameEng">
+           ,customer_name_eng             /* 회원명 영문 */
+        </isNotEmpty>
+        <isNotEmpty property="customerPhone">
+           ,customer_phone                /* 회원 휴대폰 번호 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmail">
+           ,customer_email                /* 회원 이메일 주소 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailAuthYn">
+           ,customer_email_auth_yn        /* 회원 이메일 인증여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailRegDate">
+           ,customer_email_reg_date       /* 회원 이메일 인증일시 */
+        </isNotEmpty>
+        <isNotEmpty property="customerBirthDay">
+           ,customer_birth_day            /* 생년월일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerSex">
+           ,customer_sex                  /* 성별 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailReceiveYn">
+           ,customer_email_receive_yn     /* 이메일 수신동의여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailReceiveDate">
+           ,customer_email_receive_date   /* 이메일 수신동의 여부일시 */
+        </isNotEmpty>
+        <isNotEmpty property="customerMobilePushYn">
+           ,customer_mobile_push_yn     /* 모바일 push 수신동의여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerDatasetLockYn">
+           ,customer_dataset_lock_yn     /* 데이터셋 lock 여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerWithdrawalProcYn">
+           ,customer_withdrawal_proc_yn     /* 회원 탈퇴 처리 여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerJoinType">
+           , customer_join_type             /* 회원 가입 경로 */
+        </isNotEmpty>
+        <isNotEmpty property="temporaryMemberYn">
+           , temporary_member_yn             /* 임시회원(비회원) 여부 */
+        </isNotEmpty>
+        <isNotEmpty property="integrationAccountYn">
+           , integration_account_yn             /* 통합계좌서비스 사용여부 */
+        </isNotEmpty>
+           ,customer_reg_date             /* 회원가입일시 */
+        <isNotEmpty property="deleteDate">
+           ,delete_date                   /* 회원탈퇴일시 */
+        </isNotEmpty>
+           ,create_date                   /* 생성일시 */
+           ,create_id                     /* 생성자 ID */
+           ,update_date                   /* 변경일시 */
+           ,update_id                     /* 변경자 ID */
+        )values(
+            #customerRegNo#
+        <isNotEmpty property="customerId">
+           ,#customerId#                 /* 회원 아이디  */
+        </isNotEmpty>
+        <isNotEmpty property="customerPassword">
+           ,enc_char_ins(#customerPassword#,10,'SHA','spt_customer_info_profile','customer_password',user(),connection_id())  /* 회원 비밀번호 */
+        </isNotEmpty>
+        <isNotEmpty property="customerTempPasswordYn">
+           ,if(#customerTempPasswordYn# = true, 'Y', 'N')   /* 회원 비밀번호 임시여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerChgPasswordDate">
+           ,sysdate()    /* 회원 비밀번호 변경일자 */
+        </isNotEmpty>
+        <isNotEmpty property="customerExpirePasswordDate">
+           ,#customerExpirePasswordDate# /* 비밀번호 변경 예정일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerFinalPasswordDate">
+           ,#customerFinalPasswordDate#  /* 비밀번호 변경 최종 예정일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerOtpFailCnt">
+           ,#customerOtpFailCnt#    /* OTP 실패횟수 */
+        </isNotEmpty>
+        <isNotEmpty property="customerPasswordFailCnt">
+           ,#customerPasswordFailCnt#    /* 비밀번호 실패횟수 */
+        </isNotEmpty>
+        <isNotEmpty property="customerRegStatus">
+           ,#customerRegStatus#          /* 회원 가입 상태 */
+        </isNotEmpty>
+        <isNotEmpty property="customerStep">
+           ,#customerStep#              /* 회원 가입 단계 */
+        </isNotEmpty>        
+        <isNotEmpty property="customerNameKor">
+           ,#customerNameKor#            /* 회원명 한글 */
+        </isNotEmpty>
+        <isNotEmpty property="customerNameEng">
+           ,#customerNameEng#            /* 회원명 영문 */
+        </isNotEmpty>
+        <isNotEmpty property="customerPhone">
+           ,enc_char_ins(#customerPhone#,10,'ARIA','spt_customer_info_profile','customer_phone',user(),connection_id())  /* 회원 휴대폰 번호 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmail">
+           ,enc_char_ins(#customerEmail#,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id())  /* 회원 이메일 주소 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailAuthYn">
+           ,if(#customerEmailAuthYn# = true, 'Y', 'N')   /* 회원 이메일 인증여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailRegDate">
+           ,#customerEmailRegDate#       /* 회원 이메일 인증일시 */
+        </isNotEmpty>
+        <isNotEmpty property="customerBirthDay">
+           ,enc_char_ins(#customerBirthDay#,10,'ARIA','spt_customer_info_profile','customer_birth_day',user(),connection_id())  /* 생년월일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerSex">
+           ,#customerSex#                /* 성별 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailReceiveYn">
+           ,if(#customerEmailReceiveYn# = true, 'Y', 'N')   /* 이메일 수신동의여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailReceiveDate">
+           ,#customerEmailReceiveDate#   /* 이메일 수신동의 여부일시 */
+        </isNotEmpty>
+        <isNotEmpty property="customerMobilePushYn">
+           ,if(#customerMobilePushYn# = true, 'Y', 'N')   /* 모바일 push 수신동의여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerDatasetLockYn">
+           ,if(#customerDatasetLockYn# = true, 'Y', 'N')   /* 데이터셋 lock 여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerWithdrawalProcYn">
+           ,if(#customerWithdrawalProcYn# = true, 'Y', 'N')   /* 회원 탈퇴 처리 여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerJoinType">
+           ,#customerJoinType#              /* 회원 가입 경로 */
+        </isNotEmpty>        
+        <isNotEmpty property="temporaryMemberYn">
+           ,if(#temporaryMemberYn# = true, 'Y', 'N')   /* 임시회원(비회원) 여부 */
+        </isNotEmpty>
+        <isNotEmpty property="integrationAccountYn">
+           ,if(#integrationAccountYn# = true, 'Y', 'N')   /* 통합계좌서비스 사용여부 */
+        </isNotEmpty>
+           ,sysdate()            /* 회원가입일시 */
+        <isNotEmpty property="deleteDate">
+           ,#deleteDate#                 /* 회원탈퇴일시 */
+        </isNotEmpty>
+           ,sysdate()                    /* 생성일시 */
+           ,#customerRegNo#              /* 생성자 ID */
+           ,sysdate()                    /* 변경일시 */
+           ,#customerRegNo#              /* 변경자 ID */
+        )
+    </insert>
+    <update id="direct.MemberDAO.updateMember" parameterClass="MemberDTO">
+        update spt_customer_info_profile set
+            update_date = sysdate()
+           ,update_id = #customerRegNo#
+        <isNotEmpty property="customerId">
+           ,customer_id = #customerId# /* 회원아이디 */
+        </isNotEmpty>
+        <isNotEmpty property="customerPassword">
+           ,customer_password = enc_char_ins(#customerPassword#,10,'SHA','spt_customer_info_profile','customer_password',user(),connection_id())  /* 회원 비밀번호 */
+           ,customer_temp_password_yn = 'N' /* 회원 비밀번호 임시여부 */
+           ,customer_chg_password_date = sysdate() /* 회원 비밀번호 변경일자 */
+           ,customer_password_fail_cnt = 0 /* 비밀번호 실패횟수 */
+           ,customer_otp_fail_cnt = 0 /* OTP 인증 실패횟수 */
+        </isNotEmpty>
+        <isNotEmpty property="customerExpirePasswordDate">
+           ,customer_expire_password_date = #customerExpirePasswordDate# /* 비밀번호 변경 예정일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerFinalPasswordDate">
+           ,customer_final_password_date = #customerFinalPasswordDate# /* 비밀번호 변경 최종 예정일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerRegStatus">
+           ,customer_reg_status = #customerRegStatus# /* 회원 가입 상태 */
+        </isNotEmpty>
+        <isNotEmpty property="customerStep">
+           ,customer_step = #customerStep# /* 회원 가입 Step */
+        </isNotEmpty>
+        <isNotEmpty property="customerNameKor">
+           ,customer_name_kor = #customerNameKor# /* 회원명 한글 */
+        </isNotEmpty>
+        <isNotEmpty property="customerNameEng">
+           ,customer_name_eng = #customerNameEng# /* 회원명 영문 */
+        </isNotEmpty>
+        <isNotEmpty property="customerPhone">
+           ,customer_phone = enc_char_ins(#customerPhone#,10,'ARIA','spt_customer_info_profile','customer_phone',user(),connection_id())  /* 회원 휴대폰 번호 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmail">
+           ,customer_email = enc_char_ins(#customerEmail#,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id())  /* 회원 이메일 주소 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailAuthYn">
+           ,customer_email_auth_yn = #customerEmailAuthYn# /* 회원 이메일 인증여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailRegDate">
+           ,customer_email_reg_date = sysdate() /* 회원 이메일 인증일시 */
+        </isNotEmpty>
+        <isNotEmpty property="customerBirthDay">
+           ,customer_birth_day = enc_char_ins(#customerBirthDay#,10,'ARIA','spt_customer_info_profile','customer_birth_day',user(),connection_id())  /* 생년월일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerSex">
+           ,customer_sex = #customerSex# /* 성별 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailReceiveYn">
+           ,customer_email_receive_yn = #customerEmailReceiveYn# /* 이메일 수신동의여부 */
+        </isNotEmpty>
+        <isEqual property="customerEmailReceiveYn" compareValue="true">
+           ,customer_email_receive_date = sysdate() /* 이메일 수신동의 여부일시 */
+        </isEqual>
+        <isNotEmpty property="customerMobilePushYn">
+           ,customer_mobile_push_yn = #customerMobilePushYn#    /* 모바일 push 수신동의여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerDatasetLockYn">
+           ,customer_dataset_lock_yn = #customerDatasetLockYn#    /* 데이터셋 lock 여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerWithdrawalProcYn">
+           ,customer_withdrawal_proc_yn = #customerWithdrawalProcYn#    /* 회원 탈퇴 처리 여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerJoinType">
+           , customer_join_type = #customerJoinType#            /* 회원 가입 경로 */
+        </isNotEmpty>
+        <isNotEmpty property="temporaryMemberYn">
+           , temporary_member_yn = #temporaryMemberYn#            /* 임시회원(비회원) 여부 */
+        </isNotEmpty>
+        <isNotEmpty property="integrationAccountYn">
+           , integration_account_yn = #integrationAccountYn#            /* 통합계좌서비스 사용여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerRegDate">
+           ,customer_reg_date = sysdate() /* 회원가입일시 */
+        </isNotEmpty>
+        <isNotEmpty property="deleteDate">
+           ,delete_date = #deleteDate# /* 회원탈퇴일시 */
+        </isNotEmpty>
+        where 1=1
+        and customer_reg_no = #customerRegNo#
+    </update>   
+    <insert id="direct.MemberDAO.insertMemberVerify" parameterClass="MemberDTO">
+        insert into spt_customer_verify_profile(
+            customer_reg_no      /* 회원OP등록번호 */
+           ,customer_verify_type /* 회원검증종류  */
+        <isNotEmpty property="customerVerify">
+           ,customer_verify      /* 회원검증값 */
+           ,customer_verify_date /* 회원검증일시 */
+        </isNotEmpty>
+        <isNotEmpty property="deleteDate">
+           ,delete_date          /* 삭제일시 */
+        </isNotEmpty>
+           ,create_date          /* 생성일시 */
+           ,create_id            /* 생성자 ID */
+           ,update_date          /* 변경일시 */
+           ,update_id            /* 변경자 ID */
+        )values(
+            #customerRegNo#      /* 회원OP등록번호 */
+           ,#customerVerifyType# /* 회원검증종류  */
+        <isNotEmpty property="customerVerify">
+           ,#customerVerify#     /* 회원검증값 */
+           ,sysdate()            /* 회원검증일시 */
+        </isNotEmpty>
+        <isNotEmpty property="deleteDate">
+           ,sysdate()            /* 삭제일시 */
+        </isNotEmpty>
+           ,sysdate()            /* 생성일시 */
+           ,#customerRegNo#      /* 생성자 ID */
+           ,sysdate()            /* 변경일시 */
+           ,#customerRegNo#      /* 변경자 ID */
+        )
+    </insert>
+
+    <update id="direct.MemberDAO.updateMemberVerify" parameterClass="MemberDTO">
+        update spt_customer_verify_profile set
+            update_date = sysdate()
+           ,update_id = #customerRegNo#
+        <isNotEmpty property="customerVerify">
+           ,customer_verify = #customerVerify# /* 회원검증값 */
+           ,customer_verify_date = sysdate()   /* 회원검증일시 */
+        </isNotEmpty>
+        <isNotEmpty property="deleteDate">
+           ,delete_date = sysdate() /* 삭제일시 */
+        </isNotEmpty>
+        where 1=1
+        and customer_reg_no = #customerRegNo# /* 회원OP등록번호 */
+        and customer_verify_type = #customerVerifyType# /* 회원검증종류  */
+    </update>    
+      <!-- 
+    
+    
+    
+    <insert id="direct.MemberDAO.insertMemberVerifyHist" parameterClass="MbrRegVO">
+        insert into spt_customer_verify_profile_hist(
+            customer_verify_seq,  /* 순번 */
+            customer_reg_no,      /* 회원OP등록번호 */
+            customer_verify_type, /* 회원검증종류  */
+            customer_verify,      /* 회원검증값 */
+            customer_verify_date, /* 회원검증일시 */
+            delete_date,          /* 삭제일시 */
+            create_date,          /* 생성일시 */
+            create_id             /* 생성자 ID */
+        )
+        select
+            ifnull((
+                select ifnull(max(cast(customer_verify_seq as SIGNED)), 0) + 1
+                from spt_customer_verify_profile_hist
+                where customer_reg_no = a.customer_reg_no
+            ), 1),                /* 순번 */
+            customer_reg_no,      /* 회원OP등록번호 */
+            customer_verify_type, /* 회원검증종류  */
+            customer_verify,      /* 회원검증값 */
+            customer_verify_date, /* 회원검증일시 */
+            delete_date,          /* 삭제일시 */
+            create_date,          /* 생성일시 */
+            create_id             /* 생성자 ID */
+        from spt_customer_verify_profile a
+        where 1=1
+        and customer_reg_no = #customerRegNo# /* 회원OP등록번호 */
+        and customer_verify_type = #customerVerifyType# /* 회원검증종류  */
+    </insert>
+    
+    <insert id="direct.MemberDAO.insertMemberHist" parameterClass="MbrRegVO">
+        insert into spt_customer_info_profile_hist(
+            customer_seq                  /* 순번 */
+            ,customer_reg_no               /* 회원 OP 등록 번호 */
+            ,customer_id
+            ,customer_password
+            ,customer_temp_password_yn
+            ,customer_chg_password_date
+            ,customer_expire_password_date
+            ,customer_final_password_date
+            ,customer_otp_fail_cnt
+            ,customer_password_fail_cnt
+            ,customer_reg_status
+            ,customer_step
+            ,customer_name_kor
+            ,customer_name_eng
+            ,customer_phone
+            ,customer_email
+            ,customer_email_auth_yn
+            ,customer_email_reg_date
+            ,customer_birth_day
+            ,customer_sex
+            ,customer_email_receive_yn
+            ,customer_email_receive_date
+            ,customer_mobile_push_yn
+            ,customer_dataset_lock_yn
+            ,customer_reg_date
+            ,delete_date
+            ,customer_withdrawal_proc_yn
+            ,customer_join_type
+            ,temporary_member_yn
+            ,integration_account_yn
+            ,create_date
+            ,create_id
+        )
+        select 
+            ifnull((
+                select ifnull(max(cast(customer_seq as SIGNED)), 0) + 1
+                from spt_customer_info_profile_hist
+                where customer_reg_no = a.customer_reg_no
+            ), 1),                         /* 순번 */
+            customer_reg_no                /* 회원 OP 등록 번호 */
+            ,customer_id
+            ,customer_password
+            ,customer_temp_password_yn
+            ,customer_chg_password_date
+            ,customer_expire_password_date
+            ,customer_final_password_date
+            ,customer_otp_fail_cnt
+            ,customer_password_fail_cnt
+            ,customer_reg_status
+            ,customer_step
+            ,customer_name_kor
+            ,customer_name_eng
+            ,customer_phone
+            ,customer_email
+            ,customer_email_auth_yn
+            ,customer_email_reg_date
+            ,customer_birth_day
+            ,customer_sex
+            ,customer_email_receive_yn
+            ,customer_email_receive_date
+            ,customer_mobile_push_yn
+            ,customer_dataset_lock_yn
+            ,customer_reg_date
+            ,delete_date
+            ,customer_withdrawal_proc_yn
+            ,customer_join_type
+            ,temporary_member_yn
+            ,integration_account_yn
+            ,create_date
+            ,create_id
+        from spt_customer_info_profile a
+        where 1=1
+        and customer_reg_no = #customerRegNo#
+    </insert>
+   
+     <insert id="direct.MemberDAO.insertSptCustomerTermsProfile" parameterClass="MbrRegTermsVO">
+        insert into spt_customer_terms_profile(
+            customer_reg_no      /* 회원OP등록번호 */
+           ,customer_terms_type  /* 회원동의종류  */
+        <isNotEmpty property="customerTermsContentRegSeq">
+           ,customer_terms_content_reg_seq /* 동의서약관내용등록번호 */
+        </isNotEmpty>
+        <isNotEmpty property="customerTermsAuthYn">
+           ,customer_terms_auth_yn /* 회원동의여부 */
+        </isNotEmpty>
+        <isEqual property="customerTermsAuthYn" compareValue="Y">
+           ,customer_terms_auth_date /* 회원동의일시 */
+        </isEqual>
+        <isNotEmpty property="deleteDate">
+           ,delete_date          /* 삭제일시 */
+        </isNotEmpty>
+           ,create_date          /* 생성일시 */
+           ,create_id            /* 생성자 ID */
+           ,update_date          /* 변경일시 */
+           ,update_id            /* 변경자 ID */
+        )
+        select
+            #customerRegNo#      /* 회원OP등록번호 */
+           ,#customerTermsType#  /* 회원동의종류  */
+        <isNotEmpty property="customerTermsContentRegSeq">
+           ,#customerTermsContentRegSeq# /* 동의서약관내용등록번호 */
+        </isNotEmpty>
+        <isNotEmpty property="customerTermsAuthYn">
+           ,#customerTermsAuthYn#     /* 회원동의여부 */
+        </isNotEmpty>
+        <isEqual property="customerTermsAuthYn" compareValue="Y">
+           ,sysdate()  /* 회원동의일시 */
+        </isEqual>
+        <isNotEmpty property="deleteDate">
+           ,#deleteDate#         /* 삭제일시 */
+        </isNotEmpty>
+           ,sysdate()            /* 생성일시 */
+           ,#customerRegNo#      /* 생성자 ID */
+           ,sysdate()            /* 변경일시 */
+           ,#customerRegNo#      /* 변경자 ID */
+        from dual
+    </insert>
+    
+    <insert id="direct.MemberDAO.insertSptCustomerTermsProfileHist" parameterClass="MbrRegTermsVO">
+        insert into spt_customer_terms_profile_hist(
+            customer_terms_seq,             /* 순번 */
+            customer_reg_no,                /* 회원OP등록번호 */
+            customer_terms_type,            /* 회원동의종류  */
+            customer_terms_content_reg_seq, /* 동의서약관내용등록번호 */
+            customer_terms_auth_yn,         /* 회원동의여부 */
+            customer_terms_auth_date,       /* 회원동의일시 */
+            delete_date,                    /* 삭제일시 */
+            create_date,                    /* 생성일시 */
+            create_id                       /* 생성자 ID */
+        )
+        select
+            ifnull((
+                select ifnull(max(cast(customer_terms_seq as SIGNED)), 0) + 1
+                from spt_customer_terms_profile_hist aa
+                where a.customer_reg_no = aa.customer_reg_no
+            ), 1),                            /* 순번 */
+            a.customer_reg_no,                /* 회원OP등록번호 */
+            a.customer_terms_type,            /* 회원동의종류  */
+            a.customer_terms_content_reg_seq, /* 동의서약관내용등록번호 */
+            a.customer_terms_auth_yn,         /* 회원동의여부 */
+            a.customer_terms_auth_date,       /* 회원동의일시 */
+            a.delete_date,                    /* 삭제일시 */
+            a.create_date,                    /* 생성일시 */
+            a.create_id                       /* 생성자 ID */
+        from spt_customer_terms_profile a
+        where 1=1
+        and customer_reg_no = #customerRegNo# /* 회원OP등록번호 */
+        and customer_terms_type = #customerTermsType# /* 회원OP등록번호 */
+    </insert>
+   
+    <update id="direct.MemberDAO.updateMember" parameterClass="MbrRegVO">
+        update spt_customer_info_profile set
+            update_date = sysdate()
+           ,update_id = #customerRegNo#
+        <isNotEmpty property="customerId">
+           ,customer_id = #customerId# /* 회원아이디 */
+        </isNotEmpty>
+        <isNotEmpty property="customerPassword">
+           ,customer_password = enc_char_ins(#customerPassword#,10,'SHA','spt_customer_info_profile','customer_password',user(),connection_id())  /* 회원 비밀번호 */
+        </isNotEmpty>
+        <isNotEmpty property="customerTempPasswordYn">
+           ,customer_temp_password_yn = #customerTempPasswordYn# /* 회원 비밀번호 임시여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerChgPasswordDate">
+           ,customer_chg_password_date = sysdate() /* 회원 비밀번호 변경일자 */
+        </isNotEmpty>
+        <isNotEmpty property="customerExpirePasswordDate">
+           ,customer_expire_password_date = date_format(date_add(sysdate(), interval #customerExpirePasswordDate# month), '%Y%m%d') /* 비밀번호 변경 예정일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerFinalPasswordDate">
+           ,customer_final_password_date = date_format(date_add(sysdate(), interval #customerFinalPasswordDate# month), '%Y%m%d') /* 비밀번호 변경 최종 예정일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerPasswordFailCnt">
+           ,customer_password_fail_cnt = #customerPasswordFailCnt# /* 비밀번호 실패횟수 */
+           <isEqual property="customerPasswordFailCnt" compareValue="0">
+           ,customer_otp_fail_cnt = 0 /* OTP 인증 실패횟수 */
+           </isEqual>
+        </isNotEmpty>
+        <isNotEmpty property="customerRegStatus">
+           ,customer_reg_status = #customerRegStatus# /* 회원 가입 상태 */
+        </isNotEmpty>
+        <isNotEmpty property="customerStep">
+           ,customer_step = #customerStep# /* 회원 가입 Step */
+        </isNotEmpty>
+        <isNotEmpty property="customerNameKor">
+           ,customer_name_kor = #customerNameKor# /* 회원명 한글 */
+        </isNotEmpty>
+        <isNotEmpty property="customerNameEng">
+           ,customer_name_eng = #customerNameEng# /* 회원명 영문 */
+        </isNotEmpty>
+        <isNotEmpty property="customerPhone">
+           ,customer_phone = enc_char_ins(#customerPhone#,10,'ARIA','spt_customer_info_profile','customer_phone',user(),connection_id())  /* 회원 휴대폰 번호 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmail">
+           ,customer_email = enc_char_ins(#customerEmail#,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id())  /* 회원 이메일 주소 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailAuthYn">
+           ,customer_email_auth_yn = #customerEmailAuthYn# /* 회원 이메일 인증여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailRegDate">
+           ,customer_email_reg_date = sysdate() /* 회원 이메일 인증일시 */
+        </isNotEmpty>
+        <isNotEmpty property="customerBirthDay">
+           ,customer_birth_day = enc_char_ins(#customerBirthDay#,10,'ARIA','spt_customer_info_profile','customer_birth_day',user(),connection_id())  /* 생년월일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerSex">
+           ,customer_sex = #customerSex# /* 성별 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailReceiveYn">
+           ,customer_email_receive_yn = #customerEmailReceiveYn# /* 이메일 수신동의여부 */
+        </isNotEmpty>
+        <isEqual property="customerEmailReceiveYn" compareValue="Y">
+           ,customer_email_receive_date = sysdate() /* 이메일 수신동의 여부일시 */
+        </isEqual>
+        <isNotEmpty property="customerRegDate">
+           ,customer_reg_date = sysdate() /* 회원가입일시 */
+        </isNotEmpty>
+        <isNotEmpty property="deleteDate">
+           ,delete_date = #deleteDate# /* 회원탈퇴일시 */
+        </isNotEmpty>
+        where 1=1
+        and customer_reg_no = #customerRegNo#
+    </update>
+    
+    
+    <update id="direct.MemberDAO.updateSptCustomerTermsProfile" parameterClass="MbrRegTermsVO">
+        update spt_customer_terms_profile set
+            update_date = sysdate()
+           ,update_id = #customerRegNo#
+        <isNotEmpty property="customerTermsContentRegSeq">
+           ,customer_terms_content_reg_seq = #customerTermsContentRegSeq# /* 동의서약관내용등록번호 */
+        </isNotEmpty>
+        <isNotEmpty property="customerTermsAuthYn">
+           ,customer_terms_auth_yn = #customerTermsAuthYn# /* 회원동의여부 */
+        </isNotEmpty>
+        <isEqual property="customerTermsAuthYn" compareValue="Y">
+           ,customer_terms_auth_date = sysdate() /* 회원동의일시 */
+        </isEqual>
+        <isNotEmpty property="deleteDate">
+           ,delete_date = sysdate() /* 삭제일시 */
+        </isNotEmpty>
+        where 1=1
+        and customer_reg_no = #customerRegNo# /* 회원OP등록번호 */
+        and customer_terms_type = #customerTermsType# /* 회원동의종류  */
+    </update>  
+     -->
+</sqlMap>

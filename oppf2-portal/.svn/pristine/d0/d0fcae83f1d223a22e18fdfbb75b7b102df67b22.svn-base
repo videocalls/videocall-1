@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 핀테크 오픈플랫폼 구축
+* @FileName : Tsa_SQL.xml
+* @Comment  : 공통 일반회원서비스약관프로파일 기능을 제공하는 SQL XML
+* @author   : 이환덕
+* @since    : 2016.06.09
+* @version  : 1.0
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2016.06.09   이환덕        최초생성
+-->
+<sqlMap namespace="kr.co.koscom.oppf.cmm.tsa.service.impl.CmmTsaDAO">
+    
+    <typeAlias alias="SptCustomerServiceTermsFileProfileVO" 
+    type="kr.co.koscom.oppf.spt.usr.svcAppl.service.SptCustomerServiceTermsFileProfileVO"/>
+    
+    <typeAlias alias="SptCustomerServiceTermsProfileVO" 
+    type="kr.co.koscom.oppf.spt.usr.svcAppl.service.SptCustomerServiceTermsProfileVO"/>
+    
+    <typeAlias alias="CmmTsaVO" 
+    type="kr.co.koscom.oppf.cmm.tsa.service.CmmTsaVO"/>
+
+  	<!--
+     * @Method Name        : selectSptCustomerServiceTermsFileProfileList
+     * @Method description : [일반회원서비스약관파일프로파일]정보를 조회한다.
+     * @param              : SptCustomerServiceTermsFileProfileVO
+     * @return             : List<SptCustomerServiceTermsFileProfileVO>
+     * @throws             : Exception
+     -->
+  	<select id="cmm.tsa.CmmTsaDAO.selectSptCustomerServiceTermsFileProfileList" parameterClass="SptCustomerServiceTermsFileProfileVO" resultClass="SptCustomerServiceTermsFileProfileVO" >
+  	    select 
+            scstp.customer_reg_no   as customerRegNo,  /* 일반회원서비스약관프로파일.회원OP등록번호 */
+            scstp.terms_file_type   as termsFileType,  /* 일반회원서비스약관프로파일.동의서파일종류 */
+            scstp.terms_file_reg_no as termsFileRegNo, /* 일반회원서비스약관프로파일.동의서파일등록번호 */
+            scstp.terms_file_data   as termsFileData,  /* 일반회원서비스약관프로파일.동의서파일 */
+            scstp.data_hash         as dataHash,       /* 일반회원서비스약관프로파일.TSA결과해쉬값 */
+            scstp.delete_date       as deleteDate,     /* 일반회원서비스약관프로파일.삭제일시 */
+            scstp.create_date       as createDate,     /* 일반회원서비스약관프로파일.생성일시 */
+            scstp.create_id         as createId,       /* 일반회원서비스약관프로파일.생성자ID */
+            scstp.update_date       as updateDate,     /* 일반회원서비스약관프로파일.변경일시 */
+            scstp.update_id  	    as updateId        /* 일반회원서비스약관프로파일.변경자ID */
+        from spt_customer_service_terms_file_profile scstp /* 일반회원서비스약관프로파일 scstp */
+  	    where 1=1
+ 	    and scstp.customer_reg_no = #searchCustomerRegNo# /* 조회조건:회원OP등록번호 */
+ 	    <isNotEmpty property="searchTermsFileType">
+ 	        and scstp.terms_file_type = #searchTermsFileType# /* 조회조건:동의서파일종류 */
+ 	    </isNotEmpty>
+ 	    <isNotEmpty property="searchTermsFileRegNo">
+ 	        and scstp.terms_file_reg_no = #searchTermsFileRegNo# /* 조회조건:동의서파일등록번호 */
+ 	    </isNotEmpty>
+  	</select>
+  	
+  	     <!--
+     * @Method Name        : selectSptCustomerServiceTermsFileProfileList
+     * @Method description : [일반회원서비스약관파일프로파일]최신정보를 조회한다.
+     * @param              : SptCustomerServiceTermsFileProfileVO
+     * @return             : List<SptCustomerServiceTermsFileProfileVO>
+     * @throws             : Exception
+     -->
+    <select id="cmm.tsa.CmmTsaDAO.selectSptCustomerServiceTermsFileProfile" parameterClass="SptCustomerServiceTermsFileProfileVO" resultClass="SptCustomerServiceTermsFileProfileVO" >
+        select 
+            scstp.customer_reg_no   as customerRegNo,  /* 일반회원서비스약관프로파일.회원OP등록번호 */
+            scstp.terms_file_type   as termsFileType,  /* 일반회원서비스약관프로파일.동의서파일종류 */
+            scstp.terms_file_reg_no as termsFileRegNo, /* 일반회원서비스약관프로파일.동의서파일등록번호 */
+            scstp.terms_file_data   as termsFileData,  /* 일반회원서비스약관프로파일.동의서파일 */
+            scstp.data_hash         as dataHash,       /* 일반회원서비스약관프로파일.TSA결과해쉬값 */
+            scstp.delete_date       as deleteDate,     /* 일반회원서비스약관프로파일.삭제일시 */
+            scstp.create_date       as createDate,     /* 일반회원서비스약관프로파일.생성일시 */
+            scstp.create_id         as createId,       /* 일반회원서비스약관프로파일.생성자ID */
+            scstp.update_date       as updateDate,     /* 일반회원서비스약관프로파일.변경일시 */
+            scstp.update_id         as updateId        /* 일반회원서비스약관프로파일.변경자ID */
+        from spt_customer_service_terms_file_profile scstp /* 일반회원서비스약관프로파일 scstp */
+        where 1=1
+        and scstp.customer_reg_no = #searchCustomerRegNo# /* 조회조건:회원OP등록번호 */
+        and scstp.delete_date is null
+        <isNotEmpty property="searchTermsFileType">
+            and scstp.terms_file_type = #searchTermsFileType# /* 조회조건:동의서파일종류 */
+        </isNotEmpty>
+        order by create_date desc
+        limit 0,1
+    </select>
+    
+  	<!--
+     * @Method Name        : cmm.tsa.CmmTsaDAO.selectTermsFileRegNo
+     * @Method description : [일반회원서비스약관파일프로파일]정보를 조회한다.
+     * @param              : SptCustomerServiceTermsFileProfileVO
+     * @return             : List<SptCustomerServiceTermsFileProfileVO>
+     * @throws             : Exception
+     -->
+    <select id="cmm.tsa.CmmTsaDAO.selectTermsFileRegNo" parameterClass="CmmTsaVO" resultClass="java.lang.String" >
+        select
+            concat(date_format(sysdate(),'%Y%m%d'), 
+                   lpad( (select ifnull( max(cast(right(terms_file_reg_no,3) as signed)), 0)+1 
+                          from spt_customer_service_terms_file_profile where left(terms_file_reg_no,8) = concat(date_format(sysdate(),'%Y%m%d'))
+                          )
+                          ,3,'0')
+                   ) as termsFileRegNo /* 동의서파일등록번호 */
+        from dual        
+    </select>
+  	
+    <!--
+     * @Method Name        : insertSptCustomerServiceTermsFileProfileHist
+     * @Method description : [일반회원서비스약관파일프로파일Hist]정보를 등록한다.
+     * @param              : SptCustomerServiceTermsFileProfileVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="cmm.tsa.CmmTsaDAO.insertSptCustomerServiceTermsFileProfileHist" parameterClass="SptCustomerServiceTermsFileProfileVO">
+        insert into spt_customer_service_terms_file_profile_hist(
+            terms_file_seq,    /* 순번 */
+            customer_reg_no,   /* 회원OP등록번호 */
+            terms_file_type,   /* 동의서파일종류 */
+            terms_file_reg_no, /* 동의서파일등록번호 */
+            terms_file_data,   /* 동의서파일 */
+            data_hash,         /* TSA결과Hash값 */
+            delete_date,       /* 삭제일시 */
+            create_date,       /* 생성일시 */
+            create_id          /* 생성자ID */
+        )
+        select
+		    ifnull((
+		        select ifnull(max(cast(terms_file_seq as SIGNED)), 0) + 1
+		        from spt_customer_service_terms_file_profile_hist aa
+		        where a.customer_reg_no = aa.customer_reg_no
+		    ), 1),               /* 순번 */
+            a.customer_reg_no,   /* 회원OP등록번호 */
+            a.terms_file_type,   /* 동의서파일종류  */
+            a.terms_file_reg_no, /* 동의서파일등록번호 */
+            a.terms_file_data,   /* 동의서파일 */
+            a.data_hash,         /* TSA결과Hash값 */
+            a.delete_date,       /* 삭제일시 */
+            a.create_date,       /* 생성일시 */
+            a.create_id          /* 생성자 ID */
+        from spt_customer_service_terms_file_profile a
+        where 1=1
+        and a.customer_reg_no   = #customerRegNo#  /* 회원OP등록번호 */
+        and a.terms_file_type   = #termsFileType#  /* 동의서파일종류 */
+        and a.terms_file_reg_no = #termsFileRegNo# /* 동의서파일등록번호 */
+    </insert>
+    
+    <!--
+     * @Method Name        : insertSptCustomerServiceTermsProfileHist
+     * @Method description : [일반회원서비스약관프로파일Hist]정보를 등록한다.
+     * @param              : SptCustomerServiceTermsFileProfileVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="cmm.tsa.CmmTsaDAO.insertSptCustomerServiceTermsProfileHist" parameterClass="SptCustomerServiceTermsProfileVO">
+        insert into spt_customer_service_terms_profile_hist(
+            terms_seq,          /* 순번 */
+            customer_reg_no,    /* 회원OP등록번호 */
+            terms_reg_no,       /* 약관등록번호 */
+            subcompany_code_id, /* 핀테크기업코드 */
+            subcompany_name,    /* 약관표기핀테크기업명 */
+            customer_name,      /* 약관표기동의자성명 */
+            customer_email,     /* 약관표기동의자이메일 */
+            customer_birth_day, /* 약관표기동의자생년월일 */
+            terms_policy,       /* 약관표기동의최총기간(개월) */
+            terms_auth_type,    /* 약관 동의 방법 */
+            terms_chg_date,     /* 약관동의일시 */
+            terms_start_date,   /* 약관동의시작일시 */
+            terms_expire_date,  /* 약관동의종료예정일 */
+            terms_auth_yn,      /* 동의서동의필요여부 */
+            terms_file_reg_no,  /* 동의서파일등록번호 */
+            terms_file_status,  /* 동의서파일처리상태 */
+            customer_sign_dn,   /* 약관 동의 공인인증서 */
+			customer_sign_data, /* 약관 동의 전자서명키 */
+			customer_tsa_data,	/* 약관 동의 시점확인키 */
+            admin_create_yn,	/* 관리자 생성 여부 */
+            delete_date,        /* 삭제일시 */
+            create_date,        /* 생성일시 */
+            create_id           /* 생성자ID */
+        )
+        select
+		    ifnull((
+		        select ifnull(max(cast(terms_seq as SIGNED)), 0) + 1
+		        from spt_customer_service_terms_profile_hist aa
+		        where a.customer_reg_no = aa.customer_reg_no
+		    ), 1),                /* 순번 */
+            a.customer_reg_no,    /* 회원OP등록번호 */
+            a.terms_reg_no,       /* 약관등록번호 */
+            a.subcompany_code_id, /* 핀테크기업코드 */
+            a.subcompany_name,    /* 약관표기핀테크기업명 */
+            a.customer_name,      /* 약관표기동의자성명 */
+            a.customer_email,     /* 약관표기동의자이메일 */
+            a.customer_birth_day, /* 약관표기동의자생년월일 */
+            a.terms_policy,       /* 약관표기동의최총기간(개월) */
+            a.terms_auth_type,    /* 약관 동의 방법 */
+            a.terms_chg_date,     /* 약관동의일시 */
+            a.terms_start_date,   /* 약관동의시작일시 */
+            a.terms_expire_date,  /* 약관동의종료예정일 */
+            a.terms_auth_yn,      /* 동의서동의필요여부 */
+            a.terms_file_reg_no,  /* 동의서파일등록번호 */
+            a.terms_file_status,  /* 동의서파일처리상태 */
+            a.customer_sign_dn,   /* 약관 동의 공인인증서 */
+            a.customer_sign_data, /* 약관 동의 전자서명키 */
+            a.customer_tsa_data,  /* 약관 동의 시점확인키 */
+            a.admin_create_yn,	/* 관리자 생성 여부 */
+            a.delete_date,        /* 삭제일시 */
+            a.create_date,        /* 생성일시 */
+            a.create_id           /* 생성자ID */
+        from spt_customer_service_terms_profile a
+        where 1=1
+        and a.customer_reg_no = #customerRegNo# /* 회원OP등록번호 */
+        and a.terms_reg_no = #termsRegNo# /* 약관등록번호 */
+    </insert>
+  	
+  	
+  	
+    <!--
+     * @Method Name        : insertSptCustomerServiceTermsFileProfile
+      * @Method description : [일반회원서비스약관프로파일]정보를 등록한다.
+      * @param              : SptCustomerServiceTermsFileProfileVO
+      * @return             : String termsFileRegNo(동의서파일등록번호)
+      * @throws             : Exception
+     -->
+    <insert id="cmm.tsa.CmmTsaDAO.insertSptCustomerServiceTermsFileProfile" parameterClass="SptCustomerServiceTermsFileProfileVO">
+        insert into spt_customer_service_terms_file_profile(
+            customer_reg_no   /* 회원OP가입번호 */
+           ,terms_file_type   /* 동의서파일종류 */
+           ,terms_file_reg_no /* 동의서파일등록번호 */
+           ,terms_file_data   /* 동의서파일 */
+           ,delete_date       /* 삭제일시 */
+           ,create_date       /* 생성일시 */
+           ,create_id         /* 생성자ID */
+           ,update_date       /* 변경일시 */
+           ,update_id         /* 변경자 ID */
+           <isNotEmpty property="dataHash">
+           ,data_hash /* TSA HASH */
+           </isNotEmpty>
+        )
+        select
+            #customerRegNo#  /* 회원OP가입번호 */
+           ,#termsFileType#  /* 동의서파일종류 */
+           ,#termsFileRegNo# /* 동의서파일등록번호 */
+           ,#termsFileData:BLOB# /* 동의서파일 */
+           ,null             /* 삭제일시 */
+           ,sysdate()        /* 생성일시 */
+           ,#customerRegNo#  /* 생성자 ID */
+           ,sysdate()        /* 변경일시 */
+           ,#customerRegNo#  /* 변경자 ID */
+           <isNotEmpty property="dataHash">
+           ,#dataHash# /* TSA HASH */
+           </isNotEmpty>
+        from dual
+    </insert>
+    
+    <!--
+     * @Method Name        : updateSptCustomerServiceTermsFileProfile
+     * @Method description : [일반회원서비스약관프로파일]정보를 수정한다.
+     * @param              : SptCustomerServiceTermsFileProfileVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="cmm.tsa.CmmTsaDAO.updateSptCustomerServiceTermsFileProfile" parameterClass="SptCustomerServiceTermsFileProfileVO">
+        update spt_customer_service_terms_file_profile set
+            update_date = sysdate()
+           ,update_id = #customerRegNo# /* 회원OP가입번호 */
+        <isNotEmpty property="termsFileData">
+           ,terms_file_data = #termsFileData:BLOB# /* 동의서파일 */
+        </isNotEmpty>
+        <isNotEmpty property="dataHash">
+           ,data_hash = #dataHash# /* TSA HASH */
+        </isNotEmpty>
+        <isEqual property="delYn" compareValue="Y">
+           ,delete_date = sysdate() /* 삭제일시 */
+        </isEqual>
+        where 1=1
+        and customer_reg_no   = #customerRegNo#  /* 회원OP등록번호 */
+        and terms_file_type   = #termsFileType#  /* 동의서파일종류 */
+        and terms_file_reg_no = #termsFileRegNo# /* 동의서파일등록번호 */
+    </update>
+    
+    <!--
+     * @Method Name        : updateSptCustomerServiceTermsProfile
+     * @Method description : [일반회원서비스약관프로파일]정보를 수정한다.
+     * @param              : SptCustomerServiceTermsFileProfileVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="cmm.tsa.CmmTsaDAO.updateSptCustomerServiceTermsProfile" parameterClass="SptCustomerServiceTermsProfileVO">
+        update spt_customer_service_terms_profile set
+            terms_auth_type = 'G032001'     /* 약관 동의 방법 */
+           ,update_date = sysdate()
+           ,update_id = #customerRegNo# /* 회원OP가입번호 */
+        <isNotEmpty property="termsStartDate">
+           ,terms_chg_date    = sysdate() /* 약관동의일시 */
+           ,terms_start_date  = #termsStartDate# /* 약관동의시작일시 */
+           ,terms_expire_date = date_format(DATE_ADD(#termsStartDate#,INTERVAL +#termsPolicy# month) - INTERVAL 1 day,'%Y%m%d') /* 약관동의종료예정일 */
+        </isNotEmpty>
+        <isNotEmpty property="termsAuthYn">
+           ,terms_auth_yn     = #termsAuthYn#      /* 동의서동의필요여부 */
+        </isNotEmpty>
+        <isNotEmpty property="termsFileStatus">
+           ,terms_file_status  = #termsFileStatus#  /* 동의서파일처리상태 */
+        </isNotEmpty>
+        <isNotEmpty property="deleteDate">
+           ,delete_date = sysdate() /* 삭제일시 */
+        </isNotEmpty>
+        <isNotEmpty property="subcompanyCodeId">
+           ,subcompany_code_id = #subcompanyCodeId# /* 핀테크기업코드 */
+        </isNotEmpty>
+        <isNotEmpty property="subcompanyName">
+           ,subcompany_name    = #subcompanyName#   /* 핀테크기업코드명 */
+        </isNotEmpty>
+        <isNotEmpty property="customerName">
+           ,customer_name      = #customerName#     /* 약관표기동의자성명 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmail">
+           ,customer_email     = #customerEmail#    /* 약관표기동의자이메일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerBirthDay">
+           ,customer_birth_day = #customerBirthDay# /* 약관표기동의자생년월일 */
+        </isNotEmpty>
+        <isNotEmpty property="termsFileRegNo">
+           ,terms_file_reg_no  = #termsFileRegNo#   /* 동의서파일등록번호 */
+        </isNotEmpty>
+        <isNotEmpty property="customerSignDn">
+           ,customer_sign_dn  = #customerSignDn#   /* 약관 동의 공인인증서 */
+        </isNotEmpty>
+        <isNotEmpty property="customerSignData">
+           ,customer_sign_data  = #customerSignData#   /* 약관 동의 전자서명키 */
+        </isNotEmpty>
+        <isNotEmpty property="customerTsaData">
+           ,customer_tsa_data  = #customerTsaData#   /* 약관 동의 시점확인키 */
+        </isNotEmpty>
+        where 1=1
+        and customer_reg_no = #customerRegNo# /* 회원OP등록번호 */
+        and terms_reg_no    = #termsRegNo#    /* 약관등록번호 */
+    </update>
+  	
+</sqlMap>

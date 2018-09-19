@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.terms.service.impl.CompanyTermsContentManageDAO">
+
+  	<typeAlias alias="CompanyTermsContentManageVO" type="kr.co.koscom.oppf.apt.terms.service.CompanyTermsContentManageVO"/>
+  	
+  	<!--
+     * @Method Name        : apt.CompanyTermsContentManageDAO.selectCompanyCodeList
+     * @Method description : 기업 약관동의의 기업정보를 조회한다.
+     * @param              : CompanyTermsContentManageVO
+     * @return             : CompanyTermsContentManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.CompanyTermsContentManageDAO.selectCompanyCodeList" parameterClass="CompanyTermsContentManageVO" resultClass="CompanyTermsContentManageVO">
+		select  a.company_code_id           as companyCodeId,
+		        b.company_name_kor_alias    as companyCodeName
+		from(
+		    select a.company_code_id
+		    from com_company_code a
+		    where a.delete_date is null
+		    and a.company_code_kind = 'G014001'
+		) a
+		join com_company_profile b 
+		on a.company_code_id = b.company_code_id 
+		and b.delete_date is null
+		and b.exposure_yn = 'Y'
+		order by b.exposure_order asc, b.company_name_kor_alias asc        
+    </select>
+  	
+  	
+	<!--
+     * @Method Name        : apt.CompanyTermsContentManageDAO.selectCompanyTermsContentList
+     * @Method description : 약관동의 내용의 목록을 조회한다.
+     * @param              : CompanyTermsContentManageVO
+     * @return             : CompanyTermsContentManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.CompanyTermsContentManageDAO.selectCompanyTermsContentList" parameterClass="CompanyTermsContentManageVO" resultClass="CompanyTermsContentManageVO">
+		select  a.company_code_id                               as companyCodeId,
+                b.company_name_kor_alias                        as companyCodeName,
+                a.company_terms_type                            as companyTermsType,
+                (
+                    select code_name_kor
+                    from com_system_code
+                    where concat(system_grp_code, system_code) = a.company_terms_type           
+                )                                               as companyTermsTypeName,
+                a.company_terms_content_reg_seq                 as companyTermsContentRegSeq,
+                a.company_terms_content_ver                     as companyTermsContentVer,
+                date_format(a.create_date, '%Y-%m-%d %H:%i')    as createDate,
+                date_format(a.update_date, '%Y-%m-%d %H:%i')    as updateDate
+        from (
+            select *
+            from spt_customer_company_terms_content_profile a
+            where a.company_code_id = #searchCompanyCodeId#
+            and a.company_terms_type = #searchCompanyTermsType# 
+        ) a
+        left join com_company_profile b on a.company_code_id = b.company_code_id
+        order by a.company_terms_content_ver desc, a.company_terms_content_reg_seq desc       				
+    </select>
+    
+    <!--
+     * @Method Name        : apt.CompanyTermsContentManageDAO.selectCompanyTermsContentDtl
+     * @Method description : 기업 약관동의 내용의 상세를 조회한다.
+     * @param              : CompanyTermsContentManageVO
+     * @return             : CompanyTermsContentManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.CompanyTermsContentManageDAO.selectCompanyTermsContentDtl" parameterClass="CompanyTermsContentManageVO" resultClass="CompanyTermsContentManageVO">
+		select  a.company_code_id                                               as companyCodeId,
+		        a.company_terms_type                                            as companyTermsType,
+		        a.company_terms_content_reg_seq                                 as companyTermsContentRegSeq,
+		        a.company_terms_content_ver                                     as companyTermsContentVer,
+		        a.company_terms_content                                         as companyTermsContent,
+		        date_format(a.create_date, '%Y-%m-%d %H:%i')                    as createDate,
+		        date_format(a.update_date, '%Y-%m-%d %H:%i')                    as updateDate    
+        from spt_customer_company_terms_content_profile a
+        where company_code_id = #companyCodeId# 
+        and company_terms_type = #companyTermsType#
+        and company_terms_content_reg_seq = #companyTermsContentRegSeq#
+    </select>
+    
+    <!--
+     * @Method Name        : apt.CompanyTermsContentManageDAO.insertCompanyTermsContentHist
+     * @Method description : 기업 약관동의 내용 hist 등록
+     * @param              : TermsContentManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="apt.CompanyTermsContentManageDAO.insertCompanyTermsContentHist" parameterClass="CompanyTermsContentManageVO">
+        insert into spt_customer_company_terms_content_profile_hist(
+            company_code_id,
+			company_terms_type,
+			company_terms_content_reg_seq,
+			company_terms_content_seq,
+			company_terms_content_ver,
+			company_terms_content,
+			create_date,
+			create_id
+        )    
+        select  company_code_id,
+                company_terms_type,
+                company_terms_content_reg_seq,
+                ifnull((
+                    select ifnull(max(cast(company_terms_content_seq as SIGNED)), 0) + 1
+                    from spt_customer_company_terms_content_profile_hist
+                    where company_code_id = a.company_code_id
+                    and company_terms_type = a.company_terms_type
+                    and company_terms_content_reg_seq = a.company_terms_content_reg_seq
+                ), 1),
+	            company_terms_content_ver,
+	            company_terms_content,
+                update_date,
+                update_id
+        from spt_customer_company_terms_content_profile a
+        where company_code_id = #companyCodeId# 
+        and company_terms_type = #companyTermsType#
+        and company_terms_content_reg_seq = #companyTermsContentRegSeq#
+    </insert>
+    
+    <!--
+     * @Method Name        : apt.CompanyTermsContentManageDAO.insertCompanyTermsContent
+     * @Method description : 기업 약관동의 내용 등록
+     * @param              : CompanyTermsContentManageVO
+     * @return             : string
+     * @throws             : Exception
+     -->
+    <insert id="apt.CompanyTermsContentManageDAO.insertCompanyTermsContent" parameterClass="CompanyTermsContentManageVO">
+        <selectKey keyProperty="companyTermsContentRegSeq" resultClass="java.lang.String">
+            select  concat(date_format(sysdate(),'%Y%m%d'), 
+                    lpad((
+                            select ifnull( max(cast(right(company_terms_content_reg_seq,3) as signed)), 0)+1 
+                            from spt_customer_company_terms_content_profile 
+                            where company_code_id = #companyCodeId#
+                            and company_terms_type = #companyTermsType#
+                            and left(company_terms_content_reg_seq,8) = concat(date_format(sysdate(),'%Y%m%d'))
+                        ), 3, '0')
+                    ) as companyTermsContentRegSeq
+        </selectKey>
+        insert into spt_customer_company_terms_content_profile(
+			company_code_id,
+			company_terms_type,
+			company_terms_content_reg_seq,
+			company_terms_content_ver,
+			company_terms_content,
+			create_date,
+			create_id,
+			update_date,
+			update_id
+        )values(
+            #companyCodeId#,
+            #companyTermsType#,
+            #companyTermsContentRegSeq#,
+            #companyTermsContentVer#,
+            #companyTermsContent#,
+            sysdate(),
+            #createId#,
+            sysdate(),
+            #createId#
+        )
+    </insert>
+    
+    <!--
+     * @Method Name        : apt.CompanyTermsContentManageDAO.updateCompanyTermsContent
+     * @Method description : 기업 약관동의 내용 수정
+     * @param              : TermsContentManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="apt.CompanyTermsContentManageDAO.updateCompanyTermsContent" parameterClass="CompanyTermsContentManageVO">
+        update spt_customer_company_terms_content_profile set
+            company_terms_content_ver = #companyTermsContentVer#,
+            company_terms_content = #companyTermsContent#,
+            update_date = sysdate(),
+            update_id = #createId#
+        where company_code_id = #companyCodeId# 
+        and company_terms_type = #companyTermsType#
+        and company_terms_content_reg_seq = #companyTermsContentRegSeq#
+    </update>
+        
+    
+</sqlMap>

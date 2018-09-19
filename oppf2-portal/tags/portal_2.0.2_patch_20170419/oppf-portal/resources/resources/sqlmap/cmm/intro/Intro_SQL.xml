@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 자본시장 공동 핀테크 오픈플랫폼 구축
+* @FileName : Intro_SQL.java
+* @Comment  : [Intro]정보관리를 위한 SQL XML
+* @author   : 신동진
+* @since    : 2016.06.13
+* @version  : 1.0
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2016.06.13   신동진        최초생성
+-->
+
+<sqlMap namespace="kr.co.koscom.oppf.cmm.intro.service.impl.IntroDAO">
+  	<typeAlias alias="IntroVO" type="kr.co.koscom.oppf.cmm.intro.service.IntroVO"/>
+  	
+  	<!-- 조회조건 -->
+  	<sql id="fromWhereAnd">
+		from(        
+		    select  a.app_id,
+		            a.app_name,
+		            a.company_code_id,
+		            b.app_category,
+		            b.app_description,
+		            b.app_dl_url,
+		            b.exposure_order
+		    from com_app_view a 
+		    join com_app_info b on a.app_id = b.app_id
+		    where a.app_status = 'G022002'        /*app 상태 (CA 정보)*/
+		    and b.exposure_yn = 'Y'
+		) a
+		join com_company_profile as b on a.company_code_id = b.company_code_id and b.delete_date is null and b.exposure_yn = 'Y'
+		where 1=1
+		
+		<!-- app 구분 -->
+        <isNotEmpty property="searchAppCategory" prepend="and">
+            a.app_category = #searchAppCategory#
+        </isNotEmpty>
+        
+        <!-- 구분 -->
+        <isNotEmpty property="searchKeyword">
+            <!-- app 명 -->
+            <isEqual property="searchCondition" compareValue="appName" prepend="and">
+                a.app_name like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <!-- 주요 서비스 -->
+            <isEqual property="searchCondition" compareValue="appDescription" prepend="and">
+                a.app_description like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <!-- 전체 -->
+            <isEqual property="searchCondition" compareValue="all" prepend="and">
+                (
+                    a.app_name like concat('%', #searchKeyword#, '%') or 
+                    a.app_description like concat('%', #searchKeyword#, '%')
+                )
+            </isEqual>
+        </isNotEmpty>	    	               
+  	</sql>
+
+    <!--
+     * @Method Name        : cmm.IntroDAO.selectIntroFintechAppList
+     * @Method description : [핀테크 App 소개]핀테크 App 목록을 조회한다.
+     * @param              : IntroVO
+     * @return             : IntroVO
+     * @throws             : Exception
+     -->
+    <select id="cmm.IntroDAO.selectIntroFintechAppList" parameterClass="IntroVO" resultClass="IntroVO">
+		select  a.app_id                    as appId,
+		        a.app_name                  as appName,
+		        a.company_code_id           as companyCodeId,
+		        b.company_name_kor          as companyName,
+		        a.app_category              as appCategory,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.app_category           
+		        )                           as appCategoryName,
+		        a.app_description           as appDescription,
+		        a.app_dl_url                as appDlUrl    
+        <include refid="fromWhereAnd"/>
+        <include refid="CmmnFuncDAO.CmmnPaging"/>		            
+    </select>
+    
+    <!--
+     * @Method Name        : cmm.IntroDAO.selectIntroFintechAppListTotalCount
+     * @Method description : [핀테크 App 소개]핀테크 App 목록의 총개수를 조회한다.
+     * @param              : IntroVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="cmm.IntroDAO.selectIntroFintechAppListTotalCount" parameterClass="IntroVO" resultClass="int">
+        select count(a.app_id) as totalcount
+        <include refid="fromWhereAnd"/>
+    </select>
+    
+    <!--
+     * @Method Name        : cmm.IntroDAO.selectIntroFintechAppPubcompanyList
+     * @Method description : [핀테크 App 소개]핀테크 App 금투사 목록을 조회한다.
+     * @param              : IntroVO
+     * @return             : IntroVO
+     * @throws             : Exception
+     -->
+    <select id="cmm.IntroDAO.selectIntroFintechAppPubcompanyList" parameterClass="IntroVO" resultClass="IntroVO">
+        select  a.app_id                    as appId,   
+                a.api_id                    as apiId,
+                a.company_code_id           as companyCodeId,
+                b.company_name_kor_alias    as companyNameKorAlias,
+                a.api_title                 as apiTitle
+        from(
+            select  a.app_id,
+                    a.api_id,
+                    b.company_code_id,    
+                    b.api_title,
+                    b.exposure_order
+            from(
+                select  app_id, api_id
+                from com_app_apilist_view
+                where 1=1
+                <isNotEmpty property="searchAppId" prepend="and">
+                    app_id
+                    <iterate  property="searchAppId" prepend="IN" open="(" close=")" conjunction=",">
+                        #searchAppId[]#
+                    </iterate>
+                </isNotEmpty>
+            ) a, com_api_info b
+            where a.api_id = b.api_id
+            and b.exposure_yn = 'Y'
+            and b.api_account_yn = 'Y'
+        ) a
+        join com_company_profile as b on a.company_code_id = b.company_code_id and b.delete_date is null and b.exposure_yn = 'Y'
+        order by a.app_id, a.company_code_id, a.exposure_order            
+    </select>
+    
+    <!--
+     * @Method Name        : cmm.IntroDAO.selectIntroSvcApiCompanyList
+     * @Method description : [API 소개] 정보제공자 리스트를 조회한다.
+     * @param              : IntroVO
+     * @return             : IntroVO
+     * @throws             : Exception
+     -->
+    <select id="cmm.IntroDAO.selectIntroSvcApiCompanyList" parameterClass="IntroVO" resultClass="IntroVO">
+		select  b.company_profile_reg_no        as companyProfileRegNo,
+		        b.company_code_id               as companyCodeId,
+		        b.company_name_kor              as companyNameKor,
+		        b.company_name_eng              as companyNameEng,
+		        b.company_name_kor_alias        as companyNameKorAlias,
+		        b.company_name_eng_alias        as companyNameEngAlias
+		from(
+		    select company_code_id
+		    from com_api_info
+		    where api_id in (
+		        select api_id
+		        from com_app_apilist_view
+		        group by api_id
+		    )
+		    and exposure_yn = 'Y'
+		    group by company_code_id
+		) a
+		join com_company_profile as b
+		on a.company_code_id = b.company_code_id and b.delete_date is null and b.exposure_yn = 'Y'
+		order by ifnull(b.exposure_order, 9999) asc, b.company_name_kor_alias asc    
+    </select>
+    
+    <!--  API 소개 리스트 조건 -->
+    <sql id="IntroSvcApiListFromWhereAnd">
+		from(
+		    select  b.*,
+		            (
+		                select code_name_kor
+		                from com_system_code
+		                where concat(system_grp_code, system_code) = b.api_category           
+		            ) as api_category_name,
+		            c.company_name_kor,
+		            c.company_name_eng,
+		            c.company_name_kor_alias,
+		            c.company_name_eng_alias,
+		            ifnull(c.exposure_order, 9999) as company_exposure_order
+		    from(
+		        select  b.api_id,
+		                a.api_name,
+		                b.api_category,
+		                b.api_title,
+		                b.api_description,
+		                b.company_code_id,
+		                ifnull(b.exposure_order, 9999) as exposure_order,
+		                date_format(ifnull(b.update_date, b.create_date), '%Y-%m-%d %H:%i') as create_date
+		        from com_api_view a
+		        join com_api_info b on a.api_id = b.api_id
+		        where b.exposure_yn = 'Y'
+		    ) b
+		    join com_company_profile as c
+		    on b.company_code_id = c.company_code_id and c.delete_date is null and c.exposure_yn = 'Y'
+		) a
+		where 1=1    
+		
+		<!-- api 구분 -->
+        <isNotEmpty property="searchApiCategory" prepend="and">
+            a.api_category = #searchApiCategory#
+        </isNotEmpty>
+        
+        <!-- 정보제공자 -->
+        <isNotEmpty property="searchCompanyCodeId" prepend="and">
+            a.company_code_id = #searchCompanyCodeId#
+        </isNotEmpty>
+        
+        <!-- 구분 -->
+        <isNotEmpty property="searchKeyword">
+            <!-- API 명 -->
+            <isEqual property="searchCondition" compareValue="apiName" prepend="and">
+                a.api_title like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <!-- 내용 -->
+            <isEqual property="searchCondition" compareValue="apiDescription" prepend="and">
+                a.api_description like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <!-- 전체 -->
+            <isEqual property="searchCondition" compareValue="all" prepend="and">
+                (
+                    a.api_title like concat('%', #searchKeyword#, '%') or 
+                    a.api_description like concat('%', #searchKeyword#, '%')
+                )
+            </isEqual>
+        </isNotEmpty>
+    </sql>
+    
+    <!--
+     * @Method Name        : cmm.IntroDAO.selectIntroSvcApiList
+     * @Method description : [API 소개] API 소개 리스트를 조회한다.
+     * @param              : IntroVO
+     * @return             : IntroVO
+     * @throws             : Exception
+     -->
+    <select id="cmm.IntroDAO.selectIntroSvcApiList" parameterClass="IntroVO" resultClass="IntroVO">
+		select  a.api_id                        as apiId,
+		        a.api_name                      as apiName,
+		        a.api_category                  as apiCategory,
+		        a.api_category_name             as apiCategoryName,
+		        a.api_title                     as apiTitle,
+		        a.api_description               as apiDescription,
+		        a.company_code_id               as companyCodeId,
+		        a.company_name_kor              as companyNameKor,
+		        a.company_name_eng              as companyNameEng,
+		        a.company_name_kor_alias        as companyNameKorAlias,
+		        a.company_name_eng_alias        as companyNameEngAlias,
+		        a.create_date                   as createDate 
+        <include refid="IntroSvcApiListFromWhereAnd"/>
+        <include refid="CmmnFuncDAO.CmmnPaging"/>		           
+    </select>
+    
+    <!--
+     * @Method Name        : cmm.IntroDAO.selectIntroSvcApiListTotalCount
+     * @Method description : [API 소개] API 소개 리스트의 총개수를 조회한다.
+     * @param              : IntroVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="cmm.IntroDAO.selectIntroSvcApiListTotalCount" parameterClass="IntroVO" resultClass="int">
+        select count(*) as totalcount
+        <include refid="IntroSvcApiListFromWhereAnd"/>
+    </select>
+    
+    <!--
+     * @Method Name        : cmm.IntroDAO.selectIntroServiceTerms
+     * @Method description : [Intro]서비스 이용약관의 이용약관을 조회한다.
+     * @param              : IntroVO
+     * @return             : IntroVO
+     * @throws             : Exception
+     -->
+    <select id="cmm.IntroDAO.selectIntroServiceTerms" parameterClass="IntroVO" resultClass="IntroVO">
+        select  customer_terms_content as customerTermsContent
+		from spt_customer_terms_content_profile
+		where customer_terms_type = 'G008001'
+		and customer_terms_system_kind = (
+			select concat(system_grp_code, system_code) as system_code
+			from com_system_code
+			where system_grp_code = 'G003'
+			and code_extend1 = #systemKind#		    
+		)
+		order by customer_terms_content_reg_seq desc
+		limit 0, 1    
+    </select>
+    
+    <!--
+     * @Method Name        : cmm.IntroDAO.selectIntroServiceTermsCompanyTerms
+     * @Method description : [Intro]서비스 이용약관(개인포털)의 기업 이용약관을 조회한다.
+     * @param              : IntroVO
+     * @return             : IntroVO
+     * @throws             : Exception
+     -->
+    <select id="cmm.IntroDAO.selectIntroServiceTermsCompanyTerms" parameterClass="IntroVO" resultClass="IntroVO">
+		select company_terms_content as customerTermsContent
+		from spt_customer_company_terms_content_profile
+		where company_code_id = #companyCodeId#
+		and company_terms_type = 'G031001'
+		and company_terms_content_reg_seq = #companyTermsContentRegSeq#       
+    </select>
+    
+    <!--
+     * @Method Name        : cmm.IntroDAO.selectIntroServiceTermsCodeList
+     * @Method description : [Intro]서비스 이용약관(개인포털)의  이용약관(서비스이용약관 + 기업 서비스이용약관) 코드를 가져온다.
+     * @param              : IntroVO
+     * @return             : IntroVO
+     * @throws             : Exception
+     -->
+    <select id="cmm.IntroDAO.selectIntroServiceTermsCodeList" parameterClass="IntroVO" resultClass="IntroVO">
+		select  a.termsKey, a.termsName
+		from(
+		    select  concat('cust|', a.customer_terms_type, '|', customer_terms_content_reg_seq) as termsKey,
+		            (
+		                select  com_system_code.code_name_kor as code_name
+		                from com_system_code
+		                where concat(system_grp_code, system_code) = a.customer_terms_type
+		            ) as termsName
+		    from spt_customer_terms_content_profile a
+		    where customer_terms_type = 'G008001'
+		    and customer_terms_system_kind = (
+		        select concat(system_grp_code, system_code) as system_code
+		        from com_system_code
+		        where system_grp_code = 'G003'
+		        and code_extend1 = #systemKind#
+		    )
+		    order by customer_terms_content_reg_seq desc
+		    limit 0, 1  
+		) a    
+		union all
+		select  a.termsKey, a.termsName
+		from(
+		    select  concat('comp|',a.company_code_id, '|', a.company_terms_content_reg_seq) as termsKey,
+		            b.company_name_kor_alias as termsName
+		    from(
+		        /* 기업약관 */
+		        select  company_code_id,
+		                company_terms_type,
+		                company_terms_content_reg_seq,
+		                company_terms_content_ver,
+		                company_terms_content
+		        from spt_customer_company_terms_content_profile
+		        where company_terms_type = 'G031001'    /* 기업 서비스 이용약관 */ 
+		        and (company_code_id, company_terms_content_ver) in (
+		            select  company_code_id, 
+		                    max(company_terms_content_ver) as company_terms_content_ver
+		            from spt_customer_company_terms_content_profile
+		            where company_terms_type = 'G031001'    /* 기업 서비스 이용약관 */
+		            group by company_code_id
+		        )
+		    ) a
+		    join com_company_profile b on a.company_code_id = b.company_code_id
+		    order by b.exposure_order asc, b.company_name_kor_alias asc
+		) a     
+    </select>
+    
+</sqlMap>

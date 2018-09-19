@@ -1,0 +1,113 @@
+<ion-view view-title="앱 소개">
+	<ion-content> <!-- bg color -->
+		<div class="container"> <!-- 계좌 페이지 -->
+			<div class="top_wrap app_info" ng-click="vm.goDlUrl();">
+				<div class="logo" ><img src="{{vm.appDtl.appImageUrl}}" onerror="this.src='/resources/images/appicon_basic.png'" ></div>
+				<div class="right_area">
+					<h2 class="title_h2"><span class="ft_org">{{vm.appDtl.appName}}</span> /  {{vm.appDtl.companyName}}</h2>
+					<div class="txt">{{vm.appDtl.appCategoryName}}</div>
+				</div>
+			</div>
+			<div class="inner_cont type2">
+				<div class="acclist_area application_complete"> <!-- 앱소개 -->
+					<!-- 아코디언 메뉴 -->
+					<div class="accordian-menu" accordion><!-- accordion -->
+						<div ng-class="[vm.style, {active : !isLogin ||!vm.appDtl.serviceRegNo}]"><!-- add active :열림 -->
+							<button type="button" class="btn_bar"></button>
+							<div class="detail_head">
+								소개
+							</div>
+							<div class="detail_cont">
+								<ul>
+									<li>
+										<pre>{{vm.appDtl.appDescription}}</pre>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div ng-class="[vm.style, {active : !isLogin || !vm.appDtl.serviceRegNo}]" ng-if="vm.AppCompanyList && vm.AppCompanyList.length > 0"><!-- add active :열림 -->
+							<button type="button" class="btn_bar"></button>
+							<div class="detail_head">
+								금융투자회사별 연계서비스
+							</div>
+							<div class="detail_cont">
+								<div class="table_wrap">
+									<table >
+										<colgroup><col style="width:50%;" ><col style="width:auto;" ></colgroup>
+										<thead>
+											<tr >
+												<th>금융투자회사</th>
+												<th>연계서비스</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr ng-repeat="AppCompanyRes in vm.AppCompanyList">
+												<td>{{AppCompanyRes.companyName}}</td>
+												<td>{{AppCompanyRes.apiName}}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+						<div class="accordian-cont cont_wrap active" ng-show="isLogin && vm.AppAccountList && vm.AppAccountList.length>0" ><!-- add active :열림 -->
+							<button type="button" class="btn_bar"></button>
+							<div class="detail_head">
+								연결계좌
+							</div>
+							<div class="detail_cont">
+								<ul>
+									<li ng-repeat="appAccountRes in vm.AppAccountList">
+										<p class="title_s">{{appAccountRes.pubCompanyName}}</p>
+										<label for="acc1-1" ng-repeat="vtAccountRes in appAccountRes.vtAccountResList">
+											{{vtAccountRes.customerVtaccountAlias}}
+											<span class="num_right">{{vtAccountRes.customerVtaccountNo}}</span>
+										</label>
+									</li>
+								</ul>
+							</div>
+						</div>
+						<div class="accordian-cont cont_wrap active" ng-show="isLogin && vm.appDtl.serviceRegNo"><!-- add active :열림 -->
+							<button type="button" class="btn_bar"></button>
+							<div class="detail_head">
+								금융거래정보 제공 동의
+								<button type="button" class="btn_info_pop" ng-click="vm.termsInfo(vm.appDtl.appId, 'detail')">정보제공팝업</button>
+								<button type="button" class="btn_time_pop" ng-show="vm.appDtl.reSyncYn=='Y'" ng-click="vm.termsInfo(vm.appDtl.appId, 'reSync')">정보제공동의팝업</button>
+							</div>
+							<div class="detail_cont">
+								<ul>
+									<li>
+										<label for="acc_time">
+											유효기간
+											<span class="num_right">{{vm.appDtl.termsStartData}} ~ {{vm.appDtl.termsEndDate}}</span>
+										</label>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<!--// 아코디언 메뉴 -->
+				</div>
+				<div class="btn_area ar">
+					<button type="button" class="btn_del" ng-click="vm.appDelete(vm.appDtl.appId, vm.appDtl.appName);" ng-show="isLogin && vm.appDtl.serviceRegNo">앱 삭제</button>
+				</div>
+			</div>
+		</div>
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<div class="button_area btn_bottom_area" ng-show="vm.AppCompanyList.length == 0">  <!-- btn_both : 2개일때 / btn_three : 3개일때 -->
+			<a href="#go" class="btn_middle btn_black" ng-click="vm.goMain()">목록</a>
+		</div>
+		<div class="button_area btn_both btn_bottom_area" ng-show="!isLogin && vm.AppCompanyList && vm.AppCompanyList.length > 0">  <!-- btn_both : 2개일때 / btn_three : 3개일때 -->
+			<a href="#go" class="btn_middle btn_black" ng-click="vm.goMain()">목록</a>
+			<a href="#go" class="btn_middle btn_black_org" ng-click="vm.goapps()">사용신청 <span class="bg_icon"></span></a>
+		</div>
+		<div class="button_area btn_both btn_bottom_area" ng-show="isLogin && vm.AppCompanyList && vm.AppCompanyList.length > 0">  <!-- btn_both : 2개일때 / btn_three : 3개일때 -->
+			<a href="#go" class="btn_middle btn_black" ng-click="vm.goMain()">목록</a>
+			<a href="#go" class="btn_middle btn_black_org" ng-click="vm.goAppRequestAccountList(vm.appDtl.appId)" ng-show="!vm.appDtl.serviceRegNo">사용신청 <span class="bg_icon"></span></a>
+			<a href="#go" class="btn_middle btn_black_org" ng-click="vm.goAppAccountList(vm.appDtl.appId,vm.type,vm.appDtl.appName,vm.appDtl.companyName, vm.appDtl.companyCodeId)" ng-show="vm.appDtl.serviceRegNo">신청 정보 수정<span class="bg_icon"></span></a>
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+</ion-view>

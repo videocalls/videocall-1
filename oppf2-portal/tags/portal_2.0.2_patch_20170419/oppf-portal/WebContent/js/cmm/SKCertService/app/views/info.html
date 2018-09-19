@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+<head>
+    <!-- 임시로 지움. -->
+    <!--<meta charset="UTF-8">-->
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <title>인증서 로그인</title>
+    <link type="text/css" rel="stylesheet" href="../styles/css/common.css"/>
+    <!--[if IE 7]>
+    <link rel="stylesheet" type="text/css" href="../styles/css/ie7Debug.css"/>
+    <![endif]-->
+    <link rel="stylesheet" href="../styles/css/jquery-ui.css">
+    
+    <script>
+        (function (){
+            try{
+                //console.log("page documnet.domain: " + document.domain);
+                parent.document.location;
+            }catch(e) {
+                if (document.domain.indexOf(".co.kr") != -1) {
+                    //co.kr
+                    var domainArr = document.domain.split(".");
+                    //console.log("arr:" + domainArr);
+                    document.domain = domainArr[domainArr.length - 3] + ".co.kr";
+                }
+                else if (document.domain.indexOf(".com") != -1) {
+                    //com
+                    var domainArr = document.domain.split(".");
+                    //console.log("arr:" + domainArr);
+                    document.domain = domainArr[domainArr.length - 2] + ".com";
+                }
+            }
+        })();
+    </script>
+    
+    <script type="text/javascript" src="../styles/js/jquery-1.11.0.min.js"></script>
+    <script src="../styles/js/jquery-ui.js"></script>
+    
+    <script type="text/javascript" src="../library/json3.min.js"></script>
+    <script type="text/javascript" src="../library/iecompatibility.js"></script>
+    
+    <script src="../language/info.js"></script>
+</head>
+<style type="text/css">
+    html {
+        overflow: hidden;
+    }
+</style>
+
+<script>
+    function dragCheck(){
+        if(window.navigator.userAgent.toLowerCase().indexOf('firefox') !== -1)
+            return;
+        addHandle(document.getElementById('titleText'), window);
+    }
+</script>
+<body onload="dragCheck()">
+<div class="CERT_titlebar">
+    <h1 id="titleText"><script>document.write(infoLang(0))</script></h1>
+
+    <div id="versionText" class="CERT_util_version"></div>
+    <div class="CERT_util_btnClose" id="x_btn"><a href="#"></a></div>
+</div>
+<div class="certWrap">
+    <div class="cert_topimg"><img src="../styles/images/list2_03.jpg" alt="코스콤 공인인증센터"></div>
+    <dl class="tab1">
+        <dd>
+            <div class="CERT_contWrap14" id="mainInfo">
+                <div class="CERT_14_box setupInfo" >
+                    <div class="CERT_14_txt1"><script>document.write(infoLang(1))</script></div>
+                    <div class="CERT_btns_common mt10 mb10 subSetupInfo">
+                        <p class="CERT_btnBg_sbtn2"><a href="#" id="certInstall"><span class="CERT_14_info"><script>document.write(infoLang(2))</script></span></a></p>
+
+                        <p class="CERT_btnBg_sbtn2"><a href="#" id="vestCertSetup"><span class="CERT_14_down"><script>document.write(infoLang(3))</script></span></a></p>
+
+                        <p class="CERT_btnBg_sbtn2"><a href="#" id="refresh"><span class="CERT_14_refresh"><script>document.write(infoLang(4))</script></span></a></p>
+                        <br>
+                        <br>
+                        <p class="CERT_btnBg_sbtn2"><a href="#" id="doActiveX"><span class=""><script>document.write(infoLang(5))</script></span></a></p>
+                    </div>
+                </div>
+                <!-- IE 9 미만일때 나타나지 않음 -->
+                <!--<div id="mainInfoSub">-->
+                    <!--<div class="CERT_14_line1"></div>-->
+                    <!--<div class="CERT_14_line2"></div>-->
+                    <!--<div class="CERT_14_box">-->
+                        <!--<div class="CERT_14_txt2">“인증서찾기 메뉴를 이용하시면프로그램 설치 없이 <br>전자서명이 가능합니다.”</div>-->
+                        <!--<div class="CERT_btns_common mt10">-->
+                            <!--<p class="CERT_btnBg_sbtn2"><a href="#" id=""><span-->
+                                    <!--class="CERT_14_info">인증서 찾기 안내</span></a></p>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+            </div>
+
+        </dd>
+    </dl>
+</div>
+</body>
+<script type="text/javascript" src="../scripts/info.js"></script>
+<script type="text/javascript" src="../library/dragiframe.js"></script>
+</html>

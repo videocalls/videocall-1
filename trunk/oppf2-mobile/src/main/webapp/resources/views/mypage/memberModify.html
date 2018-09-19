@@ -1,0 +1,120 @@
+<ion-view view-title="회원정보">
+    <ion-content>
+        <form name="$root.memberModify">
+            <div class="container"> <!-- 비밀번호 확인 -->
+                <div class="inner_cont type2">
+                    <!-- 정보입력 -->
+                    <ul class="entry_area mypage">
+                        <li>
+                            <div class="btm_enter change_item">
+                                <div class="title_s">이름</div>
+                                <div class="btm_enter change_item"> <!-- change_item : 변경버튼 출력 -->
+                                    <div class="input_area"><input type="text" maxlength="12" ng-model="vm.customerNameKor" disabled /></div>
+                                    <button type="button" class="btn_send" ng-click="vm.phoneAuth();">변경</button>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="title_s">아이디</div>
+                            <div class="input_area"><input type="text" ng-model="vm.customerId" disabled /></div>
+                        </li>
+                        <li>
+                            <div class="title_s">생년월일</div>
+                            <div class="input_area"><input type="text" ng-model="vm.customerBirthDay" disabled /></div>
+                        </li>
+                        <li>
+                            <div class="title_s">
+                                <div class="tips" tooltips>
+                                    이메일
+                                    <span class="icon_tip">i</span>
+                                    <div class="detail_tip">
+                                        서비스 및 정책 관련 중요 정보는 수신 여부와 관계없이 발송됩니다.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="email_area">
+                                <div class="top_box">
+                                    <div class="input_area">
+                                        <input type="text" name="customerEmailId"
+                                               ng-model="vm.customerEmailId"
+                                               required ng-change="vm.customerEmailChange();"/>
+                                    </div>
+                                    <span class="txt_at">@</span>
+                                    <div class="input_area">
+                                        <input type="text" name="emailPath"
+                                               ng-readonly="!!vm.emailPathSelect"
+                                               ng-model="vm.emailPath"
+                                               required  ng-change="vm.customerEmailChange();" />
+                                    </div>
+                                </div>
+                                <div class="select_box">
+                                    <select ng-model="vm.emailPathSelect"
+                                            ng-change="vm.emailChange();"
+                                            ng-options="data.data as data.name for data in vm.emailPathSelectList">
+                                    </select>
+                                </div>
+                                <input type="hidden" name="customerEmail" ng-model="vm.customerEmail"/>
+                            </div>
+                            <div class="txt_error">{{vm.emailValidMsg}}</div>
+                            <!-- 수신동의 -->
+                            <div class="receive_check">
+                                <div class="form_input">
+                                    <input type="checkbox" id="receive_ck" name="customerEmailReceiveYn" ng-click="vm.emailDoubleCheck();"
+                                           ng-model="vm.customerEmailReceiveYn" ng-true-value="'Y'" ng-false-value="'N'">
+                                    <label for="receive_ck">수신동의 (뉴스/이벤트 등)</label>
+                                </div>
+                            </div><!-- add class : hide_set : display:none; 처리  -->
+                        </li>
+                        <li>
+                            <div class="title_s">휴대폰번호</div>
+                            <div class="btm_enter change_item"> <!-- disabled 추가시 버튼이 보이지 않아요 / change_item : 변경버튼 출력 /  -->
+                                <div class="input_area"><input type="tel" maxlength="12" ng-model="vm.customerPhone" placeholder="- 없이 입력" disabled /></div>
+                                <button type="button" class="btn_send" ng-click="vm.phoneAuth();">변경</button>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="title_s">
+                                스마트 OTP
+                                <div class="tips" tooltips>
+                                    <span class="icon_tip">i</span>
+                                    <div class="detail_tip">
+                                        &lt;등록 방법&gt;<br><br>
+                                        1. Smartkey Pass앱에 보이는 '사이트 인증 등록' 번호를 입력하시고 ‘확인’ 버튼을 클릭해주세요.<br><br>
+                                        2. Smartkey Pass앱에 하단에 'OK' 버튼을 누르면 등록 됩니다.<br><br>
+                                        <span class="ft_org">*스마트 OTP를 사용하기 위해서는 스마트폰에 Smartkey Pass앱이 설치되어 있어야 합니다.</span><br><br>
+                                    </div>
+                                    <!--OTP 재등록 체크박스-->
+                                    <!-- ngIf: vm.customerOtpYn == 'Y' -->
+                                    <div ng-if="vm.customerOtpYn == 'Y'" class="form_input" style="display: inline-block; margin-left: 10px">
+                                        <input type="checkbox" id="reUpdateOtp" ng-model="vm.reUpdateOtp" ng-click="vm.otpChecked()" ng-true-value="true" ng-false-value="false" value="on" style=""><label for="reUpdateOtp">OTP 재등록</label>
+                                    </div><!-- end ngIf: vm.customerOtpYn == 'Y' -->
+                                    <!--//OTP 재등록 체크박스-->
+                                </div>
+                                <label class="toggle">
+                                    <input type="checkbox" ng-click="vm.otpChecked()" ng-model="vm.otpUseYn" ng-true-value="true" ng-false-value="false">
+                                    <div class="track">
+                                        <div class="handle"></div>
+                                    </div>
+                                </label>
+                                <div class="btm_enter smt_otp" ng-if="vm.otpValueYn">
+                                    <div class="input_area">
+                                        <input type="tel" maxlength="6" ng-model="vm.customerSendOtpId" placeholder="스마트 OTP 번호 입력"/>
+                                    </div>
+                                    <button type="button" class="btn_send" ng-disabled="!vm.customerSendOtpId" ng-click="vm.otpConfirm()">{{vm.otpCheckBtnName}}</button>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <!--//정보입력 -->
+                </div>
+            </div>
+        </form>
+    </ion-content>
+    <ion-footer-bar>
+        <!-- 하단 버튼 -->
+        <div class="button_area btn_bottom_area">
+            <button class="btn_middle btn_black_org" ng-click="vm.memberModify();" ng-disabled="vm.saveBtn">저장</button>
+        </div>
+        <!--// 하단 버튼 -->
+    </ion-footer-bar>
+</ion-view>

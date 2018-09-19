@@ -1,0 +1,638 @@
+<!doctype html>
+<html>
+<head>
+    <!-- 임시로 지움. -->
+    <!--<meta charset="UTF-8">-->
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <title>인증서 로그인</title>
+    <link type="text/css" rel="stylesheet" href="../styles/css/common.css"/>
+    <!--[if IE 7]>
+    <link rel="stylesheet" type="text/css" href="../styles/css/ie7Debug.css"/>
+    <![endif]-->
+    <link rel="stylesheet" href="../styles/css/jquery-ui.css">
+    <script>
+        (function (){
+            try{
+                //console.log("page documnet.domain: " + document.domain);
+                parent.document.location;
+            }catch(e) {
+                if (document.domain.indexOf(".co.kr") != -1) {
+                    //co.kr
+                    var domainArr = document.domain.split(".");
+                    //console.log("arr:" + domainArr);
+                    document.domain = domainArr[domainArr.length - 3] + ".co.kr";
+                }
+                else if (document.domain.indexOf(".com") != -1) {
+                    //com
+                    var domainArr = document.domain.split(".");
+                    //console.log("arr:" + domainArr);
+                    document.domain = domainArr[domainArr.length - 2] + ".com";
+                }
+            }
+        })();
+    </script>
+
+    <script type="text/javascript" src="../styles/js/jquery-1.11.0.min.js"></script>
+    <script src="../styles/js/jquery-ui.js"></script>
+    <style type="text/css">
+        html {
+            overflow: hidden;
+        }
+    </style>
+
+    <script type="text/javascript" src="../library/json3.min.js"></script>
+    <script type="text/javascript" src="../library/iecompatibility.js"></script>
+    <script type="text/javascript" src="../library/webAccess.js"></script>
+
+    <script type="text/javascript" src="../language/sign.js"></script>
+    <script type="text/javascript" src="../language/policies.js"></script>
+
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            /* 저장매체 버튼 스크롤 */
+            var list = $("#button_slide_wrap #menu_btn li");
+            var $list = list.length;
+
+            $(".next").on("click", function () {
+                $("#button_slide_wrap #menu_btn").animate({
+                    left: "-=73px"
+                }, 0, function () {
+                    $("#button_slide_wrap #menu_btn li").eq(0).appendTo($("#button_slide_wrap #menu_btn"));
+                    $("#menu_btn").css("left", "2px")
+                });//innerfunc
+            });//next
+            $(".prev").on("click", function () {
+                $("#button_slide_wrap #menu_btn").animate({
+                    left: "0px"
+                }, 0, function () {
+                    $("#button_slide_wrap #menu_btn li").eq($list - 1).prependTo($("#button_slide_wrap #menu_btn"));
+                    $("#menu_btn").css("left", "2px")
+                })//innerfunc
+            });//prev
+        });
+
+        function tab(num) {
+            //$($("dl.tab1 dt")[num]).show();
+
+            if ($("#menu_btn li:eq(" + num + ") a").hasClass("on")) return;
+
+
+            for (var i = 0; i < $("#menu_btn li").length; i++) {
+                if ($("#menu_btn li:eq(" + i + ") a").attr('class') != undefined)
+                    $("#menu_btn li:eq(" + i + ") a").attr('class', $("#menu_btn li:eq(" + i + ") a").attr('class').replace("_on on", ""));
+            }
+
+            if ($("#menu_btn li:eq(" + num + ") a").attr('class') != undefined) $("#menu_btn li:eq(" + num + ") a").attr('class', $("#menu_btn li:eq(" + num + ") a").attr('class') + "_on on");
+        }
+
+        //인증서리스트 클릭시 상세내용출력
+        //        function outCertComment(arg) {
+        //            $("#outCertComment").val(arg);
+        //        }
+
+        /*
+         //인증서리스트 클릭시 스타일 적용(mouseenter)
+         $(function () {
+         $(document).on("mouseenter", "#outCertList li ul", function () {
+         if ($(this).attr("class") == "list_list_ov clfix") return;
+         $(this).addClass("list_list_ov clfix");
+         });
+         });
+
+         //인증서리스트 클릭시 스타일 적용(mouseleave)
+         $(function () {
+         $(document).on("mouseleave", "#outCertList li ul", function () {
+         if ($(this).attr("class") == "list_list_ov clfix") return;
+         $(this).removeClass("list_list_ov clfix");
+         });
+         });
+
+         //인증서리스트 클릭시 스타일 적용(click)
+         $(function () {
+         $(document).on("click", "#outCertList li ul", function () {
+         if ($(this).attr("class") == "list_list_ov clfix") return;
+         $("#outCertList li ul").attr('class', 'list_list clfix');
+         $(this).attr("class", "list_list_ov clfix");
+         });
+         });
+         */
+
+        $(function () {
+            $(document).on("click", "#outCertList li ul", function () {
+                if ($(this).hasClass("on")) return;
+                $("#outCertList li ul").removeClass("on");
+                $(this).addClass("on");
+
+            });
+        });
+
+        $(function () {
+            $(document).on("keydown", "#outCertList li ul p", function (key) {
+                if (key.keyCode === 13) {
+                    for(index in $('#outCertList li ul')){
+                        if($('#outCertList li ul p')[index] == this){
+                            if ($($('#outCertList li ul')[index]).hasClass("on")) return;
+                            $("#outCertList li ul").removeClass("on");
+                            $($('#outCertList li ul')[index]).addClass("on");
+                        }
+                    }
+
+                    key.preventDefault();
+                }
+            });
+        });
+
+        //다이얼로그 OPEN
+        function dOpen(args) {
+
+            var sIndex = $("#menu_btn li").find(".on").parent().index();
+            var sClass = $("#menu_btn li:eq(" + sIndex + ") a").attr("class").replace("_on on", "");
+
+            $("#dialog").dialog({
+                autoOpen: true,
+                modal: true,
+                resizable: false,
+                open: function (type, data) {
+
+                    $("#dialog_list").empty();
+
+                    //다이얼로그 출력
+                    $.each(args, function (index, item) {
+
+                        $(document.createElement('li'))
+                                .append($(document.createElement('a'))
+//                                        .attr({
+//                                            "href": "#",
+//                                            "class": sClass + "_bullet",
+//                                            "tokenIdentifier": item.tokenIdentifier,
+//                                            "onClick": "$(\"#dialog\").dialog(\"close\");"
+//                                        })
+//                                        .append($(document.createElement('span')).append(item.arg1))
+                                        .attr({
+                                            "href": "javascript:;",
+                                            "class": "ico1",
+                                            "tokenIdentifier": item.tokenIdentifier,
+                                            "onClick": "$(\"#dialog\").dialog(\"close\");"
+                                        })
+                                        .append(item.name)
+                        )
+                                .appendTo($("#dialog_list"));
+                    })
+
+                    if (args.length > 3) $("#dialog_list").css("height", "128px");
+                    else $("#dialog_list").css("height", (args.length * 32) + "px");
+
+
+                    $(".ui-dialog-titlebar", $(this).parent()).remove();
+                    $("#dialog").dialog({width: "auto", height: "auto"});
+                    if (args.length < 4) $("#dialog").dialog({height: $("#dialog").height() - 8});
+                    $("#dialog").css('overflow', 'hidden');
+                }
+            });
+        }
+
+
+        //다이얼로그 CLOSE
+        $(document).on("click", "#dialog_xBtn", function () {
+            $("#dialog").dialog("close");
+        });
+
+        //다이얼로그 매체아이콘 클릭
+        $(document).on("click", "#dialog_list li a", function () {
+            //alert($(this).parent().index());
+            //alert("클릭 후 처리프로세스로 변경 : " + $(this).attr("tokenIdentifier"));
+        });
+        /*
+         //DialogCertTab 리스트 클릭시 스타일 적용(mouseenter)
+         $(function () {
+         $(document).on("mouseenter", "#dialogCertTab_attrList li ul", function () {
+         if ($(this).attr("class") == "CERT_list_list_ov clfix") return;
+         $(this).addClass("CERT_list_list_ov clfix");
+         });
+         });
+
+         //DialogCertTab 리스트 클릭시 스타일 적용(mouseleave)
+         $(function () {
+         $(document).on("mouseleave", "#dialogCertTab_attrList li ul", function () {
+         if ($(this).attr("class") == "CERT_list_list_ov clfix") return;
+         $(this).removeClass("CERT_list_list_ov clfix");
+         });
+         });
+
+         $(function(){
+         $(document).on("click", "#dialogCertTab_attrList li ul", function(){
+         if($(this).attr("class") == "CERT_list_list_ov clfix") return;
+         $("#dialogCertTab_attrList li ul").attr('class','CERT_list_list clfix');
+         $(this).attr("class","CERT_list_list_ov clfix");
+
+         $("#dialogCertTab_text").val($("#dialogCertTab_attrList li ul:eq(" + $(this).parent().index() + ") li:eq(1)").text());
+         });
+         });
+         */
+        //인증서리스트 클릭시 스타일 적용(click) & 이벤트처리
+        $(function () {
+            $(document).on("click", "#dialogCertTab_attrList li ul", function () {
+                if ($(this).hasClass("on")) return;
+                $("#dialogCertTab_attrList li ul").removeClass("on");
+                $(this).addClass("on");
+
+                $("#dialogCertTab_text").val($("#dialogCertTab_attrList li ul:eq(" + $(this).parent().index() + ") li:eq(1)").text());
+            });
+        });
+
+        //DialogCertTab 리스트 클릭시 스타일 적용(click)
+        //$(function(){
+        //	$(document).on("click", "#dialogCertTab_attrList li ul", function(){
+        //		if($(this).attr("class") == "CERT_list_list_ov clfix") return;
+        //		$("#dialogCertTab_attrList li ul").attr('class','CERT_list_list clfix');
+        //		$(this).attr("class","CERT_list_list_ov clfix");
+        //	});
+        //});
+
+        //인증서검증 다이얼로그 OPEN
+        //        $(document).on("click", "#certVid", function () {
+        //
+        //            var args = [{
+        //                msg: "$ 해당 인증서는 다음과 같은 내용을 포함하고 있습니다.\
+        //- 발급자 : cn=signGATE CA4, ou=AccreditedCA,o=KICA,c=KF<br/>\
+        //- 가입자 : TEST<br/>\
+        //- 발급일 : TEST<br/>\
+        //- 만료일 : TEST<br/>\
+        //$ 검증결과 : 모든 인증서 검증조건을 만족합니다.<br/>\
+        //$ 오류코드 : 없음<br/>\
+        //$ 오류정보 : 없음<br/>\
+        //$ 인증서 검증절차가 완료되었습니다.  ", arg1: '', arg2: ''
+        //            }];
+        //
+        //            $("#dialogCertVid").dialog({
+        //                autoOpen: true,
+        //                modal: true,
+        //                resizable: false,
+        //                open: function (type, data) {
+        //                    $("#dialogCertVid_text").text(args[0].msg);
+        //
+        //                    $(".ui-dialog-titlebar", $(this).parent()).remove();
+        //                    $("#dialogCertVid").dialog({width: "auto", height: "auto"});
+        //                    $("#dialogCertVid").css('overflow', 'hidden');
+        //                }
+        //            });
+        //        });
+
+        $(document).on("click", "#dialogCertVid_xBtn, #dialogCertVid_confirmBtn, #dialogCertVid_cancelBtn", function () {
+            $("#dialogCertVid").dialog("close");
+        });
+
+        function dragCheck() {
+            if (window.navigator.userAgent.toLowerCase().indexOf('firefox') !== -1)
+                return;
+            addHandle(document.getElementById('titleText'), window);
+        }
+    </script>
+</head>
+<body onload="dragCheck()">
+<div class="CERT_titlebar">
+    <!--<h1 id="titleText" tabindex="1"></h1>-->
+    <h1><ul><li id="titleText" tabindex="1"></li></ul></h1>
+    <div id="versionText" class="CERT_util_version"></div>
+    <div class="CERT_util_btnClose" id="x_btn"><a href="#" tabindex="2" alt="닫힘" title="닫힘"></a></div>
+</div>
+<div class="certWrap">
+    <div class="cert_topimg"><img src="../styles/images/list2_03.jpg" alt="코스콤 공인인증센터"></div>
+    <h2><script>document.write(signLang(127))</script></h2>
+    <dl class="tab1">
+        <dt class="cert01_01 clfix">
+        <div id="button_slide_wrap" class="clfix">
+            <button class="prev" tabindex="-1"></button>
+            <div>
+                <ul class="icos" id="menu_btn" style="left:2px;"/>
+            </div>
+            <button class="next" tabindex="-1"></button>
+        </div>
+        </dt>
+        <dd>
+            <div id="mainContent">
+                <div class="cert01_02" id="mainCertList">
+                    <ul class="list_cate">
+                        <li><script>document.write(signLang(0));</script></li>
+                        <li><script>document.write(signLang(1));</script></li>
+                        <li><script>document.write(signLang(2));</script></li>
+                        <li><script>document.write(signLang(3));</script></li>
+                    </ul>
+                    <ul id="outCertList" class="listWrap"/>
+                </div>
+
+                <div class="cert01_02" style="overflow-y:visible; display: none" id="P12">
+                    <div class="CERT_contWrap15">
+                        <div class="fileBackGround CERT_contWrap15" id="fileBackGround" style="display:none"></div>
+                        <div class="CERT_15_txt">
+                            <p><script>document.write(signLang(16));</script></p>
+
+                            <p class="CERT_btnBg_sbtn3"><a href="#" id=''><span class="CERT_15_info"><script>document.write(signLang(15));</script></span></a></p>
+                        </div>
+                        <div class="CERT_btns_common CERT_15_fileButton">
+                            <div>
+                                <p class="CERT_btnBg_sbtn2" id="fileInputSearchBtn"><a href="#" id="fileInputBtn"><span class="CERT_15_search"><script>document.write(signLang(17));</script></span></a>
+                                </p>
+                                <input type="file" class="fileInputHidden" id="fileInputHidden">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="cert01_03">
+                    <input type="text" readonly id="outCertComment" tabindex="-1"
+                           style="width:396px; height:20px; padding-top:2px; background:none; border:none; line-height:20px; margin:0 auto; fond-color:#555; padding-left:5px;">
+                </div>
+            </div>
+            <div class="CERT_contWrap14" id="mainInfo" style="display: none">
+                <div class="CERT_14_box setupInfo">
+                    <div class="CERT_14_txt1"><script>document.write(signLang(10));</script></div>
+                    <div class="CERT_btns_common mt10 mb10 subSetupInfo">
+                        <p class="CERT_btnBg_sbtn2"><a href="#" id="certInstall"><span class="CERT_14_info"><script>document.write(signLang(11));</script></span></a>
+                        </p>
+
+                        <p class="CERT_btnBg_sbtn2"><a href="#" id="vestCertSetup"><span class="CERT_14_down"><script>document.write(signLang(12));</script></span></a>
+                        </p>
+
+                        <p class="CERT_btnBg_sbtn2"><a href="#" id="refresh"><span class="CERT_14_refresh"><script>document.write(signLang(13));</script></span></a>
+                        </p>
+                    </div>
+                </div>
+                <!-- IE 9 미만일때 나타나지 않음 -->
+                <!--<div>-->
+                <!--<div class="CERT_14_line1"></div>-->
+                <!--<div class="CERT_14_line2"></div>-->
+                <!--<div class="CERT_14_box">-->
+                <!--<div class="CERT_14_txt2">“인증서찾기 메뉴를 이용하시면프로그램 설치 없이 <br>전자서명이 가능합니다.”</div>-->
+                <!--<div class="CERT_btns_common mt10">-->
+                <!--<p class="CERT_btnBg_sbtn2"><a href="#" id=""><span-->
+                <!--class="CERT_14_info">인증서 찾기 안내</span></a></p>-->
+                <!--</div>-->
+                <!--</div>-->
+                <!--</div>-->
+            </div>
+
+            <div class="CERT_contWrap14" id="mainInfoIE9" style="display: none">
+                <div class="CERT_14_box">
+                    <div class="CERT_14_txt1"><script>document.write(signLang(10));</script></div>
+                    <div class="CERT_btns_common mt10 mb10">
+                        <p class="CERT_btnBg_sbtn2"><a href="#" id="certInstall1"><span class="CERT_14_info"><script>document.write(signLang(11));</script></span></a>
+                        </p>
+
+                        <p class="CERT_btnBg_sbtn2"><a href="#" id="vestCertSetup1"><span class="CERT_14_down"><script>document.write(signLang(12));</script></span></a>
+                        </p>
+
+                        <p class="CERT_btnBg_sbtn2"><a href="#" id="refresh1"><span
+                                class="CERT_14_refresh"><script>document.write(signLang(13));</script></span></a></p>
+                    </div>
+                </div>
+            </div>
+
+            <!--<div class="CERT_contWrap15" id="P12" style="display: none">-->
+                <!--<div class="fileBackGround CERT_contWrap15" id="fileBackGround" style="display:none"></div>-->
+                <!--<div class="CERT_15_txt">-->
+                    <!--<p><script>document.write(signLang(16));</script></p>-->
+
+                    <!--<p class="CERT_btnBg_sbtn3"><a href="#" id=''><span class="CERT_15_info"><script>document.write(signLang(15));</script></span></a></p>-->
+                <!--</div>-->
+                <!--<div class="CERT_btns_common">-->
+                    <!--<div>-->
+                        <!--<p class="CERT_btnBg_sbtn2" id="fileInputSearchBtn"><a href="#" id="fileInputBtn"><span class="CERT_15_search"><script>document.write(signLang(17));</script></span></a>-->
+                        <!--</p>-->
+                        <!--<input type="file" class="fileInputHidden" id="fileInputHidden">-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</div>-->
+            <!--<div id="P12">-->
+                <!--<div class="cert01_02" style="overflow-y:visible">-->
+                    <!--<div class="CERT_contWrap15">-->
+                        <!--<div class="fileBackGround CERT_contWrap15" id="fileBackGround" style="display:none"></div>-->
+                        <!--<div class="CERT_15_txt">-->
+                            <!--<p><script>document.write(signLang(16));</script></p>-->
+
+                            <!--<p class="CERT_btnBg_sbtn3"><a href="#" id=''><span class="CERT_15_info"><script>document.write(signLang(15));</script></span></a></p>-->
+                        <!--</div>-->
+                        <!--<div class="CERT_btns_common CERT_15_fileButton">-->
+                            <!--<div>-->
+                                <!--<p class="CERT_btnBg_sbtn2" id="fileInputSearchBtn"><a href="#" id="fileInputBtn"><span class="CERT_15_search"><script>document.write(signLang(17));</script></span></a>-->
+                                <!--</p>-->
+                                <!--<input type="file" class="fileInputHidden" id="fileInputHidden">-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="cert01_03" style="overflow-y:visible">-->
+                    <!--<input type="text" readonly id="outCertComment" tabindex="-1"-->
+                           <!--style="width:396px; height:20px; padding-top:2px; background:none; border:none; line-height:20px; margin:0 auto; fond-color:#555; padding-left:5px;">-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="CERT_contWrap14" id="isInfoPage" style="display: none">
+
+            </div>
+        </dd>
+    </dl>
+    <div class="cert01_04 clfix">
+        <h2 id="pwdText"><script>document.write(signLang(7));</script></h2>
+
+        <p class="input_pw">
+        <form id="passwordForm" name="passwordForm" method="post" onsubmit="return false;" >
+            <input type="password" id="passwordInput" name="passwordInput" class="style1" style="width:257px; height:26px;" tabindex="51" alt="비밀번호를 입력 필드">
+            <input type="password" id="pfxPasswordInput" class="style1" style="width:257px; height:26px; display:none" tabindex="51" alt="비밀번호를 입력 필드">
+        </form>
+        </p>
+
+    </div>
+    <div class="CERT_btns clfix">
+        <div class="CERT_btnBg_mbtn1"><a href="#" id="certDetail_btn" tabindex="9997"><script>document.write(signLang(18));</script></a></div>
+        <div class="CERT_btnBg_mbtn2"><a href="#" id="submit_btn" tabindex="9998"><script>document.write(signLang(8));</script></a></div>
+        <div class="CERT_btnBg_mbtn1"><a href="#" id="cancel_btn" tabindex="9999"><script>document.write(signLang(9));</script></a></div>
+    </div>
+</div>
+
+<!-- 저장매체 클릭 -> 상세리스트 다이얼로그 -->
+<div class="Wrapper" id="dialog" style="display:none;">
+    <div style="width:324px;">
+        <div class="CERT_titlebar_common">
+            <h1><script>document.write(signLang(21));</script></h1>
+
+            <div class="CERT_util_btnClose" id="dialog_xBtn"><a href="#"></a></div>
+        </div>
+        <div class="CERT_certWrapper2">
+            <ul class="CERT_usb_select" id="dialog_list"/>
+        </div>
+    </div>
+</div>
+
+<!-- 인증서내용보기 버튼클릭 -> 메세지 다이얼로그 -->
+<div class="Wrapper" id="dialogCertMsg" style="display:none;">
+    <div style="width:357px;">
+        <div class="CERT_titlebar_common">
+            <h1><script>document.write(signLang(18));</script></h1>
+
+            <div class="CERT_util_btnClose" id="dialogCertMsg_xBtn"><a href="#"></a></div>
+        </div>
+        <div class="CERT_certWrapper">
+            <div>
+                <textarea id="dialogCertMsg_text" class="CERT_02_ta" style="resize:none;wrap:hard;" readonly></textarea>
+
+                <div class="CERT_btns_common">
+                    <p class="CERT_btnBg_mbtn"><a href="#" id="dialogCertMsg_confirmBtn"><script>document.write(signLang(8));</script></a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="Wrapper" id="dialogCertTab" style="display:none;">
+    <div style="width:382px;">
+        <div class="CERT_titlebar_common">
+            <h1><script>document.write(signLang(18));</script></h1>
+
+            <div class="CERT_util_btnClose" id="dialogCertTab_xBtn"><a href="#"></a></div>
+        </div>
+        <div class="CERT_certWrapper">
+            <dl class="CERT_tab2">
+                <dt class="clfix">
+                <div class="CERT_tabm clfix">
+                    <ul id="dialogCertTab_tab_ul"/>
+                </div>
+                </dt>
+                <dd>
+                    <div class="CERT_contWrap">
+                        <div class="CERT_linebox">
+                            <ul class="CERT_list_cate">
+                                <li><script>document.write(signLang(19));</script></li>
+                                <li><script>document.write(signLang(20));</script></li>
+                            </ul>
+                            <ul class="CERT_listWrap" id="dialogCertTab_attrList"/>
+                        </div>
+                        <textarea id="dialogCertTab_text" class="CERT_06_ta" style="resize:none;wrap:hard;"
+                                  readonly></textarea>
+
+                        <div id="dialogCertTab_tab_subBtn_div" class="CERT_btns_right mt5 clfix"/>
+                    </div>
+
+                </dd>
+            </dl>
+            <div class="CERT_btns_common">
+                <p class="CERT_btnBg_mbtn"><a href="#" id="dialogCertTab_confirmBtn"><script>document.write(signLang(8));</script></a></p>
+
+                <p class="CERT_btnBg_mbtn"><a href="#" id="dialogCertTab_cancelBtn"><script>document.write(signLang(9));</script></a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--인증서 검증-->
+<div class="Wrapper" id="dialogCertVid" style="display:none;">
+    <div style="width:328px;">
+        <div class="CERT_titlebar_common">
+            <h1><script>document.write(signLang(22));</script></h1>
+
+            <div class="CERT_util_btnClose" id="dialogCertVid_xBtn"><a href="#"></a></div>
+        </div>
+        <div class="CERT_certWrapper">
+            <dl class="CERT_tab3">
+                <dt class="clfix">
+                <div class="CERT_tab_comm clfix">
+                    <ul>
+                        <li class="CERT_on"><p class="CERT_on2"><script>document.write(signLang(34));</script></p></li>
+                    </ul>
+                </div>
+                </dt>
+                <dd>
+                    <div class="CERT_contWrap">
+                        <div class="CERT_inlinebox2">
+                            <pre id="dialogCertVid_text"/>
+                        </div>
+                    </div>
+                </dd>
+            </dl>
+            <div class="CERT_btns_common">
+                <p class="CERT_btnBg_mbtn"><a href="#" id="dialogCertVid_confirmBtn"><script>document.write(signLang(8));</script></a></p>
+
+                <p class="CERT_btnBg_mbtn"><a href="#" id="dialogCertVid_cancelBtn"><script>document.write(signLang(9));</script></a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--해쉬값 검증-->
+<div class="Wrapper" id="dialogCertHash" style="display:none;">
+    <div style="width:382px;">
+        <div class="CERT_titlebar_common">
+            <h1><script>document.write(signLang(23));</script></h1>
+
+            <div class="CERT_util_btnClose" id="dialogCertHash_xBtn"><a href="#"></a></div>
+        </div>
+        <div class="CERT_certWrapper">
+            <p class="CERT_t0401"><script>document.write(signLang(24));</script></p>
+
+            <div class="CERT_inlinebox">
+                <p class="CERT_in_answer" id="dialogCertHash_text"></p>
+            </div>
+            <p class="CERT_t0402 pb20"><script>document.write(signLang(25));</script></p>
+
+            <div class="CERT_btn_center pb10"><a href="https://www.rootca.or.kr/cert/potency.html" target="_blank"><img
+                    src="../styles/images/btn_sitelink.jpg" alt="KISA 홈페이지 확인"></a></p>
+            </div>
+            <div class="CERT_btns_common">
+                <p class="CERT_btnBg_mbtn"><a href="#" id="dialogCertHash_confirmBtn"><script>document.write(signLang(8));</script></a></p>
+
+                <p class="CERT_btnBg_mbtn"><a href="#" id="dialogCertHash_cancelBtn"><script>document.write(signLang(9));</script></a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--인증서 만료공지-->
+<div class="Wrapper" id="dialogCertWarnnig" style="display:none">
+    <div style="width:382px;">
+        <div class="CERT_titlebar_common">
+            <h1><script>document.write(signLang(6));</script></h1>
+
+            <div class="CERT_util_btnClose" id="x_warnnig"></div>
+        </div>
+        <div class="CERT_certWrapper">
+            <div class="CERT_txt1301">
+                <p><script>document.write(signLang(27));</script></p>
+
+                <p class="pb10 CERT_em"><script>document.write(signLang(28));</script><span id="warnnigTo"></span></p>
+            </div>
+            <p class="pb10"><script>document.write(signLang(29));</script></p>
+
+            <p class="CERT_dotline"></p>
+
+            <div class="CERT_txt1302 clfix">
+                <div class="CERT_txt1302_1"><script>document.write(signLang(30));</script></div>
+                <div class="CERT_txt1302_2">
+                    <p class="CERT_btnBg_sbtn"><a href="#" id="now_update"><script>document.write(signLang(31));</script></a></p>
+                </div>
+            </div>
+            <p class="CERT_dotline"></p>
+
+            <div class="CERT_txt1302 clfix">
+                <div class="CERT_txt1302_1"><script>document.write(signLang(32));</script></div>
+                <div class="CERT_txt1302_2">
+                    <p class="CERT_btnBg_sbtn"><a href="#" id="after_update"><script>document.write(signLang(8));</script></a></p>
+                </div>
+            </div>
+            <p class="CERT_dotline"></p>
+
+            <p class="CERT_txt1303">
+                <input type="checkbox" id="dialogCertWarnnig_clostBtn"><script>document.write(signLang(33));</script>
+            </p>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script type="text/javascript" src="../library/policies.js"></script>
+
+<script type="text/javascript" src="../library/keySafer.js"></script>
+<script type="text/javascript" src="../scripts/sign.js"></script>
+
+<script type="text/javascript" src="../library/dragiframe.js"></script>
+</html>

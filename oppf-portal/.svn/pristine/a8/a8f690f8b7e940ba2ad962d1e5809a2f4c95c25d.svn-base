@@ -1,0 +1,2202 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 자본시장 공동 핀테크 오픈플랫폼 구축
+* @FileName : NotiDAO.java
+* @Comment  : [서비스신청]정보관리를 위한 SQL XML
+* @author   : 포털 이환덕
+* @since    : 2016.05.16
+* @version  : 1.0
+* @see
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2016.05.16   이환덕        최초생성
+-->
+
+<sqlMap namespace="kr.co.koscom.oppf.spt.usr.svcAppl.service.impl.SvcApplDAO">
+       
+    <!-- 서비스신청 -->
+    <typeAlias alias="SvcApplVO" type="kr.co.koscom.oppf.spt.usr.svcAppl.service.SvcApplVO"/>
+    
+    <!-- 기업코드 -->
+    <typeAlias alias="ComCompanyCodeVO" type="kr.co.koscom.oppf.spt.usr.svcAppl.service.ComCompanyCodeVO"/>
+    
+    <!-- 기업운영자프로파일 -->
+    <typeAlias alias="ComCompanyOperatorProfileVO" type="kr.co.koscom.oppf.spt.usr.svcAppl.service.ComCompanyOperatorProfileVO"/>
+    
+    <!-- 기업프로파일 -->
+    <typeAlias alias="ComCompanyProfileVO" type="kr.co.koscom.oppf.spt.usr.svcAppl.service.ComCompanyProfileVO"/>
+    
+    <!-- API사용계약관계 -->
+    <typeAlias alias="ComContractProfileVO" type="kr.co.koscom.oppf.spt.usr.svcAppl.service.ComContractProfileVO"/>
+    
+    <!-- 일반회원가상계좌프로파일 -->
+    <typeAlias alias="SptCustomerAccountProfileVO" type="kr.co.koscom.oppf.spt.usr.svcAppl.service.SptCustomerAccountProfileVO"/>
+    
+    <!-- 일반회원서비스계좌프로파일 -->
+    <typeAlias alias="SptCustomerServiceAccountProfileVO" type="kr.co.koscom.oppf.spt.usr.svcAppl.service.SptCustomerServiceAccountProfileVO"/>
+    
+    <!-- 일반회원서비스프로파일 -->
+    <typeAlias alias="SptCustomerServiceProfileVO" type="kr.co.koscom.oppf.spt.usr.svcAppl.service.SptCustomerServiceProfileVO"/>
+    
+    <!-- 일반회원 기업 약관프로파일 -->
+    <typeAlias alias="SptCustomerCompanyTermsProfileVO" type="kr.co.koscom.oppf.spt.usr.svcAppl.service.SptCustomerCompanyTermsProfileVO"/>
+    
+    <!-- 일반회원서비스약관프로파일 -->
+    <typeAlias alias="SptCustomerServiceTermsProfileVO" type="kr.co.koscom.oppf.spt.usr.svcAppl.service.SptCustomerServiceTermsProfileVO"/>
+    
+    <!-- 일반회원서비스약관금투사프로파일 -->
+    <typeAlias alias="SptCustomerServiceTermsPubcompanyProfileVO" type="kr.co.koscom.oppf.spt.usr.svcAppl.service.SptCustomerServiceTermsPubcompanyProfileVO"/>
+    
+    <!--
+      * @Method Name        : selectSptCustAccList
+      * @Method description : [일반회원가상계좌+기업코드]정보를 조회한다.
+      * @param              : SvcApplVO
+      * @return             : List<SvcApplVO> 또는 SvcApplVO
+      * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectSptCustAccList" parameterClass="SvcApplVO" resultClass="SvcApplVO">
+        select
+            a.customer_reg_no                as customerRegNo,                /* 일반회원가상계좌프로파일.회원OP가입번호 */
+            a.company_code_id                as companyCodeId,                /* 일반회원가상계좌프로파일.기업코드 */
+            dec_char_sel(a.customer_realaccount_no,10,'ARIA','spt_customer_account_profile','costomer_realaccount_no',user(),connection_id()) as customerRealaccountNo,
+            a.customer_vtaccount_no          as customerVtaccountNo,          /* 일반회원가상계좌프로파일.가상계좌번호 */
+            a.customer_vtaccount_alias       as customerVtaccountAlias,       /* 일반회원가상계좌프로파일.가상계좌별칭 */
+            a.customer_vtaccount_status      as customerVtaccountStatus,      /* 일반회원가상계좌프로파일.가상계좌상태 */
+            a.customer_realaccount_type      as customerRealaccountType,      /* 일반회원가상계좌프로파일.실계좌유형 */
+            (select code_name_kor from com_system_code 
+             where system_grp_code='G010' and a.customer_realaccount_type = concat('G010',system_code)
+             )                               as customerRealaccountTypeNm,    /* 일반회원가상계좌프로파일.실계좌유형명 */
+            (select code_name_eng from com_system_code 
+             where system_grp_code='G010' and a.customer_realaccount_type = concat('G010',system_code)
+             )                               as customerRealaccountTypeNmEng, /* 일반회원가상계좌프로파일.실계좌유형영문명 */
+            a.customer_vtaccount_reg_date    as customerVtaccountRegDate,     /* 일반회원가상계좌프로파일.가상계좌발급일시 */
+            a.customer_vtaccount_expire_date as customerVtaccountExpireDate,  /* 일반회원가상계좌프로파일.가상계좌폐기일시 */
+            a.create_date                    as createDate,                   /* 일반회원가상계좌프로파일.생성일시 */
+            a.create_id                      as createId,                     /* 일반회원가상계좌프로파일.생성자ID */
+            a.update_date                    as updateDate,                   /* 일반회원가상계좌프로파일.변경일시 */
+            a.update_id                      as updateId,                     /* 일반회원가상계좌프로파일.변경자ID */
+            c.company_name_kor               as companyNameKor,               /* 기업프로파일.기업이름한글 */
+            c.company_name_eng               as companyNameEng,               /* 기업프로파일.기업이름영문 */
+            c.company_name_kor_alias         as companyNameKorAlias,          /* 기업프로파일.기업이름Alias한글 */
+            c.company_name_eng_alias         as companyNameEngAlias           /* 기업프로파일.기업이름Alias영문 */
+        from spt_customer_account_profile a /* 일반회원가상계좌프로파일 */
+        left outer join com_company_profile c /* 기업프로파일 */
+            on a.company_code_id = c.company_code_id
+            and c.delete_date is null
+        where 1=1
+        and a.customer_vtaccount_expire_date is null
+        and a.customer_reg_no = #customerRegNo#
+        <isNotEmpty property="companyCodeId">
+            and a.company_code_id = #companyCodeId#
+        </isNotEmpty>
+        order by ifnull(c.exposure_order, 'Z') asc, c.company_name_kor_alias asc
+    </select>
+        
+    <!--
+      * @Method Name        : selectSvcMemberCompanyTermsConsntList
+      * @Method description : 금투사 기업 약관 정보를 조회한다.
+      * @param              : SvcApplVO
+      * @return             : List<SvcApplVO> 또는 SvcApplVO
+      * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectSvcMemberCompanyTermsConsntList" parameterClass="SvcApplVO" resultClass="SptCustomerCompanyTermsProfileVO">
+        
+		select  a.company_code_id                 as companyCodeId,
+		        c.company_name_kor_alias          as companyName,
+		        a.company_terms_type              as companyTermsType,
+		        a.company_terms_content_reg_seq   as companyTermsContentRegSeq,
+		        a.company_terms_content           as companyTermsContent
+		from(
+		    /* 기업약관 */
+		    select  company_code_id,
+		            company_terms_type,
+		            company_terms_content_reg_seq,
+		            company_terms_content_ver,
+		            company_terms_content
+		    from spt_customer_company_terms_content_profile
+		    where company_terms_type = 'G031001' 
+		    and (company_code_id, company_terms_content_ver) in (
+		        select  company_code_id, 
+		                max(company_terms_content_ver) as company_terms_content_ver
+		        from spt_customer_company_terms_content_profile
+		        where company_terms_type = 'G031001'
+		        and company_code_id = #companyCodeId#
+		    )
+		) a
+		left join (
+		    select *    
+		    from spt_customer_company_terms_profile
+		    where customer_reg_no = #customerRegNo#
+		    and company_terms_type = 'G031001'  
+		    and delete_date is null
+		) b
+		on a.company_code_id = b.company_code_id
+		and a.company_terms_type = b.company_terms_type
+		and a.company_terms_content_reg_seq = b.company_terms_content_reg_seq
+		join com_company_profile c on a.company_code_id = c.company_code_id
+		where b.company_code_id is null 
+		order by c.exposure_order asc, c.company_name_kor_alias asc
+    </select>
+        
+    <!--
+      * @Method Name        : selectComCompanyCodeList
+      * @Method description : [기업코드목록]정보를 조회한다.
+      * @param              : ComCompanyCodeVO
+      * @return             : List<ComCompanyCodeVO>
+      * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectComCompanyCodeList" parameterClass="ComCompanyCodeVO" resultClass="ComCompanyCodeVO">
+        select
+            c.company_code_reg_no    as companyCodeRegNo,    /* 기업코드.기업코드등록번호 */
+            c.company_code_type      as companyCodeType,     /* 기업코드.기업코드표구분 */
+            c.company_code_id        as companyCodeId,       /* 기업코드.기업코드 */
+            c.company_code_kind      as companyCodeKind,     /* 기업코드.기업종류 */
+            (select code_name_kor from com_system_code 
+             where c.company_code_kind = system_code) as companyCodeKindNm, /* 기업코드.기업종류명 */
+            c.company_name_kor       as companyNameKor,      /* 기업코드.기업이름한글 */
+            c.company_name_eng       as companyNameEng,      /* 기업코드.기업이름영문 */
+            c.company_name_kor_alias as companyNameKorAlias, /* 기업코드.기업이름Alias한글 */
+            c.company_name_eng_alias as companyNameEngAlias, /* 기업코드.기업이름Alias영문 */
+            c.delete_date            as deleteDate,          /* 기업코드.기업탈퇴일시 */
+            c.create_date            as createDate,          /* 기업코드.생성일시 */
+            c.create_id              as createId,            /* 기업코드.생성자ID */
+            c.update_date            as updateDate,          /* 기업코드.변경일시 */
+            c.update_id              as updateId             /* 기업코드.변경자ID */
+        from com_company_code c /* 기업코드 */
+        where 1=1
+        and c.delete_date is null
+        <isNotEmpty property="companyCodeKind">
+            and c.company_code_kind = #companyCodeKind#
+        </isNotEmpty>
+        <isNotEmpty property="companyCodeRegNo">
+            and c.company_code_reg_no = #companyCodeRegNo#
+        </isNotEmpty>
+        <isNotEmpty property="companyCodeId">
+            and c.company_code_id = #companyCodeId#
+        </isNotEmpty>
+    </select>
+    
+    <!--
+      * @Method Name        : selectComCompanyProfileList
+      * @Method description : [기업프로파일목록]정보를 조회한다.
+      * @param              : ComCompanyProfileVO
+      * @return             : List<ComCompanyProfileVO>
+      * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectComCompanyProfileList" parameterClass="ComCompanyProfileVO" resultClass="ComCompanyProfileVO">
+        select
+            ccp.company_profile_reg_no as companyProfileRegNo, /* 기업프로파일.기업프로파일등록번호 */
+            ccp.company_code_id        as companyCodeId,       /* 기업프로파일.기업코드 */
+            ccp.company_service_type   as companyServiceType,  /* 기업프로파일.기업핀테크서비스타입 */
+            ccp.company_name_kor       as companyNameKor,      /* 기업프로파일.기업이름한글 */
+            ccp.company_bizreg_no      as companyBizregNo,     /* 기업프로파일.기업사업자등록번호 */
+            ccp.issue_vtaccount        as issueVtaccount,      /* 기업프로파일.가상계좌발급여부 */
+            ccp.issue_accountlist      as issueAccountlist,    /* 기업프로파일.실계좌목록조회요청여부 */
+            ccp.company_name_eng       as companyNameEng,      /* 기업프로파일.기업이름영문 */
+            ccp.company_name_kor_alias as companyNameKorAlias, /* 기업프로파일.기업이름Alias한글 */
+            ccp.company_name_eng_alias as companyNameEngAlias, /* 기업프로파일.기업이름영문Alias */
+            ccp.company_post_no        as companyPostNo,       /* 기업프로파일.기업우편번호 */
+            ccp.company_address        as companyAddress,      /* 기업프로파일.기업주소 */
+            ccp.company_address_dtl    as companyAddressDtl,   /* 기업프로파일.기업상세주소 */
+            ccp.exposure_yn            as exposureYn,          /* 기업프로파일.노출여부 */
+            ccp.exposure_order         as exposureOrder,       /* 기업프로파일.노출순서 */
+            ccp.delete_date            as deleteDate,          /* 기업프로파일.기업탈퇴일시 */
+            ccp.create_date            as createDate,          /* 기업프로파일.생성일시 */
+            ccp.create_id              as createId,            /* 기업프로파일.생성자ID */
+            ccp.update_date            as updateDate,          /* 기업프로파일.변경일시 */
+            ccp.update_id              as updateId             /* 기업프로파일.변경자ID */
+        from com_company_profile ccp /* 기업프로파일 */
+        join (
+            /* 계좌사용하는 API 기업만 조회 */
+            select a.company_code_id
+            from com_api_info a
+            join com_api_view b on a.api_id = b.api_id
+            join (
+                select a.api_id
+                from com_app_apilist_view a
+                left join com_api_info as b on a.api_id = b.api_id
+                where b.exposure_yn = 'Y'
+                and b.api_account_yn = 'Y'
+                group by a.api_id
+            ) c on a.api_id = c.api_id
+            where a.exposure_yn = 'Y'
+            and a.api_account_yn = 'Y'
+            group by a.company_code_id
+        ) b on ccp.company_code_id = b.company_code_id
+        where 1=1
+        and ccp.delete_date is null
+        and ccp.exposure_yn = 'Y'
+		<isNotEmpty property="companyServiceType">
+			and ccp.company_service_type in ( 'G002001' 
+			<isNotEmpty property="companyServiceType" prepend=",">
+			    #companyServiceType#
+			</isNotEmpty>
+			)
+		</isNotEmpty>
+        <isNotEmpty property="companyProfileRegNo">
+            and ccp.company_profile_reg_no = #companyProfileRegNo#
+        </isNotEmpty>
+        order by ifnull(ccp.exposure_order, 'Z') asc, ccp.company_name_kor_alias asc
+    </select>
+    
+    <!--
+      * @Method Name        : selectComCompanyProfileInfo
+      * @Method description : [기업프로파일]정보를 조회한다.
+      * @param              : ComCompanyProfileVO
+      * @return             : ComCompanyProfileVO
+      * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectComCompanyProfileInfo" parameterClass="ComCompanyProfileVO" resultClass="ComCompanyProfileVO">
+        select
+            ccp.company_profile_reg_no as companyProfileRegNo, /* 기업프로파일.기업프로파일등록번호 */
+            ccp.company_code_id        as companyCodeId,       /* 기업프로파일.기업코드 */
+            ccp.company_service_type   as companyServiceType,  /* 기업프로파일.기업핀테크서비스타입 */
+            ccp.company_name_kor       as companyNameKor,      /* 기업프로파일.기업이름한글 */
+            ccp.company_bizreg_no      as companyBizregNo,     /* 기업프로파일.기업사업자등록번호 */
+            ccp.issue_vtaccount        as issueVtaccount,      /* 기업프로파일.가상계좌발급여부 */
+            ccp.company_name_eng       as companyNameEng,      /* 기업프로파일.기업이름영문 */
+            ccp.company_name_kor_alias as companyNameKorAlias, /* 기업프로파일.기업이름Alias한글 */
+            ccp.company_name_eng_alias as companyNameEngAlias, /* 기업프로파일.기업이름영문Alias */
+            ccp.company_post_no        as companyPostNo,       /* 기업프로파일.기업우편번호 */
+            ccp.company_address        as companyAddress,      /* 기업프로파일.기업주소 */
+            ccp.company_address_dtl    as companyAddressDtl,   /* 기업프로파일.기업상세주소 */
+            ccp.exposure_yn            as exposureYn,          /* 기업프로파일.노출여부 */
+            ccp.exposure_order         as exposureOrder,       /* 기업프로파일.노출순서 */
+            ccp.delete_date            as deleteDate,          /* 기업프로파일.기업탈퇴일시 */
+            ccp.create_date            as createDate,          /* 기업프로파일.생성일시 */
+            ccp.create_id              as createId,            /* 기업프로파일.생성자ID */
+            ccp.update_date            as updateDate,          /* 기업프로파일.변경일시 */
+            ccp.update_id              as updateId             /* 기업프로파일.변경자ID */
+        from com_company_profile ccp /* 기업프로파일 */
+        where 1=1
+        and ccp.delete_date is null
+        and ccp.company_profile_reg_no = #companyProfileRegNo#
+        <isEmpty property="exposureYn">
+            and ccp.exposure_yn = 'Y'
+        </isEmpty>
+        <isNotEmpty property="exposureYn">
+            and ccp.exposure_yn = #exposureYn#
+        </isNotEmpty>
+        order by ccp.exposure_order asc, ccp.company_name_kor asc
+        limit 0,1
+    </select>
+     
+    <!--
+      * @Method Name        : selectsptCustomerAccountProfileList
+      * @Method description : [일반회원가상계좌목록]정보를 조회한다.
+      * @param              : SptCustomerAccountProfileVO
+      * @return             : List<SptCustomerAccountProfileVO>
+      * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectSptCustomerAccountProfileList" parameterClass="SptCustomerAccountProfileVO" resultClass="SptCustomerAccountProfileVO">
+		select
+		    a.customer_reg_no                as customerRegNo,               /* 일반회원가상계좌프로파일.회원OP가입번호 */
+		    a.company_code_id                as companyCodeId,               /* 일반회원가상계좌프로파일.기업코드 */
+		    b.company_name_kor_alias         as companyCodeIdNm,             /* 일반회원가상계좌프로파일.기업코드명 */
+		    dec_char_sel(a.customer_realaccount_no,10,'ARIA','spt_customer_account_profile','costomer_realaccount_no',user(),connection_id()) as customerRealaccountNo,
+		    a.customer_vtaccount_no          as customerVtaccountNo,         /* 일반회원가상계좌프로파일.가상계좌번호 */
+		    a.customer_vtaccount_alias       as customerVtaccountAlias,      /* 일반회원가상계좌프로파일.가상계좌별칭 */
+		    a.customer_vtaccount_status      as customerVtaccountStatus,     /* 일반회원가상계좌프로파일.가상계좌상태 */
+		    a.customer_realaccount_type      as customerRealaccountType,     /* 일반회원가상계좌프로파일.실계좌유형 */
+		    (select code_name_kor
+		     from com_system_code 
+		     where system_grp_code='G010'
+		     and a.customer_realaccount_type = concat('G010',system_code)) as customerRealaccountTypeNm, /* 일반회원가상계좌프로파일.실계좌유형명 */
+		    (select code_name_eng
+		     from com_system_code 
+		     where system_grp_code='G010'
+		     and a.customer_realaccount_type = concat('G010',system_code)) as customerRealaccountTypeNmEng, /* 일반회원가상계좌프로파일.실계좌유형영문명 */
+		    a.customer_vtaccount_reg_date    as customerVtaccountRegDate,    /* 일반회원가상계좌프로파일.가상계좌발급일시 */
+		    a.customer_vtaccount_expire_date as customerVtaccountExpireDate, /* 일반회원가상계좌프로파일.가상계좌폐기일시 */
+		    a.create_date                    as createDate,                  /* 일반회원가상계좌프로파일.생성일시 */
+		    a.create_id                      as createId,                    /* 일반회원가상계좌프로파일.생성자ID */
+		    a.update_date                    as updateDate,                  /* 일반회원가상계좌프로파일.변경일시 */
+		    a.update_id                      as updateId                     /* 일반회원가상계좌프로파일.변경자ID */
+		from spt_customer_account_profile a /* 일반회원가상계좌프로파일 */
+		left join com_company_profile as b on a.company_code_id = b.company_code_id and b.delete_date is null
+		where 1=1
+		and a.customer_vtaccount_expire_date is null
+		and a.customer_reg_no = #customerRegNo#
+        <isNotEmpty property="companyCodeId">
+            and a.company_code_id = #companyCodeId#
+        </isNotEmpty>
+		order by ifnull(b.exposure_order, 'Z') asc, b.company_name_kor_alias asc
+    </select>
+    
+    <!--
+      * @Method Name        : selectSptCustomerServiceTermsProfile
+      * @Method description : [일반회원서비스약관프로파일]정보를 조회한다.
+      * @param              : SptCustomerServiceTermsProfileVO
+      * @return             : List<SptCustomerServiceTermsProfileVO>
+      * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectSptCustomerServiceTermsProfile" parameterClass="SptCustomerServiceTermsProfileVO" resultClass="SptCustomerServiceTermsProfileVO">
+        select
+			a.customer_reg_no    as customerRegNo,      /* 일반회원서비스약관프로파일.회원OP등록번호 */
+			a.terms_reg_no       as termsRegNo,         /* 일반회원서비스약관프로파일.약관등록번호 */
+			a.terms_auth_type    as termsAuthType,      /* 일반회원서비스약관프로파일.약관동의방법 */
+			a.subcompany_code_id as subcompanyCodeId,   /* 일반회원서비스약관프로파일.핀테크기업코드 */
+			a.subcompany_name    as subcompanyName,     /* 일반회원서비스약관프로파일.핀테크기업코드명 */
+			a.customer_name      as customerName,       /* 일반회원서비스약관프로파일.약관표기동의자성명 */
+			dec_char_sel(
+                a.customer_email,
+                10,
+                'ARIA',
+                'spt_customer_service_terms_profile',
+                'customer_email',
+                user(),
+                connection_id()
+            )                    as customerEmail,      /* 일반회원서비스약관프로파일.약관표기동의자이메일 */
+            dec_char_sel(
+                a.customer_birth_day,
+                10,
+                'ARIA',
+                'spt_customer_service_terms_profile',
+                'customer_birth_day',
+                user(),
+                connection_id()
+            )                    as customerBirthDay,   /* 일반회원서비스약관프로파일.약관표기동의자생년월일 */
+			a.terms_policy       as termsPolicy, /* 일반회원서비스약관프로파일.약관표기동의최종기간(월) */
+			ifnull(a.terms_policy/12,#termsPolicyYear#) as termsPolicyYear, /* 일반회원서비스약관프로파일.약관표기동의최종기간(년) */
+			ifnull(a.terms_chg_date,date_format(sysdate(),'%Y%m%d')) as termsChgDate, /* 일반회원서비스약관프로파일.정보제공동의일시 */
+            ifnull(date_format(a.terms_chg_date,'%Y'),date_format(sysdate(),'%Y')) as termsChgDateYYYY, /* 일반회원서비스약관프로파일.정보제공동의년 */
+            ifnull(date_format(a.terms_chg_date,'%m'),date_format(sysdate(),'%m')) as termsChgDateMM,   /* 일반회원서비스약관프로파일.정보제공동의월 */
+            ifnull(date_format(a.terms_chg_date,'%d'),date_format(sysdate(),'%d')) as termsChgDateDD,   /* 일반회원서비스약관프로파일.정보제공동의일 */
+            ifnull(a.terms_start_date,date_format(sysdate(),'%Y%m%d')) as termsStartDate, /* 일반회원서비스약관프로파일.정보제공동의시작일시 */
+            ifnull(date_format(a.terms_start_date,'%Y'),date_format(sysdate(),'%Y')) as termsStartDateYYYY, /* 일반회원서비스약관프로파일.정보제공동의시작년 */
+            ifnull(date_format(a.terms_start_date,'%m'),date_format(sysdate(),'%m')) as termsStartDateMM,   /* 일반회원서비스약관프로파일.정보제공동의시작월 */
+            ifnull(date_format(a.terms_start_date,'%d'),date_format(sysdate(),'%d')) as termsStartDateDD,   /* 일반회원서비스약관프로파일.정보제공동의시작일 */
+			a.terms_expire_date  as termsExpireDate, /* 일반회원서비스약관프로파일.정보제공동의종료예정일 */
+            ifnull(date_format(a.terms_expire_date,'%Y'),date_format(date_format(DATE_ADD(sysdate(),INTERVAL +ifnull(a.terms_policy/12,5) year),'%Y%m%d'),'%Y')) as termsExpireDateYYYY, /* 일반회원서비스약관프로파일.정보제공동의종료예정년 */
+            ifnull(date_format(a.terms_expire_date,'%m'),date_format(date_format(DATE_ADD(sysdate(),INTERVAL +ifnull(a.terms_policy/12,5) year),'%Y%m%d'),'%m')) as termsExpireDateMM,   /* 일반회원서비스약관프로파일.정보제공동의종료예정월 */
+            ifnull(date_format(a.terms_expire_date,'%d'),date_format(date_format(DATE_ADD(DATE_ADD(sysdate(),INTERVAL +ifnull(a.terms_policy/12,5) year),INTERVAL -1 DAY),'%Y%m%d'),'%d')) as termsExpireDateDD, /* 일반회원서비스약관프로파일.정보제공동의종료예정일 */
+			a.terms_auth_yn      as termsAuthYn,        /* 일반회원서비스약관프로파일.동의서동의필요여부 */
+			a.terms_file_reg_no  as termsFileRegNo,     /* 일반회원서비스약관프로파일.동의서파일등록번호 */
+			a.terms_file_status  as termsFileStatus,    /* 일반회원서비스약관프로파일.동의서파일처리상태 */
+			case when 
+				(
+				    /* 0 : 동의 처리 상태, 1: 모두 폐기상태*/
+			        select min(if(delete_date is null, 0, 1)) as delete_date 
+			        from spt_customer_service_profile 
+			        where customer_reg_no = a.customer_reg_no
+			        and terms_reg_no = a.terms_reg_no
+			        group by customer_reg_no, terms_reg_no
+			    ) = 1 
+		    then
+		        'G030003'   /*폐기 : G030003*/
+		    else
+		        case when date_format(sysdate(), '%Y%m%d') between a.terms_start_date and a.terms_expire_date then
+		            'G030001'   /*동의 : G030001*/
+		        else
+		            'G030002'   /*재동의 필요 : G030002*/
+		        end
+		    end                  as termsStatus,
+			a.customer_sign_dn   as customerSignDn,     /* 일반회원서비스약관프로파일.약관 동의 공인인증서 */
+			case a.terms_auth_type
+                when 'G032001' then a.customer_sign_data
+                else
+                     dec_char_sel(
+                                    b.customer_phone,
+                                    10,
+                                    'ARIA',
+                                    'spt_customer_service_ars_profile',
+                                    'customer_phone',
+                                    user(),
+                                    connection_id()
+                                ) end as customerSignData, /* 일반회원서비스약관프로파일.약관 동의 전자서명키 */
+            case a.terms_auth_type
+                when 'G032001' then a.customer_tsa_data else b.ars_txt_no end AS customerTsaData, /* 일반회원서비스약관프로파일.약관 동의 시점확인키 */
+            a.delete_date        as deleteDate,         /* 일반회원서비스약관프로파일.삭제일시 */
+            a.create_date        as createDate,         /* 일반회원서비스약관프로파일.생성일시 */
+            a.create_id          as createId,           /* 일반회원서비스약관프로파일.생성자ID */
+            a.update_date        as updateDate,         /* 일반회원서비스약관프로파일.변경일시 */
+            a.update_id          as updateId,            /* 일반회원서비스약관프로파일.변경자ID */
+            dec_char_sel(c.customer_phone,10,'ARIA','spt_customer_info_profile','customer_phone',user(),connection_id())  as customerPhone/* 일반회원프로파일.회원 휴대폰 번호 */
+        from spt_customer_service_terms_profile a /* 일반회원서비스약관프로파일 */
+              left join spt_customer_service_ars_profile b on a.customer_reg_no = b.customer_reg_no AND a.terms_reg_no = b.terms_reg_no
+              left join spt_customer_info_profile c on a.customer_reg_no = c.customer_reg_no
+        where 1=1
+        and a.customer_reg_no = #customerRegNo# /* 일반회원서비스약관프로파일.회원OP등록번호 */
+        and a.terms_reg_no    = #termsRegNo#    /* 일반회원서비스약관프로파일.약관등록번호 */
+        limit 0,1
+    </select>
+    
+    <!--
+      * @Method Name        : selectSptCustomerServiceTermsPubcompanyProfileList
+      * @Method description : [일반회원서비스약관금투사프로파일목록]정보를 조회한다.
+      * @param              : SptCustomerServiceTermsPubcompanyProfileVO
+      * @return             : List<SptCustomerServiceTermsPubcompanyProfileVO>
+      * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectSptCustomerServiceTermsPubcompanyProfileList" parameterClass="SptCustomerServiceTermsPubcompanyProfileVO" resultClass="SptCustomerServiceTermsPubcompanyProfileVO">
+        select
+			a.customer_reg_no         as customerRegNo,        /* 일반회원서비스약관금투사프로파일.회원OP등록번호 */
+			a.terms_reg_no            as termsRegNo,           /* 일반회원서비스약관금투사프로파일.약관등록번호 */
+			a.terms_pubcompany_reg_no as termsPubcompanyRegNo, /* 일반회원서비스약관금투사프로파일.약관금투사등록번호 */
+			a.pubcompany_code_id      as pubcompanyCodeId,     /* 일반회원서비스약관금투사프로파일.금투사기업코드 */
+			case when 
+			    a.terms_pubcompany_reg_no = ifnull(if(char_length(trim(#termsPubcompanyRegNo#)) = 0, null, #termsPubcompanyRegNo#), a.terms_pubcompany_reg_no)  and
+			    a.pubcompany_code_id = ifnull(if(char_length(trim(#pubcompanyCodeId#)) = 0, null, #pubcompanyCodeId#), a.pubcompany_code_id)
+            then
+                a.pubcompany_name			    
+            else
+                '*****'
+            end                       as pubcompanyName,       /* 일반회원서비스약관금투사프로파일.약관표기금투사기업명 */
+            <!-- 			     
+			a.pubcompany_name         as pubcompanyName,       /* 일반회원서비스약관금투사프로파일.약관표기금투사기업명 */
+			-->
+			a.terms_chg_date          as termsChgDate,         /* 일반회원서비스약관금투사프로파일.정보제공동의일시 */
+            a.delete_date             as deleteDate,           /* 일반회원서비스약관금투사프로파일.삭제일시 */
+            a.create_date             as createDate,           /* 일반회원서비스약관금투사프로파일.생성일시 */
+            a.create_id               as createId,             /* 일반회원서비스약관금투사프로파일.생성자ID */
+            a.update_date             as updateDate,           /* 일반회원서비스약관금투사프로파일.변경일시 */
+            a.update_id               as updateId              /* 일반회원서비스약관금투사프로파일.변경자ID */
+        from spt_customer_service_terms_pubcompany_profile a /* 일반회원서비스약관금투사프로파일 */
+        left join com_company_profile as b on a.pubcompany_code_id = b.company_code_id
+        where 1=1
+        and a.customer_reg_no = #customerRegNo# /* 일반회원서비스약관금투사프로파일.회원OP등록번호 */
+        and a.terms_reg_no = #termsRegNo# /* 일반회원서비스약관금투사프로파일.약관등록번호 */
+        <!-- 
+        <isNotEmpty property="termsPubcompanyRegNo">
+            and a.terms_pubcompany_reg_no = #termsPubcompanyRegNo# /* 일반회원서비스약관금투사프로파일.약관금투사등록번호 */
+        </isNotEmpty>
+        <isNotEmpty property="pubcompanyCodeId">
+            and a.pubcompany_code_id = #pubcompanyCodeId# /* 해당 기업만 보여준다. */
+        </isNotEmpty>
+        -->
+        order by ifnull(b.exposure_order, 'Z'), b.company_name_kor_alias
+    </select>
+
+    <!--
+     * @Method Name        : insertSptCustomerAccountProfile
+     * @Method description : [일반회원가상계좌]정보를 등록한다.
+     * @param              : SptCustomerAccountProfileVO
+     * @return             : int
+     * @throws             : Exception
+    -->
+    <update id="usr.SvcApplDAO.insertSptCustomerAccountProfile" parameterClass="SptCustomerAccountProfileVO">
+        insert into spt_customer_account_profile(
+            customer_reg_no             /* 회원OP가입번호 */
+           ,company_code_id             /* 기업코드 */
+           ,customer_realaccount_no     /* 실계좌번호 */
+           ,customer_vtaccount_no       /* 가상계좌번호 */
+           <isNotEmpty property="customerVtaccountAlias">
+           ,customer_vtaccount_alias    /* 가상계좌별칭 */
+           </isNotEmpty>
+           <isNotEmpty property="customerVtaccountStatus">
+           ,customer_vtaccount_status   /* 가상계좌상태 */
+           </isNotEmpty>
+           <isNotEmpty property="customerRealaccountType">
+           ,customer_realaccount_type   /* 실계좌유형 */
+           </isNotEmpty>
+           ,customer_vtaccount_reg_date /* 가상계좌발급일시 */
+           ,create_date                 /* 생성일시 */
+           ,create_id                   /* 생성자 ID */
+           ,update_date                 /* 변경일시 */
+           ,update_id                   /* 변경자 ID */
+        )
+        select
+            #customerRegNo#             /* 회원OP가입번호 */
+           ,#companyCodeId#             /* 기업코드 */
+           ,#customerRealaccountNo#     /* 실계좌번호 */
+           ,#customerVtaccountNo#       /* 가상계좌번호 */
+           <isNotEmpty property="customerVtaccountAlias">
+           ,#customerVtaccountAlias#    /* 가상계좌별칭 */
+           </isNotEmpty>
+           <isNotEmpty property="customerVtaccountStatus">
+           ,#customerVtaccountStatus#   /* 가상계좌상태 */
+           </isNotEmpty>
+           <isNotEmpty property="customerRealaccountType">
+           ,#customerRealaccountType#   /* 실계좌유형 */
+           </isNotEmpty>
+           ,sysdate()                   /* 가상계좌발급일시 */
+           ,sysdate()                   /* 생성일시 */
+           ,#customerRegNo#             /* 생성자 ID */
+           ,sysdate()                   /* 변경일시 */
+           ,#customerRegNo#             /* 변경자 ID */
+        from dual
+    </update>
+     
+    <!--
+     * @Method Name        : updateSptCustomerAccountProfile
+     * @Method description : [일반회원가상계좌]정보를 수정한다.
+     * @param              : SptCustomerAccountProfileVO
+     * @return             : int
+     * @throws             : Exception
+    -->
+    <update id="usr.SvcApplDAO.updateSptCustomerAccountProfile" parameterClass="SptCustomerAccountProfileVO">
+        update spt_customer_account_profile set
+            update_date = sysdate()
+           ,update_id = #customerRegNo#
+           ,customer_vtaccount_alias = #customerVtaccountAlias# /* 가상계좌별칭 */
+        where 1=1
+        and customer_reg_no = #customerRegNo#
+        and company_code_id = #companyCodeId#
+        and customer_realaccount_no = #customerRealaccountNo#
+        <isNotEmpty property="customerVtaccountNo">
+            and customer_vtaccount_no = #customerVtaccountNo#
+        </isNotEmpty>
+    </update>
+     
+    <!--
+     * @Method Name        : deleteSptCustomerAccountProfile
+     * @Method description : [일반회원가상계좌]정보를 삭제한다.
+     * @param              : SptCustomerAccountProfileVO
+     * @return             : int
+     * @throws             : Exception
+    -->
+    <update id="usr.SvcApplDAO.deleteSptCustomerAccountProfile" parameterClass="SptCustomerAccountProfileVO">
+        update spt_customer_account_profile set
+            customer_vtaccount_expire_date = sysdate()
+           ,update_date = sysdate()
+           ,customer_vtaccount_expire_date = sysdate() /* 가상계좌폐기일시 */
+           ,customer_vtaccount_status = 'G009003' /* G009:가상계좌상태(001:미사용, 002:사용, 003:폐기) */
+           ,update_id = #customerRegNo#
+        where 1=1
+        and customer_reg_no = #customerRegNo#
+        and company_code_id = #companyCodeId#
+        and customer_realaccount_no = #customerRealaccountNo#
+        <isNotEmpty property="customerVtaccountNo">
+            and customer_vtaccount_no = #customerVtaccountNo#
+        </isNotEmpty>
+    </update>
+     
+    <!--
+     * @Method Name        : insertSptCustomerAccountProfileHist
+     * @Method description : [일반회원가상계좌히스토리]정보를 등록한다.
+     * @param              : SptCustomerAccountProfileVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="usr.SvcApplDAO.insertSptCustomerAccountProfileHist" parameterClass="SptCustomerAccountProfileVO">
+        insert into spt_customer_account_profile_hist(
+            customer_realaccount_seq,       /* 순번 */
+            customer_reg_no,                /* 회원OP가입번호 */
+            company_code_id,                /* 기업코드 */
+            customer_realaccount_no,        /* 실계좌번호 */
+            customer_vtaccount_no,          /* 가상계좌번호 */
+            customer_vtaccount_alias,       /* 가상계좌별칭 */
+            customer_vtaccount_status,      /* 가상계좌상태 */
+            customer_realaccount_type,      /* 실계좌유형 */
+            customer_vtaccount_reg_date,    /* 가상계좌발급일시 */
+            customer_vtaccount_expire_date, /* 가상계좌폐기일시 */
+            create_date,                    /* 생성일시 */
+            create_id                       /* 생성자ID */
+        )
+        select 
+         ifnull((
+             select ifnull(max(cast(a.customer_realaccount_seq as SIGNED)), 0) + 1
+             from spt_customer_account_profile_hist a
+             where customer_reg_no = a.customer_reg_no
+         ), 1),                    /* 순번 */
+            customer_reg_no,                /* 회원OP가입번호 */
+            company_code_id,                /* 기업코드 */
+            customer_realaccount_no,        /* 실계좌번호 */
+            customer_vtaccount_no,          /* 가상계좌번호 */
+            customer_vtaccount_alias,       /* 가상계좌별칭 */
+            customer_vtaccount_status,      /* 가상계좌상태 */
+            customer_realaccount_type,      /* 실계좌유형 */
+            customer_vtaccount_reg_date,    /* 가상계좌발급일시 */
+            customer_vtaccount_expire_date, /* 가상계좌폐기일시 */
+            create_date,                    /* 생성일시 */
+            create_id                       /* 생성자ID */
+     from spt_customer_account_profile
+        where 1=1
+        and customer_reg_no = #customerRegNo#
+        and company_code_id = #companyCodeId#
+        and customer_realaccount_no = #customerRealaccountNo#
+        <isNotEmpty property="customerVtaccountNo">
+            and customer_vtaccount_no = #customerVtaccountNo#
+        </isNotEmpty>
+    </insert>
+        
+    <!--
+     * @Method Name        : usr.SvcApplDAO.selectFintechSvcCompanyList
+     * @Method description : [핀테크서비스 선택] 사용자 기준 금투사 목록을 가져온다.
+     * @param              : SvcApplVO
+     * @return             : SvcApplVO
+     * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectFintechSvcCompanyList" parameterClass="SvcApplVO" resultClass="SvcApplVO">
+		select  a.company_profile_reg_no      as companyProfileRegNo,
+		        a.company_code_id             as companyCodeId,
+		        a.company_name_kor_alias      as companyNameKorAlias
+		from com_company_profile a
+		join (
+            /* 계좌사용하는 API 기업만 조회 */
+            select a.company_code_id
+            from com_api_info a
+            join com_api_view b on a.api_id = b.api_id
+            join (
+                select a.api_id
+                from com_app_apilist_view a
+                left join com_api_info as b on a.api_id = b.api_id
+                where b.exposure_yn = 'Y'
+                and b.api_account_yn = 'Y'
+                group by a.api_id
+            ) c on a.api_id = c.api_id
+            where a.exposure_yn = 'Y'
+            and a.api_account_yn = 'Y'
+            group by a.company_code_id
+        ) b on a.company_code_id = b.company_code_id
+		where a.delete_date is null
+        and a.exposure_yn = 'Y'
+        and a.company_service_type in ('G002001', 'G002002')
+		and a.company_code_id in (
+		    select  company_code_id
+		    from spt_customer_account_profile
+		    where customer_reg_no = #customerRegNo#
+		    and customer_vtaccount_status = 'G009002'
+		    group by customer_reg_no, company_code_id
+		)
+		order by ifnull(a.exposure_order, 'Z') asc, a.company_name_kor_alias asc
+    </select>
+    
+    <!--
+     * @Method Name        : usr.SvcApplDAO.selectFintechSvcList
+     * @Method description : [핀테크서비스 선택] 핀테크 서비스 목록
+     * @param              : SvcApplVO
+     * @return             : SptCustomerServiceProfileVO
+     * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectFintechSvcList" parameterClass="SvcApplVO" resultClass="SptCustomerServiceProfileVO">
+		select  a.app_id            as appId,
+		        a.app_name          as appName,
+		        a.app_category      as appCategory,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.app_category           
+		        )                   as appCategoryName,
+		        a.app_description   as appDescription,
+		        a.app_dl_url        as appDlUrl,
+		        b.service_reg_no    as serviceRegNo,
+		        b.terms_reg_no      as termsRegNo,
+		        b.terms_file_reg_no as termsFileRegNo,
+		        if(ifnull(b.app_id, 'N') = 'N', 'N', 'Y') as useYn,
+		        if(ifnull(b.terms_auth_yn, 'Y') = 'Y', 'N', 'Y') as termsAuthYn
+		from(
+		    select  a.app_id,
+		            b.app_name,
+		            b.company_code_id,
+		            c.app_category,
+		            c.app_description,
+		            c.app_dl_url,
+		            c.exposure_order
+		    from(
+		        select a.app_id
+		        from com_app_apilist_view a
+		        left join com_api_info as b on a.api_id = b.api_id
+		        where b.company_code_id in (
+		            select  company_code_id
+		            from spt_customer_account_profile
+		            where customer_reg_no = #customerRegNo#
+		            and customer_vtaccount_status = 'G009002'
+		            <isNotEmpty property="searchCompanyCodeId" prepend="and">
+			            <isNotEqual property="searchCompanyCodeIdAllYn" compareValue="Y">
+			                company_code_id
+			                <iterate  property="searchCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+			                    #searchCompanyCodeId[]#
+			                </iterate> 
+			            </isNotEqual>
+			        </isNotEmpty>
+		            group by customer_reg_no, company_code_id
+		        )
+		        and b.exposure_yn = 'Y'
+		        and b.api_account_yn = 'Y'
+		        group by a.app_id
+		    ) a
+		    left join com_app_view as b on a.app_id = b.app_id
+		    ,com_app_info c
+		    where a.app_id = b.app_id
+		    and a.app_id = c.app_id
+		    and b.app_status = 'G022002'        /*app 상태 (CA 정보)*/
+		    and c.exposure_yn = 'Y'
+		) a 
+		left join (
+			select  a.*,
+			        /* TSA 처리 성공 파일정보일경우에만 셋팅 */
+			        if(b.terms_file_status = 'G028030', b.terms_file_reg_no, '') as terms_file_reg_no,
+			        b.terms_auth_yn
+			from(        
+			    select  customer_reg_no,
+			            service_reg_no,
+			            app_id,
+			            terms_reg_no
+			    from spt_customer_service_profile
+			    where customer_reg_no = #customerRegNo#
+			    and delete_date is null
+			) a    
+			left join spt_customer_service_terms_profile b 
+			on a.customer_reg_no = b.customer_reg_no
+			and a.terms_reg_no = b.terms_reg_no
+			and b.delete_date is null
+		) as b on a.app_id = b.app_id
+		join com_company_profile as sub on a.company_code_id = sub.company_code_id and sub.delete_date is null and sub.exposure_yn = 'Y'  
+		where 1=1
+		<isNotEmpty property="searchServiceRegNo" prepend="and">
+			b.service_reg_no = #searchServiceRegNo#
+		</isNotEmpty>
+		<isNotEmpty property="searchUseYn" prepend="and">
+            if(ifnull(b.terms_auth_yn, 'Y') = 'Y', 'N', 'Y') = #searchUseYn#
+        </isNotEmpty>
+		order by 
+		    ifnull(a.exposure_order, 'Z'), a.app_name
+    </select>
+    
+    <!--
+     * @Method Name        : usr.SvcApplDAO.selectFintechSvcPubcompanyList
+     * @Method description : [핀테크서비스 선택] 핀테크 서비스 금투사 목록
+     * @param              : SvcApplVO
+     * @return             : ComCompanyProfileVO
+     * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectFintechSvcPubcompanyList" parameterClass="SvcApplVO" resultClass="ComCompanyProfileVO">
+		select  a.app_id                    as appId,   
+		        a.api_id                    as apiId,
+		        a.company_code_id           as companyCodeId,
+		        b.company_name_kor_alias    as companyNameKorAlias,
+		        a.api_title                 as apiTitle
+		from(
+		    select  a.app_id,
+		            a.api_id,
+		            b.company_code_id,    
+		            b.api_title,
+		            b.exposure_order
+		    from(
+		        select  app_id, api_id
+		        from com_app_apilist_view
+		        where 1=1
+		        <isNotEmpty property="searchAppId" prepend="and">
+	                app_id
+	                <iterate  property="searchAppId" prepend="IN" open="(" close=")" conjunction=",">
+	                    #searchAppId[]#
+	                </iterate>
+                </isNotEmpty>
+		    ) a, com_api_info b
+		    where a.api_id = b.api_id
+		    and b.exposure_yn = 'Y'
+		    and b.api_account_yn = 'Y'
+		) a
+		join com_company_profile as b on a.company_code_id = b.company_code_id and b.delete_date is null and b.exposure_yn = 'Y'
+		order by 
+		    ifnull(b.exposure_order, 'Z'), b.company_name_kor_alias,
+            ifnull(a.exposure_order, 'Z'), a.api_title    
+    </select>
+    
+    <!--
+     * @Method Name        : usr.SvcApplDAO.selectFintechSvcAccountList
+     * @Method description : [핀테크서비스 선택] 가상계좌 목록
+     * @param              : SvcApplVO
+     * @return             : SptCustomerServiceAccountProfileVO
+     * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectFintechSvcAccountList" parameterClass="SvcApplVO" resultClass="SptCustomerServiceAccountProfileVO">
+		select  a.app_id                    as appId,
+		        a.app_name                  as appName,
+		        a.subcompany_code_id        as subcompanyCodeId,
+		        sub.company_name_kor_alias  as subcompanyName,
+		        a.api_id                    as apiId,
+		        a.api_name                  as apiName,
+		        a.pubcompany_code_id        as pubcompanyCodeId,
+		        pub.company_name_kor_alias  as pubcompanyName,
+		        a.customer_realaccount_no   as customerRealaccountNo,
+		        a.customer_vtaccount_no     as customerVtaccountNo,
+		        a.customer_vtaccount_alias  as customerVtaccountAlias,
+		        a.service_reg_no            as serviceRegNo,
+		        b.account_reg_no            as accountRegNo,
+		        if(ifnull(b.account_reg_no, 'N') = 'N', 'N', 'Y') as useYn
+		from(
+		    /* 데이터 포멧 */
+		    select  a.*,
+		            b.customer_realaccount_no,
+		            b.customer_vtaccount_no,
+		            b.customer_vtaccount_alias
+		    from(
+		        select  a.customer_reg_no,
+		                a.service_reg_no,
+		                a.app_id,
+		                a.app_name,
+		                a.subcompany_code_id,
+		                a.subexposure_order,
+		                c.api_id,
+		                b.api_name,
+		                c.company_code_id       as pubcompany_code_id,
+		                c.exposure_order        as pubexposure_order
+		        from(
+		            select  a.customer_reg_no,
+		                    a.service_reg_no,
+		                    b.app_id,
+		                    b.app_name,
+		                    b.company_code_id   as subcompany_code_id,
+		                    c.exposure_order    as subexposure_order,
+		                    a.api_id
+		            from(
+		                select  a.customer_reg_no,
+		                        a.service_reg_no,
+		                        b.app_id,
+		                        b.api_id
+		                from(
+		                    select  customer_reg_no,
+		                            service_reg_no,
+		                            app_id
+		                    from spt_customer_service_profile
+		                    where customer_reg_no = #customerRegNo#
+		                    <isNotEmpty property="searchAppId" prepend="and">
+			                    app_id
+			                    <iterate  property="searchAppId" prepend="IN" open="(" close=")" conjunction=",">
+			                        #searchAppId[]#
+			                    </iterate>
+			                </isNotEmpty>
+			                and delete_date is null
+		                ) a, com_app_apilist_view b
+		                where a.app_id = b.app_id
+		            ) a
+		            left join com_app_view b on a.app_id = b.app_id
+		            left join com_app_info c on a.app_id = c.app_id
+		            where b.app_status = 'G022002'        /*app 상태 (CA 정보)*/
+		            and c.exposure_yn = 'Y'
+		        ) a
+		        left join com_api_view b on a.api_id = b.api_id
+		        left join com_api_info c on a.api_id = c.api_id
+		        where c.exposure_yn = 'Y'
+		        and c.api_account_yn = 'Y'
+		    ) a,
+		    (
+		        select *
+		        from spt_customer_account_profile
+		        where customer_reg_no = #customerRegNo#
+		        and customer_vtaccount_status = 'G009002'
+		    ) b
+		    where a.pubcompany_code_id = b.company_code_id
+		) a
+		left join spt_customer_service_account_profile b
+		on  a.customer_reg_no = b.customer_reg_no
+		and a.service_reg_no = b.service_reg_no
+		and a.app_id = b.app_id
+		and a.api_id = b.api_id
+		and a.customer_realaccount_no = b.customer_realaccount_no
+		and b.delete_date is null
+		join com_company_profile as pub on a.pubcompany_code_id = pub.company_code_id and pub.delete_date is null and pub.exposure_yn = 'Y'
+		join com_company_profile as sub on a.subcompany_code_id = sub.company_code_id and sub.delete_date is null and sub.exposure_yn = 'Y'
+		order by
+		    ifnull(sub.exposure_order, 'Z') asc, sub.company_name_kor_alias asc,
+		    ifnull(a.subexposure_order, 'Z') asc, a.app_name asc,
+		    ifnull(pub.exposure_order, 'Z') asc, pub.company_name_kor_alias asc,
+		    ifnull(a.pubexposure_order, 'Z') asc,  a.api_name asc
+    </select>
+    
+    <!--
+     * @Method Name        : usr.SvcApplDAO.insertSptCustomerServiceProfileHist
+     * @Method description : [핀테크서비스 선택] 일반회원 서비스 프로파일 hist 정보를 등록한다.
+     * @param              : SptCustomerServiceProfileVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="usr.SvcApplDAO.insertSptCustomerServiceProfileHist" parameterClass="SptCustomerServiceProfileVO">
+        insert into spt_customer_service_profile_hist(
+            customer_reg_no,
+            service_reg_no,
+            service_seq,
+            app_id,
+            terms_reg_no,
+            delete_date,
+            create_date,
+            create_id
+        )
+        select  customer_reg_no,
+                service_reg_no,
+                ifnull((
+                    select ifnull(max(cast(service_seq as SIGNED)), 0) + 1
+                    from spt_customer_service_profile_hist
+                    where customer_reg_no = a.customer_reg_no
+                    and service_reg_no = a.service_reg_no
+                ), 1),
+                app_id,
+                terms_reg_no,
+                delete_date,
+                update_date,
+                update_id
+        from spt_customer_service_profile a        
+        where customer_reg_no = #customerRegNo#
+        and service_reg_no = #serviceRegNo#
+    </insert>
+    
+    <!--
+     * @Method Name        : usr.SvcApplDAO.insertSptCustomerServiceProfile
+     * @Method description : [핀테크서비스 선택] 일반회원 서비스 프로파일 정보를 등록한다.
+     * @param              : SptCustomerServiceProfileVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="usr.SvcApplDAO.insertSptCustomerServiceProfile" parameterClass="SptCustomerServiceProfileVO">
+        <selectKey keyProperty="serviceRegNo" resultClass="java.lang.String">
+			select  concat(date_format(sysdate(),'%Y%m%d'), 
+			        lpad((
+			                select ifnull( max(cast(right(service_reg_no,3) as signed)), 0)+1 
+			                from spt_customer_service_profile 
+			                where left(service_reg_no, 8) = date_format(sysdate(),'%Y%m%d')
+			                and customer_reg_no = #customerRegNo#
+			            ), 3, '0')
+			        ) as serviceRegNo
+        </selectKey>
+        insert into spt_customer_service_profile(
+			customer_reg_no,
+			service_reg_no,
+			app_id,
+			create_date,
+			create_id,
+			update_date,
+			update_id     
+        )values(
+            #customerRegNo#,
+            #serviceRegNo#,
+            #appId#,
+            sysdate(),
+            #createId#,
+            sysdate(),
+            #createId#
+        )
+    </insert>
+    
+    <!--
+     * @Method Name        : usr.SvcApplDAO.selectFintechSvcTermsList
+     * @Method description : [핀테크서비스선택] 사용자의 약관정보를 가져온다.
+     * @param              : SvcApplVO
+     * @return             : SptCustomerServiceTermsPubcompanyProfileVO
+     * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectFintechSvcTermsList" parameterClass="SvcApplVO" resultClass="SptCustomerServiceTermsPubcompanyProfileVO">
+		select  a.customer_reg_no           as customerRegNo,
+		        a.terms_reg_no              as termsRegNo,
+		        a.subcompany_code_id        as subcompanyCodeId,
+		        a.terms_auth_yn             as termsAuthYn,
+		        b.terms_pubcompany_reg_no   as termsPubcompanyRegNo,
+		        b.pubcompany_code_id        as pubcompanyCodeId,
+		        a.terms_file_reg_no         as termsFileRegNo
+		from(
+		    select  a.customer_reg_no,
+		            b.terms_reg_no,
+		            b.subcompany_code_id,
+		            b.terms_auth_yn,
+		            /* TSA 처리 성공 일경우에만 파일번호를 가져온다. */
+		            if(b.terms_file_status = 'G028030', b.terms_file_reg_no, '') as terms_file_reg_no
+		    from(
+		        select *
+		        from spt_customer_service_profile
+		        where customer_reg_no = #customerRegNo#
+		        and delete_date is null
+		        <isNotEmpty property="searchAppId" prepend="and">
+                    app_id
+                    <iterate  property="searchAppId" prepend="IN" open="(" close=")" conjunction=",">
+                        #searchAppId[]#
+                    </iterate>
+                </isNotEmpty>
+		    ) a, spt_customer_service_terms_profile b
+		    where a.customer_reg_no = b.customer_reg_no
+		    and a.terms_reg_no = b.terms_reg_no
+		    and b.delete_date is null
+		) a, spt_customer_service_terms_pubcompany_profile b
+		where a.customer_reg_no = b.customer_reg_no
+		and a.terms_reg_no = b.terms_reg_no
+		and b.delete_date is null
+		order by a.subcompany_code_id, b.pubcompany_code_id        
+    </select>
+        
+    <!--
+     * @Method Name        : usr.SvcApplDAO.insertSptCustomerServiceAccountProfileHist
+     * @Method description : [핀테크서비스 선택] 일반회원서비스 계좌 프로파일 hist 정보를 등록한다.
+     * @param              : SptCustomerServiceAccountProfileVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="usr.SvcApplDAO.insertSptCustomerServiceAccountProfileHist" parameterClass="SptCustomerServiceAccountProfileVO">
+        insert into spt_customer_service_account_profile_hist(
+            customer_reg_no,
+            service_reg_no,
+            account_reg_no,
+            account_seq,
+            app_id,
+            api_id,
+            customer_realaccount_no,
+            delete_date,
+            create_date,
+            create_id
+        )
+        select  customer_reg_no,
+	            service_reg_no,
+	            account_reg_no,
+                ifnull((
+                    select ifnull(max(cast(account_seq as SIGNED)), 0) + 1
+                    from spt_customer_service_account_profile_hist
+                    where customer_reg_no = a.customer_reg_no
+                    and service_reg_no = a.service_reg_no
+                    and account_reg_no = a.account_reg_no
+                ), 1),
+                app_id,
+	            api_id,
+	            customer_realaccount_no,
+                delete_date,
+                update_date,
+                update_id
+        from spt_customer_service_account_profile a        
+        where customer_reg_no = #customerRegNo#
+        and service_reg_no = #serviceRegNo#
+        and account_reg_no = #accountRegNo#
+    </insert>
+    
+    <!--
+     * @Method Name        : usr.SvcApplDAO.insertSptCustomerServiceAccountProfile
+     * @Method description : [핀테크서비스 선택] 일반회원서비스 계좌 프로파일 정보 정보를 등록한다.
+     * @param              : SptCustomerServiceAccountProfileVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="usr.SvcApplDAO.insertSptCustomerServiceAccountProfile" parameterClass="SptCustomerServiceAccountProfileVO">
+        <selectKey keyProperty="accountRegNo" resultClass="java.lang.String">
+            select  concat(date_format(sysdate(),'%Y%m%d'), 
+                    lpad((
+                            select ifnull( max(cast(right(account_reg_no,3) as signed)), 0)+1 
+                            from spt_customer_service_account_profile 
+                            where left(account_reg_no, 8) = date_format(sysdate(),'%Y%m%d')
+                            and customer_reg_no = #customerRegNo#
+                            and service_reg_no = #serviceRegNo#
+                        ), 3, '0')
+                    ) as accountRegNo
+        </selectKey>
+        insert into spt_customer_service_account_profile(
+			customer_reg_no,
+			service_reg_no,
+			account_reg_no,
+			app_id,
+			api_id,
+			customer_realaccount_no,
+			create_date,
+			create_id,
+			update_date,
+			update_id 
+        )values(
+            #customerRegNo#,
+            #serviceRegNo#,
+            #accountRegNo#,
+            #appId#,
+            #apiId#,
+            #customerRealaccountNo#,
+            sysdate(),
+            #createId#,
+            sysdate(),
+            #createId#
+        )
+    </insert>
+    
+    <!--
+     * @Method Name        : usr.SvcApplDAO.updateSptCustomerServiceAccountProfile
+     * @Method description : [핀테크서비스 선택] 일반회원서비스 계좌 프로파일 정보 정보를 수정한다.
+     * @param              : SptCustomerServiceAccountProfileVO
+     * @return             : int
+     * @throws             : Exception
+    -->
+    <update id="usr.SvcApplDAO.updateSptCustomerServiceAccountProfile" parameterClass="SptCustomerServiceAccountProfileVO">
+        update spt_customer_service_account_profile set
+            <isEqual property="newUseYn" compareValue="Y">
+                delete_date = null,
+            </isEqual>            
+            <isEqual property="newUseYn" compareValue="N">
+                delete_date = sysdate(),
+            </isEqual>
+            update_date = sysdate(),
+            update_id = #createId#
+        where customer_reg_no = #customerRegNo#
+        and service_reg_no = #serviceRegNo#
+        and account_reg_no = #accountRegNo#
+    </update>
+    
+    <!--
+     * @Method Name        : usr.SvcApplDAO.insertSptCustomerServiceTermsProfile
+     * @Method description : [핀테크서비스 선택] 일반회원 사비스 약관 프로파일 정보를 등록한다.
+     * @param              : SptCustomerServiceTermsProfileVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="usr.SvcApplDAO.insertSptCustomerServiceTermsProfile" parameterClass="SptCustomerServiceTermsProfileVO">
+        <selectKey keyProperty="termsRegNo" resultClass="java.lang.String">
+            select  concat(date_format(sysdate(),'%Y%m%d'), 
+                    lpad((
+                            select ifnull( max(cast(right(terms_reg_no,3) as signed)), 0)+1 
+                            from spt_customer_service_terms_profile 
+                            where left(terms_reg_no, 8) = date_format(sysdate(),'%Y%m%d')
+                            and customer_reg_no = #customerRegNo#
+                        ), 3, '0')
+                    ) as termsRegNo
+        </selectKey>
+        insert into spt_customer_service_terms_profile(
+			customer_reg_no,
+			terms_reg_no,
+			subcompany_code_id,
+			subcompany_name,
+			customer_name,
+			customer_email,
+			customer_birth_day,
+			terms_policy,
+			terms_auth_yn,
+			terms_file_reg_no,
+            terms_file_status,
+			create_date,
+			create_id,
+			update_date,
+			update_id        
+        )
+		select  a.customer_reg_no,
+		        #termsRegNo#            as terms_reg_no,
+		        b.company_code_id       as subcompany_code_id,
+		        b.company_name_kor      as subcompany_name,
+		        a.customer_name_kor     as customer_name,
+		        a.customer_email        as customer_email,
+		        a.customer_birth_day    as customer_birth_day,
+		        #termsPolicy#           as terms_policy,
+		        'Y'                     as terms_auth_yn,
+		        #termsFileRegNo#        as terms_file_reg_no,
+		        #termsFileStatus#       as terms_file_status,
+		        sysdate()               as create_date,
+		        #createId#              as create_id,
+		        sysdate()               as update_date,
+		        #createId#              as update_id
+		from(
+		    select  customer_reg_no,
+		            customer_name_kor,
+		            customer_email,
+		            customer_birth_day
+		    from spt_customer_info_profile
+		    where customer_reg_no = #customerRegNo#
+		) a
+		left join (
+		    select  #customerRegNo#     as customer_reg_no,
+		            company_code_id,
+		            company_name_kor
+		    from com_company_profile
+		    where company_code_id = #subcompanyCodeId#
+		    and delete_date is null
+		    and exposure_yn = 'Y'
+		) b on a.customer_reg_no = b.customer_reg_no     
+    </insert>
+    
+    <!--
+     * @Method Name        : usr.SvcApplDAO.insertSptCustomerServiceTermsProfileHist
+     * @Method description : [핀테크서비스 선택] 일반회원 사비스 약관 프로파일 hist 정보를 등록한다.
+     * @param              : SptCustomerServiceTermsProfileVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="usr.SvcApplDAO.insertSptCustomerServiceTermsProfileHist" parameterClass="SptCustomerServiceTermsProfileVO">
+        insert into spt_customer_service_terms_profile_hist(
+			customer_reg_no,
+			terms_reg_no,
+			terms_seq,
+			subcompany_code_id,
+			subcompany_name,
+			customer_name,
+			customer_email,
+			customer_birth_day,
+			terms_policy,
+			terms_chg_date,
+			terms_start_date,
+			terms_expire_date,
+			terms_auth_yn,
+			terms_file_reg_no,
+			terms_file_status,
+			customer_sign_dn,   /* 약관 동의 공인인증서 */
+            customer_sign_data, /* 약관 동의 전자서명키 */
+            customer_tsa_data,  /* 약관 동의 시점확인키 */   
+			delete_date,
+			create_date,
+			create_id
+        )
+        select  customer_reg_no,
+                terms_reg_no,
+                ifnull((
+                    select ifnull(max(cast(terms_seq as SIGNED)), 0) + 1
+                    from spt_customer_service_terms_profile_hist
+                    where customer_reg_no = a.customer_reg_no
+                    and terms_reg_no = a.terms_reg_no
+                ), 1),
+                subcompany_code_id,
+	            subcompany_name,
+	            customer_name,
+	            customer_email,
+	            customer_birth_day,
+	            terms_policy,
+	            terms_chg_date,
+	            terms_start_date,
+	            terms_expire_date,
+	            terms_auth_yn,
+	            terms_file_reg_no,
+	            terms_file_status,
+	            customer_sign_dn,   /* 약관 동의 공인인증서 */
+	            customer_sign_data, /* 약관 동의 전자서명키 */
+	            customer_tsa_data,  /* 약관 동의 시점확인키 */   
+	            delete_date,
+                update_date,
+                update_id
+        from spt_customer_service_terms_profile a        
+        where customer_reg_no = #customerRegNo#
+        and terms_reg_no = #termsRegNo#
+    </insert>
+    
+    <!--
+     * @Method Name        : usr.SvcApplDAO.insertSptCustomerServiceTermsPubcompanyProfile
+     * @Method description : [핀테크서비스 선택] 일반회원 사비스 약관 금투사 프로파일 정보를 등록한다.
+     * @param              : SptCustomerServiceTermsProfileVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="usr.SvcApplDAO.insertSptCustomerServiceTermsPubcompanyProfile" parameterClass="SptCustomerServiceTermsPubcompanyProfileVO">
+        <selectKey keyProperty="termsPubcompanyRegNo" resultClass="java.lang.String">
+            select  concat(date_format(sysdate(),'%Y%m%d'), 
+                    lpad((
+                            select ifnull( max(cast(right(terms_pubcompany_reg_no,3) as signed)), 0)+1 
+                            from spt_customer_service_terms_pubcompany_profile 
+                            where left(terms_pubcompany_reg_no, 8) = date_format(sysdate(),'%Y%m%d')
+                            and customer_reg_no = #customerRegNo#
+                            and terms_reg_no = #termsRegNo#
+                        ), 3, '0')
+                    ) as termsPubcompanyRegNo
+        </selectKey>
+        insert into spt_customer_service_terms_pubcompany_profile(
+			customer_reg_no,
+			terms_reg_no,
+			terms_pubcompany_reg_no,
+			pubcompany_code_id,
+			pubcompany_name,
+			create_date,
+			create_id,
+			update_date,
+			update_id      
+        )
+		select  #customerRegNo#         as customer_reg_no,
+		        #termsRegNo#            as terms_reg_no,
+		        #termsPubcompanyRegNo#  as terms_pubcompany_reg_no,
+		        company_code_id         as pubcompany_code_id,
+		        company_name_kor        as pubcompany_name,
+		        sysdate()               as create_date,
+		        #createId#              as create_id,
+		        sysdate()               as update_date,
+		        #createId#              as update_id
+		from com_company_profile
+		where company_code_id = #pubcompanyCodeId#
+		and delete_date is null    
+		and exposure_yn = 'Y'
+    </insert>
+    
+    <!--
+     * @Method Name        : usr.SvcApplDAO.insertSptCustomerServiceTermsPubcompanyProfileHist
+     * @Method description : [핀테크서비스 선택] 일반회원 사비스 약관 금투사 프로파일 hist 정보를 등록한다.
+     * @param              : SptCustomerServiceTermsPubcompanyProfileVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="usr.SvcApplDAO.insertSptCustomerServiceTermsPubcompanyProfileHist" parameterClass="SptCustomerServiceTermsPubcompanyProfileVO">
+        insert into spt_customer_service_terms_pubcompany_profile_hist(
+			customer_reg_no,
+			terms_reg_no,
+			terms_pubcompany_reg_no,
+			terms_pubcompany_seq,
+			pubcompany_code_id,
+			pubcompany_name,
+			terms_chg_date,
+			delete_date,
+			create_date,
+			create_id
+        )
+        select  customer_reg_no,
+                terms_reg_no,
+                terms_pubcompany_reg_no,
+                ifnull((
+                    select ifnull(max(cast(terms_pubcompany_seq as SIGNED)), 0) + 1
+                    from spt_customer_service_terms_pubcompany_profile_hist
+                    where customer_reg_no = a.customer_reg_no
+                    and terms_reg_no = a.terms_reg_no
+                    and terms_pubcompany_reg_no = a.terms_pubcompany_reg_no
+                ), 1),
+                pubcompany_code_id,
+	            pubcompany_name,
+	            terms_chg_date,
+                delete_date,
+                update_date,
+                update_id
+        from spt_customer_service_terms_pubcompany_profile a        
+        where customer_reg_no = #customerRegNo#
+        and terms_reg_no = #termsRegNo#
+        and terms_pubcompany_reg_no = #termsPubcompanyRegNo#
+    </insert>
+    
+    <!--
+     * @Method Name        : usr.SvcApplDAO.updateSptCustomerServiceProfile
+     * @Method description : [핀테크서비스 선택] 일반회원서비스 프로파일 정보를 수정한다.
+     * @param              : SptCustomerServiceAccountProfileVO
+     * @return             : int
+     * @throws             : Exception
+    -->
+    <update id="usr.SvcApplDAO.updateSptCustomerServiceProfile" parameterClass="SptCustomerServiceProfileVO">
+        update spt_customer_service_profile set
+            terms_reg_no = #termsRegNo#,
+            update_date = sysdate(),
+            update_id = #createId#
+		where (customer_reg_no, service_reg_no) in (
+		    select  a.customer_reg_no,
+		            a.service_reg_no
+		    from(        
+		        select  customer_reg_no,
+		                service_reg_no,
+		                app_id
+		        from spt_customer_service_profile
+		        where customer_reg_no = #customerRegNo#
+		        and delete_date is null
+		    ) a, com_app_view b 
+		    where a.app_id = b.app_id
+		    and b.company_code_id = #companyCodeId#
+		    and b.app_status = 'G022002'        /*app 상태 (CA 정보)*/
+		)
+    </update>
+    
+    <!--
+     * @Method Name        : usr.SvcApplDAO.updateSptCustomerServiceProfileHist
+     * @Method description : [핀테크서비스 선택] 일반회원 서비스 프로파일 hist 정보를 등록한다.
+     * @param              : SptCustomerServiceProfileVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="usr.SvcApplDAO.updateSptCustomerServiceProfileHist" parameterClass="SptCustomerServiceProfileVO">
+        insert into spt_customer_service_profile_hist(
+            customer_reg_no,
+            service_reg_no,
+            service_seq,
+            app_id,
+            terms_reg_no,
+            delete_date,
+            create_date,
+            create_id
+        )
+        select  customer_reg_no,
+                service_reg_no,
+                ifnull((
+                    select ifnull(max(cast(service_seq as SIGNED)), 0) + 1
+                    from spt_customer_service_profile_hist
+                    where customer_reg_no = a.customer_reg_no
+                    and service_reg_no = a.service_reg_no
+                ), 1),
+                app_id,
+                terms_reg_no,
+                delete_date,
+                update_date,
+                update_id
+        from spt_customer_service_profile a        
+        where (customer_reg_no, service_reg_no) in (
+            select  a.customer_reg_no,
+                    a.service_reg_no
+            from(        
+                select  customer_reg_no,
+                        service_reg_no,
+                        app_id
+                from spt_customer_service_profile
+                where customer_reg_no = #customerRegNo#
+                and delete_date is null
+            ) a, com_app_view b 
+            where a.app_id = b.app_id
+            and b.company_code_id = #companyCodeId#
+            and b.app_status = 'G022002'        /*app 상태 (CA 정보)*/
+        )
+    </insert>
+    
+    <!--
+      * @Method Name        : usr.SvcApplDAO.selectFintechSvcTermsCleanList
+      * @Method description : [핀테크서비스 선택] 서비스의 정보제공동의 클랭징 목록을 조회한다.
+      * @param              : SvcApplVO
+      * @return             : SvcApplVO
+      * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectFintechSvcTermsCleanList" parameterClass="SvcApplVO" resultClass="SvcApplVO">
+		select  a.customer_reg_no       as customerRegno,
+		        a.service_reg_no        as serviceRegNo,
+		        b.terms_reg_no          as termsRegNo
+		from(
+		    /* 추가된 서비스 정보 조회 */
+		    select  a.customer_reg_no,
+		            a.service_reg_no,
+		            a.app_id,
+		            c.company_code_id
+		    from (
+		        select a.*
+		        from spt_customer_service_profile a
+		        where a.customer_reg_no = #customerRegNo#
+		        and a.delete_date is null
+		        and a.terms_reg_no is null
+		    ) a
+		    join (
+		        select a.*        
+		        from spt_customer_service_account_profile a
+		        where a.customer_reg_no = #customerRegNo#
+		        and a.delete_date is null
+		    ) b 
+		    on a.customer_reg_no = b.customer_reg_no
+		    and a.service_reg_no = b.service_reg_no
+		    join com_app_view c on a.app_id = c.app_id
+		) a
+		join (
+		    /* 기존에 정보제공 동의 된 정보 */
+		    select  a.customer_reg_no,
+		            c.company_code_id,
+		            b.terms_reg_no
+		    from(
+		        select a.*
+		        from spt_customer_service_profile a
+		        where a.customer_reg_no = #customerRegNo#
+		        and a.delete_date is null
+		        and a.terms_reg_no is not null
+		    ) a
+		    join (
+		        select a.*
+		        from spt_customer_service_terms_profile a
+		        where a.customer_reg_no = #customerRegNo#
+		        and a.delete_date is null
+		        and a.terms_auth_yn = 'N'   /* 정보제공 동의 */
+		    ) b
+		    on a.customer_reg_no = b.customer_reg_no
+		    and a.terms_reg_no = b.terms_reg_no
+		    join com_app_view c on a.app_id = c.app_id
+		) b
+		on a.customer_reg_no = b.customer_reg_no
+		and a.company_code_id = b.company_code_id    
+    </select>
+    
+    <!--
+     * @Method Name        : usr.SvcApplDAO.updateSptCustomerServiceProfileSvcTermsClean
+     * @Method description : [핀테크서비스 선택] 서비스 프로파일에 정보제공 동의 번호를 update한다.
+     * @param              : SptCustomerServiceProfileVO
+     * @return             : int
+     * @throws             : Exception
+    -->
+    <update id="usr.SvcApplDAO.updateSptCustomerServiceProfileSvcTermsClean" parameterClass="SptCustomerServiceProfileVO">
+        update spt_customer_service_profile set
+            terms_reg_no = #termsRegNo#,
+            update_date = sysdate(),
+            update_id = #createId#
+        where customer_reg_no = #customerRegNo#
+        and service_reg_no = #serviceRegNo#             
+    </update>
+    
+    <!--
+      * @Method Name        : usr.SvcApplDAO.selectSvcCompanyTermsConsntList
+      * @Method description : [약관동의] 기업 약관동의 대상 목록을 조회한다.
+      * @param              : SvcApplVO
+      * @return             : SptCustomerCompanyTermsProfileVO
+      * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectSvcCompanyTermsConsntList" parameterClass="SvcApplVO" resultClass="SptCustomerCompanyTermsProfileVO">
+		select  a.company_code_id                 as companyCodeId,
+		        c.company_name_kor_alias          as companyName,
+		        a.company_terms_type              as companyTermsType,
+		        a.company_terms_content_reg_seq   as companyTermsContentRegSeq,
+		        a.company_terms_content           as companyTermsContent
+		from(
+		    /* 기업약관 */
+		    select  company_code_id,
+		            company_terms_type,
+		            company_terms_content_reg_seq,
+		            company_terms_content_ver,
+		            company_terms_content
+		    from spt_customer_company_terms_content_profile
+		    where company_terms_type = 'G031001'    /* 기업 서비스 이용약관 */ 
+		    and (company_code_id, company_terms_content_ver) in (
+		        select  company_code_id, 
+		                max(company_terms_content_ver) as company_terms_content_ver
+		        from spt_customer_company_terms_content_profile
+		        where company_terms_type = 'G031001'    /* 기업 서비스 이용약관 */
+		        and company_code_id in (
+		            /* 가상계좌 발급 기업 기준 */
+		            select a.company_code_id
+		            from spt_customer_account_profile a
+		            join (
+		                select a.company_code_id
+		                from com_company_profile a /* 기업프로파일 */
+		                join (
+				            /* 계좌사용하는 API 기업만 조회 */
+				            select a.company_code_id
+				            from com_api_info a
+				            join com_api_view b on a.api_id = b.api_id
+				            join (
+				                select a.api_id
+				                from com_app_apilist_view a
+				                left join com_api_info as b on a.api_id = b.api_id
+				                where b.exposure_yn = 'Y'
+				                and b.api_account_yn = 'Y'
+				                group by a.api_id
+				            ) c on a.api_id = c.api_id
+				            where a.exposure_yn = 'Y'
+				            and a.api_account_yn = 'Y'
+				            group by a.company_code_id
+				        ) b on a.company_code_id = b.company_code_id
+		                where a.delete_date is null
+		                and a.exposure_yn = 'Y'
+		            ) b on a.company_code_id = b.company_code_id 
+		            where a.customer_reg_no = #customerRegNo#
+		            and a.customer_vtaccount_status = 'G009002'
+		            and a.customer_vtaccount_expire_date is null
+		            group by a.company_code_id        
+		        )
+		        group by company_code_id
+		    )
+		) a
+		left join (
+		    /* 사용자 기업 약관 동의 */
+		    select *    
+		    from spt_customer_company_terms_profile
+		    where customer_reg_no = #customerRegNo#
+		    and company_terms_type = 'G031001'    /* 기업 서비스 이용약관 */ 
+		    and delete_date is null
+		) b
+		on a.company_code_id = b.company_code_id
+		and a.company_terms_type = b.company_terms_type
+		and a.company_terms_content_reg_seq = b.company_terms_content_reg_seq
+		join com_company_profile c on a.company_code_id = c.company_code_id
+		where b.company_code_id is null /* 약관동의 받아야 하는 정보 */
+		order by c.exposure_order asc, c.company_name_kor_alias asc    
+    </select>
+    
+    <!--
+      * @Method Name        : usr.SvcApplDAO.selectSvcCompanyTermsConsntAgreeCompanyList
+      * @Method description : [약관동의] 기업 약관동의한 기업 목록을 조회한다.
+      * @param              : SvcApplVO
+      * @return             : SptCustomerCompanyTermsProfileVO
+      * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectSvcCompanyTermsConsntAgreeCompanyList" parameterClass="SvcApplVO" resultClass="SptCustomerCompanyTermsProfileVO">
+		select  a.company_code_id         as companyCodeId,
+		        c.company_name_kor_alias  as companyName
+		from(
+		    /* 사용자 기업 약관 동의 */
+		    select *    
+		    from spt_customer_company_terms_profile
+		    where customer_reg_no = #customerRegNo#
+		    and company_terms_type = 'G031001'    /* 기업 서비스 이용약관 */ 
+		    and delete_date is null
+		) a
+		join (
+		    /* 기업약관 */
+		    select  company_code_id,
+		            company_terms_type,
+		            company_terms_content_reg_seq,
+		            company_terms_content_ver,
+		            company_terms_content
+		    from spt_customer_company_terms_content_profile
+		    where company_terms_type = 'G031001'    /* 기업 서비스 이용약관 */ 
+		    and (company_code_id, company_terms_content_ver) in (
+		        select  company_code_id, 
+		                max(company_terms_content_ver) as company_terms_content_ver
+		        from spt_customer_company_terms_content_profile
+		        where company_terms_type = 'G031001'    /* 기업 서비스 이용약관 */
+		        group by company_code_id
+		    )
+		) b
+		on a.company_code_id = b.company_code_id
+		and a.company_terms_type = b.company_terms_type
+		and a.company_terms_content_reg_seq = b.company_terms_content_reg_seq
+		join com_company_profile c on a.company_code_id = c.company_code_id
+		order by c.exposure_order asc, c.company_name_kor_alias asc    
+    </select>
+    
+    <!--
+      * @Method Name        : usr.SvcApplDAO.checkSptCustomerCompanyTermsProfile
+      * @Method description : [약관동의] 기업 약관 저장 전 기업약관 정보 확인.
+      * @param              : SptCustomerCompanyTermsProfileVO
+      * @return             : int
+      * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.checkSptCustomerCompanyTermsProfile" parameterClass="SptCustomerCompanyTermsProfileVO" resultClass="int">
+		select count(*) as cnt
+		from spt_customer_company_terms_profile
+		where customer_reg_no = #customerRegNo#
+		and company_code_id = #companyCodeId#
+		and company_terms_type = #companyTermsType#         
+    </select>
+    
+    <!--
+      * @Method Name        : usr.SvcApplDAO.insertSptCustomerCompanyTermsProfile
+      * @Method description : [약관동의] 기업 약관 정보를 insert.
+      * @param              : SptCustomerCompanyTermsProfileVO
+      * @throws             : Exception
+    -->
+    <insert id="usr.SvcApplDAO.insertSptCustomerCompanyTermsProfile" parameterClass="SptCustomerCompanyTermsProfileVO">
+        insert into spt_customer_company_terms_profile(
+			customer_reg_no,
+			company_code_id,
+			company_terms_type,
+			company_terms_content_reg_seq,
+			company_terms_auth_yn,
+			company_terms_auth_date,
+			create_date,
+			create_id,
+			update_date,
+			update_id        
+        )values(
+            #customerRegNo#,
+            #companyCodeId#,
+            #companyTermsType#,
+            #companyTermsContentRegSeq#,
+            #companyTermsAuthYn#,
+            sysdate(),
+            sysdate(),
+            #createId#,
+            sysdate(),
+            #createId#
+        )
+    </insert>
+    
+    <!--
+      * @Method Name        : usr.SvcApplDAO.updateSptCustomerCompanyTermsProfile
+      * @Method description : [약관동의] 기업 약관 정보를 update.
+      * @param              : SptCustomerCompanyTermsProfileVO
+      * @throws             : Exception
+    -->
+    <update id="usr.SvcApplDAO.updateSptCustomerCompanyTermsProfile" parameterClass="SptCustomerCompanyTermsProfileVO">
+        update spt_customer_company_terms_profile set
+            company_terms_content_reg_seq = #companyTermsContentRegSeq#,
+            company_terms_auth_yn = #companyTermsAuthYn#,
+            company_terms_auth_date = sysdate(),
+            update_date = sysdate(),
+            update_id = #createId#
+        where customer_reg_no = #customerRegNo#
+        and company_code_id = #companyCodeId#
+        and company_terms_type = #companyTermsType#
+    </update>
+    
+    <!--
+      * @Method Name        : usr.SvcApplDAO.insertSptCustomerCompanyTermsProfileHist
+      * @Method description : [약관동의] 기업 약관 정보의 hist를 insert.
+      * @param              : SptCustomerCompanyTermsProfileVO
+      * @throws             : Exception
+    -->
+    <insert id="usr.SvcApplDAO.insertSptCustomerCompanyTermsProfileHist" parameterClass="SptCustomerCompanyTermsProfileVO">
+        insert into spt_customer_company_terms_profile_hist(
+            customer_reg_no,
+            company_code_id,
+            company_terms_type,
+            company_terms_seq,
+            company_terms_content_reg_seq,
+            company_terms_auth_yn,
+            company_terms_auth_date,
+            create_date,
+            create_id     
+        )
+        select  customer_reg_no,
+	            company_code_id,
+	            company_terms_type,
+	            ifnull((
+                    select ifnull(max(cast(company_terms_seq as SIGNED)), 0) + 1
+                    from spt_customer_company_terms_profile_hist
+                    where customer_reg_no = a.customer_reg_no
+			        and company_code_id = a.company_code_id
+			        and company_terms_type = a.company_terms_type
+                ), 1),
+	            company_terms_content_reg_seq,
+	            company_terms_auth_yn,
+	            company_terms_auth_date,
+	            update_date,
+	            update_id  
+        from spt_customer_company_terms_profile a
+        where customer_reg_no = #customerRegNo#
+        and company_code_id = #companyCodeId#
+        and company_terms_type = #companyTermsType#      
+    </insert>
+    
+    <!--
+      * @Method Name        : usr.SvcApplDAO.selectSvcTermConsntList
+      * @Method description : [정보제공동의] 정보제공동의 목록을 조회한다.
+      * @param              : SvcApplVO
+      * @return             : SptCustomerServiceAccountProfileVO
+      * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectSvcTermConsntList" parameterClass="SvcApplVO" resultClass="SptCustomerServiceAccountProfileVO">
+		select  a.customer_reg_no               as customerRegNo,
+		        a.service_reg_no                as serviceRegNo,
+		        a.app_id                        as appId,
+		        a.api_id                        as apiId,
+		        a.customer_realaccount_no       as customerRealaccountNo,
+		        a.terms_reg_no                  as termsRegNo,
+		        a.terms_auth_yn                 as termsAuthYn,
+		        a.app_name                      as appName,
+		        a.subcompany_code_id            as subcompanyCodeId,
+		        sub.company_name_kor_alias      as subcompanyName,
+		        a.api_name                      as apiName,
+		        a.pubcompany_code_id            as pubcompanyCodeId,
+		        pub.company_name_kor_alias      as pubcompanyName,
+		        b.customer_vtaccount_no         as customerVtaccountNo,
+		        b.customer_vtaccount_alias      as customerVtaccountAlias
+		from(
+		    select  a.*,
+		            b.api_name,
+		            c.company_code_id       as pubcompany_code_id,
+		            c.exposure_order        as pubexposure_order
+		    from(
+		        select  a.*,    
+		                b.app_name,
+		                b.company_code_id   as subcompany_code_id,
+		                c.exposure_order    as subexposure_order
+		        from(
+		            select  a.customer_reg_no,
+		                    a.service_reg_no,
+		                    a.app_id,
+		                    b.api_id,
+		                    b.customer_realaccount_no,
+		                    a.terms_reg_no,
+		                    a.terms_auth_yn
+		            from(
+		                select  a.*,
+		                        b.terms_auth_yn
+		                from(
+		                    select  customer_reg_no,
+		                            service_reg_no,
+		                            app_id,
+		                            terms_reg_no
+		                    from spt_customer_service_profile
+		                    where customer_reg_no = #customerRegNo#
+		                    and terms_reg_no is not null
+		                    and delete_date is null
+		                ) a
+		                left join spt_customer_service_terms_profile b 
+		                on a.customer_reg_no = b.customer_reg_no
+		                and a.terms_reg_no = b.terms_reg_no
+		            ) a, spt_customer_service_account_profile b
+		            where a.customer_reg_no = b.customer_reg_no
+		            and a.service_reg_no = b.service_reg_no
+		            and a.app_id = b.app_id
+		            and b.delete_date is null
+		        ) a
+		        left join com_app_view b on a.app_id = b.app_id
+		        left join com_app_info c on a.app_id = c.app_id
+		        where c.exposure_yn = 'Y'
+		        and b.app_status = 'G022002'        /*app 상태 (CA 정보)*/
+		    ) a 
+		    left join com_api_view b on a.api_id = b.api_id
+		    left join com_api_info c on a.api_id = c.api_id
+		    where c.exposure_yn = 'Y' 
+		    and c.api_account_yn = 'Y'
+		) a 
+		left join(
+		    select *
+		    from spt_customer_account_profile
+		    where customer_reg_no = #customerRegNo#
+		    and customer_vtaccount_status = 'G009002'
+		) b
+		on a.pubcompany_code_id = b.company_code_id
+		and a.customer_realaccount_no = b.customer_realaccount_no
+		join com_company_profile as pub on a.pubcompany_code_id = pub.company_code_id and pub.delete_date is null and pub.exposure_yn = 'Y'  
+		join com_company_profile as sub on a.subcompany_code_id = sub.company_code_id and sub.delete_date is null and sub.exposure_yn = 'Y'
+		order by 
+            ifnull(sub.exposure_order, 'Z') asc, sub.company_name_kor_alias asc, 
+            ifnull(a.subexposure_order, 'Z') asc, a.app_name asc, 
+            ifnull(pub.exposure_order, 'Z') asc, pub.company_name_kor_alias asc, 
+            ifnull(a.pubexposure_order, 'Z') asc,  a.api_name asc
+    </select>
+    
+    <!--
+      * @Method Name        : usr.SvcApplDAO.selectSvcApplCompltList
+      * @Method description : [서비스신청완료] 서비스신청완료 목록을 조회한다.
+      * @param              : SvcApplVO
+      * @return             : SptCustomerServiceAccountProfileVO
+      * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectSvcApplCompltList" parameterClass="SvcApplVO" resultClass="SptCustomerServiceAccountProfileVO">
+        select  a.customer_reg_no               as customerRegNo,
+                a.service_reg_no                as serviceRegNo,
+                a.app_id                        as appId,
+                a.api_id                        as apiId,
+                a.customer_realaccount_no       as customerRealaccountNo,
+                a.terms_reg_no                  as termsRegNo,
+                a.terms_auth_yn                 as termsAuthYn,
+                a.app_name                      as appName,
+                a.subcompany_code_id            as subcompanyCodeId,
+                sub.company_name_kor_alias      as subcompanyName,
+                a.api_name                      as apiName,
+                a.pubcompany_code_id            as pubcompanyCodeId,
+                pub.company_name_kor_alias      as pubcompanyName,
+                b.customer_vtaccount_no         as customerVtaccountNo,
+                b.customer_vtaccount_alias      as customerVtaccountAlias
+        from(
+            select  a.*,
+                    b.api_name,
+                    c.company_code_id       as pubcompany_code_id,
+                    c.exposure_order        as pubexposure_order
+            from(
+                select  a.*,    
+                        b.app_name,
+                        b.company_code_id   as subcompany_code_id,
+                        c.exposure_order    as subexposure_order
+                from(
+                    select  a.customer_reg_no,
+                            a.service_reg_no,
+                            a.app_id,
+                            b.api_id,
+                            b.customer_realaccount_no,
+                            a.terms_reg_no,
+                            a.terms_auth_yn
+                    from(
+                        select  a.*,
+                                b.terms_auth_yn
+                        from(
+                            select  customer_reg_no,
+                                    service_reg_no,
+                                    app_id,
+                                    terms_reg_no
+                            from spt_customer_service_profile
+                            where customer_reg_no = #customerRegNo#
+                            and terms_reg_no is not null
+                            and delete_date is null
+                        ) a
+                        left join spt_customer_service_terms_profile b 
+                        on a.customer_reg_no = b.customer_reg_no
+                        and a.terms_reg_no = b.terms_reg_no
+                        where b.terms_auth_yn = 'N' /* 정보제공동의 된 정보만 조회 */
+                    ) a, spt_customer_service_account_profile b
+                    where a.customer_reg_no = b.customer_reg_no
+                    and a.service_reg_no = b.service_reg_no
+                    and a.app_id = b.app_id
+                    and b.delete_date is null
+                ) a
+                left join com_app_view b on a.app_id = b.app_id
+                left join com_app_info c on a.app_id = c.app_id
+                where c.exposure_yn = 'Y'
+                and b.app_status = 'G022002'        /*app 상태 (CA 정보)*/
+            ) a 
+            left join com_api_view b on a.api_id = b.api_id
+            left join com_api_info c on a.api_id = c.api_id
+            where c.exposure_yn = 'Y' 
+            and c.api_account_yn = 'Y'
+        ) a 
+        left join(
+            select *
+            from spt_customer_account_profile
+            where customer_reg_no = #customerRegNo#
+            and customer_vtaccount_status = 'G009002'
+        ) b
+        on a.pubcompany_code_id = b.company_code_id
+        and a.customer_realaccount_no = b.customer_realaccount_no
+        join com_company_profile as pub on a.pubcompany_code_id = pub.company_code_id and pub.delete_date is null and pub.exposure_yn = 'Y'  
+        join com_company_profile as sub on a.subcompany_code_id = sub.company_code_id and sub.delete_date is null and sub.exposure_yn = 'Y'
+        order by 
+            ifnull(sub.exposure_order, 'Z') asc, sub.company_name_kor_alias asc, 
+            ifnull(a.subexposure_order, 'Z') asc, a.app_name asc, 
+            ifnull(pub.exposure_order, 'Z') asc, pub.company_name_kor_alias asc, 
+            ifnull(a.pubexposure_order, 'Z') asc,  a.api_name asc
+    </select>
+    
+    <!--
+      * @Method Name        : usr.SvcApplDAO.selectMainSvcAppList
+      * @Method description : [메인] 메인의 핀테크 서비스 목록(TOP 5)을 조회한다.
+      * @param              : SvcApplVO
+      * @return             : SvcApplVO
+      * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectMainSvcAppList" parameterClass="SvcApplVO" resultClass="SvcApplVO">
+		select  a.app_id        as appId,
+		        a.app_name      as appName,
+		        b.app_dl_url    as appDlUrl
+		from com_app_view as a
+		join com_app_info b on a.app_id = b.app_id
+		where a.app_status = 'G022002'        /*app 상태 (CA 정보)*/
+		and b.exposure_yn = 'Y'
+		order by ifnull(b.exposure_order, 'Z'), a.app_name asc
+		limit 0, 5    
+    </select>
+
+    <!--
+      * @Method Name        : usr.SvcApplDAO.selectSvcAppInfo
+      * @Method description : [Oauth] 앱 정보.
+      * @param              : SvcApplVO
+      * @return             : SvcApplVO
+      * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectSvcAppInfo" parameterClass="SvcApplVO" resultClass="SvcApplVO">
+        select app_name as appName,
+                app_id as appId,
+                (
+                 select company_name_kor_alias
+                   from com_company_profile sub
+                   where sub.company_code_id = a.company_code_id
+                 ) as companyNameKor
+          from com_app_view a
+         where a.app_key = #appId#
+           and a.app_status = 'G022002'
+    </select>
+
+
+    <!--
+     * @Method Name        : usr.SvcApplDAO.insertSptCustomerServiceProfileHistDev
+     * @Method description : [핀테크서비스 선택] 일반회원 서비스 프로파일 hist 정보를 등록한다.
+     * @param              : SptCustomerServiceProfileVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="usr.SvcApplDAO.insertSptCustomerServiceProfileHistDev" parameterClass="SvcApplVO">
+        insert into spt_customer_service_profile_hist(
+            customer_reg_no,
+            service_reg_no,
+            service_seq,
+            app_id,
+            terms_reg_no,
+            delete_date,
+            create_date,
+            create_id
+        )
+        select  customer_reg_no,
+                service_reg_no,
+                ifnull((
+                    select ifnull(max(cast(service_seq as SIGNED)), 0) + 1
+                    from spt_customer_service_profile_hist
+                    where customer_reg_no = a.customer_reg_no
+                    and service_reg_no = a.service_reg_no
+                ), 1),
+                app_id,
+                terms_reg_no,
+                delete_date,
+                update_date,
+                update_id
+        from spt_customer_service_profile a
+        where customer_reg_no = #customerRegNo#
+        and service_reg_no = #serviceRegNo#
+    </insert>
+
+    <!--
+     * @Method Name        : usr.SvcApplDAO.insertSptCustomerServiceProfileDev
+     * @Method description : [핀테크서비스 선택] 일반회원 서비스 프로파일 정보를 등록한다.
+     * @param              : SptCustomerServiceProfileVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="usr.SvcApplDAO.insertSptCustomerServiceProfileDev" parameterClass="SvcApplVO">
+        <selectKey keyProperty="serviceRegNo" resultClass="java.lang.String">
+			select  concat(date_format(sysdate(),'%Y%m%d'),
+			        lpad((
+			                select ifnull( max(cast(right(service_reg_no,3) as signed)), 0)+1
+			                from spt_customer_service_profile
+			                where left(service_reg_no, 8) = date_format(sysdate(),'%Y%m%d')
+			                and customer_reg_no = #customerRegNo#
+			            ), 3, '0')
+			        ) as serviceRegNo
+        </selectKey>
+        insert into spt_customer_service_profile(
+			customer_reg_no,
+			service_reg_no,
+			app_id,
+			create_date,
+			create_id,
+			update_date,
+			update_id
+        )values(
+            #customerRegNo#,
+            #serviceRegNo#,
+            #appId#,
+            sysdate(),
+            #createId#,
+            sysdate(),
+            #createId#
+        )
+    </insert>
+
+
+    <!--
+      * @Method Name        : usr.SvcApplDAO.selectSptCustomerServiceProfileCnt
+      * @Method description : [메인] 메인의 핀테크 서비스 목록(TOP 5)을 조회한다.
+      * @param              : SvcApplVO
+      * @return             : int
+      * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectSptCustomerServiceProfileCnt" parameterClass="SvcApplVO" resultClass="int">
+		select
+			count(customer_reg_no) as cnt
+		from spt_customer_service_profile
+		where
+			customer_reg_no =  #customerRegNo#
+			and app_id = #appId#
+			and delete_date is null
+    </select>
+
+
+    <!--
+     * @Method Name        : usr.SvcApplDAO.selectFintechSvc
+     * @Method description : [핀테크서비스 선택] 핀테크 서비스 선택 여부
+     * @param              : SvcApplVO
+     * @return             : SptCustomerServiceProfileVO
+     * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectFintechSvc" parameterClass="SvcApplVO" resultClass="SptCustomerServiceProfileVO">
+        select  a.app_id            as appId,
+        a.app_name          as appName,
+        if(ifnull(b.app_id, 'N') = 'N', 'N', 'Y') as useYn,
+        if(ifnull(b.terms_auth_yn, 'Y') = 'Y', 'N', 'Y') as termsAuthYn
+        from(
+        select  a.app_id,
+        b.app_name,
+        b.company_code_id,
+        c.app_category,
+        c.app_description,
+        c.app_dl_url,
+        c.exposure_order
+        from(
+        select a.app_id
+        from com_app_apilist_view a
+        left join com_api_info as b on a.api_id = b.api_id
+        where b.company_code_id in (
+        select  company_code_id
+        from spt_customer_account_profile
+        where customer_reg_no = #customerRegNo#
+        and customer_vtaccount_status = 'G009002'
+        group by customer_reg_no, company_code_id
+        )
+        and b.exposure_yn = 'Y'
+        and b.api_account_yn = 'Y'
+        group by a.app_id
+        ) a
+        left join com_app_view as b on a.app_id = b.app_id
+        ,com_app_info c
+        where a.app_id = b.app_id
+        and a.app_id = c.app_id
+        and b.app_status = 'G022002'        /*app 상태 (CA 정보)*/
+        and c.exposure_yn = 'Y'
+        ) a
+        left join (
+        select  a.*,
+        /* TSA 처리 성공 파일정보일경우에만 셋팅 */
+        if(b.terms_file_status = 'G028030', b.terms_file_reg_no, '') as terms_file_reg_no,
+        b.terms_auth_yn
+        from(
+        select  customer_reg_no,
+        service_reg_no,
+        app_id,
+        terms_reg_no
+        from spt_customer_service_profile
+        where customer_reg_no = #customerRegNo#
+        and delete_date is null
+        ) a
+        left join spt_customer_service_terms_profile b
+        on a.customer_reg_no = b.customer_reg_no
+        and a.terms_reg_no = b.terms_reg_no
+        and b.delete_date is null
+        ) as b on a.app_id = b.app_id
+        join com_company_profile as sub on a.company_code_id = sub.company_code_id and sub.delete_date is null and sub.exposure_yn = 'Y'
+        where 1=1
+        and a.app_id = #appId#
+    </select>
+
+    <!--
+     * @Method Name        : usr.SvcApplDAO.selectFintechSvcIntAcntAccountList
+     * @Method description : [핀테크서비스 선택] 통합계좌 가상계좌 목록
+     * @param              : SvcApplVO
+     * @return             : SptCustomerServiceAccountProfileVO
+     * @throws             : Exception
+    -->
+    <select id="usr.SvcApplDAO.selectFintechSvcIntAcntAccountList" parameterClass="SvcApplVO" resultClass="SptCustomerServiceAccountProfileVO">
+        select
+        a.app_id                    as appId,
+        a.app_name                  as appName,
+        c.terms_auth_yn             as termsAuthYn,
+        a.subcompany_code_id        as subcompanyCodeId,
+        a.pubcompany_code_id        as pubcompanyCodeId,
+        pub.company_name_kor_alias  as pubcompanyName,
+        pub.company_name_eng_alias  as pubcompanyEngName,
+        a.customer_realaccount_no   as customerRealaccountNo,
+        a.customer_vtaccount_no     as customerVtaccountNo,
+        a.customer_vtaccount_alias  as customerVtaccountAlias,
+        a.service_reg_no            as serviceRegNo,
+        if(ifnull(b.account_reg_no, 'N') = 'N', 'N', 'Y') as useYn
+        from(
+        /* 데이터 포멧 */
+        select  a.*,
+        b.customer_realaccount_no,
+        b.customer_vtaccount_no,
+        b.customer_vtaccount_alias
+        from(
+        select  a.customer_reg_no,
+        a.service_reg_no,
+        a.app_id,
+        a.app_name,
+        a.subcompany_code_id,
+        a.subexposure_order,
+        c.api_id,
+        b.api_name,
+        c.company_code_id       as pubcompany_code_id,
+        c.exposure_order        as pubexposure_order
+        from(
+        select  a.customer_reg_no,
+        a.service_reg_no,
+        b.app_id,
+        b.app_name,
+        b.company_code_id   as subcompany_code_id,
+        c.exposure_order    as subexposure_order,
+        a.api_id
+        from(
+        select  a.customer_reg_no,
+        a.service_reg_no,
+        b.app_id,
+        b.api_id
+        from(
+        select  customer_reg_no,
+        service_reg_no,
+        app_id
+        from spt_customer_service_profile
+        where customer_reg_no = #customerRegNo#
+        and app_id = #appId#
+        and delete_date is null
+        ) a, com_app_apilist_view b
+        where a.app_id = b.app_id
+        ) a
+        left join com_app_view b on a.app_id = b.app_id
+        left join com_app_info c on a.app_id = c.app_id
+        where b.app_status = 'G022002'        /*app 상태 (CA 정보)*/
+        /* and c.exposure_yn = 'Y' */
+        ) a
+        left join com_api_view b on a.api_id = b.api_id
+        left join com_api_info c on a.api_id = c.api_id
+        where c.exposure_yn = 'Y'
+        and c.api_account_yn = 'Y'
+        ) a,
+        (
+        select *
+        from spt_customer_account_profile
+        where customer_reg_no = #customerRegNo#
+        and customer_vtaccount_status = 'G009002'
+        ) b
+        where a.pubcompany_code_id = b.company_code_id
+        ) a
+        left join spt_customer_service_account_profile b
+        on  a.customer_reg_no = b.customer_reg_no
+        and a.service_reg_no = b.service_reg_no
+        and a.app_id = b.app_id
+        and a.api_id = b.api_id
+        and a.customer_realaccount_no = b.customer_realaccount_no
+        and b.delete_date is null
+        left join (
+        select  a.*,
+        b.terms_auth_yn
+        from(
+        select  customer_reg_no,
+        service_reg_no,
+        app_id,
+        terms_reg_no
+        from spt_customer_service_profile
+        where customer_reg_no = #customerRegNo#
+        and terms_reg_no is not null
+        and delete_date is null
+        and app_id = #appId#
+        ) a
+        left join spt_customer_service_terms_profile b
+        on a.customer_reg_no = b.customer_reg_no
+        and a.terms_reg_no = b.terms_reg_no
+        ) c on a.service_reg_no = c.service_reg_no
+        join com_company_profile as pub on a.pubcompany_code_id = pub.company_code_id and pub.delete_date is null and pub.exposure_yn = 'Y'
+        where c.terms_auth_yn = 'N'
+        order by pub.company_name_kor_alias
+    </select>
+
+</sqlMap>

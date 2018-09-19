@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.aptUsr.service.impl.AptUserInfoDAO">
+
+  	<typeAlias alias="AptUserInfoVO" type="kr.co.koscom.oppf.apt.aptUsr.service.AptUserInfoVO"/>
+  	
+  	<!--
+     * @Method Name        : apt.AptUserInfoDAO.chkAptUserInfoPwConfirm
+     * @Method description : admin 포탈 회원의 비밀번호 체크
+     * @param              : AptUserInfoVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="apt.AptUserInfoDAO.chkAptUserInfoPwConfirm" parameterClass="AptUserInfoVO" resultClass="int">
+        select count(*) as pwConfirmCnt
+		from com_admin_profile
+		where admin_profile_reg_no = #adminProfileRegNo#
+		and admin_password = enc_char_ins(#adminPassword#,10,'SHA','com_admin_profile','admin_password',user(),connection_id())
+    </select>
+  	
+    <!--
+     * @Method Name        : apt.AptUserInfoDAO.selectAptUserInfoDtl
+     * @Method description : admin 포털 회원 상세를 조회한다.
+     * @param              : AptUserInfoVO
+     * @return             : AptUserInfoVO
+     * @throws             : Exception
+     -->
+    <select id="apt.AptUserInfoDAO.selectAptUserInfoDtl" parameterClass="AptUserInfoVO" resultClass="AptUserInfoVO">
+		select  a.admin_profile_reg_no as adminProfileRegNo,
+		        a.admin_name_kor as adminNameKor,
+		        a.admin_name_eng as adminNameEng,
+		        a.admin_id as adminId,
+		        dec_char_sel(
+                    a.admin_email,
+                    10,
+                    'ARIA',
+                    'com_admin_profile',
+                    'admin_email',
+                    user(),
+                    connection_id()
+                ) as adminEmail,
+                dec_char_sel(
+                    a.admin_phone_no,
+                    10,
+                    'ARIA',
+                    'com_admin_profile',
+                    'admin_phone_no',
+                    user(),
+                    connection_id()
+                ) as adminPhoneNo,
+                dec_char_sel(
+                    a.admin_tel_no,
+                    10,
+                    'ARIA',
+                    'com_admin_profile',
+                    'admin_tel_no',
+                    user(),
+                    connection_id()
+                ) as adminTelNo,
+		        if(ifnull(a.delete_date, 'N') = 'N', 'N', 'Y') as deleteType,
+		        ifnull(date_format(a.create_date, '%Y-%m-%d %H:%i'), '') as createDate,
+		        ifnull(date_format(a.update_date, '%Y-%m-%d %H:%i'), '') as updateDate
+		from com_admin_profile a
+		where admin_profile_reg_no = #adminProfileRegNo#        
+    </select>
+    
+    <!--
+     * @Method Name        : apt.AptUserInfoDAO.updateAptUserInfo
+     * @Method description : admin 포털 회원정보 수정
+     * @param              : AptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="apt.AptUserInfoDAO.updateAptUserInfo" parameterClass="AptUserInfoVO">
+		update com_admin_profile set
+		admin_name_kor = #adminNameKor#,
+		admin_name_eng = #adminNameEng#,
+		admin_email = enc_char_ins(#adminEmail#,10,'ARIA','com_admin_profile','admin_email',user(),connection_id()),
+		admin_phone_no = enc_char_ins(#adminPhoneNo#,10,'ARIA','com_admin_profile','admin_phone_no',user(),connection_id()),
+		admin_tel_no = enc_char_ins(#adminTelNo#,10,'ARIA','com_admin_profile','admin_tel_no',user(),connection_id()),
+		
+		<isNotEmpty property="adminPassword">
+		    admin_password = enc_char_ins(#adminPassword#,10,'SHA','com_admin_profile','admin_password',user(),connection_id()),
+	        admin_temp_password_yn = 'N',
+	        admin_chg_password_date = sysdate(),
+	        admin_expire_password_date = date_format(date_add(sysdate(), interval #adminExpirePasswordDate# month), '%Y%m%d'),
+            admin_final_password_date = date_format(date_add(sysdate(), interval #adminFinalPasswordDate# month), '%Y%m%d'),
+            admin_password_fail_cnt = 0,
+		</isNotEmpty>
+		
+		update_date = sysdate(),
+		update_id = #updateId#
+		where admin_profile_reg_no = #adminProfileRegNo#        
+    </update>
+    
+    <!--
+     * @Method Name        : apt.AptUserInfoDAO.insertAptUserInfoHist
+     * @Method description : admin 포털 회원정보 수정 hist를 insert한다.
+     * @param              : AptUserInfoVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="apt.AptUserInfoDAO.insertAptUserInfoHist" parameterClass="AptUserInfoVO">
+        insert into com_admin_profile_hist(
+            admin_profile_reg_no,
+            admin_seq,
+            admin_name_kor,
+            admin_name_eng,
+            admin_id,
+            admin_password,
+            admin_temp_password_yn,
+            admin_chg_password_date,
+            admin_expire_password_date,
+            admin_final_password_date,
+            admin_password_fail_cnt,
+            admin_phone_no,
+            admin_tel_no,
+            admin_email,
+            delete_date,
+            create_date,
+            create_id
+        )
+        select  admin_profile_reg_no,
+                ifnull((
+                    select ifnull(max(cast(admin_seq as SIGNED)), 0) + 1
+                    from com_admin_profile_hist
+                    where admin_profile_reg_no = a.admin_profile_reg_no
+                ), 1),
+                admin_name_kor,
+                admin_name_eng,
+                admin_id,
+                admin_password,
+                admin_temp_password_yn,
+                admin_chg_password_date,
+                admin_expire_password_date,
+                admin_final_password_date,
+                admin_password_fail_cnt,
+                admin_phone_no,
+                admin_tel_no,
+                admin_email,
+                delete_date,
+                update_date,
+                update_id
+        from com_admin_profile a        
+        where admin_profile_reg_no = #adminProfileRegNo#    
+    </insert>
+    
+</sqlMap>

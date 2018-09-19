@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context antiJARLocking="true" path="/MyBatisDBCP">
+    <Resource name="jdbc/exconn" auth="Container"
+        type="javax.sql.DataSource"
+        driverClassName="net.sf.log4jdbc.DriverSpy"
+        url="jdbc:log4jdbc:mysql://10.10.10.100:3306/oppf"
+        username="oppf_devel"
+        password="zhtmzha123!"
+        maxTotal="10" maxIdle="5" maxWaitMillis="10000"
+        initialSize="5" validationQuery="SELECT 1 FROM DUAL" 
+        testOnReturn="true" testWhileIdle="true"
+        timeBetweenEvictionRunsMillis="3000"
+        removeAbandoned="true"
+        removeAbandonedTimeout="60"
+        logAbandoned="true"
+        singleton="true" />
+<!-- 
+	<Resource name="jdbc/exconn" auth="Container"
+        type="javax.sql.DataSource"
+        driverClassName="net.sf.log4jdbc.DriverSpy"
+        url="jdbc:log4jdbc:mysql://114.31.115.194:3306/oppf"
+        username="oppf_devel"
+        password="zhtmzha123!"
+        maxTotal="10" maxIdle="5" maxWaitMillis="10000"
+        initialSize="5" validationQuery="SELECT 1 FROM DUAL" 
+        testOnReturn="true" testWhileIdle="true"
+        timeBetweenEvictionRunsMillis="3000"
+        removeAbandoned="true"
+        removeAbandonedTimeout="60"
+        logAbandoned="true"
+        singleton="true" />
+-->        
+<!-- 	<Resource name="jdbc/exconn2" auth="Container" -->
+<!--         type="javax.sql.DataSource" -->
+<!--         driverClassName="com.mysql.jdbc.Driver" -->
+<!--         url="jdbc:mysql://127.0.0.1:3306/test" -->
+<!--         username="root" -->
+<!--         password="" -->
+<!--         maxTotal="10" maxIdle="5" maxWaitMillis="10000" -->
+<!--         initialSize="5" validationQuery="SELECT 1 FROM DUAL"  -->
+<!--         testOnReturn="true" testWhileIdle="true" -->
+<!--         timeBetweenEvictionRunsMillis="3000" -->
+<!--         removeAbandoned="true" -->
+<!--         removeAbandonedTimeout="60" -->
+<!--         logAbandoned="true" -->
+<!--         singleton="true" />    -->
+</Context>

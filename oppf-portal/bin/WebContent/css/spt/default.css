@@ -1,0 +1,27 @@
+@charset "utf-8";
+
+@import url(https://fonts.googleapis.com/earlyaccess/nanumgothic.css);
+
+html, body {height:100%;}
+body {font-family:'Nanum Gothic', Nanum Gothic, '나눔고딕', sans-serif !important; font-weight:normal;color:#222222;font-size:12px; -webkit-text-size-adjust:none;}
+body,div,p,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,table,th,td,form,fieldset,legend,input,textarea,select,blockquote,button,address{margin:0; padding:0;}
+table {border-collapse:collapse; border-spacing:0; width:100%;}
+button, img,fieldset, img a{border:0;}
+img{border:0}
+img,input,select,textarea{vertical-align:middle;}
+textarea {font-size:12px; padding:10px; resize:none;}
+ol, ul, dl{list-style:none;}
+abbr,acronym{border:0;}
+a{text-decoration:none; color:#80848a;}
+caption, legend{position:absolute; width:0; height:0; overflow:hidden; font-size:0; line-height:0; visibility:hidden; z-index:-1;}
+caption{position:static;}
+header, footer, section, article, aside, nav { display: block; margin:0;} /* ie8 */
+address,caption,cite,code,dfn,em,var {font-style:normal; font-weight:normal}
+ul,li,h1,h2,h3,h4,h5,ol,dl,dt,dd,p,body {margin:0; padding:0;}
+li {list-style:none;}
+.hidden {position:absolute; left:-9999px; width:0; height:0; font-size:0; line-height:0;}
+
+
+
+
+

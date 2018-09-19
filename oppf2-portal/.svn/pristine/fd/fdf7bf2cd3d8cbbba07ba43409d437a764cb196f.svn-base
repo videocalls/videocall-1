@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.pushmng.service.impl.PushDAO">
+
+  	<typeAlias alias="PushVO" type="kr.co.koscom.oppf.apt.pushmng.service.PushVO"/>
+	<typeAlias  alias="CmmFuncVO"  type="kr.co.koscom.oppf.cmm.service.CmmFuncVO"/>
+	
+	<sql id="fromWhereAnd">
+		<isNotEmpty property="searchKeyword">
+			<!-- 제목 -->
+			<isEqual property="searchCondition" compareValue="title" prepend="and">
+				c.push_message_title like concat('%', #searchKeyword#, '%')
+			</isEqual>
+			<!-- 등록자 -->
+			<isEqual property="searchCondition" compareValue="createId" prepend="and">
+				c.create_id like concat('%', #searchKeyword#, '%')
+			</isEqual>
+			<isEqual property="searchCondition" compareValue="all" prepend="and">
+				(
+					c.push_message_title like concat('%', #searchKeyword#, '%') or
+					c.create_id like concat('%', #searchKeyword#, '%') 
+				)
+			</isEqual>
+		</isNotEmpty>
+		<!-- 플랫폼 -->
+		<isNotEmpty property="searchDeviceType" prepend="and">
+			<isNotEqual property="searchDeviceTypeAllYn" compareValue="Y">
+				c.device_type
+				<iterate  property="searchDeviceType" prepend="IN" open="(" close=")" conjunction=",">
+					'G038001',#searchDeviceType[]#
+				</iterate>
+			</isNotEqual>
+		</isNotEmpty>
+		<!-- 타입 -->
+		<isNotEmpty property="searchPushMessageType" prepend="and">
+			<isNotEqual property="searchPushMessageTypeAllYn" compareValue="Y">
+				c.push_message_type 
+				<iterate  property="searchPushMessageType" prepend="IN" open="(" close=")" conjunction=",">
+					#searchPushMessageType[]#
+				</iterate>
+			</isNotEqual>
+		</isNotEmpty>
+		<!-- 전송유형 -->
+		<isNotEmpty property="searchSendType" prepend="and">
+			<isNotEqual property="searchSendTypeAllYn" compareValue="Y">
+				c.send_type
+				<iterate  property="searchSendType" prepend="IN" open="(" close=")" conjunction=",">
+					#searchSendType[]#
+				</iterate>
+			</isNotEqual>
+		</isNotEmpty>
+		<!-- 전송상태 -->
+		<isNotEmpty property="searchSendYn" prepend="and">
+			<isNotEqual property="searchSendYnAllYn" compareValue="Y">
+				c.send_yn
+				<iterate  property="searchSendYn" prepend="IN" open="(" close=")" conjunction=",">
+					#searchSendYn[]#
+				</iterate>
+			</isNotEqual>
+		</isNotEmpty>
+		<!-- 조회일 -->
+		<isNotEmpty property="searchDateType">
+			<!-- 등록일 -->
+			<isEqual property="searchDateType" compareValue="create" prepend="and">
+				ifnull(date_format(c.create_date, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '')
+			</isEqual>
+			<!-- 수정일 -->
+			<isEqual property="searchDateType" compareValue="update" prepend="and">
+				ifnull(date_format(c.update_date, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '')
+			</isEqual>
+			<!-- 전송일 -->
+			<isEqual property="searchDateType" compareValue="update" prepend="and">
+				ifnull(date_format(c.send_date, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '')
+			</isEqual>			
+			
+		</isNotEmpty>
+	</sql>
+	
+
+	<!--
+     * @Method Name        	: apt.PushDAO.selectPushList
+     * @Method description 	: Push 목록을 조회한다.
+     * @param              		: PushVO
+     * @return            			: PushVO
+     * @throws             		: Exception
+     -->	
+	<select id="apt.PushDAO.selectPushList" parameterClass="PushVO" resultClass="PushVO">
+					SELECT c.push_message_reg_no				AS pushMessageRegno,
+						   c.push_message_title                 AS pushMessageTitle, 
+					       c.code_name_kor                      AS codeNameKor,
+                		   c.device_type                        AS deviceType,
+					       c.push_message_type                  AS pushMessageType, 
+					       c.contents                           AS contents, 
+					       date_format(c.send_date, '%Y-%m-%d %H:%i')              AS sendDate,
+					       c.send_type, 
+					       d.code_name_kor                      AS sendType, 
+					       date_format(c.create_date, '%Y-%m-%d %H:%i')            AS createDate,					        
+					       c.create_id                          AS createId, 
+					       date_format(c.update_date, '%Y-%m-%d %H:%i')            AS updateDate,					        
+					       c.update_id                          AS updateId, 
+		                 case 
+		                       when c.send_yn ='Y'
+		                       then '완료'
+		                       else '대기'
+		                       end AS sendYn               
+					FROM  (SELECT a.push_message_reg_no,
+								  a.push_message_title, 
+					              b.code_name_kor,
+                       			  Concat(b.system_grp_code, b.system_code) as device_type,
+					              a.push_message_type, 
+					              a.contents, 
+					              a.send_date, 
+					              a.send_type, 
+					              a.create_date, 
+					              a.create_id, 
+					              a.update_date, 
+					              a.update_id,
+					              a.send_yn
+					        FROM  push_message_info a 
+					        JOIN  com_system_code b 
+					          ON  b.system_grp_code = 'G038' 
+					         AND  a.device_type = Concat(b.system_grp_code, b.system_code)
+					         ) c 
+					JOIN com_system_code d 
+					  ON c.send_type = Concat(d.system_grp_code, d.system_code) 
+		          <include refid="fromWhereAnd"/>
+	</select>
+	
+	<!--
+     * @Method Name        	: apt.PushDAO.selectPushListCnt
+     * @Method description 	: Push 목록을 총 개수를 조회한다.
+     * @param              		: PushVO
+     * @return            			: int
+     * @throws             		: Exception
+     -->	
+	<select id="apt.PushDAO.selectPushListCnt" parameterClass="PushVO" resultClass="int">
+					SELECT count(*) AS totCnt
+					FROM  (SELECT a.push_message_title, 
+					              b.code_name_kor,
+					              Concat(b.system_grp_code, b.system_code) as device_type, 
+					              a.push_message_type, 
+					              a.contents, 
+					              a.send_date, 
+					              a.send_type, 
+					              a.create_date, 
+					              a.create_id, 
+					              a.update_date, 
+					              a.update_id,
+					              a.send_yn
+					        FROM  push_message_info a 
+					        JOIN  com_system_code b 
+					          ON  b.system_grp_code = 'G038' 
+					         AND  a.device_type = Concat(b.system_grp_code, b.system_code)
+					         ) c 
+					JOIN com_system_code d 
+					  ON c.send_type = Concat(d.system_grp_code, d.system_code) 
+					<include refid="fromWhereAnd"/>		
+	</select>
+	
+	<!--
+     * @Method Name        	: apt.PushDAO.selectDeviceTypeList
+     * @Method description 	: 플랫폼(deviceType)을 조회한다.
+     * @param              		: PushVO
+     * @return            			: PushVO
+     * @throws             		: Exception
+     -->	
+	<select id="apt.PushDAO.selectDeviceTypeList" parameterClass="PushVO" resultClass="PushVO">
+					select	device_type				AS deviceType
+					from push_message_info
+	</select>
+	
+	<!--
+     * @Method Name        	: apt.PushDAO.insertPush
+     * @Method description 	: push를 등록한다
+     * @param              		: PushVO
+     * @return            			: int
+     * @throws             		: Exception
+     -->		
+	<insert id="apt.PushDAO.insertPush" parameterClass="PushVO">
+		<selectKey keyProperty="pushMessageRegno" resultClass="java.lang.String">
+			select  concat(#pushMessageRegnoPrefix#,date_format(sysdate(),'%Y%m%d'),
+				lpad((
+					select ifnull( max(cast(right( push_message_reg_no,3) as signed)), 0)+1
+					from push_message_info
+					where left( push_message_reg_no,9) = concat(#pushMessageRegnoPrefix#,date_format(sysdate(),'%Y%m%d'))
+				), 3, '0')
+			) as  pushMessageRegno;
+		</selectKey>
+				INSERT INTO push_message_info(
+				   push_message_reg_no
+				  ,push_message_title
+				  ,device_type
+				  ,push_message_type
+				  ,contents
+				  ,contents_url
+				  ,send_type
+				  ,send_yn
+				  ,send_date
+				  ,create_date
+				  ,create_id
+				  ,update_date
+				  ,update_id
+				) VALUES (
+				   #pushMessageRegno#
+				  ,#pushMessageTitle#
+				  ,#deviceType#
+				  ,#pushMessageType#
+				  ,#contents#
+				  ,#contentsUrl#
+				  ,#sendType#
+				  ,'N'
+				  <isNotEqual property="sendType" compareValue="G043002"><!-- 전송유형이 즉시인경우 -->
+				  	,now()
+				  </isNotEqual>
+				  <isEqual property="sendType" compareValue="G043002"><!-- 전송유형이 예약인경우 -->
+				  	,str_to_date(#sendDate#, '%Y%m%d %H%i')
+				  </isEqual>
+				  ,now() 
+				  ,(select admin_id from com_admin_profile
+					where admin_profile_reg_no=#createId#)
+				  ,null 
+				  ,null   
+				)	
+	</insert>	
+	
+	<!--
+     * @Method Name        	: apt.PushDAO.selectPushDtl
+     * @Method description 	: push메세지 상세조회
+     * @param              		: PushVO
+     * @return            			: PushVO
+     * @throws             		: Exception
+     -->		
+	<select id="apt.PushDAO.selectPushDtl" parameterClass="PushVO" resultClass="PushVO">
+					select   push_message_reg_no		AS pushMessageRegNo,
+					         push_message_title			AS pushMessageTitle,
+					         push_message_type			AS pushMessageType,
+					         (
+			                    select count(*) from push_message_reciver_info
+			                    where push_message_reg_no=#pushMessageRegno#
+			                   ) 							AS totalCount,
+					         (
+			                    select count(*) from push_message_reciver_info
+			                    where push_message_reg_no=#pushMessageRegno#
+			                    and send_yn='Y'
+			                   ) 							AS successCount,
+					         (
+			                    select count(*) from push_message_reciver_info
+			                    where push_message_reg_no=#pushMessageRegno#
+			                    and send_yn='N'
+			                   ) 							AS failCount,			                   			                   
+					         device_type				AS deviceType,
+					         send_type					AS sendType,
+					         contents					AS contents,
+					         contents_url				AS contentsUrl,
+					      	 date_format(send_date, '%Y-%m-%d %H:%i')              AS sendDate,
+					         send_type					AS sendType,
+		                 	 send_yn					AS sendYn
+					from push_message_info
+					where push_message_reg_no=#pushMessageRegno#
+	</select>
+	
+
+	<!--
+     * @Method Name        	: apt.PushDAO.updatePush
+     * @Method description 	: push메세지를 수정한다
+     * @param              		: PushVO
+     * @return            			: 
+     * @throws             		: Exception
+     -->	
+    <update id="apt.PushDAO.updatePush" parameterClass="PushVO">
+					UPDATE push_message_info
+					SET
+					   	push_message_title = #pushMessageTitle#
+					  	,device_type = #deviceType# 
+					  	,push_message_type = #pushMessageType# 
+					  	,contents = #contents# 
+					 	 ,contents_url = #contentsUrl#
+					 	 ,send_type = #sendType#
+					    <isNotEqual property="sendType" compareValue="G043002"><!-- 전송유형이 즉시인경우 -->
+					  	 ,send_date=now()
+					  	</isNotEqual>
+					    <isEqual property="sendType" compareValue="G043002">
+				         ,send_date=str_to_date(#sendDate#, '%Y%m%d %H%i')
+				        </isEqual>				        					  
+					  ,update_date = now()
+					  ,update_id = 'onestar'
+					WHERE push_message_reg_no = #pushMessageRegno#
+    </update>	
+	
+	
+	
+	<!--
+     * @Method Name        	: apt.PushDAO.selectPushListExcel
+     * @Method description 	: push Excel 목록을 조회한다.
+     * @param              		: PushVO
+     * @return            			: PushVO
+     * @throws             		: Exception
+     -->	
+	<select id="apt.PushDAO.selectPushListExcel" parameterClass="PushVO" resultClass="PushVO">
+					SELECT c.push_message_reg_no				AS pushMessageRegno,
+						   c.push_message_title                 AS pushMessageTitle, 
+					       c.code_name_kor                      AS codeNameKor,
+                		   c.device_type                        AS deviceType,
+					       c.push_message_type                  AS pushMessageType, 
+					       c.contents                           AS contents,
+					       date_format(c.send_date, '%Y-%m-%d %H:%i')              AS sendDate,
+					       c.send_type, 
+					       d.code_name_kor                      AS sendType, 
+					       date_format(c.create_date, '%Y-%m-%d %H:%i')            AS createDate,					        				        
+					       c.create_id                          AS createId, 
+					       date_format(c.update_date, '%Y-%m-%d %H:%i')            AS updateDate,					        					        
+					       c.update_id                          AS updateId, 
+		                 case 
+		                       when c.send_yn ='Y'
+		                       then '완료'
+		                       else '대기'
+		                       end AS sendYn               
+					FROM  (SELECT a.push_message_reg_no,
+								  a.push_message_title, 
+					              b.code_name_kor,
+                       			  Concat(b.system_grp_code, b.system_code) as device_type,
+					              a.push_message_type, 
+					              a.contents, 
+					              a.send_date, 
+					              a.send_type, 
+					              a.create_date, 
+					              a.create_id, 
+					              a.update_date, 
+					              a.update_id,
+					              a.send_yn
+					        FROM  push_message_info a 
+					        JOIN  com_system_code b 
+					          ON  b.system_grp_code = 'G038' 
+					         AND  a.device_type = Concat(b.system_grp_code, b.system_code)
+					         ) c 
+					JOIN com_system_code d 
+					  ON c.send_type = Concat(d.system_grp_code, d.system_code) 
+				        <isEqual property="excelType" compareValue="excel">
+		          				<include refid="fromWhereAnd"/>
+				        </isEqual>					  
+	</select>	
+	
+	
+
+</sqlMap>

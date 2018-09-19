@@ -1,0 +1,466 @@
+<ion-view view-title="">
+	<ion-content  scroll="false" class="bg_gray"> <!-- bg color -->
+		<div class="container"> <!-- 통합계좌 조회 -->
+			<div class="combine_page">
+				<!-- tabs -->
+				<div class="tab-wrap">
+					<!-- 상단 -->
+					<ion-header-bar>
+						<div class="top_info">
+							금융투자회사 <span>3</span> / 등록계좌 <span>2</span>
+							<a href="go" class="btn_plus">미등록계좌 <span>3</span></a>
+						</div>
+						<ul class="btn_head tab-head">
+							<li class="active"><a href="#none">자산현황</a></li>
+							<li><a href="#none">거래내역</a></li>
+							<li><a href="#none">포트폴리오</a></li>
+							<li><a href="#none">관심종목</a></li>
+						</ul>
+						<div class="sel_cho_wrap"> <!-- 거래내역 페이지에서 add class : trade_select  -->
+							<div class="select_box">
+								<select>
+									<option>선택</option>
+									<option>미래에셋증권투자증권</option>
+									<option>삼성증권</option>
+									<option>동양투자증권</option>
+									<option>키움증권</option>
+								</select>
+							</div>
+							<div class="select_box">
+								<select>
+									<option>선택</option>
+									<option>미래에셋증권투자증권</option>
+									<option>삼성증권</option>
+									<option>동양투자증권</option>
+									<option>키움증권</option>
+								</select>
+							</div>
+							<button type="button" class="btn_search">검색</button>
+						</div>
+					</ion-header-bar>
+					<!--// 상단 -->
+					<ion-slide-box show-pager="false" does-continue="true" class="tab-body">
+						<!-- 자산현황 -->
+						<ion-slide tabs2>
+							<!-- 상단 -->
+                        	<ion-header-bar>
+	                            <ul class="btn_head tab-head">
+	                                <li class="active"><a href="#none">전체</a></li>
+	                                <li><a href="#none">주식</a></li>
+	                                <li><a href="#none">펀드</a></li>
+	                                <li><a href="#none">기타</a></li>
+	                            </ul>
+                            </ion-header-bar>
+                            <!--// 상단 -->
+							<ion-content class="inner_cont_01">
+								<div class="cont">
+									<!-- tabs -->
+									<div class="tab-wrap">
+										<div class="tab-body">
+											<!-- 전체 -->
+											<div class="cont">
+												<div class="all_price">
+													<div class="price_view">
+														<div class="all_head">
+															<span class="left_area">총평가금액</span>
+															<div class="num_right"><span>66,182,947</span> 원</div>
+														</div>
+														<ul>
+															<li>
+																<span class="leaft_area">출금가능금액</span>
+																<div class="num_right"><span>66,182,947</span> 원</div>
+															</li>
+															<li>
+																<span class="leaft_area">현금잔고</span>
+																<div class="num_right"><span>66,182,947</span> 원</div>
+															</li>
+															<li>
+																<span class="leaft_area">평가금액</span>
+																<div class="num_right"><span>66,182,947</span> 원</div>
+															</li>
+															<li>
+																<span class="leaft_area">매수금액</span>
+																<div class="num_right"><span>6,182,947</span> 원</div>
+															</li>
+															<li>
+																<span class="leaft_area">평가손익</span>
+																<div class="num_right"><span>6,182,947</span> 원</div>
+															</li>
+														</ul>
+													</div>
+												</div>
+											</div>
+											<!--// 전체 -->
+											<!-- 주식 -->
+											<div class="cont">
+												<!-- 카드뷰 -->
+												<div class="card_tb">
+													<!-- loop -->
+													<div class="card_tb_cont">
+														<div class="card_head">
+															<span class="left_area">
+																<span class="biz">한국타이어</span>
+																<span class="txt_s">코스피</span>
+															</span>
+															<span class="right_area">금융투자증권</span>
+														</div>
+														<ul class="card_body">
+															<li>
+																<div class="half">
+																	<span class="left_area">수량</span>
+																	<span class="right_area"><em class="ft_black">230</em>주</span>
+																</div>
+																<div class="half">
+																	<span class="left_area">매수금액</span>
+																	<span class="right_area"><em class="ft_black">1,223,222</em>원</span>
+																</div>
+															</li>
+															<li>
+																<div class="half">
+																	<span class="left_area">평가손액</span>
+																	<span class="right_area"><em class="ft_blue">-1,223,222</em>원</span>
+																</div>
+																<div class="half">
+																	<span class="left_area">평가금액</span>
+																	<span class="right_area"><em class="ft_red">1,223,222</em>원</span>
+																</div>
+															</li>
+															<li class="wide">
+																<span class="left_area">수익률</span>
+																<span class="right_area"><em class="ft_red">5.67</em>%</span>
+															</li>
+														</ul>
+													</div>
+													<!--// loop -->
+													<div class="card_tb_cont">
+														<div class="card_head">
+															<span class="left_area">
+																<span class="biz">한국타이어</span>
+																<span class="txt_s">코스피</span>
+															</span>
+															<span class="right_area">금융투자증권</span>
+														</div>
+														<ul class="card_body">
+															<li>
+																<div class="half">
+																	<span class="left_area">수량</span>
+																	<span class="right_area"><em class="ft_black">230</em>주</span>
+																</div>
+																<div class="half">
+																	<span class="left_area">매수금액</span>
+																	<span class="right_area"><em class="ft_black">1,223,222</em>원</span>
+																</div>
+															</li>
+															<li>
+																<div class="half">
+																	<span class="left_area">평가손액</span>
+																	<span class="right_area"><em class="ft_blue">-1,223,222</em>원</span>
+																</div>
+																<div class="half">
+																	<span class="left_area">평가금액</span>
+																	<span class="right_area"><em class="ft_red">1,223,222</em>원</span>
+																</div>
+															</li>
+															<li class="wide">
+																<span class="left_area">수익률</span>
+																<span class="right_area"><em class="ft_red">5.67</em>%</span>
+															</li>
+														</ul>
+													</div>
+												</div>
+												<!-- 카드뷰 -->
+											</div>
+											<!--// 주식 -->
+											<!-- 펀드 -->
+											<div class="cont">
+												펀드
+											</div>
+											<!--// 펀드 -->
+											<!-- 기타 -->
+											<div class="cont">
+												기타
+											</div>
+											<!--// 기타 -->
+										</div>
+									</div>
+									<!--// tabs  -->
+									<!-- 계좌 조회 실패 -->
+									<div class="count_error">
+										<div class="accordian-menu" accordion>
+											<!-- loop -->
+											<div class="accordian-cont cont_wrap">
+												<a href="#none" class="btn_bar"><span class="title_i">2건의 계좌 조회에 실패하였습니다.</span></a>
+												<div class="detail_cont">
+													<ul>
+														<li>사이버 증권 / 17044062737420001 / cyber / 4001 / Account Not Found</li>
+														<li>사이버 증권 / 17044062737420001 / cyber / 4001 / Account Not Found</li>
+													</ul>
+												</div>
+											</div>
+											<!--// loop -->
+										</div>
+									</div>
+									<!--// 계좌 조회 실패 -->
+
+									<!-- 계좌 조회 개수 제한 -->
+									<div class="count_error">
+										<div class="accordian-menu" accordion>
+											<!-- loop -->
+											<div class="accordian-cont cont_wrap">
+												<a href="#none" class="btn_bar"><span class="title_ii">계좌 조회 개수 제한 안내</span></a>
+												<div class="detail_cont">
+													<ul>
+														<li>통합계좌조회 시, 출력 가능한 개수는 <span class="ft_org">계좌별 최대 100개</span>입니다.</li>
+													</ul>
+												</div>
+											</div>
+											<!--// loop -->
+										</div>
+									</div>
+									<!--// 계좌 조회 개수 제한 -->
+									<!-- 검색결과 없을때 -->
+									<div class="not_result">검색 결과가 없습니다.</div>
+									<!--// 검색결과 없을때  -->
+								</div>
+							</ion-content>
+						</ion-slide>
+						<!--// 자산현황 -->
+						<!-- 거래내역 -->
+						<ion-slide>
+							<!-- 상단 -->
+                        	<ion-header-bar>
+	                            <div class="date_bar">
+									<span class="date_box"><span class="input_area"><input type="date" ></span></span>
+									<span class="date_box"><span class="input_area"><input type="date" ></span></span>
+									<button type="button" class="btn_search">검색</button>
+								</div>
+                            </ion-header-bar>
+                            <!--// 상단 -->
+							<ion-content class="inner_cont_02">
+								<div class="cont">
+									<div class="trade_area">
+										<!-- 카드뷰 -->
+										<div class="card_tb">
+											<!-- loop -->
+											<div class="card_tb_cont">
+												<div class="card_head">
+													<span class="left_area">
+														<span class="biz">2017-05-01</span>
+														<span class="ft_red">매수</span>
+													</span>
+													<span class="right_area">금융투자증권</span>
+												</div>
+												<ul class="card_body">
+													<li>
+														<div class="half">
+															<span class="left_area">종목</span>
+															<span class="right_area ft_black">한국타이어</span>
+														</div>
+														<div class="half">
+															<span class="left_area">매수금액</span>
+															<span class="right_area"><em class="ft_black">400</em>주</span>
+														</div>
+													</li>
+													<li>
+														<div class="half">
+															<span class="left_area">금액</span>
+															<span class="right_area"><em class="ft_black">1,223,222</em>원</span>
+														</div>
+														<div class="half">
+															<span class="left_area">잔액</span>
+															<span class="right_area"><em class="ft_black">1,223,222</em>원</span>
+														</div>
+													</li>
+												</ul>
+											</div>
+											<!--// loop -->
+											<div class="card_tb_cont">
+												<div class="card_head">
+													<span class="left_area">
+														<span class="biz">2017-05-01</span>
+														<span class="ft_blue">매도</span>
+													</span>
+													<span class="right_area">금융투자증권</span>
+												</div>
+												<ul class="card_body">
+													<li>
+														<div class="half">
+															<span class="left_area">종목</span>
+															<span class="right_area ft_black">한국타이어</span>
+														</div>
+														<div class="half">
+															<span class="left_area">매수금액</span>
+															<span class="right_area"><em class="ft_black">400</em>주</span>
+														</div>
+													</li>
+													<li>
+														<div class="half">
+															<span class="left_area">금액</span>
+															<span class="right_area"><em class="ft_black">1,223,222</em>원</span>
+														</div>
+														<div class="half">
+															<span class="left_area">잔액</span>
+															<span class="right_area"><em class="ft_black">1,223,222</em>원</span>
+														</div>
+													</li>
+												</ul>
+											</div>
+										</div>
+										<!--// 카드뷰 -->
+									</div>
+								</div>
+							</ion-content>
+						</ion-slide>
+						<!--// 거래내역 -->
+						<!-- 포트폴리오 -->
+						<ion-slide tabs2>
+							<!-- 상단 -->
+                        	<ion-header-bar>
+	                            <!-- 상단 -->
+								<ul class="btn_head tab-head tab_03"> <!--기본은4개 / tab_03 : 탭이 3개일경우 / tab_02 : 탭이 2개일경우 / -->
+									<li class="active"><a href="#none">주식</a></li>
+									<li><a href="#none">펀드</a></li>
+									<li><a href="#none">기타</a></li>
+								</ul>
+								<!--// 상단 -->
+                            </ion-header-bar>
+                            <!--// 상단 -->
+							<ion-content class="inner_cont_03"> 
+								<div class="cont">
+									<!-- tabs -->
+									<div class="tab-wrap">
+										<div class="tab-body">
+											<!-- 주식 -->
+											<div class="cont">
+												<!-- 카드뷰 -->
+												<div class="card_tb">
+													<!-- loop -->
+													<div class="card_tb_cont">
+														<div class="card_head">
+															<span class="left_area">
+																<span class="biz">한국타이어</span>
+																<span class="txt_s">코스피</span>
+															</span>
+															<span class="right_area">금융투자증권</span>
+														</div>
+														<ul class="card_body">
+															<li>
+																<div class="half">
+																	<span class="left_area">수량</span>
+																	<span class="right_area"><em class="ft_black">230</em>주</span>
+																</div>
+																<div class="half">
+																	<span class="left_area">수익률</span>
+																<span class="right_area"><em class="ft_red">5.67</em>%</span>
+																</div>
+															</li>
+														</ul>
+													</div>
+													<!--// loop -->
+													<div class="card_tb_cont">
+														<div class="card_head">
+															<span class="left_area">
+																<span class="biz">한국타이어</span>
+																<span class="txt_s">코스피</span>
+															</span>
+															<span class="right_area">금융투자증권</span>
+														</div>
+														<ul class="card_body">
+															<li>
+																<div class="half">
+																	<span class="left_area">수량</span>
+																	<span class="right_area"><em class="ft_black">230</em>주</span>
+																</div>
+																<div class="half">
+																	<span class="left_area">수익률</span>
+																<span class="right_area"><em class="ft_blue">-5.67</em>%</span>
+																</div>
+															</li>
+														</ul>
+													</div>
+												</div>
+												<!--// 카드뷰 -->
+												<!-- 계좌 조회 실패 -->
+												<div class="count_error">
+													<!-- 아코디언 메뉴 -->
+													<div class="accordian-menu" accordion>
+														<!-- loop -->
+														<div class="accordian-cont cont_wrap">
+															<a href="#none" class="btn_bar"><span class="title_i">2건의 계좌 조회에 실패하였습니다.</span></a>
+															<div class="detail_cont">
+																<ul>
+																	<li>사이버 증권 / 17044062737420001 / cyber / 4001 / Account Not Found</li>
+																	<li>사이버 증권 / 17044062737420001 / cyber / 4001 / Account Not Found</li>
+																</ul>
+															</div>
+														</div>
+														<!--// loop -->
+													</div>
+													<!--// 아코디언 메뉴 -->
+												</div>
+												<!--// 계좌 조회 실패 -->
+											</div>
+											<!--// 주식 -->
+											<!-- 펀드 -->
+											<div class="cont">
+												펀드
+											</div>
+											<!--// 펀드 -->
+											<!-- 기타 -->
+											<div class="cont">
+												기타
+											</div>
+											<!--// 기타 -->
+										</div>
+									</div>
+									<!--// tabs  -->
+								</div>
+							</ion-content>
+						</ion-slide>
+						<!--// 포트폴리오 -->
+						<!-- 관심종목 -->
+						<ion-slide>
+							<ion-content class="inner_cont_04"> <!-- 탭없는 -->
+							<div class="cont">
+								<dl class="interest_item">
+									<dt>
+										<div class="left_area">총 <span class="ft_org">4</span>건</div>
+										<div class="select_box">
+											<select>
+												<option>관심그룹1</option>
+												<option>관심그룹2</option>
+												<option>관심그룹3</option>
+												<option>관심그룹4</option>
+												<option>관심그룹5</option>
+											</select>
+										</div>
+									</dt>
+									<dd> <!--  2쌍식 -->
+										<ul>
+										<!-- loop -->
+											<li>메리츠투자증권</li>
+											<li>한투자증권</li>
+											<li>SK</li>
+											<li>한투자증권</li>
+											<li>한투자증권</li>
+										</ul>
+									</dd>
+								</dl>
+							</div>
+							</ion-content>
+						</ion-slide>
+						<!--// 관심종목 -->
+					</ion-slide-box>
+				</div>
+				<!--// tabs  -->
+			</div>
+		</div>
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<div class="button_area btn_bottom_area">
+			<a href="#go" class="btn_middle btn_black">확인</a>
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+</ion-view>

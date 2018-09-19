@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>개인 | koscom OpenAPI Platform </title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="stylesheet" href="../../../css/spt/import.css">
+	<!-- IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	  <script src="../../../js/cmm/html5shiv.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="../../../js/cmm/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../../../js/cmm/jquery-ui.js"></script>
+	<script type="text/javascript" src="../../../js/spt/common_pub.js"></script>
+	<script>
+	$(function() {
+		// 달력
+	    $("#datepicker1, #datepicker2").datepicker({
+	      showOn: "button",
+	      buttonImage: "../../../images/cpt/common/calendar.png",
+	      buttonImageOnly: true,
+	      buttonText: "달력보기"
+	    });
+	});
+	
+	$(function(){
+		$('.service').on('click', function(){
+		   if($(this).hasClass('on')){
+			  $(this).removeClass('on');
+			  $(this).children().text('열림');
+			  $('.chk_fail ul').hide();
+		   }else{
+			  $(this).addClass('on');
+			  $(this).children().text('닫힘');
+			  $('.chk_fail ul').show();
+		   }
+		   return false;
+		});
+	});
+	</script>
+</head>
+
+<body>
+
+<div class="wrap">
+
+	<!-- header -->
+	<header class="header">
+		<div class="header_area">
+			<div class="skip_navi">
+				<a href="#gnb">메뉴 바로가기</a>
+				<a href="#content">본문 바로가기</a>		
+			</div>
+
+			<ol class="util">
+				<li class="menu"><a href="#none">로그인</a></li>
+				<li class="menu"><a href="#none">회원가입</a></li>
+				<li class="site on"><a href="#none">개인</a></li>
+				<li class="site"><a href="#none">기업/금투사</a></li>
+			</ol>
+
+			<nav id="gnb">
+				<h1 class="logo"><a href="#none"><img src="../../../images/spt/common/logo.png" alt="Koscom OpenAPI Platform"></a></h1>
+
+				<div class="gnb_menu">
+					<ul>
+						<li><a href="#none">금융투자 핀테크 포털</a></li>
+						<li><a href="#none">핀테크 서비스</a></li>
+						<li><a href="#none">서비스 신청</a></li>
+						<li><a href="#none">서비스지원</a></li>
+					</ul>
+				</div>
+			</nav>
+		</div>
+	</header>
+	<!-- // header -->
+
+	<!-- section -->
+	<section>
+		<!-- location -->
+		<div class="location">
+			<ul>
+				<li class="home"><a href="#none">홈</a></li>
+				<li><a href="#none">마이페이지</a></li>
+				<li class="on">통합 계좌 조회</li>
+			</ul>
+		</div>
+		<!-- // location -->
+
+		<div class="container">
+			<!-- lnb -->
+			<article class="lnb">				
+				<h2>마이페이지</h2>
+				<ul>
+					<li><a href="#none" class="on">동의서 관리</a></li> <!-- renewal -->
+				</ul>
+			</article>
+			<!-- // lnb -->
+
+			<!-- content -->
+			<article id="content">
+				<!-- renewal -->
+				<div class="sub_title">
+					<h3>동의서 관리</h3>
+				</div>
+
+				<!-- con -->
+				<div class="con">
+
+					<!-- tab_menu -->
+					<div class="tab_menu">
+						<ul>
+							<li class="on"><a href="#tab01">유효</a></li>
+							<li><a href="#tab02">폐기</a></li>
+						</ul>
+					</div>
+					<!-- // tab_menu -->
+					
+					<!-- tab_cont -->
+					<!-- 유효 -->
+					<div class="tab_cont" id="tab01">
+					<!-- tbtype_list2 type3 -->
+					<table class="tbtype_list2 type3 type3_2 mt25">
+						<caption>핀테크 기업. 금융투자회사, 금융거래정보 제공 동의, 관리 정보리스트</caption>
+						<colgroup>
+							<col style="width:15%;">
+							<col style="width:auto;">
+							<col style="width:25%;">
+							<col style="width:23%;">
+						</colgroup>
+						<thead>
+							<tr>
+								<th scope="col">핀테크</th>
+								<th scope="col">금융투자회사</th>
+								<th scope="col">금융거래정보 제공 동의</th>
+								<th scope="col">관리</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th scope="row">다음 카카오</th>
+								<td class="left">삼성증권, 교보증권, 신한투자증권, 유진증권, 한화증권, 한양증권, 현대증권</td>
+								<td>2017-05-04 ~ 2018-05-03</td>
+								<td>
+									<a href="#none" class="btn_type9 ">재동의</a>
+									<a href="#layer01" class="btn_type4 ml5" id="layer_open">폐기</a> <!-- 레이어팝업 하단에 위치 -->
+									<a href="#none" class="btn_type6 ml5">조회</a>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">티레이더</th>
+								<td class="left">삼성증권, 교보증권</td>
+								<td>2017-05-04 ~ 2018-05-03</td>
+								<td>
+									<a href="#none" class="btn_type9 ">재동의</a>
+									<a href="#layer01" class="btn_type4 ml5">폐기</a> 
+									<a href="#none" class="btn_type6 ml5">조회</a>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row">뭐라</th>
+								<td class="left">삼성증권, 교보증권, 신한투자증권, 유진증권, 한화증권, 한양증권, 현대증권</td>
+								<td>2017-05-04 ~ 2018-05-03</td>
+								<td>
+									<a href="#none" class="btn_type9 ">재동의</a>
+									<a href="#layer01" class="btn_type4 ml5">폐기</a> 
+									<a href="#none" class="btn_type6 ml5">조회</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<!-- // tbtype_list2 type3 -->
+					</div>	
+					<!--// 유효 -->
+
+					<!--폐기 -->
+					<div class="tab_cont" id="tab02">
+						<table class="tbtype_list2 type3 type3_2 mt25"> <!-- modify : type3_2 -->
+							<caption>핀테크 기업. 금융투자회사, 금융거래정보 제공 동의, 폐기일시 관리 정보리스트</caption>
+							<colgroup>
+								<col style="width:15%;">
+								<col style="width:auto;">
+								<col style="width:27%;">
+								<col style="width:18%;">
+								<col style="width:5%;">
+							</colgroup>
+							<thead>
+								<tr>
+									<th scope="col">핀테크</th>
+									<th scope="col">금융투자회사</th>
+									<th scope="col">금융거래정보 제공 동의</th>
+									<th scope="col">폐기일시</th>
+									<th scope="col">관리</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<th>다음 카카오</th>
+									<td class="left">삼성증권, 교보증권, 신한투자증권, 유진증권, 한화증권, 한양증권, 현대증권</td>
+									<td>2017-05-04 ~ 2018-05-03</td>
+									<td>2017-08-1201:29</td>
+									<td><a href="#" class="btn_type6">조회</a></td>
+								</tr>
+								<tr>
+									<th>티레이더</th>
+									<td class="left">삼성증권, 교보증권</td>
+									<td>2017-05-04 ~ 2018-05-03</td>
+									<td></td>
+									<td><a href="#" class="btn_type6">조회</a></td>
+								</tr>
+								<tr>
+									<th>뭐라</th>
+									<td class="left">삼성증권, 교보증권, 신한투자증권, 유진증권, 한화증권, 한양증권, 현대증권</td>
+									<td>2017-05-04 ~ 2018-05-03</td>
+									<td></td>
+									<td><a href="#" class="btn_type6">조회</a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<!--// !--폐기 -->
+
+				</div>
+				<!-- // con -->
+				<!--// renewal -->
+
+			</article>
+			<!-- // content -->
+		</div>
+	</section>
+	<!-- section -->
+
+	<!-- layer_popup --> <!-- renewal -->
+	<div class="layer_popup">
+
+		<div class="dimm"></div>
+		<!-- #layer01 -->
+		<div class="layer_box" id="layer01" style="width:340px;top:30%;">
+			<div class="layer_tit">동의서 폐기</div>
+
+			<div class="layer_con">
+				<div class="cont_pop">
+					<p class="">해당 동의서를 폐기하시면 연결된 핀테크앱도 함께 해지됩니다. 동의서를 폐기하시겠습니까?</p>
+
+					<p class="title">연결된 앱</p>
+					<div class="scl_gray">
+						카카오증권, 미래에셋
+					</div>
+					<div class="btn_area">
+						<a href="#none" class="btn_type2">취소</a>
+						<a href="#none" class="btn_type1">확인</a>
+					</div>
+				</div>
+			</div>
+
+			<a href="#none" class="layer_close">레이어팝업 닫기</a>
+		</div>
+
+	</div>
+	<!-- // layer_popup -->
+
+	<!-- footer -->
+	<footer class="footer">
+		<div class="footer_area">
+			<ul class="link">
+				<li><a href="#none">서비스이용약관</a></li>
+				<li class="point"><a href="#none">개인정보취급방침</a></li>
+			</ul>
+			<address>
+				서울시 영등포구 여의나루로 76 ㈜코스콤  대표전화 : 02-767-7114 <span>이메일 : master@koscom.openplatform.com</span>
+				<span class="copy">COPYRIGHT 2016. KOSCOM CORP. ALL RIGHTS RESERVED.</span>
+			</address>
+
+			<div class="family_site">
+				<!-- selBox2 -->
+				<span class="sel_box2">
+					<select style="min-width:150px">
+						<option>코스콤 사이트</option>
+					</select>
+				</span>
+				<!-- selBox2 -->
+				<span class="sel_box2">
+					<select style="min-width:170px">
+						<option>관련 사이트</option>
+					</select>
+				</span>
+			</div>
+
+		</div>
+	</footer>
+	<!-- // footer -->
+
+</div>
+
+</body>
+</html>

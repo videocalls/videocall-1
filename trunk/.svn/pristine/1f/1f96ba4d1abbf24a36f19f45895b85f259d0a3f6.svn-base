@@ -1,0 +1,96 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>KOSCOM</title>
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0" />
+
+	<link rel="stylesheet" type="text/css" href="/resources/libs/ionic/css/ionic.min.css" />
+	<link rel="stylesheet" type="text/css" href="/resources/libs/ion-floating-menu-master/dist/ion-floating-menu.min.css" />
+	
+	<link rel="stylesheet" type="text/css" href="/resources/css/app.css" />
+
+	<script type="text/javascript" src="/resources/libs/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="/resources/libs/ionic/js/ionic.bundle.js"></script>
+	<script type="text/javascript" src="/resources/libs/ion-floating-menu-master/dist/ion-floating-menu.min.js"></script>
+	<script type="text/javascript" src="/resources/libs/require.js"></script>
+	<script type="text/javascript" src="/resources/libs/koscom.js"></script>
+</head>
+<body ng-clock>
+	<ion-side-menus enable-menu-with-back-views="true">
+		<ion-side-menu-content>
+			<ion-nav-bar>
+				<ion-nav-back-button></ion-nav-back-button>
+				<ion-nav-buttons side="right">
+					<button menu-toggle="right" class="button button-icon icon ion-navicon" ng-click="menuToggle()"></button>
+				</ion-nav-buttons>
+			</ion-nav-bar>
+			<ion-nav-view name="app-view">
+			</ion-nav-view>
+		</ion-side-menu-content>
+
+		<ion-side-menu side="right" width="sideMenuWidth">
+			<ion-header-bar class="menu_header">
+				<!-- 상단 -->
+				<div class="top_area">
+					<div class="btn_area">
+						<ul class="left_area">
+							<li><a href="#go" class="btn_icon btn_home">home</a></li>
+							<li><a href="#go" class="btn_icon btn_set">설정</a></li>
+						</ul>
+						<button type="button" class="btn_icon btn_close">닫기</button>
+					</div>
+					<div class="txt_area">안녕하세요 <span>코스콤</span>님</div>
+				</div>
+				<!--// 상단 -->
+			</ion-header-bar>
+			<ion-content class="navigation">
+				<div class="menu_wrap">
+					<!-- 메뉴 -->
+					<div class="link_area">
+						<ul class="link_main">
+							<li><a href="#go" class="btn_icon btn_use">앱사용신청</a></li>
+							<li><a href="#go" class="btn_icon btn_acc_admin">계좌관리</a></li>
+							<li><a href="#go" class="btn_icon btn_acc_inquiry">통합계좌조회</a></li>
+						</ul>
+						<ul class="link_sub">
+							<li>
+								<a href="#go">금융투자 핀테크 포털</a>
+								<ol>
+									<li><a href="#go" class="btn_icon icon_menu_01">핀테크 포털 소개</a></li>
+									<li><a href="#go" class="btn_icon icon_menu_07">핀테크 앱</a></li>
+									<li><a href="#go" class="btn_icon icon_menu_02">참여사 소개</a></li>
+								</ol>
+							</li>
+
+							<li>
+								<a href="#go">고객 지원</a>
+								<ol>
+									<li><a href="#go" class="btn_icon icon_menu_03">공인인증서 관리</a></li>
+									<li><a href="#go" class="btn_icon icon_menu_04">이용방법</a></li>
+									<li><a href="#go" class="btn_icon icon_menu_05">공지사항</a></li>
+									<li><a href="#go" class="btn_icon icon_menu_06">자주묻는 질문</a></li>
+									<li><a href="mailto:open@koscom.co.kr" class="btn_icon icon_menu_08">문의하기</a></li>
+								</ol>
+							</li>
+						</ul>
+					</div>
+					<!--//.메뉴  -->
+				</div>
+			</ion-content>
+			<ion-footer-bar>
+				<!-- 하단 버튼 -->
+				<button type="button" class="btn_normal btn_logout">로그아웃</button>
+				<!--// 하단 버튼 -->
+			</ion-footer-bar>
+		</ion-side-menu>
+	</ion-side-menus>
+
+	
+	<script type="text/javascript" src="/resources/app.module.js"></script>
+	<script type="text/javascript" src="/resources/ctrls/sample1.js"></script>
+	<script type="text/javascript" src="/resources/directives/tabs.js"></script>
+	<script type="text/javascript" src="/resources/directives/accordion.js"></script>
+</body>
+</html>

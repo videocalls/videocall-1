@@ -1,0 +1,144 @@
+<!-- 
+ * (C) Copyright AhnLab, Inc.
+ *
+ * Any part of this source code can not be copied with
+ * any method without prior written permission from
+ * the author or authorized person.
+ *
+ * @version		$Revision: 15612 $
+ *
+ -->
+ 
+<!DOCTYPE HTML> <!-- HTML5 -->
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="expires" content="-1" />
+<meta http-equiv="pragma" content="no-cache" /> 
+<meta http-equiv="cache-control" content="no-cache" /> 
+<title>astx2</title>
+
+<script src="include.js"></script>
+
+<style>
+#content .filed { }
+#content .input { text-align:right; }
+#content .button { width:6em; }
+</style>
+
+</head>
+<body>
+
+<p>AhnLab Safe Transaction</p>
+<br>
+
+<div id="content">
+<p>(case 1) e2e_type=userid(21) passwd(22)</p>
+<form name="login" action="do_submit_none2e.jsp" onsubmit="return onSubmit()" method="post">
+	<table>
+	<tr>	
+		<td class="filed">userid:</td> 
+		<td class="input"><input name="userid" id="userid" type="text" e2e_type="21" /></td>
+	</tr>
+	<tr>
+		<td class="filed">passwd:</td> 
+		<td class="input"><input name="passwd1" id="passwd1" type="password" autocomplete="off" e2e_type="22" /></td>
+	</tr>
+	<tr>
+		<td class="filed">&nbsp;</td> 
+		<td class="input"><input name="btn" class="button" type="submit" value="Login" /></td>		
+	</tr>
+	</table>
+
+	<input type="hidden" name="passwd2" value="" />
+	
+</form>
+
+<br>
+<p>(case 2) e2e_type=userid(21) passwd(21)</p>
+<form name="login2" action="do_submit_none2e.jsp" method="post">
+	<table>
+	<tr>	
+		<td class="filed">userid:</td> 
+		<td class="input"><input name="userid" id="userid" type="text" e2e_type="21" /></td>
+	</tr>
+	<tr>
+		<td class="filed">passwd:</td> 
+		<td class="input"><input name="passwd1" id="passwd1" type="password" autocomplete="off" e2e_type="21" /></td>
+	</tr>
+	<tr>
+		<td class="filed">&nbsp;</td> 
+		<td class="input"><input name="btn" class="button" type="submit" value="Login" /></td>		
+	</tr>
+	</table>
+
+	<input type="hidden" name="passwd2" value="" />
+	
+</form>
+</div>
+<br>
+
+<script>
+window.onload = function() 
+{
+	checkInstallASTX2(
+		function onSuccess() {
+				
+			$ASTX2.initNonE2E();
+				
+		}
+	);
+}
+
+function checkSubmit()
+{
+	var len = document.login.userid.value.length;
+	if(len <= 0)	{
+		alert('아이디를 입력하여 주십시오.');
+		return false;
+	}
+
+	len = document.login.passwd1.value.length;
+	if(len <= 0)	{
+		alert('비밀번호를 입력하여 주십시오.');
+		return false;
+	}
+	
+	return true;
+}
+
+function onSubmit()
+{
+	$_astxu.log('onSubmit');
+	
+	if(false == checkSubmit())
+		return false;
+
+	document.login.userid.blur();
+	document.login.passwd1.blur();
+	
+	$ASTX2.getE2EText(
+			document.getElementById('passwd1'),
+			function onReceive(value, errno) 
+			{
+				if(errno == 0) { // success
+					$_astxu.log('ASTX.getE2EText() value='+value);
+				
+				 	document.login.passwd2.value = value;
+					document.login.submit();
+				}else {
+					$_astxu.log('ASTX.getE2EText() errno='+errno);
+				}
+			}
+	);
+
+	return false;
+}
+
+var debuger = new myDebuger();
+debuger.write_output(document, true);
+
+</script>
+
+</body>
+</html>

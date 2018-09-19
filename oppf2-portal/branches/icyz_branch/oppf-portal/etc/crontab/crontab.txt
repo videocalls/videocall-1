@@ -1,0 +1,2 @@
+#매일 오전 7시에 메일 처리
+0 7 * * * /opt/portal-www/term_mail.py

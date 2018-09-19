@@ -1,0 +1,559 @@
+{
+    "version" : {
+        "android":"1.0.0",
+        "androidUpdateMandatory" : "N",
+        "androidInstallUrl" : "https://play.google.com/store/apps/details?id=com.oppf.mobile&hl=ko",
+        "ios":"1.0.0",
+        "iosUpdateMandatory" : "N",
+        "iosInstallUrl" : "https://itunes.apple.com/kr/app/%EC%98%A4%ED%95%80/id1255027364?mt=8"    
+    },
+    "baseUrl" : "",
+    "service" : [{
+        "name" : "ITR_01_010",
+        "desc" : "버전 관리",
+        "url" : "/apis/version?refrashcookie=${refrashcookie}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "ITR_02_010",
+        "desc" : "EverSafe validation 확인",
+        "url" : "/apis/eversafe/verifySession",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "push",
+        "desc" : "App 목록 조회",
+        "url" : "/apis/push",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "APP_01_010",
+        "desc" : "App 목록 조회",
+        "url" : "/apis/apps?type=${type}@param&searchAppCategory=${searchAppCategory}@param&searchKeyword=${searchKeyword}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "APP_01_020",
+        "desc" : "App 상세 조회",
+        "url" : "/apis/apps/${appId}@param?type=${type}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+		"name" : "APP_01_030",
+		"desc" : "연결 계좌 정보 조회",
+		"url" : "/apis/apps/${appId}@param/account?type=${type}@param",
+		"method" : "get",
+		"resCache" : []
+	},{
+		"name" : "APP_01_040",
+		"desc" : "(나)동의서 조회",
+		"url" : "/apis/apps/${appId}@param/terms?checkedPubCompanyList=${checkedPubCompanyList}@param&type=${type}@param",
+		"method" : "get",
+		"resCache" : []
+	},{
+		"name" : "APP_01_050",
+		"desc" : "(가)동의서 조회",
+		"url" : "/apis/terms/common",
+		"method" : "get",
+		"resCache" : []
+	},{
+		"name" : "APP_01_060",
+		"desc" : "ARS 인증 정보 조회",
+		"url" : "/apis/apps/terms/ars",
+		"method" : "get",
+		"resCache" : []
+	},{
+		"name" : "APP_01_070",
+		"desc" : "인증 전화 요청",
+		"url" : "/apis/apps/terms/ars",
+		"method" : "post",
+		"resCache" : []
+	},{
+        "name" : "APP_01_080",
+        "desc" : "(가)동의서 동의여부 체크.",
+        "url" : "/apis/terms/common/check?pubCompanyCodeId=${pubCompanyCodeId}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+		"name" : "APP_01_090",
+		"desc" : "App 등록",
+		"url" : "/apis/apps",
+		"method" : "post",
+		"resCache" : []
+	},{
+		"name" : "APP_01_100",
+		"desc" : "App 삭제",
+		"url" : "/apis/appsdelete/${appId}@param",
+		"method" : "post",
+		"resCache" : []
+	},{
+		"name" : "APP_01_110",
+		"desc" : "App 수정",
+		"url" : "/apis/appsput",
+		"method" : "post",
+		"resCache" : []
+	},{
+		"name" : "APP_01_120",
+		"desc" : "(가)동의서 등록",
+		"url" : "/apis/terms/common",
+		"method" : "post",
+		"resCache" : []
+	},{
+        "name" : "APP_01_130",
+        "desc" : "(나)동의서 동의 여부 체크",
+        "url" : "/apis/apps/${appId}@param/terms/check?checkedPubCompanyList=${checkedPubCompanyList}@param&subCompanyCodeId=${subCompanyCodeId}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "APP_01_140",
+        "desc" : "App Terms 삭제",
+        "url" : "/apis/appsdelete/${appId}@param/terms",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "APP_01_150",
+        "desc" : "App Terms 재동의",
+        "url" : "/apis/apps/${appId}@param/terms",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "APP_01_160",
+        "desc" : "Common Terms 유효기간 만료 1달전 체크",
+        "url" : "/apis/terms/common/reSync/check",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "sampleFaq",
+        "desc" : "FAQ 목록",
+        "url" : "/apis/faq",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "faqDetail",
+        "desc" : "FAQ 상세",
+        "url" : "/apis/faq/${faqSeq}@param",
+        "method" : "get",
+        "resCache" : []
+    }, {
+        "name" : "MBR_02_300",
+        "desc" : "회원 상세 정보 조회",
+        "url" : "/apis/member",
+        "method" : "get",
+        "resCache" : []
+    }, {
+        "name" : "MBR_02_100",
+        "desc" : "서비스 로그인",
+        "url" : "/apis/login",
+        "method" : "post",
+        "resCache" : [
+            ["${customerId}@app", "body.loginRes.customerId", "string", 1],
+            ["${customerNameKor}@app", "body.loginRes.customerNameKor", "string", 1],
+            ["${temporaryMemberYn}@app", "body.loginRes.temporaryMemberYn", "string", 1],
+            ["${integrationAccountYn}@app", "body.loginRes.integrationAccountYn", "string", 1]
+        ]
+    },{
+        "name" : "MBR_02_140",
+        "desc" : "약관 동의 조회",
+        "url" : "/apis/terms?customerTermsSystemKind=${customerTermsSystemKind}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "APP_05_010",
+        "desc" : "공지사항 목록",
+        "url" : "/apis/notices?page=${page}@param&size=${size}@param&searchType=${searchType}@param&searchKeyword=${searchKeyword}@param&noticePopYn=${noticePopYn}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "MBR_02_180",
+        "desc" : "회원가입",
+        "url" : "/apis/member",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "MBR_02_170",
+        "desc" : "OTP 확인",
+        "url"  : "/apis/otp/check",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "MBR_02_171",
+        "desc" : "OTP 저장",
+        "url"  : "/apis/otp/save",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "MBR_02_172",
+        "desc" : "OTP 삭제",
+        "url"  : "/apis/otp/delete",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "APP_05_020",
+        "desc" : "자주 묻는 질문 목록",
+        "url" : "/apis/faq?page=${page}@param&size=${size}@param&searchType=${searchType}@param&searchKeyword=${searchKeyword}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "ACC_01_010",
+        "desc" : "가상계좌 발급 목록 조회",
+        "url" : "/apis/accountList",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "ACC_01_011",
+        "desc" : "가상계좌 상세 조회",
+        "url" : "/apis/accounts?customerVtaccountNo=${customerVtaccountNo}@param&companyProfileRegNo=${companyProfileRegNo}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "MBR_02_230",
+        "desc" : "인증코드 전송",
+        "url" : "/apis/requestSafeAuth",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "MBR_02_240",
+        "desc" : "휴대폰 인증",
+        "url" : "/apis/requestConfirm",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "OAU_01_010",
+        "desc" : "OAuth 정보 조회",
+        "url" : "/apis/oauth",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "OAU_01_015",
+        "desc" : "OAuth 로그인 OTP 사용여부 조회",
+        "url" : "/apis/oauth/otp/${userId}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "OAU_01_020",
+        "desc" : "OAuth 사용자 인증",
+        "url" : "/apis/authenticate",
+        "method" : "post",
+        "resCache" : [
+            ["${customerId}@app", "body.loginRes.customerId", "string", 1],
+            ["${customerNameKor}@app", "body.loginRes.customerNameKor", "string", 1],
+            ["${temporaryMemberYn}@app", "body.loginRes.temporaryMemberYn", "string", 1],
+            ["${integrationAccountYn}@app", "body.loginRes.integrationAccountYn", "string", 1]
+        ]
+    },{
+        "name" : "OAU_01_025",
+        "desc" : "OAuth App 신청조회",
+        "url" : "/apis/oauth/apps/${clientId}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "OAU_01_030",
+        "desc" : "OAuth 인증 이력 등록",
+        "url" : "/apis/scope",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "OAU_01_040",
+        "desc" : "Authorization code 요청",
+        "url" : "/apis/authorization",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "INT_01_010",
+        "desc" : "통합계좌 연결 정보 조회",
+        "url" : "/apis/integrated/accounts",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "INT_01_020",
+        "desc" : "통합계좌 APP 정보 조회",
+        "url" : "/apis/integrated",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "OAU_01_050",
+        "desc" : "통합계좌 Access Token 발급",
+        "url" : "/apis/token",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "INT_02_010",
+        "desc" : "통합계좌 잔고 조회",
+        "url" : "/apis/integrated/balance?companyCodeId=${companyCodeId}@param&vtAccountNo=${vtAccountNo}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "INT_02_020",
+        "desc" : "통합계좌 거래내역 조회",
+        "url" : "/apis/integrated/transaction?companyCodeId=${companyCodeId}@param&vtAccountNo=${vtAccountNo}@param&searchDateFrom=${searchDateFrom}@param&searchDateTo=${searchDateTo}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "INT_02_030",
+        "desc" : "통합계좌 포트폴리오 조회",
+        "url" : "/apis/integrated/portfolio?companyCodeId=${companyCodeId}@param&vtAccountNo=${vtAccountNo}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "INT_02_040",
+        "desc" : "통합계좌 관심종목 조회",
+        "url" : "/apis/integrated/interest?companyCodeId=${companyCodeId}@param&vtAccountNo=${vtAccountNo}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "SKC_01_030",
+        "desc" : "인증서 유효성 체크",
+        "url" : "/apis/signKorea/verify",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "SKC_01_040",
+        "desc" : "인증서 사용자 등록 여부",
+        "url" : "/apis/signKorea/isCustomerCertDn",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "SKC_01_050",
+        "desc" : "공인인증서 재등록/등록",
+        "url" : "/apis/signKorea/updateCustomerCertDn",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "COM_01_010",
+        "desc" : "공통코드 그룹조회",
+        "url" : "/apis/commonCodes/${systemGrpCode}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "COM_01_020",
+        "desc" : "공통코드 상세조회",
+        "url" : "/apis/commonCodes/${systemGrpCode}@param/${systemCode}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "COM_01_030",
+        "desc" : "공통코드 (그룹코드상세코드) 조회",
+        "url" : "/apis/commonCodes/${commonCode}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "COM_01_040",
+        "desc" : "공통코드 (그룹코드상세코드) 조회",
+        "url" : "/apis/commonCode/companys?companyServiceType=${companyServiceType}@param&companyNameEngAlias=${companyNameEngAlias}",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "MEM_01_020",
+        "desc" : "CI 기존 가입 이력 조회",
+        "url" : "/apis/member/duplicationCheck/ci",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "MEM_01_030",
+        "desc" : "ID 중복 확인",
+        "url" : "/apis/member/duplicationCheck/Id",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "MEM_01_040",
+        "desc" : "Email 중복 확인",
+        "url" : "/apis/member/duplicationCheck/email",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "MBR_02_125",
+        "desc" : "공인인증서 등록여부",
+        "url" : "/apis/member/signKorea/${customerId}@param/findId",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "APP_01_030",
+        "desc" : "로그인 후)발급된 계좌 목록 전체 조회한다.",
+        "url" : "/apis/apps/${appId}@param/account?type=${type}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "MEM_01_050",
+        "desc" : "통신사 약관동의 조회",
+        "url" : "/apis/mobileTerms",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "ACC_01_060",
+        "desc" : "금융투자회사 목록 조회",
+        "url" : "/apis/account/companies",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "MEM_02_010",
+        "desc" : "비회원 입력",
+        "url" : "/apis/temporaryMember",
+        "method" : "post",
+        "resCache" : [
+            ["${customerId}@app", "body.loginRes.customerId", "string", 1],
+            ["${customerNameKor}@app", "body.loginRes.customerNameKor", "string", 1],
+            ["${temporaryMemberYn}@app", "body.loginRes.temporaryMemberYn", "string", 1],
+            ["${integrationAccountYn}@app", "body.loginRes.integrationAccountYn", "string", 1]
+        ]
+    },{
+        "name" : "ACC_01_071",
+        "desc" : "계좌정보 입력 step 2-1",
+        "url" : "/apis/account/${companyCodeId}@param/custAccouts?companyProfileRegNo=${companyProfileRegNo}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "ACC_01_072",
+        "desc" : "계좌정보 입력 step 2-2(직접입력)(구분목록조회)",
+		"url" : "/apis/account/${companyCodeId}@param/realAccInfo?companyProfileRegNo=${companyProfileRegNo}@param",
+        "method" : "get",
+        "resCache" : []
+   },{
+        "desc" : "로그아웃",
+        "name" : "MBR_02_130",
+        "url" : "/apis/logout",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "MBR_02_150",
+        "desc" : "공인인증서 로그인",
+        "url" : "/apis/login/verify",
+        "method" : "post",
+        "resCache" : [
+            ["${customerId}@app", "body.loginRes.customerId", "string", 1],
+            ["${customerNameKor}@app", "body.loginRes.customerNameKor", "string", 1],
+            ["${temporaryMemberYn}@app", "body.loginRes.temporaryMemberYn", "string", 1],
+            ["${integrationAccountYn}@app", "body.loginRes.integrationAccountYn", "string", 1]
+        ]
+    },{
+        "name" : "MBR_02_120",
+        "desc" : "공인인증서 확인",
+        "url" : "/apis/confirmVerify",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "MBR_02_121",
+        "desc" : "비밀번호 수정",
+        "url" : "/apis/password",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "MBR_02_110",
+        "desc" : "아이디 찾기",
+        "url" : "/apis/find/id",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "ACC_01_020",
+        "desc" : "실계좌 조회",
+        "url" : "/apis/cmm/sif/realAccounts?companyNameEngAlias=${companyNameEngAlias}@param&accessToken=${accessToken}@param",
+        "method" : "get",
+        "resCache" : []
+   },{
+        "name" : "ACC_01_090",
+        "desc" : "계좌 추가 삭제 변경",
+        "url" : "/apis/cmm/sif/procAccInfo",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "MBR_02_182",
+        "desc" : "비밀번호 유효성 검사",
+        "url" : "/apis/valid/password",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "MBR_02_160",
+        "desc" : "테스트용 로그인",
+        "url" : "/apis/login/test",
+        "method" : "post",
+        "resCache" : [
+            ["${customerId}@app", "body.loginRes.customerId", "string", 1],
+            ["${customerNameKor}@app", "body.loginRes.customerNameKor", "string", 1],
+            ["${temporaryMemberYn}@app", "body.loginRes.temporaryMemberYn", "string", 1],
+            ["${integrationAccountYn}@app", "body.loginRes.integrationAccountYn", "string", 1]
+        ]
+    },{
+        "name" : "MBR_02_280",
+        "desc" : "서비스 이용약관 등록정보 코드 조회",
+        "url" : "/apis/terms/intro/services/compony",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "MBR_02_285",
+        "desc" : "서비스 이용약관 조회",
+        "url" : "/apis/terms/intro/services/contents?termsType=${termsType}@param&companyCodeId=${companyCodeId}@param&termsKey=${termsKey}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "MBR_02_320",
+        "desc" : "비밀번호 확인",
+        "url" : "/apis/member/confirmPassword",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "MBR_02_360",
+        "desc" : "공인인증서 로그인 실패시 패스워드 실패 카운트 증가",
+        "url" : "/apis/login/updateCertPasswordFailCnt",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "MBR_02_310",
+        "desc" : "회원정보 수정",
+        "url" : "/apis/memberput",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "ACC_01_100",
+        "desc" : "기업약관을 저장한다.",
+        "url" : "/apis/account/saveSvcCompanyTermsConsnt?companyCodeId=${companyCodeId}@param&companyTermsType=${companyTermsType}@param&companyTermsContentRegSeq=${companyTermsContentRegSeq}@param",
+        "method" : "get",
+        "resCache" : []
+    },{
+        "name" : "MBR_02_340",
+        "desc" : "비밀번호 확인 및 변경",
+        "url" : "/apis/member/changePassword",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "MBR_02_330",
+        "desc" : "회원탈퇴",
+        "url" : "/apis/memberdelete",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "MBR_02_370",
+        "desc" : "모바일 Push 수신여부 변경",
+        "url" : "/apis/member/changeMobilePush",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "MBR_02_190",
+        "desc" : "약관 재 동의",
+        "url" : "/apis/member/terms/again",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "MBR_03_100",
+        "desc" : "회원가입 완료 메일",
+        "url" : "/apis/member/mail",
+        "method" : "post",
+        "resCache" : []
+    },{
+        "name" : "MBR_03_110",
+        "desc" : "회원수정 이메일 중복체크",
+        "url" : "/apis/member/update/duplication/email",
+        "method" : "post",
+        "resCache" : []
+    },{
+    	"name" : "push",
+        "desc" : "push 조회",
+        "url" : "/apis/push/message?pushMessageRegNo=${pushMessageRegNo}@param",
+        "method" : "get",
+        "resCache" : []
+    }
+
+
+
+
+
+]
+}

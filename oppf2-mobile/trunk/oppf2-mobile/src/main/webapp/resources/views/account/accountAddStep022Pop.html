@@ -1,0 +1,84 @@
+<ion-view view-title="계좌정보 입력">
+	<ion-content>
+        <form name="$root.accAddStep2Form">
+			<div class="container">
+				<div class="vi_area acc_stage">
+					<ul>
+						<li class="stage_01">금융투자회사 선택</li>
+						<li class="stage_02 active ">계좌정보 입력</li>
+					</ul>
+				</div>
+				<div class="inner_cont type2">
+					<h2 class="title_h2">계좌정보 입력</h2>
+					<!-- 정보입력 -->
+					<ul class="entry_area">
+						<li>
+							<div class="title_s">금융투자회사</div>
+							<div class="input_area"><input type="text" placeholder="" value="{{vm.companyNameKorAlias}}" class="biz_name" disabled /></div>
+						</li>
+						<li>
+							<div class="title_s">구분</div>
+							<div class="select_box">
+								<select ng-model="vm.realAccType" name="realAccType" required
+					                    ng-options="data.codeNameEng as data.codeNameKor for data in vm.cmmAccTypeList">
+					                    <option value="" selected="selected">선택</option>
+								</select>
+								
+							</div>
+							<div class="txt_error" ng-messages="$root.accAddStep2Form.realAccType.$error" ng-show="!$root.accAddStep2Form.realAccType.$pristine">
+		                    	<div ng-message="required">구분을 선택해주세요.</div>
+		                    </div>
+						</li>
+						<li>
+							<div class="title_s">실계좌번호</div>
+							<div class="input_area"><input type="tel" placeholder="- 없이 입력" ng-model="vm.realAccNo" name="realAccNo" required number-valid /></div>
+							<div class="txt_error" ng-messages="$root.accAddStep2Form.realAccNo.$error" ng-show="!$root.accAddStep2Form.realAccNo.$pristine">
+		                    	<div ng-message="required">실계좌번호를 입력해주세요.</div>
+		                    	<div ng-message="numberolny">실계좌번호는 숫자만 입력 가능합니다.</div>
+		                    </div>
+						</li>
+						<li>
+							<div class="title_s">별칭</div>
+							<div class="input_area"><input type="text" placeholder="별칭을 입력하세요." ng-model="vm.customerVtaccountAlias" name="customerVtaccountAlias" required /></div>
+							<div class="txt_error" ng-messages="$root.accAddStep2Form.customerVtaccountAlias.$error" ng-show="!$root.accAddStep2Form.customerVtaccountAlias.$pristine">
+		                    	<div ng-message="required">별칭을 입력하세요.</div>
+		                    </div>
+						</li>
+					</ul>
+					<!--// 정보입력 -->
+					<div ng-if="vm.sptCustomerCompanyTermsProfileRes">
+						<!-- 약관동의 -->
+						<p class="title_s"><span class="ft_org">[{{vm.sptCustomerCompanyTermsProfileRes.companyName}}]</span> 약관동의</p>
+						<div class="agreement_area acc_service"> 
+							<div class="accordian-menu" accordion>
+								<div class="accordian-cont cont_wrap">
+									<a href="#none" class="btn_bar">서비스 이용약관에 동의합니다.</a>
+									<div class="detail_cont">								
+										<ion-content>
+	                                        <pre class="scroll_box">{{vm.sptCustomerCompanyTermsProfileRes.companyTermsContent}}</pre>
+                                    	</ion-content>
+                                    </div>
+									<div class="form_input">
+										<input type="checkbox" id="agree1" name="agree1" ng-model="vm.agree" required><label for="agree1"></label>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="txt_error" ng-messages="$root.accAddStep2Form.agree1.$error">
+		                    	<div ng-message="required">약관에 동의하셔야 됩니다.</div>
+		                    </div>
+						<!--// 약관동의 -->
+					</div>
+				</div>
+			</div>
+		</form>
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<div class="button_area btn_both btn_bottom_area"> <!-- btn_both : 2개일때 / btn_three : 3개일때 -->
+			<button class="btn_middle btn_black" ng-click="vm.cancel();">이전</button>
+			<button class="btn_middle btn_black_org" ng-click="vm.save();" ng-disabled="$root.accAddStep2Form.$invalid">저장</button>
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+</ion-view>

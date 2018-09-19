@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 자본시장 공동 핀테크 오픈플랫폼 구축
+* @FileName : AptMyInfo_SQL.xml
+* @Comment  : [개인회원정보]정보관리를 위한 SQL XML
+* @author   : 포털 유제량
+* @since    : 2016.06.28
+* @version  : 1.0
+* @see
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2016.06.28   유제량        최초생성
+-->
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.myp.aptMyInfo.service.impl.AptMyInfoDAO">
+  	<typeAlias alias="AptMyInfoVO" type="kr.co.koscom.oppf.apt.myp.aptMyInfo.service.AptMyInfoVO"/>
+  	 
+  	<!--
+     * @Method Name        : selectCheckPw
+     * @Method description : [admin회원정보] ID,PW 정보를 조회한다.(현재 PW 정보 일치 여부 확인)
+     * @param              : String
+     * @return             : String
+     * @throws             : Exception
+     -->
+  	<select id="apt.AptMyInfoDAO.selectCheckPw" parameterClass="AptMyInfoVO" resultClass="java.lang.String" >
+	  	select count(admin_password) as checkPw 
+	  	from com_admin_profile
+	  	where 1=1
+	  	and admin_id = #adminId#
+	  	and admin_profile_reg_no = #adminProfileRegNo#
+	  	and admin_password = enc_char_ins(#adminPassword#,10,'SHA','com_admin_profile','admin_password',user(),connection_id())
+	  	order by admin_profile_reg_no desc /* 최근의 탈퇴회원이나 최근에 가입 및 재가입한 회원 */
+        limit 0,1
+  	</select>
+  	
+    <!--
+     * @Method Name        : updateAptMyPwMod
+     * @Method description : [개인회원정보:비밀번호변경]을 한다.
+     * @param              : AptMyInfoVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="apt.AptMyInfoDAO.updateAptMyPwMod" parameterClass="AptMyInfoVO">
+	    update com_admin_profile set
+		    admin_password = enc_char_ins(#adminPassword#,10,'SHA','com_admin_profile','admin_password',user(),connection_id()),
+		    admin_temp_password_yn = 'N',
+		    admin_chg_password_date = sysdate(),
+		    admin_expire_password_date = date_format(date_add(sysdate(), interval #admin_expire_password_date# month), '%Y%m%d'),
+            admin_final_password_date = date_format(date_add(sysdate(), interval #admin_final_password_date# month), '%Y%m%d'),
+            admin_password_fail_cnt = 0,
+		    update_date = sysdate(),
+		    update_id = #adminProfileRegNo#
+	    where 1=1
+	    and admin_id = #adminId#
+	    and admin_profile_reg_no = #adminProfileRegNo#
+    </update>
+    
+    <!--
+     * @Method Name        : insertAptMyPwMod
+     * @Method description : [개인회원정보:비밀번호변경]을 한다.(history update)
+     * @param              : AptMyInfoVO
+     * @return             : int
+     * @throws             : Exception
+     -->    
+    <insert id="apt.AptMyInfoDAO.insertAptMyPwMod" parameterClass="AptMyInfoVO">
+        insert into com_admin_profile_hist(
+            admin_seq,              
+            admin_profile_reg_no,
+            admin_id,                  
+            admin_password,            
+            admin_temp_password_yn,    
+            admin_chg_password_date,   
+            admin_expire_password_date,
+            admin_final_password_date, 
+            admin_password_fail_cnt,                            
+            admin_name_kor,            
+            admin_name_eng,            
+            admin_phone_no,               
+            admin_email,               
+            delete_date,                  
+            create_date,                  
+            create_id
+        )            
+        select 
+        	ifnull((
+        	    select ifnull(max(cast(admin_seq as SIGNED)), 0) + 1
+        	    from com_admin_profile_hist
+        	    where admin_profile_reg_no = a.admin_profile_reg_no
+        	), 1),
+            admin_profile_reg_no,           
+            admin_id,                  
+            admin_password,            
+            admin_temp_password_yn,
+            admin_chg_password_date,
+            admin_expire_password_date,
+            admin_final_password_date,
+            admin_password_fail_cnt,
+            admin_name_kor,
+            admin_name_eng,
+            admin_phone_no,
+            admin_email,
+            delete_date,
+            create_date,
+            admin_profile_reg_no
+        from com_admin_profile a
+        where 1=1
+        and admin_profile_reg_no = #adminProfileRegNo#                      
+    </insert>
+    
+</sqlMap>

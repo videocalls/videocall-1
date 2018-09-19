@@ -1,0 +1,149 @@
+<html>
+<head>
+	<title>Home</title>
+	<meta charset="utf-8">
+	<access origin="*" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="#1b1b1e" />
+	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0" />
+	<meta name="format-detection" content="telephone=no">
+	
+	<link rel="stylesheet" type="text/css" href="/resources/libs/ionic/css/ionic.min.css" />
+	<link rel="stylesheet" type="text/css" href="/resources/libs/ion-floating-menu-master/dist/ion-floating-menu.min.css" />
+	<link rel="stylesheet" type="text/css" href="/resources/css/app.css" />
+	
+	<script type="text/javascript">
+		var PlatformChecker = {
+			isAndroid: function () {
+				return navigator.userAgent.match(/Android/i);
+			},
+			isIOS: function () {
+				return navigator.userAgent.match(/iPhone|iPad|iPod/i);
+			}
+		};
+		if(PlatformChecker.isAndroid()) {
+        	document.write('<script type="text/javascript" src="/resources/libs/cordova/android/cordova.js"></'+'script>');
+//        	document.write("<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;\">");
+        	document.write("<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src * 'self' data: https:; content:;\">");			
+        }
+        else if(PlatformChecker.isIOS()) {
+        	document.write('<script type="text/javascript" src="/resources/libs/cordova/ios/cordova.js"></'+'script>');
+        	document.write("<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;\">");
+		}
+        else {
+        	document.write('<script type="text/javascript" src="/resources/libs/cordova/browser/cordova.js"></'+'script>');
+		}
+	</script>
+
+	<script type="text/javascript" src="/resources/libs/jquery/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="/resources/libs/ionic/js/ionic.bundle.min.js"></script>
+	<script type="text/javascript" src="/resources/libs/angular-messages.js"></script>
+	<script type="text/javascript" src="/resources/libs/ion-floating-menu-master/dist/ion-floating-menu.min.js"></script>
+	<script type="text/javascript" src="/resources/libs/require.js"></script>
+	<script type="text/javascript" src="/resources/libs/koscom.js"></script>
+</head>
+<body ng-clock ng-controller="AppMain">
+	<ion-side-menus enable-menu-with-back-views="true" overlay="true">
+		<ion-side-menu-content watch-menu drag-content="false">
+			<ion-nav-bar align-title="center">
+				<ion-nav-back-button></ion-nav-back-button>
+		
+				<ion-nav-buttons side="right">
+					<button menu-toggle="right" class="button button-icon icon ion-navicon" ng-click="menuToggle()" ng-hide="isAppToApp"></button>
+				</ion-nav-buttons>
+			</ion-nav-bar>
+			<ion-nav-view name="app-view">
+				<div class="dimmed" id="menuDim" style="z-index:13;"></div>
+				
+				<!-- floating menu -->
+				<div ng-show="isLogin && floatingButton">
+					<ion-floating-menu>
+						<ion-floating-item text="계좌관리" icon="add" ng-click="goPageNotMenu('accountList');"></ion-floating-item>
+						<ion-floating-item text="앱사용신청" icon="app" ng-click="goPageNotMenu('appRequestList');"></ion-floating-item>
+					</ion-floating-menu>
+					<div id="floatingDimm" class="dimmed"></div>
+				</div>
+				<div class="login_before" ng-hide="isLogin || !floatingButton">
+					<a href="" class="btn_login_link" ng-click="goPageNotMenu('login');">로그인</a>
+				</div>
+				
+				<!-- tooltips -->
+				<div class="tips" id="tooltips" style="display:none;">
+					<div class="detail_tip active"></div>
+				</div>
+				<div class="dimmed" id="tooltipsDim" style="z-index:13;"></div>
+			</ion-nav-view>
+		</ion-side-menu-content>
+
+		<ion-side-menu side="right" width="sideMenuWidth">
+			<ion-header-bar class="menu_header">
+				<!-- 상단 -->
+				<div class="top_area">
+					<div class="btn_area">
+						<ul class="left_area">
+							<li><a href="" class="btn_icon btn_home" ng-click="pageMove('main', {redirect: false});">home</a></li>
+							<li><a href="" class="btn_icon btn_set"  ng-click="pageMove('settings');">설정</a></li>
+						</ul>
+						<button type="button" class="btn_icon btn_close" menu-close>닫기</button>
+					</div>
+    				<div class="txt_area" ng-show="isLogin">안녕하세요. <span>{{customerNameKor}}</span>님</div>
+    				<div class="txt_area" ng-hide="isLogin">안녕하세요. OFIN입니다.</div>
+				</div>
+				<!--// 상단 -->
+			</ion-header-bar>
+			<ion-content class="navigation">
+				<div class="menu_wrap">
+					<!-- 메뉴 -->
+					<div class="link_area">
+						<ul class="link_main">
+							<li><a href="" class="btn_icon btn_use" ng-click="pageMove('appRequestList');">앱사용신청</a></li>
+							<li><a href="" class="btn_icon btn_acc_admin" ng-click="pageMove('accountList');">계좌관리</a></li>
+							<li><a href="" class="btn_icon btn_acc_inquiry" ng-click="pageMove('intAcnt');" >통합계좌조회</a></li>
+						</ul>
+						<ul class="link_sub">
+							<li>
+								<a href="">금융투자 핀테크 포털</a>
+								<ol>
+									<li><a href="" class="btn_icon icon_menu_01" ng-click="pageMove('introPortal');">핀테크 포털 소개</a></li>
+									<li><a href="" class="btn_icon icon_menu_07" ng-click="pageMove('appIntro');">핀테크 앱</a></li>
+									<li><a href="" class="btn_icon icon_menu_02" ng-click="pageMove('introPartners');">참여사</a></li>
+								</ol>
+							</li>
+
+							<li>
+								<a href="">고객 지원</a>
+								<ol>
+									<li><a href="" class="btn_icon icon_menu_03" ng-click="pageMove('signKoreaCert', {signPlainText : '테스트 plain Text',pageType : 'importPage', certClick : false});">공인인증서 관리</a></li>
+									<li><a href="" class="btn_icon icon_menu_04" ng-click="pageMove('introWay');">이용방법</a></li>
+									<li><a href="" class="btn_icon icon_menu_05" ng-click="pageMove('notice');">공지사항</a></li>
+									<li><a href="" class="btn_icon icon_menu_06" ng-click="pageMove('faq');">자주묻는 질문</a></li>
+                                    <li><a href="mailto:open@koscom.co.kr" class="btn_icon icon_menu_08">문의하기</a></li>
+								</ol>
+							</li>
+						</ul>
+					</div>
+					<!--//.메뉴  -->
+				</div>
+                <br>
+			</ion-content>
+			<ion-footer-bar>
+				<!-- 하단 버튼 -->
+				<button type="button" class="btn_normal btn_login" ng-click="pageMove('login');" ng-hide="isLogin">로그인</button>
+				<button type="button" class="btn_normal btn_login" ng-click="pageMove('memberPrepare');" ng-hide="isLogin">회원가입</button>
+				<button type="button" menu-close class="btn_normal btn_logout" ng-click="logout();" ng-show="isLogin">로그아웃</button>
+				<!--// 하단 버튼 -->
+			</ion-footer-bar>
+		</ion-side-menu>
+	</ion-side-menus>
+
+	<script type="text/javascript" src="/resources/app.module.js"></script>
+	<script type="text/javascript" src="/resources/directives/menuWatch.js"></script>
+	<script type="text/javascript" src="/resources/directives/tabs.js"></script>
+	<script type="text/javascript" src="/resources/directives/accordion.js"></script>
+	<script type="text/javascript" src="/resources/directives/emailValid.js"></script>
+	<script type="text/javascript" src="/resources/directives/idValid.js"></script>
+	<script type="text/javascript" src="/resources/directives/pwdValid.js"></script>
+	<script type="text/javascript" src="/resources/directives/numberValid.js"></script>
+	<script type="text/javascript" src="/resources/directives/tooltips.js"></script>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<ion-view view-title="샘플">
+	<ion-content class="padding">
+		<h2>DataCache</h2>
+		<button ng-click="vm.setAppData();" on-tap="vm.tap();">setAppData</button>
+		<button ng-click="vm.getAppData();">getAppData</button>
+		<br/>
+		<button ng-click="vm.setPageData();">setPageData</button>
+		<button ng-click="vm.getPageData();">getPageData</button>
+		<br/><br/>
+		<h2>Popup</h2>
+		<button ng-click="vm.alert();">Alert</button>
+		<button ng-click="vm.confirm();">Confirm</button>
+		<button ng-click="vm.modelTemplate();">modelTemplate</button>
+		<button ng-click="vm.modelTemplateUrl();">modelTemplateUrl</button>
+		<button ng-click="vm.sampleNoticePopup();">공지사항 팝업</button>
+		<br/><br/>
+		
+		<h2>화면이동</h2>
+		<a href="#/sampleOauth">핀테크연동 샘플</a><br/>
+		<a href="#/intAcnt">통합계좌조회</a><br/>
+		<a href="#/notice">공지사항가기</a><br/>
+		<button ng-click="vm.go();">Go</button><br/>
+		<button ng-click="vm.href();">href</button><br/>
+		<button ng-click="vm.goParam();">goParam</button><br/>
+		<a href="#/sampleForm">Form 예제 가기</a><br/>
+		<a href="#/samplePush">Push 예제 가기</a><br/>
+		<a href="#/signKoreaList">공인인증서 가기</a><br/>
+
+		<a href="#/memberTerms">회원가입</a><br/>
+		<a href="#/login">로그인</a>
+
+		<br/><br/>
+		
+		<h2>로그인관련 show/hide</h2>
+		<div ng-show="isLogin">
+			로그인 되어 있으면 보임.
+		</div>
+		<div ng-hide="isLogin">
+			로그인 되어 있지 않으면 보임.
+		</div>
+		
+		
+		<h2>AppToApp 관련 show/hide</h2>
+		<div ng-show="isAppToApp">
+			App to App 일 경우 보임
+		</div>
+		<div ng-hide="isAppToApp">
+			App to App 일 경우 보이지 않음
+		</div>
+		
+		<h2>외부링크열기</h2>
+        <button ng-click="vm.openUrl();">외부링크열기</button>
+		
+		<h2>보안키패드</h2>
+        <button ng-click="vm.keypadOpen();">패드 열기</button>
+        <button ng-click="vm.cipherToText();">cipherToText</button>
+        
+        
+        <h2>인증서</h2>
+        <button ng-click="vm.keypadOpen2();">패드 열기(0, 0)</button>
+        <button ng-click="vm.getUserCertList();">getUserCertList</button>
+        <button ng-click="vm.checkPwd();">비밀번호 확인</button>
+        <button ng-click="vm.getSignedData();">전자서명</button>
+        <button ng-click="vm.simpleCertImport1();">인증번호 가져오기</button>
+        <button ng-click="vm.simpleCertImport2();">인증서 다운로드</button>
+        
+<!--         <button ng-click="vm.modelSingKoreaCertUrl();">공인인증서 선택 리스트 팝업(사용안함!!)</button> -->
+        <br>
+        <br><button ng-click="vm.goParamCert()">공인인증서 전자서명 페이지</button>
+        <br>
+        선택 콜백 정보 받는법 <br>
+        호출한 페이지의 ionicView.enter 이벤트에 다음과 같이 결과값(signKoreaCertResultData)을 받는다. <br>
+    <pre class="bg_gray">
+    $scope.$on('$ionicView.enter', function(){
+        console.log('sample page enter');
+        vm.signKoreaResultData = '';
+        $koscomBridge.getAppData("signKoreaCertResultData").then(function(res){
+            if(res.result == 1) {
+                $koscomPopup.alert("공인인증 결과값 확인",angular.toJson(res))
+            }
+            vm.signKoreaResultData = res;
+
+            $koscomBridge.setAppData("signKoreaCertResultData", {});
+            
+        }).catch(function(){
+            console.log("공인인증서 결과값 확인 실패!!!!!");
+        });
+    });
+    </pre>        
+
+        <br>
+        선택 콜백 정보
+        <br>
+        <div>{{vm.signKoreaResultData}}</div>
+        <br>
+         <h2>디바이스 정보</h2>
+        <button ng-click="vm.deviceInfo();">디바이스 정보</button>
+        <br>
+        <div>{{vm.deviceInfoText}}</div>
+        <br><br>
+        
+		<h2>EverSafe 보안</h2>
+        <button ng-click="vm.eversafeVerifySession();">EverSafe 보안 Token 확인</button>
+        <br><br>
+        <br><br>
+        
+        <h2>$koscomLoading - 로딩 화면표시</h2>
+        <button ng-click="vm.loading();">EverSafe 보안 Token 확인</button>
+		<br><br>
+        <br><br><br><br>
+        <br><br>
+        
+        <h2>Tooltip Confirm</h2>
+        <a href="#go" class="btn_middle btn_black_org icon-tip" tooltips-confirm="aaaaaaaaa">전자서명</a>
+		<br><br>
+        <br><br><br><br>
+        <br><br>
+        
+        
+        <form>
+        	<input type="text" style="border: 1px solid red;width: 200px;height: 70px;ime-mode:disabled;"/><br/>
+        	<input type="password" style="border: 1px solid red;width: 200px;height: 70px;" /><br/>
+        	<input type="date" style="border: 1px solid red;width: 200px;height: 70px;" /><br/>
+        	<input type="month" style="border: 1px solid red;width: 200px;height: 70px;" /><br/>
+        	<input type="time" style="border: 1px solid red;width: 200px;height: 70px;" /><br/>
+        	<input type="range" style="border: 1px solid red;width: 200px;height: 70px;" /><br/>
+        	<input type="email" style="border: 1px solid red;width: 200px;height: 70px;" /><br/>
+        	<input type="number" style="border: 1px solid red;width: 200px;height: 70px;" /><br/>
+        	<input type="tel" style="border: 1px solid red;width: 200px;height: 70px;" /><br/>
+        	<input type="url" style="border: 1px solid red;width: 200px;height: 70px;" /><br/>
+        	<input type="search" style="border: 1px solid red;width: 200px;height: 70px;" /><br/>
+        </form>
+
+		
+	</ion-content>
+	<!-- footer -->
+	<ion-footer-bar>
+		<button style="width:50%;">TEST</button>
+		<button style="width:50%;">TEST</button>
+	</ion-footer-bar>
+	
+</ion-view>
+
+
+<div class="tips" id="aaaaaaaaa">
+		<div class="detail_tip btn_btm_pop">
+			<div class="inner_popup">
+				<div class="cont_popup">
+					<div style="padding:20px 20px 15px 20px;margin:0;font-size: 12px;color: #1b1b1e;font-family:'Noto Sans Korean','Malgun Gothic',Dotum,'droid sans fallback','AppleGothic',sans-serif;">
+						<p style="color:1b1b1e;font-size:16px;padding:0;margin:0 0 5px 0;font-weight:bold;">금융거래 정보 재동의 안내</p>
+						<p style="padding:0;margin:0;">재동의 시 기존 동의서는 폐기되고, 신규 동의서가 발급됩니다</p>
+						<p style="padding:0;margin:0;font-weight:bold;font-size:13px;margin:10px 0 5px;;">&lt;기존 동의서 정보&gt;</p>
+						<ol style="font-size:12px; list-style:none; margin:0; padding:0;">
+							<li style="margin:0;padding:0;line-height:18px;">1. 정보를 제공받을 기업명 :
+							<span style="color:#ed6d1f;">
+								${subCompanyName}
+							</span></li>
+							<li style="margin-top:7px;line-height:18px;">2. 정보제공 금융투자회사
+								<div style="padding:20px 10px;border: 1px solid #dddfdf;margin: 7px 0;word-break:break-all;height:60px;overflow-x:hidden;overflow-y:auto;">
+									++[$termsPubCompanyList]++
+								</div>
+							</li>
+							<li style="margin-top:7px;line-height:18px;">3. 유효기간 :
+								<span style="color:#ed6d1f;">++[$termsStartDateY]++</span>년
+								<span style="color:#ed6d1f;">++[$termsStartDateM]++</span>월
+								<span style="color:#ed6d1f;">++[$termsStartDateD]++</span>일 ~
+								<span style="color:#ed6d1f;">++[$termsEndDateY]++</span>년
+								<span style="color:#ed6d1f;">++[$termsEndDateM]++</span>월
+								<span style="color:#ed6d1f;">++[$termsEndDateD]++</span>일
+								<span style="color:#ed6d1f;">(++[$termsPolicyYear]++년간)</span>
+							</li>
+						</ol>
+					</div>
+				</div>
+				<div class="button_area">
+					<button type="button" class="btn_btm">확인</button>
+				</div>
+			</div>
+		</div>
+	</div>

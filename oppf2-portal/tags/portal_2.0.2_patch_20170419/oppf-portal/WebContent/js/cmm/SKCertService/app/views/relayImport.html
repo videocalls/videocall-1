@@ -1,0 +1,92 @@
+<!doctype html>
+<html>
+<head>
+    <!-- 임시로 지움. -->
+    <!--<meta charset="UTF-8">-->
+    <title>인증서 가져오기</title>
+    <link type="text/css" rel="stylesheet" href="../styles/css/common.css"/>
+    <!--[if IE 7]>
+    <link rel="stylesheet" type="text/css" href="../styles/css/ie7Debug.css"/>
+    <![endif]-->
+    
+    <script>
+        (function (){
+            try{
+                //console.log("page documnet.domain: " + document.domain);
+                parent.document.location;
+            }catch(e) {
+                if (document.domain.indexOf(".co.kr") != -1) {
+                    //co.kr
+                    var domainArr = document.domain.split(".");
+                    //console.log("arr:" + domainArr);
+                    document.domain = domainArr[domainArr.length - 3] + ".co.kr";
+                }
+                else if (document.domain.indexOf(".com") != -1) {
+                    //com
+                    var domainArr = document.domain.split(".");
+                    //console.log("arr:" + domainArr);
+                    document.domain = domainArr[domainArr.length - 2] + ".com";
+                }
+            }
+        })();
+    </script>
+    
+    <script type="text/javascript" src="../styles/js/jquery-1.11.0.min.js"></script>
+    
+    <script type="text/javascript" src="../library/json3.min.js"></script>
+    <script type="text/javascript" src="../library/iecompatibility.js"></script>
+    <script type="text/javascript" src="../library/webAccess.js"></script>
+
+    <script src="../language/relayImport.js"></script>
+</head>
+
+<script>
+    function dragCheck(){
+        if(window.navigator.userAgent.toLowerCase().indexOf('firefox') !== -1)
+            return;
+        addHandle(document.getElementById('titleText'), window);
+    }
+</script>
+<body onload="dragCheck()">
+<body>
+<div class="CERT_titlebar">
+    <!--타이틀바-->
+    <!--<h1 id="titleText"><script>document.write(relayImportLang(3))</script></h1>-->
+    <h1><ul><li id="titleText" tabindex="1"><script>document.write(relayImportLang(3))</script></li></ul></h1>
+    <!--닫기버튼-->
+    <div class="CERT_util_btnClose" id="x_btn"><a href="#" tabindex="2" alt="닫힘" title="닫힘"></a></div>
+</div>
+<div class="certWrap">
+    <div class="cert_topimg"><img src="../styles/images/list2_03.jpg" alt="코스콤 공인인증센터"></div>
+    <div class="CERT_16">
+        <div class="CERT_16_1">
+            <table class="CERT16_1_wrap">
+                <tr>
+                    <td class="num">1.</td>
+                    <td tabindex="3"><script>document.write(relayImportLang(4)); webAccess.setTitle(3, relayImportLang(4))</script></td>
+                </tr>
+                <tr>
+                    <td class="num">2.</td>
+                    <td tabindex="4"><script>document.write(relayImportLang(5)); webAccess.setTitle(4, relayImportLang(5))</script></td>
+                </tr>
+            </table>
+        </div>
+        <h2 tabindex="5"><script>document.write(relayImportLang(6))</script></h2>
+        <p class="CERT_16_2">
+            <input type="text" id="code1" class="CERT_inputStyle" style="width:90px; height:26px;" value="" readonly tabindex="6"> -
+            <input type="text" id="code2" class="CERT_inputStyle" style="width:90px; height:26px;" value="" readonly tabindex="7"> -
+            <input type="text" id="code3" class="CERT_inputStyle" style="width:90px; height:26px;" value="" readonly tabindex="8">
+        </p>
+    </div>
+    <div class="CERT_btns_common">
+        <p class="CERT_btnBg_mbtn" id="certAgree_confirmBtn"><a href="#" tabindex="9998"><script>document.write(relayImportLang(0))</script></a></p>
+        <p class="CERT_btnBg_mbtn" id="certAgree_cancelBtn"><a href="#" tabindex="9999"><script>document.write(relayImportLang(1))</script></a></p>
+    </div>
+</div><!--//certWrap-->
+</body>
+<script type="text/javascript" src="../library/json3.min.js"></script>
+<script type="text/javascript" src="../library/iecompatibility.js"></script>
+
+<script type="text/javascript" src="../scripts/relayImport.js"></script>
+<script type="text/javascript" src="../library/dragiframe.js"></script>
+</html>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.koscom.videocall.dao.Repository">
+
+	<insert id="insertClient" parameterType="com.koscom.videocall.model.ClientVO">
+		INSERT INTO 
+			clnt (clnt_id, clnt_ci, clnt_email, pwd, name, dob,gender,hp_no, sms_prsl_yn, 
+			post_no, dtl_addr, new_reg_date, chg_date, out_yn, out_date) 
+		VALUES 
+			(#{clntid}, #{clntci}, #{clntemail}, #{pwd}, #{name}, #{dob}, #{gender}, #{hpno}, #{smsprslyn}, 
+			#{postno}, #{dtladdr}, SYSDATE(), SYSDATE(), #{outyn}, #{outdate})
+	</insert>
+
+	<select id="selectClientInfo" parameterType="string" resultType="com.koscom.videocall.model.ClientVO">
+		SELECT 
+			lnt_id, clnt_ci, clnt_email, pwd, name, dob,gender,hp_no, sms_prsl_yn, 
+			post_no, dtl_addr, new_reg_date, chg_date, out_yn, out_date
+		FROM 
+			clnt 
+		WHERE clnt_email=#{clntid} and pwd = #{pwd}
+	</select>
+	
+	<select id="selectAllClients" resultType="com.koscom.videocall.model.ClientVO">
+		SELECT 
+			lnt_id, clnt_ci, clnt_email, pwd, name, dob,gender,hp_no, sms_prsl_yn, 
+			post_no, dtl_addr, new_reg_date, chg_date, out_yn, out_date 
+		FROM
+			clnt
+	</select>
+	<select id="getNextClientId" resultType="int">
+		SELECT 
+			MAX(clnt_id) + 1
+		FROM
+			clnt
+	</select>
+
+
+	<update id="updateClient" parameterType="com.koscom.videocall.model.ClientVO">
+		UPDATE clnt
+		SET 
+			name=#{name}, password=#{password}, phone=#{phone}, email=#{email} 
+		WHERE 
+			userid=#{userid}
+	</update>
+	
+	<delete id="deleteClient" parameterType="com.koscom.videocall.model.ClientVO">
+		DELETE FROM
+			clnt 
+		WHERE
+			clnt_email=#{clntid} and pwd = #{pwd}
+	</delete>
+	
+	<select id="getClientPassword" parameterType="string" resultType="string">
+		SELECT
+			pwd
+		FROM
+			clnt
+		WHERE clnt_email=#{clntid}
+	</select>
+	
+	<select id="selectAllFirms" resultType="com.koscom.videocall.model.FirmVO">
+		SELECT 
+			firm_no, firm_nm, tel_no, e-mail, ceo_nm 
+		FROM
+			firm
+	</select>
+</mapper>

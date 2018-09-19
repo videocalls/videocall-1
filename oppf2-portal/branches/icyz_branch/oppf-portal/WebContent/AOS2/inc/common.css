@@ -1,0 +1,7 @@
+body,p,td,select,input,textarea,li { font-family:Gulim; font-size:9pt; }
+
+body { padding: 0.5em; margin: 0.5em; word-break:break-all; word-wrap:break-word; }
+input,textarea { padding: 0.1em; margin: 0.1em; }
+ul,	li,	ol { list-style-type:none; padding-left:0; margin-left:0; }
+
+.params { color:blue; font-weight: bold; }

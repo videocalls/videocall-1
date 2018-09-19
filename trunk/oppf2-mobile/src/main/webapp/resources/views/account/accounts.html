@@ -1,0 +1,56 @@
+<ion-view  view-title="계좌 정보">
+	<ion-content>
+        <form name="$root.accountForm">
+		<div class="container">
+			<div class="inner_cont type2" ng-repeat="item in vm.resultAccountList">
+				<!-- 정보입력 -->
+				<ul class="entry_area acc_admin">
+					<li>
+						<div class="title_s">금융투자회사</div>
+						<div class="input_area"><input type="text" placeholder="" ng-model="vm.companyNameKorAlias" class="biz_name" disabled /></div>
+					</li>
+					<li>
+						<div class="title_s">구분</div>
+						<div class="input_area"><input type="text" placeholder="" ng-model="vm.customerRealaccountTypeNm" disabled />
+						<input type="hidden" placeholder="" ng-model="vm.customerRealaccountTypeNmEng" disabled />
+						</div>
+						
+					</li>
+					<li>
+						<div class="title_s">실제계좌번호</div>
+						<div class="input_area"><input type="text" placeholder="" ng-model="vm.customerRealaccountNo" disabled /></div>
+					</li>
+					<li>
+						<div class="both_area">
+							<div class="title_s">가상계좌번호</div>
+							<div class="input_area"><input type="text" placeholder="" ng-model="vm.customerVtaccountNo" disabled /></div>
+						</div>
+					</li>
+					<li>
+						<div class="both_area">
+							<div class="title_s">별칭</div>
+							<div class="input_area nickname">
+								<input type="text" placeholder="" ng-model="vm.customerVtaccountAlias" name="customerVtaccountAlias" id="customerVtaccountAlias" required />
+								<button type="button" class="btn_del" ng-show="vm.customerVtaccountAlias" ng-click="vm.deleteAlias();"></button>
+							</div>
+						</div>
+						<div class="txt_error" ng-messages="accountForm.customerVtaccountAlias.$error">
+	                    	<div ng-message="required">별칭을 입력해주세요.</div>
+	                    </div>
+					</li>
+				</ul>
+				<!--// 정보입력 -->
+			</div>
+		</div>
+		</form>
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<div class="button_area btn_both btn_bottom_area"> <!-- btn_both : 2개일때 / btn_three : 3개일때 -->
+			<a href="#go" class="btn_middle btn_black" ng-click="vm.save('DIS');">삭제</a>
+			<button class="btn_middle btn_black_org" ng-click="vm.save('REP');" ng-disabled="$root.accountForm.$invalid">저장</button>
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+
+</ion-view>

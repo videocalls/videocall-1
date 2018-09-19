@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 자본시장 공동 핀테크 오픈플랫폼 구축
+* @FileName : NotiDAO.java
+* @Comment  :
+* @author   : 
+* @since    : 
+* @version  : 1.0
+* @see
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+-->
+
+<sqlMap namespace="kr.co.koscom.oppf.cmm.phone.service.impl.CmmPhoneNumberCheckDAO">
+       
+    <!-- 휴대폰 번호 -->
+    <typeAlias alias="CmmPhoneNumberCheckVO" type="kr.co.koscom.oppf.cmm.phone.service.CmmPhoneNumberCheckVO"/>
+   <!--
+      * @Method Name        : selectSptPhoneCheckInfo
+      * @Method description : [PhoneCheck] 휴대폰본인확인 체크
+      * @param              : SptPhoneCheckVO
+      * @return             : SptPhoneCheckVO
+      * @throws             : Exception
+    -->
+    <select id="cmm.phone.CmmPhoneNumberCheckDAO.selectCmmPhoneNumberCheck" parameterClass="CmmPhoneNumberCheckVO" resultClass="CmmPhoneNumberCheckVO">
+       select
+            a.reg_no           as regNo,          /* PhoneCheck.등록번호(yyyymmdd000) */
+            a.phone_number	as phone_number,       /* PhoneCheck 휴대폰 번호 (00011112222) */
+			a.cnt as cnt,			       /* PhoneCheck 본인확인 체크 횟수 */	
+            a.create_date      as createDate,     /* PhoneCheck.생성일시 */
+            a.update_date      as updateDate,     /* PhoneCheck.변경일시 */
+            if(date_format(update_date, '%Y-%m-%d %H:%i:%s') > date_format(subdate(sysdate(), INTERVAL 1 minute), '%Y-%m-%d %H:%i:%s'), 'Y', 'N') as increaseYn /* 업데이트 유무 */ 
+        from spt_phone_check_info a /* PhoneCheck */
+        where 1=1
+        <isNotEmpty property="phoneNumber">
+            and a.phone_number = #phoneNumber#
+        </isNotEmpty>
+        order by a.reg_no desc
+        limit 0,1
+    </select>
+    
+    <!--
+     * @Method Name        : insertCmmPhoneNumberCheck
+     * @Method description : [PhoneNumber]정보를 등록한다.
+     * @param              : CmmPhoneNumberCheckVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="cmm.phone.CmmPhoneNumberCheckDAO.insertCmmPhoneNumberCheck" parameterClass="CmmPhoneNumberCheckVO">
+        <selectKey keyProperty="regNo" resultClass="java.lang.String">
+            select
+                concat(
+                    date_format(sysdate(),'%Y%m%d'), 
+                    lpad((
+                        select ifnull( max(cast(right(reg_no,3) as signed)), 0)+1 
+                        from spt_phone_check_info 
+                        where left(reg_no, 8) = date_format(sysdate(),'%Y%m%d')
+                    ), 3, '0')
+                ) as regNo
+         </selectKey>    
+        insert into spt_phone_check_info(
+			reg_no,          /* 등록번호 */             
+            phone_number,    /* 전화번호 */            
+			cnt,				 /* 본인확인 체크 횟수 */
+            create_date,     /* 등록일시 */             
+            update_date    /* 사용자번호 */            
+        )values(
+            #regNo#,         /* 등록번호 */
+            #phoneNumber#,   /* 전화번호 */
+			0, 
+            sysdate(),       /* 수정일시 */
+            sysdate() 	 /* 변경일시 */
+        )
+    </insert>
+	
+   <update id="cmm.phone.CmmPhoneNumberCheckDAO.updateCmmPhoneNumberCheck" parameterClass="CmmPhoneNumberCheckVO">
+        update spt_phone_check_info set
+			 cnt = if(#increaseYn# = 'Y', cnt + 1, 1),
+			 update_date = if(#increaseYn# = 'Y', update_date, sysdate())
+        where phone_number = #phoneNumber#
+    </update>
+    
+</sqlMap>

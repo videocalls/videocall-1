@@ -1,0 +1,561 @@
+<!doctype html>
+<html>
+<head>
+    <!-- 임시로 지움. -->
+    <!--<meta charset="UTF-8">-->
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <title>가입자 이용약관</title>
+    <link type="text/css" rel="stylesheet" href="../styles/css/common.css"/>
+    <!--[if IE 7]>
+    <link rel="stylesheet" type="text/css" href="../styles/css/ie7Debug.css"/>
+    <![endif]-->
+    <link rel="stylesheet" href="../styles/css/jquery-ui.css">
+
+    <script>
+        (function (){
+            try{
+                //console.log("page documnet.domain: " + document.domain);
+                parent.document.location;
+            }catch(e) {
+                if (document.domain.indexOf(".co.kr") != -1) {
+                    //co.kr
+                    var domainArr = document.domain.split(".");
+                    //console.log("arr:" + domainArr);
+                    document.domain = domainArr[domainArr.length - 3] + ".co.kr";
+                }
+                else if (document.domain.indexOf(".com") != -1) {
+                    //com
+                    var domainArr = document.domain.split(".");
+                    //console.log("arr:" + domainArr);
+                    document.domain = domainArr[domainArr.length - 2] + ".com";
+                }
+            }
+        })();
+    </script>
+    <script type="text/javascript" src="../styles/js/jquery-1.11.0.min.js"></script>
+    <script src="../styles/js/jquery-ui.js"></script>
+    
+    <script type="text/javascript" src="../library/json3.min.js"></script>
+    <script type="text/javascript" src="../library/iecompatibility.js"></script>
+    <script type="text/javascript" src="../library/webAccess.js"></script>
+    
+    <script src="../language/clause.js"></script>
+    <script type="text/javascript" src="../library/dragiframe.js"></script>
+    <script>
+        $(function () { // 페이지 로딩이 끝나면 처리합니다.
+            $("#xIfrm", parent.document).width(0);
+            $("#xIfrm", parent.document).height(0);
+            $("#xIfrm", parent.document).width($(document).width());
+            $("#xIfrm", parent.document).height($(document).height());
+        });
+        
+        function dragCheck(){
+            if(window.navigator.userAgent.toLowerCase().indexOf('firefox') !== -1)
+                return;
+            addHandle(document.getElementById('titleText'), window);
+        }
+    </script>
+</head>
+<body onload="dragCheck()">
+<div class="Wrapper">
+    <div class="CERT_titlebar_common" style="width:429px;">
+        <!--<h1 id="titleText" tabindex="1"><script>document.write(clauseLang(0))</script></h1>-->
+        <h1><ul><li id="titleText" tabindex="1"><script>document.write(clauseLang(0))</script></li></ul></h1>
+        <div class="CERT_util_btnClose" id="certAgree_xBtn"><a href="#" tabindex="2" alt="닫힘" title="닫힘"></a></div>
+    </div>
+    <div class="CERT_certWrapper">
+    	<textarea class="CERT_provision" readonly id="textKo" style="display:none">
+    		
+SignKorea 공인인증서비스 이용약관
+
+제1장 총칙
+
+제1조 [목적]
+
+  본 약관은 전자서명법, 동법 시행령 및 시행규칙(이하 "전자서명 법령" 이라 함)
+  그리고 전자서명 인증관리센터(한국인터넷진흥원에서 운영)의 인증업무준칙 및
+  (주)코스콤 공인인증센터(영문명 "SignKorea", 이하 "SignKorea"라 함)의
+  인증업무준칙에 의하여 제공하는 공인인증서비스의 이용 조건 및 절차 등 이용에
+  필요한 기본사항을 규정함을 목적으로 합니다.
+
+
+제2조 [약관의 효력 및 변경]
+
+ ① 본 약관은 가입자에게 공지함으로써 효력을 발생합니다.
+
+ ② SignKorea는 합리적인 사유가 발생될 경우에는 이 약관을 변경할 수 있으며 약관이
+     변경된 경우에는 지체 없이 이를 공지합니다. 단, 요금 등 가입자의 권리 또는
+     의무에 관한 중요한 규정의 변경은 최소한 7일전에 공지합니다.
+
+제3조 [약관의 공지 및 준칙]
+
+ ① 본 약관의 공지는 SignKorea 홈페이지(http://www.signkorea.com)에 게시하거나
+     등록대행기관에서 정한 방법으로 공지합니다.
+
+ ② 본 약관에 명시되지 않은 사항은 전자서명 법령 및 SignKorea 인증업무준칙의
+     규정에 따릅니다.
+
+제2장 서비스 이용
+
+제4조 [등록대행기관]
+
+ ① SignKorea는 공인인증서비스 신청서의 접수, 처리 및 신원확인 업무의 일부 또는
+     전부를 대행하는 등록대행기관을 지정하여 운영할 수 있으며, 필요한 경우에
+     SignKorea가 직접 등록대행기관의 역할을 수행할 수도 있습니다.
+
+ ② SignKorea는 SignKorea가 별도로 정한 요건을 갖춘 자가 등록대행기관 지정을
+     신청하는 경우에 한해 자격을 부여하며, 등록대행기관의 요건, 권한, 책임, 의무
+     등에 대한 상세한 내용은 별도의 계약에 따릅니다.
+
+제5조 [서비스 가입]
+
+ ① SignKorea는 본 약관에 동의하고 일정요금을 납부한 가입자들에게 SignKorea가
+     발급한 인증서를 제공합니다.
+
+ ② 가입자가 등록대행기관에서 제공하는 인증서 발급 신청 시 화면에 나타나는
+     약관 내용을 조회한 후 '동의함' 또는 '가입자 이용약관에 동의합니다' 버튼을
+     누르면, 이 약관에 합법적으로 동의하는 것으로 간주합니다.
+
+ ③ 본 약관에 동의함은 SignKorea에서 제공하는 모든 서비스와 프로그램(Software)들의
+     변경 및 수정에 동의하는 것으로 간주합니다. 이에 동의하지 않을 경우에는 약관
+     내용 조회 화면의 '동의하지 않음' 또는 '가입자 이용약관에 동의하지 않습니다'
+     버튼을 선택하여 SignKorea 인증서비스를 이용하지 않아야 합니다.
+
+제6조 [서비스 중단]
+
+ SignKorea는 불가피한 사정으로 인하여 SignKorea 인증서비스를 지연하거나 중단할 수
+ 있습니다.
+
+제7조 [가입자의 제한]
+
+SignKorea는 아래와 같은 사유에 해당하는 경우 인증서 (재)발급 신청을 거부하거나,
+(재)발급된 인증서를 가입자의 동의 없이 강제 폐지할 수 있습니다.
+
+ ① 가입자가 사망, 구속 등으로 신원확인이나 법적인 전자거래가 불가능한 경우
+
+ ② 피성년후견인이 법정대리인의 동의 없이 서비스에 가입하거나 인증서를
+     (재)발급받은 경우
+
+ ③ 법정대리인의 동의를 필요로 하는 법률행위의 범위에 공인인증서비스 가입 및 인증서
+     (재)발급 관련 사항이 포함되어 있음에도 불구하고 피한정후견인이 법정대리인의
+     동의 없이 서비스에 가입하거나 인증서를 (재)발급받은 경우
+
+ ④ 공인인증서의 유효기간이 경과된 경우
+
+ ⑤ 가입자가 사고정보 등 부정한 방법으로 공인인증서를 신청 또는 발급 받았거나
+     그렇다고 의심되는 경우
+
+ ⑥ SignKorea가 공인인증서비스와 관련된 보안절차나 인증기관 자신의 생성키 유출과
+     같은 보안상의 이유로 기 발급된 공인인증서의 이용을 제한할 필요가 있다고
+     판단하는 경우
+
+ ⑦ 등록대행기관이 신원확인 강화를 위해 요구한 추가인증(휴대폰 SMS인증, 2채널 인증
+     등) 또는 단말기(PC, 스마트폰 등)의 기기정보를 등록대행기관에 등록하는 단말기
+     지정을 실패한 경우
+
+ ⑧ 기타 SignKorea가 공인인증서의 이용을 제한할 필요가 있다고 판단하는 경우
+
+제8조 [감시, 도용 금지]
+
+ SignKorea는 가입자의 인증서비스 이용 내역을 감시하거나 도용하지 않습니다. 다만,
+ SignKorea 인증서비스 시스템 안정운용을 위한 통계 자료의 작성 등을 위하여 인증서
+ 사용횟수나 사용률을 활용할 수 있습니다.
+
+제9조 [전자서명생성키, 비밀번호 관리]
+
+ ① 전자서명생성키 및 전자서명비밀번호에 관한 모든 관리 책임은 가입자에게 있습니다.
+
+ ② 가입자에게 부여된 전자서명생성키 및 비밀번호의 관리소홀, 부정사용에 의하여
+     발생하는 모든 결과에 대한 책임은 가입자에게 있습니다.
+
+ ③ 자신의 전자서명생성키가 부정하게 사용된 경우, 가입자는 반드시 SignKorea에
+     그 사실을 즉시 통보해야 하며, SignKorea는 해당 가입자의 인증서 사용을
+     제한할 수 있습니다.
+
+제3장 가입자 정보
+
+제10조 [가입자 정보 수집]
+
+ ① SignKorea는 공인인증 서비스를 위하여 아래에 해당하는 최소한의 가입자 정보를
+     수집합니다.
+     - 가입자명(법인은 법인명), 주민번호(법인은 사업자등록번호), 연락처, 주소,
+      전자메일주소 등
+
+ ② SignKorea 인증서비스에 기재하는 모든 사용자 정보는 이름을 포함하여 실제
+     데이터인 것으로 간주됩니다.
+
+ ③ 실명이나 실제 정보를 입력하지 않은 사용자는 법적인 보호를 받을 수 없으며,
+     SignKorea 인증서비스 이용 시 제한 조치를 받을 수 있습니다.
+
+ ④ 전자서명법 제15조(공인인증서의 발급), 제18조의3(공인인증기관의 안전성 확보) 및
+     제22조(인증업무에 관한 기록의 관리)에 의거한 공인인증서의 부정발급 확인을
+     위하여 기기정보(IP등)를 수집하며, 해당 정보는 감독기관, 타 공인인증기관 및
+     등록대행기관, 금융ISAC 등과 공유할 수 있습니다.
+
+제11조 [가입자 정보 활용]
+
+ SignKorea는 가입자정보를 목적이외에 활용하거나 가입자의 동의 없이 제3자에게
+ 제공하지 않습니다. 단, 아래에 해당하는 경우는 제공할 수 있습니다.
+
+ ① 정부기관이 적법한 절차에 따라 정보 제공을 요청하는 경우
+
+ ② 특정가입자를 식별할 수 없는 통계, 홍보, 학술, 연구 등의 목적으로 활용하는 경우
+
+ ③ 기타 법원의 명령이 있거나 법령이 정하는 특별한 사유가 있는 경우
+
+제12조 [가입자 정보 검색, 수정 및 삭제]
+
+ ① 가입자는 자신의 정보를 검색, 수정할 수 있으나 삭제할 수 없습니다.
+
+ ② 가입자 정보의 삭제 권한은 SignKorea에 있으나, 가입자 정보는 전자서명 법령에
+     정의된 기간 동안 보관해야 하므로 임의로 삭제할 수 없습니다.
+
+제13조 [가입자 정보 보호]
+
+ ① SignKorea 및 등록대행기관은 가입자 정보 보호를 위하여 담당 책임자를 지정하고,
+     취급자를 최소화하며 가입자 정보의 분실, 도난, 유출, 변조되지 않도록 안전하게
+     관리합니다.
+
+ ② 필요시 네트워크 및 등록대행기관을 통해 가입자 정보가 전송될 수 있으며,
+     이때에는 반드시 전자서명 등과 같은 안전한 방법이 적용됩니다.
+
+ ③ 가입자 정보가 기재된 신청서 및 관련 증빙서류는 전자서명 법령에 규정된
+     안전한 장소에서 10년 동안 보관합니다.
+
+제4장 발급 수수료 등
+
+제14조 [인증서 발급수수료]
+
+ ① SignKorea 인증서비스는 인증서 신규발급 신청 및 갱신 시에 인증서 발급수수료를
+     부과하는 유료서비스입니다.
+ ② SignKorea 인증서비스에 가입하고자 하는 가입자는 인증서 발급수수료 부과에
+     대해 동의하는 것으로 간주됩니다.
+ ③ 제1항 및 제2항의 규정에도 불구하고 무료로 서비스를 제공하는 경우에는
+     가입자에게 인증서수수료를 부과하지 않을 수 있습니다.
+
+제15조 [기타 서비스수수료]
+
+ SignKorea는 필요한 경우 인증서 발급수수료 이외에 인증서 이용 등에 대한 서비스
+ 수수료를 부과할 수 있으며, 시점확인서비스, 검증서비스 등의 사용에 따른 수수료는
+ 별도의 계약에 따릅니다.
+
+제16조 [환불]
+
+ SignKorea는 가입자가 공인인증서를 발급받고 사용하지 않은 상태에서 7일 이내에
+ SignKorea 또는 등록대행기관에 방문하여 환불신청서를 작성하고,
+ 환불을 요청하는 경우에 수수료를 환불할 수 있습니다.
+ 이때, 당해 공인인증서 신청 접수 및 등록 등에 따른 비용이 발생한 경우에는
+ 해당비용을 수수료에서 차감하고 환불합니다.
+
+제17조 [고객 서비스]
+ SignKorea인증서비스에 대한 이용 문의나 사용상의 문제 해결을 위한 고객 지원서비스
+ 는 웹사이트(www.signkorea.com), E-mail(signkorea@koscom.co.kr),
+ 콜센터(1577-7337) 를 통해 이루어집니다.
+
+
+제5장 손해배상
+
+제18조 [손해배상]
+
+ ① SignKorea는 SignKorea 인증서비스 이용과 관련하여 가입자 및 이용자에게 발생하는
+     손해에 대해서 SignKorea의 배상 기준 및 절차에 따라 배상합니다.
+ ② SignKorea는 이에 대비하기 위하여 손해배상보험에 가입하고 있습니다.
+
+제19조 [면책사항]
+
+ ① SignKorea는 가입자의 전산기기 조작 오류 및 업무처리 오류나 가입자의 전산기기 H/W
+     및 S/W의 특수성 등으로 인해 발생하는 인증서비스의 이용불능 또는 기능오류 및
+     이로 인한 손해에 대하여 책임지지 않습니다.
+ ② SignKorea는 자체적인 통제가 불가능한 불가항력적인 전산장애, 통신장애, 천재지변,
+     기타 외부요인 등으로 인해 발생한 공인인증서비스의 지연 또는 불능 및 이로 인한
+     손해에 대하여 책임지지 않습니다.
+ ③ SignKorea는 법무부 출입국관리 전산시스템의 장애 발생 또는 출입국 정보 반영
+     지연으로 인해 발생한 공인인증서 발급절차 상의 지연 및 오류로 인한 손해에 대하여
+     책임지지 않습니다.
+
+제20조 [관할법원]
+
+ 요금 등 SignKorea 인증서비스 이용으로 발생한 분쟁에 대해 제기된 소송 등은
+ SignKorea의 관할법원에서 진행됩니다.
+
+
+[부칙]
+
+ 본 약관은 2013년 9월 26일부터 시행합니다.
+        
+        </textarea>
+        
+        <textarea class="CERT_provision" readonly id="textEn" >
+
+Chapter 1. General conditions
+
+Section 1. Objective
+
+This agreement regulates the basic conditions and procedures of the certificate service in accordance with the Electronic Signature Act, its’ ordinance and regulations (hereinafter referred to as “Electronic Signature Act”), and the Certification Practice Statement of Korea Certification Authority Central of Korea Information Security Agency and the Accredited Certification Authority of Koscom (hereinafter referred to as “SignKorea”).
+
+Section 2. Validation and Amendment
+① This agreement is valid upon disclosure of the member.
+② SignKorea may change the agreement under reasonable conditions, but should immediately give notice of the change. If material changes related to the fees or the rights and obligations of the member, at least a seven day notice will be provided.
+
+Section 3. Disclosure and Rules
+① Disclosure of this agreement will be posted at SignKorea’s website (http://www.signkorea.com) or the method specified by Registration Authorities.
+② Any issues that are not specified in this agreement will be subject to the Electronic Signature Act and SignKorea’s Certification Practice Statement.
+
+
+Chapter 2. Use of Service
+
+Section 4. Registration Authorities
+① SignKorea shall conduct directly or designate a registration authority in part or whole of receiving and processing applications and conducting members’ identification.
+② SignKorea may authorize a registration authority when requested by a person that meets certain requirements. Details of conditions, authority, responsibility, and duties of the registration authority will be based on a separate agreement.
+
+Section 5. Service Application
+① SignKorea will issue a certificate to members who have agreed to this agreement and paid the specified fee.
+② SignKorea will issue a certificate to members who have agreed to this agreement and paid the specified fee.
+③ By consenting to this agreement, the member will be construed to have agreed to all services and software modifications made by SignKorea. If a member does not agree, this agreement should not use SignKorea’s certification service by selecting “do not agree” or “do not agree to the agreement” button. s
+
+Section 6. Suspension of Service
+
+SignKorea may suspend or delay the service as a result of force majeure.
+
+Section 7. Member Restriction
+
+SignKorea shall revoke or decline the certificate application or issued certificate in the following cases without the agreement of the member.
+① In the event the ID or legal e-commerce is impossible due to the death, arrest and other similar circumstances of a member
+② In the event a member is made by an incompetent person without going through a legal representative.
+③ In the event a member is made by an quasi-incompetent person without the agreement of a legal representative despite the agreement is enacted in the law.
+④ In the event that the certificate has expired.
+⑤ In the event that SignKorea finds out or suspects that the certificate was issued in an illegitimate method.
+⑥ In the event that SignKorea deems it necessary to limit the use of a certificate issued for security reasons such as the release of generation key for the certification authority or security procedure related to the certification service.
+⑦ In the event that a applicant fails in additional authentication(SMS, 2 channel, etc.) or device(PC, smart phone, etc.) designation.
+
+⑧ In the event that SignKorea deems it necessary to limit the use of the certificate for other reasons.
+
+Section 8. Monitoring and Prohibition of Fraudulent Use
+
+SignKorea will not monitor or fraudulently use information on the member’s certificate usages. SignKorea may, however, utilize information such as the amount or frequency of usage of the certificate for the purpose of gathering statistics required for a stable system.
+
+Section 9. Private Key and Password Protection
+① The member is fully responsible for the safe keeping of the private key and digital signature password.
+② The member will be fully responsible for any loss resulting from negligence in protecting the private key and password and improper usage.
+③ If a private key was improperly used, the member must notify SignKorea immediately. SignKorea can restrict the use of such certificates.
+
+
+Chapter 3. Member Information
+
+Section 10. Collection of Member Information
+① SignKorea can collect the minimum member information as below for the certification service. - Member’s name (or corporation name), resident number (business registration no. for corporations), contact number, address, e-mail address, etc.
+
+② SignKorea will consider all information including the name in the certificate service application form as actual data.
+③ Any member using a false identity or false information may not be protected by law and will be restricted from using SignKorea’s certification services.
+④ SignKorea may collect device information (IP, etc.) to check for any wrongful issuances of the certificate according to Article 15 (issuance of certificates), section 3, Article 18 (securing the safety of the authority), and Article 22 (record management of certification) of the Digital Signature Act. The collected information may be shared with competent institutions, other certification authorities and registration agents, financial ISAV, etc
+
+Section 11. Usage of Member Information
+
+SignKorea will only use member information for its intended use and will not disclose it to a third party without prior consent. However, such information can be released under the following circumstances.
+1. When requested by a governmental authority within the legal procedure
+2. For the purpose of statistics, promotion, academic and research subject to the nondisclosure of individual information
+3. Under other legal order or special situation designated by law.
+
+Section 12. Search, Modification, and Deletion of Member Information
+① The member may search and modify his/her own information, but cannot delete it.
+② Although SignKorea has the authority to delete the member’s information, SighKorea cannot arbitrarily delete it since the information must be maintained for a designated period under the Electronic Signature Act.
+
+Section 13. Protection of Member Information
+① SignKorea and LRA shall designate personals responsible for the protection of the information. The number of designated personals should be limited and they must make sure the information is safe from loss, theft, release, and forgery
+② If necessary, member information may be transmitted through a network and LRA by applying a safe method such as electronic signature.
+③ The application form and other relevant documents shall be kept in a safe place for 10 years under the Electronic Signature Act.
+
+
+Chapter 4. Issuance Fee and Others
+
+Section 14. Certificate Issuance Fee
+① SignKorea certification service is a paid service which applies an issuance fee for new and renewal of certificates.
+② A member applying to the certification service of SignKorea is considered to have agreed to the issuance fee.
+③ Notwithstanding the above mentioned (1) and (2), SignKorea may not charge a fee for a certain period of free service.
+
+Section 15. Other Service Fee
+
+Other than the issuance fee, SignKorea may charge a service fee for the use of certificates. Fees for TimeStamp service and verification service are in accordance with a separate agreement.
+
+Section 16. Refund
+
+SignKorea may refund the fee in the event that a member visits SignKorea or a registration agent, fills in the refund form, and requests a refund within 7 days from the issuance without using. At this time, in the event the expenses are paid for reception and registration of the applicable certificate application, the applicable expenses are deducted from the fee.
+
+Section 17. Customer Service
+
+Any inquiry or problem solution in regards to the certification service of SignKorea can be made at the Customer Support Service
+website(www.signkorea.com), E-mail(signkorea@koscom.co.kr), or through the call center (1577-7337).
+
+
+Chapter 5. Liability
+
+Section 18. Liability
+① In relation to the use of SignKorea’s certification service, SignKorea will provide compensation according to the compensation standard and procedure of SignKorea for any damage incurred to the member and user.
+② SignKorea is covered under insurance for such instances.
+
+Section 19. Immunity
+① SignKorea shall not be liable for the suspension of the service failure in performance and any default arising from the misuse of a computer by the member or from hardware and software applications of the member.
+② SignKorea shall not be liable for any defaults due to the delay or suspension of certification service by electronic problems, network problems, acts of God, and other causes beyond the control of SignKorea.
+③ SignKorea shall not be liable for any defaults or delay due to the failure of the system of Department of Justice or delay of updating Entry and Departure information managed by Department of Justice.
+
+Section 20. Jurisdiction
+
+If any dispute arises out of or in relation to the certification service of SignKorea including fees, it shall be settled in the competent court of SignKorea.
+
+
+
+[Supplementary]
+
+This agreement shall be effective from September 26, 2013
+
+
+        </textarea>
+
+        <div class="CERT_contWrap10">
+            <p>
+                <input type="radio" id="certAgree_radio" name="certAgree_radio" value="1" checked>
+                <label class="CERT_checkbox_label"><script>document.write(clauseLang(1))</script></label>
+            </p>
+
+            <p>
+                <input type="radio" id="certAgree_radio" name="certAgree_radio" value="">
+                <label class="CERT_checkbox_label"><script>document.write(clauseLang(2))</script></label>
+            </p>
+        </div>
+        <div class="CERT_btns_common">
+            <p class="CERT_btnBg_mbtn" id="certAgree_confirmBtn"><a href="#" id="" tabindex="9998"><script>document.write(clauseLang(4))</script></a></p>
+
+            <p class="CERT_btnBg_mbtn" id="certAgree_cancelBtn"><a href="#" id="" tabindex="9999"><script>document.write(clauseLang(5))</script></a></p>
+        </div>
+    </div>
+    	<textarea class="CERT_provision" readonly>
+﻿Chapter 1. General conditions
+
+Section 1. Objective
+
+This agreement regulates the basic conditions and procedures of the certificate service in accordance with the Electronic Signature Act, its’ ordinance and regulations (hereinafter referred to as “Electronic Signature Act”), and the Certification Practice Statement of Korea Certification Authority Central of Korea Information Security Agency and the Accredited Certification Authority of Koscom (hereinafter referred to as “SignKorea”).
+
+Section 2. Validation and Amendment
+① This agreement is valid upon disclosure of the member.
+② SignKorea may change the agreement under reasonable conditions, but should immediately give notice of the change. If material changes related to the fees or the rights and obligations of the member, at least a seven day notice will be provided.
+
+Section 3. Disclosure and Rules
+① Disclosure of this agreement will be posted at SignKorea’s website (http://www.signkorea.com) or the method specified by Registration Authorities.
+② Any issues that are not specified in this agreement will be subject to the Electronic Signature Act and SignKorea’s Certification Practice Statement.
+
+
+Chapter 2. Use of Service
+
+Section 4. Registration Authorities
+① SignKorea shall conduct directly or designate a registration authority in part or whole of receiving and processing applications and conducting members’ identification.
+② SignKorea may authorize a registration authority when requested by a person that meets certain requirements. Details of conditions, authority, responsibility, and duties of the registration authority will be based on a separate agreement.
+
+Section 5. Service Application
+① SignKorea will issue a certificate to members who have agreed to this agreement and paid the specified fee.
+② SignKorea will issue a certificate to members who have agreed to this agreement and paid the specified fee.
+③ By consenting to this agreement, the member will be construed to have agreed to all services and software modifications made by SignKorea. If a member does not agree, this agreement should not use SignKorea’s certification service by selecting “do not agree” or “do not agree to the agreement” button. s
+
+Section 6. Suspension of Service
+
+SignKorea may suspend or delay the service as a result of force majeure.
+
+Section 7. Member Restriction
+
+SignKorea shall revoke or decline the certificate application or issued certificate in the following cases without the agreement of the member.
+① In the event the ID or legal e-commerce is impossible due to the death, arrest and other similar circumstances of a member
+② In the event a member is made by an incompetent person without going through a legal representative.
+③ In the event a member is made by an quasi-incompetent person without the agreement of a legal representative despite the agreement is enacted in the law.
+④ In the event that the certificate has expired.
+⑤ In the event that SignKorea finds out or suspects that the certificate was issued in an illegitimate method.
+⑥ In the event that SignKorea deems it necessary to limit the use of a certificate issued for security reasons such as the release of generation key for the certification authority or security procedure related to the certification service.
+⑦ In the event that a applicant fails in additional authentication(SMS, 2 channel, etc.) or device(PC, smart phone, etc.) designation.
+
+⑧ In the event that SignKorea deems it necessary to limit the use of the certificate for other reasons.
+
+Section 8. Monitoring and Prohibition of Fraudulent Use
+
+SignKorea will not monitor or fraudulently use information on the member’s certificate usages. SignKorea may, however, utilize information such as the amount or frequency of usage of the certificate for the purpose of gathering statistics required for a stable system.
+
+Section 9. Private Key and Password Protection
+① The member is fully responsible for the safe keeping of the private key and digital signature password.
+② The member will be fully responsible for any loss resulting from negligence in protecting the private key and password and improper usage.
+③ If a private key was improperly used, the member must notify SignKorea immediately. SignKorea can restrict the use of such certificates.
+
+
+Chapter 3. Member Information
+
+Section 10. Collection of Member Information
+① SignKorea can collect the minimum member information as below for the certification service. - Member’s name (or corporation name), resident number (business registration no. for corporations), contact number, address, e-mail address, etc.
+
+② SignKorea will consider all information including the name in the certificate service application form as actual data.
+③ Any member using a false identity or false information may not be protected by law and will be restricted from using SignKorea’s certification services.
+④ SignKorea may collect device information (IP, etc.) to check for any wrongful issuances of the certificate according to Article 15 (issuance of certificates), section 3, Article 18 (securing the safety of the authority), and Article 22 (record management of certification) of the Digital Signature Act. The collected information may be shared with competent institutions, other certification authorities and registration agents, financial ISAV, etc
+
+Section 11. Usage of Member Information
+
+SignKorea will only use member information for its intended use and will not disclose it to a third party without prior consent. However, such information can be released under the following circumstances.
+1. When requested by a governmental authority within the legal procedure
+2. For the purpose of statistics, promotion, academic and research subject to the nondisclosure of individual information
+3. Under other legal order or special situation designated by law.
+
+Section 12. Search, Modification, and Deletion of Member Information
+① The member may search and modify his/her own information, but cannot delete it.
+② Although SignKorea has the authority to delete the member’s information, SighKorea cannot arbitrarily delete it since the information must be maintained for a designated period under the Electronic Signature Act.
+
+Section 13. Protection of Member Information
+① SignKorea and LRA shall designate personals responsible for the protection of the information. The number of designated personals should be limited and they must make sure the information is safe from loss, theft, release, and forgery
+② If necessary, member information may be transmitted through a network and LRA by applying a safe method such as electronic signature.
+③ The application form and other relevant documents shall be kept in a safe place for 10 years under the Electronic Signature Act.
+
+
+Chapter 4. Issuance Fee and Others
+
+Section 14. Certificate Issuance Fee
+① SignKorea certification service is a paid service which applies an issuance fee for new and renewal of certificates.
+② A member applying to the certification service of SignKorea is considered to have agreed to the issuance fee.
+③ Notwithstanding the above mentioned (1) and (2), SignKorea may not charge a fee for a certain period of free service.
+
+Section 15. Other Service Fee
+
+Other than the issuance fee, SignKorea may charge a service fee for the use of certificates. Fees for TimeStamp service and verification service are in accordance with a separate agreement.
+
+Section 16. Refund
+
+SignKorea may refund the fee in the event that a member visits SignKorea or a registration agent, fills in the refund form, and requests a refund within 7 days from the issuance without using. At this time, in the event the expenses are paid for reception and registration of the applicable certificate application, the applicable expenses are deducted from the fee.
+
+Section 17. Customer Service
+
+Any inquiry or problem solution in regards to the certification service of SignKorea can be made at the Customer Support Service
+website(www.signkorea.com), E-mail(signkorea@koscom.co.kr), or through the call center (1577-7337).
+
+
+Chapter 5. Liability
+
+Section 18. Liability
+① In relation to the use of SignKorea’s certification service, SignKorea will provide compensation according to the compensation standard and procedure of SignKorea for any damage incurred to the member and user.
+② SignKorea is covered under insurance for such instances.
+
+Section 19. Immunity
+① SignKorea shall not be liable for the suspension of the service failure in performance and any default arising from the misuse of a computer by the member or from hardware and software applications of the member.
+② SignKorea shall not be liable for any defaults due to the delay or suspension of certification service by electronic problems, network problems, acts of God, and other causes beyond the control of SignKorea.
+③ SignKorea shall not be liable for any defaults or delay due to the failure of the system of Department of Justice or delay of updating Entry and Departure information managed by Department of Justice.
+
+Section 20. Jurisdiction
+
+If any dispute arises out of or in relation to the certification service of SignKorea including fees, it shall be settled in the competent court of SignKorea.
+
+
+
+[Supplementary]
+
+This agreement shall be effective from September 26, 2013
+
+        </textarea>
+
+        <div class="CERT_contWrap10">
+    <!--//CERT_certWrapper-->
+</div>
+<!--//Wrapper-->
+</body>
+<script type="text/javascript" src="../scripts/clause.js"></script>
+</html>

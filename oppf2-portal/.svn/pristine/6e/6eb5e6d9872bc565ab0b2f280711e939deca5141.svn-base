@@ -1,0 +1,87 @@
+<!-- 
+ * (C) Copyright AhnLab, Inc.
+ *
+ * Any part of this source code can not be copied with
+ * any method without prior written permission from
+ * the author or authorized person.
+ *
+ * @version		$Revision: 15612 $
+ *
+ -->
+
+<!DOCTYPE HTML> <!-- HTML5 -->
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="expires" content="-1" /> 
+<meta http-equiv="pragma" content="no-cache" /> 
+<meta http-equiv="cache-control" content="no-cache" /> 
+<title>astx2 popup</title>
+
+<script src="include.js"></script>
+
+<style>
+form .num 		{ width:2em; }
+form .pass 		{ width:4em; }
+form .button  { width:5em; }
+</style>
+
+</head>
+<body>
+
+<p>AhnLab Safe Transaction (popup)</p>
+
+<form name="form" id="form" action="do_submit.jsp" method="post">
+<p>
+	YY <input type="text" name="cardno1" id="cardno1" e2e_type="1" class="num"  maxlength="2" onkeyup="onMoveFocus(this,'cardno2',2);"/> /
+	MM <input type="text" name="cardno2" id="cardno2" e2e_type="2" class="num"  maxlength="2" onkeyup="onMoveFocus(this,'passwd',2);"/>
+	&nbsp;Password <input type="password" name="passwd" autocomplete="off" id="passwd" e2e_type="1" class="pass" maxlength="4" onkeyup="onMoveFocus(this,'btn',4);"/>
+	&nbsp;<input type="button" name="btn" id="btn" class="button" value="OK" onclick="onSubmit()"/>
+</p>	
+
+</form>
+
+<p>&nbsp;</p>
+
+<script>
+window.onload = function() 
+{
+	document.form.cardno1.focus();
+	
+	checkInstallASTX2(
+		function onSuccess() {
+			$ASTX2.initE2E();
+		},
+		function onFailure() {
+			; // nothing
+		}
+	);
+}
+
+function onSubmit()
+{
+	$_astxu.log('[onSubmit]');
+	
+	$ASTX2.getE2EData(
+		document.form,
+		function onSuccess(data) {
+			$_astxu.log('ASTX.getE2EData() success');
+			
+			$ASTX2.setE2EData(document.form, data, true);
+			document.form.submit();
+		}, 
+		function onFailure() {
+			$_astxu.log('ASTX.getE2EData() failure: errno='+$ASTX2.getLastError());
+		}
+	);
+	
+	return false;
+}
+
+var debuger = new myDebuger();
+debuger.write_output(document, true);
+
+</script>
+
+</body>
+</html>

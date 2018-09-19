@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="ko">
+<head>
+	<title>통합관리시스템 | koscom OpenAPI Platform </title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="stylesheet" href="../../css/apt/import.css">
+	<!-- IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	  <script src="../../js/cmm/html5shiv.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="../../js/cmm/jquery-1.11.3.min.js"></script>
+
+	<script type="text/javascript" src="../../js/apt/common_pub.js"></script>
+</head>
+
+<body>
+	<header class="wrap_top bg_black"> <!-- bg_black / bg_org / bg_blue -->
+		<div>
+			<h1>
+                <a href="#none"><img src="../../images/apt/logo.png" alt="koscom OpenAPI Platform" /></a>
+				<span>서비스관리시스템</span>
+            </h1>
+			<div>
+				<div class="login_st1">
+					<span>'관리자' 님 안녕하세요</span><a href="#none" class="btn_logout">로그아웃</a>					
+				</div>
+			</div>
+			<div class="timer">최종접속시간 : 2016-06-09 17:20 / <span>30:00</span><a href="#none" class="btn_logout">연장</a></div>
+		</div>
+	</header>
+	<!-- // wrap_top -->
+	<article class="container">
+		<div>
+			<section class="lnbArea">
+				<nav>
+					<ul class="lnb">
+						<li><a href="#none">회원 관리</a><!-- 1depth -->
+							<ul>
+								<li><a href="#none">회원 조회</a></li><!-- 2depth -->
+								<li><a href="#none">메일 발송 이력 조회</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">운영자 관리</a>
+							<ul>
+								<li><a href="#none">운영자 조회</a></li>
+								<li><a href="#none">운영자 추가</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">API 관리</a>
+							<ul>
+								<li><a href="#none">API 조회</a></li>
+								<li><a href="#none">API 속성 추가</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">App. 관리</a>
+							<ul>
+								<li><a href="#none">App 조회</a></li>
+								<li><a href="#none">App 속성 추가</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">통계 관리</a></li>
+						<li><a href="#none">포털 관리</a></li>
+						<li><a href="#none">설정 관리</a></li>
+						<li><a href="#none">내 정보 관리</a></li>
+					</ul>
+				</nav>
+			</section>
+			<!-- // lnb -->
+			<section class="content">
+				<div class="location">
+					<h2>Admin Home</h2>
+				</div>
+				<!-- // locatioin -->
+				<h3>OpenAPI 플랫폼 개인/기업 회원 등록 현황(요약)</h3>
+				<div class="tb_list1">
+					<table>
+						<caption>개인회원(누적 회원, 전일 신규 가입), 기업회원(핀테크기업누적회원, 금투사 누적 회원), 개발자(누적 회원, 전일 신규가입) 정보</caption>
+						<colgroup>
+							<col style="width:16.6%;">
+							<col style="width:16.6%;">
+							<col style="width:*;">
+							<col style="width:16.6%;">
+							<col style="width:16.6%;">
+							<col style="width:16.6%;">
+						</colgroup>
+						<thead>
+						<tr>
+							<th scope="col" colspan="2">개인 회원</th>
+							<th scope="col" colspan="2">기업 회원</th>
+							<th scope="col" colspan="2">개발자</th>
+						</tr>
+						<tr>
+							<th scope="col">누적 회원</th>
+							<th scope="col">전일 신규 가입</th>
+							<th scope="col">핀테크 기업 누적 회원</th>
+							<th scope="col">금투사 누적 회원</th>
+							<th scope="col">누적 회원</th>
+							<th scope="col">전일 신규 가입</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td>9999명</td>
+							<td>100명</td>
+							<td>999명</td>
+							<td>99명</td>
+							<td>999명</td>
+							<td>99명</td>
+						</tr>
+						<tr>
+							<td rowspan="3">9999명</td>
+							<td colspan="2">100명</td>
+							<td>999명</td>
+							<td>99명</td>
+							<td>999명</td>
+						</tr>
+						<tr>
+							<td colspan="2">100명</td>
+							<td>999명</td>
+							<td>99명</td>
+							<td><span class="btn_gray1"><a href="#none">교체</a></span></td>
+						</tr>
+						<tr>
+							<td colspan="2">100명</td>
+							<td>999명</td>
+							<td>99명</td>
+							<td><span class="btn_gray2"><a href="#none">교체</a></span></td>
+						</tr>
+
+						</tbody>
+					</table>
+				</div>
+				<!-- // tb_list1 -->
+
+				<h3>OpenAPI 플랫폼 개인 회원 등록 현황(상세)</h3>
+               
+                <div class="tb_detail1">
+					<table>
+						<caption>가상계좌발급(누적 건수, 전일 신규 발급) 정보</caption>
+						<colgroup>
+							<col style="width:34%;">
+							<col style="width:33%;">
+							<col style="width:33%;">
+						</colgroup>
+						<tbody>
+						<tr>
+							<th scope="row" rowspan="5">가상계좌 발급</th>
+							<td scope="col">누적 건수</td>
+							<td scope="col">전일 신규 발급</td>
+						</tr>
+						<tr>
+							<td>999999건</td>
+							<td>999999건</td>
+						</tr>
+						<tr>
+							<td colspan="2">999999건</td>							
+						</tr>
+						<tr>
+							<td rowspan="2">999999건</td>
+							<td>999999건</td>
+						</tr>
+						<tr>							
+							<td>999999건</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- // tb_detail1 -->
+
+				<div class="tb_detail1 mt10">
+					<table>
+						<caption>가상계좌발급(누적 건수, 전일 신규 발급) 정보</caption>
+						<colgroup>
+							<col style="width:34%;">
+							<col style="width:33%;">
+							<col style="width:33%;">
+						</colgroup>
+						<tbody>
+						<tr>
+							<th scope="row" rowspan="2">가상계좌 발급</th>
+							<td scope="col">누적 건수</td>
+							<td scope="col">전일 신규 발급</td>
+						</tr>
+						<tr>
+							<td>999999건</td>
+							<td>999999건</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- // tb_detail1 -->
+
+				<h3>App. / API 트래픽 현황 (요약)</h3>
+				<div class="tb_list1">
+					<table>
+						<caption>개인회원(누적 회원, 전일 신규 가입), 기업회원(핀테크기업누적회원, 금투사 누적 회원), 개발자(누적 회원, 전일 신규가입) 정보</caption>
+						<colgroup>
+							<col style="width:50%;">
+							<col style="width:50%;">
+						</colgroup>
+						<thead>
+						<tr>
+							<th scope="col">누적 Request</th>
+							<th scope="col">전일 Request</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td>999999건</td>
+							<td>999999건</td>
+						</tr>
+						<tr>
+							<td rowspan="2">999999건</td>
+							<td>999999건</td>
+						</tr>
+						<tr>
+							<td>999999건</td>
+						</tr>
+						<tr>
+							<td colspan="2">999999건</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- // tb_list1 -->
+
+			</section>
+			<!-- // content -->
+		</div>
+	</article>
+	<!-- // container -->
+</body>
+</html>

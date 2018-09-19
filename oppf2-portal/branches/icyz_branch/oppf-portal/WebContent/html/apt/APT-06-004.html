@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="ko">
+<head>
+	<title>통합관리시스템 | koscom OpenAPI Platform </title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="stylesheet" href="../../css/apt/import.css">
+	<!-- IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	  <script src="../../js/cmm/html5shiv.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="../../js/cmm/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../../js/cmm/jquery-ui.js"></script>
+
+	<script type="text/javascript" src="../../js/apt/common_pub.js"></script>	
+	
+	<script>
+	$(function() {
+		// 달력
+	    $("#datepicker1, #datepicker2").datepicker({
+	      showOn: "button",
+	      buttonImage: "../../images/apt/calendar.png",
+	      buttonImageOnly: true,
+	      buttonText: "달력보기"
+	    });
+	});
+	</script>
+
+</head>
+
+<body>
+	<header class="wrap_top">
+		<div>
+			<h1>
+                <a href="#none"><img src="../../images/apt/logo.png" alt="koscom OpenAPI Platform" /></a>
+				<span>서비스관리시스템</span>
+            </h1>
+			<div>
+				<div class="login_st1">
+					<span>관리자님</span><a href="#none" class="btn_logout">로그아웃</a>
+				</div>
+			</div>
+		</div>
+	</header>
+	<!-- // wrap_top -->
+	<article class="container">
+		<div>
+			<section class="lnbArea">
+				<nav>
+					<ul class="lnb">
+						<li><a href="#none" class="active">일반 회원 관리</a><!-- 1depth -->
+							<ul>
+								<li><a href="#none" class="active">일반 회원 조회</a></li><!-- 2depth -->
+								<li><a href="#none">가상계좌 목록 조회</a></li>
+								<li><a href="#none">금융정보제공 동의서<br>목록 조회</a></li>
+								<li><a href="#none">서비스 연결 현황</a></li>
+								<li><a href="#none">메일 발송 이력 조회</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">기업 회원 관리</a>
+							<ul>
+								<li><a href="#none">운영자 조회</a></li>
+								<li><a href="#none">운영자 추가</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">운영자 관리</a>
+							<ul>
+								<li><a href="#none">운영자 조회</a></li>
+								<li><a href="#none">운영자 추가</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">API 관리</a>
+							<ul>
+								<li><a href="#none">API 조회</a></li>
+								<li><a href="#none">API 속성 추가</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">App. 관리</a>
+							<ul>
+								<li><a href="#none">App 조회</a></li>
+								<li><a href="#none">App 속성 추가</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">통계 관리</a></li>
+						<li><a href="#none">포털 관리</a></li>
+						<li><a href="#none">설정 관리</a></li>
+						<li><a href="#none">내 정보 관리</a></li>
+					</ul>
+				</nav>
+			</section>
+			<!-- // lnb -->
+			<section class="content">
+				<div class="location">
+					<h2>FIX Engine 통계</h2>
+				</div>
+				<!-- // locatioin -->
+
+				<div class="tab_menu">
+					<ul>
+						<li class="on"><a href="#tab01">Request</a></li>
+						<li><a href="#tab02">Response</a></li>
+					</ul>
+				</div>
+				
+				<!-- Request -->
+				<div class="tab_cont mt20" id="tab01">
+					<div class="tb_write1">
+						<table>
+							<caption>FIX Engine 통계 정보입력</caption>
+							<colgroup>
+								<col style="width:20%;">
+								<col style="width:30%;">
+								<col style="width:20%;">
+								<col style="width:30%;">
+							</colgroup>
+							<tbody>
+							<tr>
+								<th scope="row">Buy-side</th>
+								<td class="txt_l" colspan="3"> 
+									<!-- chk_list_wrap -->
+									<div class="chk_list_wrap type2">
+										<ul>
+											<li><input type="checkbox" name="ddd" id="d1"><label for="d1">전체</label></li>
+											<li class="chk_click">전체 체크</li>
+											<li><input type="checkbox" name="ddd" id="d2"><label for="d2">atsolutions</label></li>
+											<li><input type="checkbox" name="ddd" id="d3"><label for="d3">dunamu</label></li>
+											<li><input type="checkbox" name="ddd" id="d4"><label for="d4">kakao</label></li>
+											<li><input type="checkbox" name="ddd" id="d5"><label for="d5">naver</label></li>
+											<li><input type="checkbox" name="ddd" id="d6"><label for="d6">viva</label></li>
+											<li><input type="checkbox" name="ddd" id="d7"><label for="d7">더블제이스톡</label></li>
+											<li><input type="checkbox" name="ddd" id="d8"><label for="d8">오름스톡</label></li>
+										</ul>
+										<a href="#none" class="btn_more">더보기</a>
+									</div>
+									<!-- // chk_list_wrap -->
+								</td>	
+							</tr>
+							<tr>
+								<th scope="row">Msgtype</th>
+								<td class="txt_l" colspan="3"> 
+									<!-- chk_list_wrap -->
+									<div class="chk_list_wrap type2">
+										<ul>
+											<li><input type="checkbox" name="ddd2" id="f1"><label for="f1">전체</label></li>
+											<li class="chk_click">전체 체크</li>
+											<li><input type="checkbox" name="ddd2" id="f2"><label for="f2">신규주문(S)</label></li>
+											<li><input type="checkbox" name="ddd2" id="f3"><label for="f3">신규주문(L)</label></li>
+											<li><input type="checkbox" name="ddd2" id="f4"><label for="f4">정정주문</label></li>
+											<li><input type="checkbox" name="ddd2" id="f5"><label for="f5">주문취소</label></li>
+										</ul>
+										<a href="#none" class="btn_more">더보기</a>
+									</div>
+									<!-- // chk_list_wrap -->
+								</td>	
+							</tr>
+							<tr>
+								<th scope="row">성공여부</th>
+								<td class="txt_l" colspan="3"> 
+									<!-- chk_list_wrap -->
+									<div class="chk_list_wrap type2">
+										<ul>
+											<li><input type="checkbox" name="ddd3" id="f6"><label for="f6">전체</label></li>
+											<li><input type="checkbox" name="ddd3" id="f7"><label for="f7">성공</label></li>
+											<li><input type="checkbox" name="ddd3" id="f8"><label for="f8">실패</label></li>
+										</ul>
+									</div>
+									<!-- // chk_list_wrap -->
+								</td>	
+							</tr>
+							<tr>
+								<th scope="row">통계 기준</th>
+								<td class="txt_l" colspan="3"> 
+									<input type="radio" name="bb" id="b2" checked="checked">
+									<label for="b2">Buy-side</label>
+									<input type="radio" name="bb" id="b3">
+									<label for="b3">Msgtype</label>
+								</td>	
+							</tr>
+							<tr>
+								<th scope="row">구분</th>
+								<td class="txt_l"> 
+									<input type="radio" name="bb2" id="b4">
+									<label for="b4">분(5분)</label>
+									<input type="radio" name="bb2" id="b5">
+									<label for="b5">시간</label>
+									<input type="radio" name="bb2" id="b6" checked="checked">
+									<label for="b6">일</label>
+									<input type="radio" name="bb2" id="b7">
+									<label for="b7">월</label>
+								</td>
+								<th scope="row">조회가능기간</th>
+								<td>최대 6개월</td>
+							</tr>
+							<tr>
+								<th scope="row"><label for="chk2">조회일/시</label></th>
+								<td class="txt_l" colspan="3"> 
+									<input type="text" id="datepicker1" readonly="readonly" style="width:80px;"><span class="dateDot">~</span><input type="text" id="datepicker2" readonly="readonly" style="width:80px;">
+								</td>	
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="btn_type3">
+						<span class="btn_gray1"><a href="#none;">검색</a></span>
+						<span class="btn_gray2"><a href="#none;">초기화</a></span>
+					</div>
+					<!-- // btn_type3 -->
+					
+					<p class="amount">총 <em>99999</em> 건</p>
+					<!-- 그리드 영역 -->
+					<div class="tb_list1">
+						<table>
+							<caption>일, 총호출수, 성공, 실패, atsolutions, dunamu, kakao, naver, Viva, 더블제이 정보</caption>
+							<colgroup>
+								<col style="width:*;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th scope="col">일</th>
+								<th scope="col">총호출수</th>
+								<th scope="col">성공</th>
+								<th scope="col">실패</th>
+								<th scope="col">atsolutions</th>
+								<th scope="col">dunamu</th>
+								<th scope="col">kakao</th>
+								<th scope="col">naver</th>
+								<th scope="col">Viva</th>
+								<th scope="col">더블제이</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td style="text-align:center;">3/1</td>
+								<td style="text-align:center;">1500</td>
+								<td style="text-align:center;">800</td>
+								<td style="text-align:center;">700</td>
+								<td style="text-align:center;">100</td>
+								<td style="text-align:center;">580</td>
+								<td style="text-align:center;"></td>
+								<td style="text-align:center;"></td>
+								<td style="text-align:center;"></td>
+								<td style="text-align:center;"></td>
+							</tr>
+							<!-- 데이터가 없을 경우 -->
+							<tr>
+								<td colspan="10" style="text-align:center;">등록된 정보가 없습니다.</td>
+							</tr>
+							<!-- // 데이터가 없을 경우 -->
+							</tbody>
+						</table>
+					</div>
+					<!--// 그리드 영역 -->
+
+					<!-- pagination -->
+					<div class="pagination">
+						<a href="#" class="page first"></a>
+						<a href="#" class="page prev"></a>
+						<a href="#" class="on">1</a>
+						<a href="#">2</a>
+						<a href="#">3</a>
+						<a href="#">4</a>
+						<a href="#">5</a>
+						<a href="#">6</a>
+						<a href="#">7</a>
+						<a href="#">8</a>
+						<a href="#">9</a>
+						<a href="#">10</a>
+						<a href="#" class="page next"></a>
+						<a href="#" class="page last"></a>
+
+						<div class="btn_type3">
+							<div class="left">
+								<span class="btn_gray1"><a href="#none;">엑셀</a></span>
+							</div>
+						</div>
+					</div>
+					<!-- // pagination -->
+				</div>
+				<!--// Request -->
+
+				<!-- Response -->
+				<div class="tab_cont mt20" id="tab02">
+					<div class="tb_write1">
+						<table>
+							<caption>FIX Engine 통계 정보입력</caption>
+							<colgroup>
+								<col style="width:20%;">
+								<col style="width:30%;">
+								<col style="width:20%;">
+								<col style="width:30%;">
+							</colgroup>
+							<tbody>
+							<tr>
+								<th scope="row">Initiator ID</th>
+								<td class="txt_l" colspan="3"> 
+									<!-- chk_list_wrap -->
+									<div class="chk_list_wrap type2">
+										<ul>
+											<li><input type="checkbox" name="d3" id="ddd1"><label for="ddd1">전체</label></li>
+											<li><input type="checkbox" name="d3" id="ddd2"><label for="ddd2">S0001</label></li>
+											<li><input type="checkbox" name="d3" id="ddd3"><label for="ddd3">S0002</label></li>
+											<li><input type="checkbox" name="d3" id="ddd4"><label for="ddd4">S0003</label></li>
+											<li><input type="checkbox" name="d3" id="ddd5"><label for="ddd5">S0004</label></li>
+										</ul>
+										<a href="#none" class="btn_more">더보기</a>
+									</div>
+									<!-- // chk_list_wrap -->
+								</td>	
+							</tr>
+							<tr>
+								<th scope="row">Buy-side</th>
+								<td class="txt_l" colspan="3"> 
+									<!-- chk_list_wrap -->
+									<div class="chk_list_wrap type2">
+										<ul>
+											<li><input type="checkbox" name="dd3" id="dd1"><label for="dd1">전체</label></li>
+											<li><input type="checkbox" name="dd3" id="dd2"><label for="dd2">atsolutions</label></li>
+											<li><input type="checkbox" name="dd3" id="dd3"><label for="dd3">dunamu</label></li>
+											<li><input type="checkbox" name="dd3" id="dd4"><label for="dd4">kakao</label></li>
+											<li><input type="checkbox" name="dd3" id="dd5"><label for="dd5">naver</label></li>
+											<li><input type="checkbox" name="dd3" id="dd6"><label for="dd6">viva</label></li>
+											<li><input type="checkbox" name="dd3" id="dd7"><label for="dd7">더블제이스톡</label></li>
+											<li><input type="checkbox" name="dd3" id="dd8"><label for="dd8">오름스톡</label></li>
+										</ul>
+										<a href="#none" class="btn_more">더보기</a>
+									</div>
+									<!-- // chk_list_wrap -->
+								</td>	
+							</tr>
+							<tr>
+								<th scope="row">Msgtype</th>
+								<td class="txt_l" colspan="3"> 
+									<!-- chk_list_wrap -->
+									<div class="chk_list_wrap type2">
+										<ul>
+											<li><input type="checkbox" name="dd4" id="g1"><label for="g1">전체</label></li>
+											<li><input type="checkbox" name="dd4" id="g2"><label for="g2">신규주문(S)</label></li>
+											<li><input type="checkbox" name="dd4" id="g3"><label for="g3">신규주문(L)</label></li>
+											<li><input type="checkbox" name="dd4" id="g4"><label for="g4">정정주문</label></li>
+											<li><input type="checkbox" name="dd4" id="g5"><label for="g5">주문취소</label></li>
+										</ul>
+										<a href="#none" class="btn_more">더보기</a>
+									</div>
+									<!-- // chk_list_wrap -->
+								</td>	
+							</tr>
+							<tr>
+								<th scope="row">통계 기준</th>
+								<td class="txt_l" colspan="3"> 
+									<input type="radio" name="bb3" id="b8" checked="checked">
+									<label for="b8">Buy-side</label>
+									<input type="radio" name="bb3" id="b9">
+									<label for="b9">Msgtype</label>
+								</td>	
+							</tr>
+							<tr>
+								<th scope="row">구분</th>
+								<td class="txt_l"> 
+									<input type="radio" name="bb4" id="b10">
+									<label for="b10">분(5분)</label>
+									<input type="radio" name="bb4" id="b11">
+									<label for="b11">시간</label>
+									<input type="radio" name="bb4" id="b12" checked="checked">
+									<label for="b12">일</label>
+									<input type="radio" name="bb4" id="b13">
+									<label for="b13">월</label>
+								</td>
+								<th scope="row">조회가능기간</th>
+								<td>최대 6개월</td>
+							</tr>
+							<tr>
+								<th scope="row"><label for="chk2">조회일/시</label></th>
+								<td class="txt_l" colspan="3"> 
+									<input type="text" id="datepicker1" readonly="readonly" style="width:80px;"><span class="dateDot">~</span><input type="text" id="datepicker2" readonly="readonly" style="width:80px;">
+								</td>	
+							</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="btn_type3">
+						<span class="btn_gray1"><a href="#none;">검색</a></span>
+						<span class="btn_gray2"><a href="#none;">초기화</a></span>
+					</div>
+					<!-- // btn_type3 -->
+					
+					<p class="amount">총 <em>99999</em> 건</p>
+					<!-- 그리드 영역 -->
+					<div class="tb_list1">
+						<table>
+							<caption>일, 총호출수, 성공, 실패, atsolutions, dunamu, kakao, naver, Viva, 더블제이 정보</caption>
+							<colgroup>
+								<col style="width:*;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+							</colgroup>
+							<thead>
+							<tr>
+								<th scope="col">일</th>
+								<th scope="col">총호출수</th>
+								<th scope="col">성공</th>
+								<th scope="col">실패</th>
+								<th scope="col">atsolutions</th>
+								<th scope="col">dunamu</th>
+								<th scope="col">kakao</th>
+								<th scope="col">naver</th>
+								<th scope="col">Viva</th>
+								<th scope="col">더블제이</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td style="text-align:center;">3/1</td>
+								<td style="text-align:center;">1500</td>
+								<td style="text-align:center;">800</td>
+								<td style="text-align:center;">700</td>
+								<td style="text-align:center;">100</td>
+								<td style="text-align:center;">580</td>
+								<td style="text-align:center;"></td>
+								<td style="text-align:center;"></td>
+								<td style="text-align:center;"></td>
+								<td style="text-align:center;"></td>
+							</tr>
+							<!-- 데이터가 없을 경우 -->
+							<tr>
+								<td colspan="10" style="text-align:center;">등록된 정보가 없습니다.</td>
+							</tr>
+							<!-- // 데이터가 없을 경우 -->
+							</tbody>
+						</table>
+					</div>
+					<!--// 그리드 영역 -->
+
+					<!-- pagination -->
+					<div class="pagination">
+						<a href="#" class="page first"></a>
+						<a href="#" class="page prev"></a>
+						<a href="#" class="on">1</a>
+						<a href="#">2</a>
+						<a href="#">3</a>
+						<a href="#">4</a>
+						<a href="#">5</a>
+						<a href="#">6</a>
+						<a href="#">7</a>
+						<a href="#">8</a>
+						<a href="#">9</a>
+						<a href="#">10</a>
+						<a href="#" class="page next"></a>
+						<a href="#" class="page last"></a>
+
+						<div class="btn_type3">
+							<div class="left">
+								<span class="btn_gray1"><a href="#none;">엑셀</a></span>
+							</div>
+						</div>
+					</div>
+					<!-- // pagination -->
+				</div>
+				<!--// Response -->
+
+			</section>
+			<!-- // content -->
+		</div>
+	</article>
+	<!-- // container -->
+</body>
+</html>

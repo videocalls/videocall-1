@@ -1,0 +1,30 @@
+<ion-view view-title="">
+	<ion-content>
+		<div class="container"> <!-- 비밀번호 찾기 -->
+			<div class="inner_cont type2">
+				<!-- 정보입력 -->
+				<ul class="entry_area mt48">
+					<li>
+						<div class="title_s">아이디</div>
+						<div class="input_area"><input type="text" placeholder="아이디입력" /></div>
+						<div class="txt_error">아이디를 입력해주세요</div> <!-- add class : hide_set : display:none; 처리  -->
+					</li>
+				</ul>
+				<!--// 정보입력 -->
+				<div class="gray_box">
+					<ul class="dot_list">
+						<li>모바일앱에서는 회원가입 후,  공인인증서가 등록된 회원에 한해 비밀번호 찾기가 가능합니다.</li>
+						<li>인증서가 등록되지 않은 경우 PC버전 비밀번호 찾기를 이용해주시기 바랍니다.</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<div class="button_area btn_bottom_area">
+			<a href="#go" class="btn_middle btn_black_org disabled" disabled>공인인증서 인증</a>
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+</ion-view>

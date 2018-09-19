@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+
+<properties>
+
+	<comment>ASTX2 config</comment>
+    
+	<!-- Log type.(0:system.out,1:logger)(default:0) --> 
+	<entry key="ASTX2_OUTPUT_TYPE">0</entry>
+	
+	<!-- Log output.(0~9)(default:0) -->
+	<entry key="ASTX2_DEBUG_LEVEL">9</entry>
+	
+	<!-- Server stamp values tolerance.(default:60) -->
+	<entry key="ASTX2_STAMP_TOLERANCE">300</entry>
+	
+	<!-- Only response to the POST requests.(default:0,0:false,1:true) -->
+	<entry key="ASTX2_RESPONSE_ONLY_POST">0</entry>
+	
+	<!-- E2E encryption algorithm.(default:1,1:AES128,2:AES256) -->
+	<entry key="ASTX2_E2E_ALGORITHM">1</entry>
+	
+	<!-- Enable get encoded E2E-2 value.(default:0,0:false,1:true) -->
+	<entry key="ASTX2_E2E_INFO_DATA2">0</entry>
+	
+	<!-- Do not use RSA algorithm.(default:0,0:none,1:e2e+pclog,2:pclog) -->
+	<entry key="ASTX2_E2E_NORSA">0</entry>
+	
+	<!-- Check time stamp on e2e data.(default:0,0:none,1:allow empty,2:not allow empty) -->
+	<entry key="ASTX2_E2E_CHKSTAMP">0</entry>
+	
+	<!-- Set by the servlet UNIQID. -->
+	<entry key="ASTX2_SERVLET_UNIQID"></entry>
+	
+	<!-- customer E2E Form tag name.
+	<entry key="ASTX2_E2EFORM">
+	{ "E2EFORM_TAIL":"true", "E2EFORM_INIT":"_e2e_forminit",
+	  "E2EFORM_TAG1":"_e2e_1__", "E2EFORM_TAG1_PWD":"_e2e_1_pwd__",
+	  "E2EFORM_TAG2":"_e2e_2__", "E2EFORM_TAG2_PWD":"_e2e_2_pwd__" }
+	</entry>
+	-->
+
+	<!-- Agent validation when the server stamp requests.(default:1,0:false,1:true) 
+	<entry key="ASTX2_STAMP_CHKAGENT">0</entry>
+	-->
+	
+	<!-- E2E field name encoding for korean.(default:0,0:false,1:true) 
+	<entry key="ASTX2_E2E_NAME_ENCODE">0</entry>
+	-->
+	
+	<!-- Customer name -->
+	<entry key="ASTX2_SERVER_NAME">demo1</entry>
+		
+	<entry key="ASTX2_SERVER_CERT1">
+	MIICtTCCAZ0CCQDO2yo0FyPyVjANBgkqhkiG9w0BAQsFADAUMRIwEAYDVQQKDAlB
+	U1R4Um9vdDIwHhcNMTUwNjIyMDk0MDAxWhcNMTcwODI1MDk0MDAxWjAlMRMwEQYD
+	VQQKDApBU1R4U2VydmVyMQ4wDAYDVQQDDAVkZW1vMTCCASIwDQYJKoZIhvcNAQEB
+	BQADggEPADCCAQoCggEBALwFx9rHCRNLrtjU3PMEOdp3hvai8Q+ydm2KZ6BcvrGd
+	0wXQaf0KbSulA/MdhdOjHqY6c89AfKcv8DWR30Du5ciSBQ6r3npJaKBzvFiUNJpy
+	7+8X0kpqGw8x+NhS5k/O5pLwU+D/9cEM5FfpV2LcC7tMgiuKla0q5fqRfcDO7c6T
+	lpja6Oo35d7g7mdmQB3CxI93/6/62Rp+ErzTycNJAzQe1GjcyyMgIqFqQGORSGaF
+	LDFJ6QvLG00RmFqEINnIWz5iUREhHOqTs10aqgDyoC48kKTgeAbdPRbB5hRKOSCw
+	vycp6kK/mQHhTfgoGg5rx/rfvoDyQ2cffl9F6L5L8uECAwEAATANBgkqhkiG9w0B
+	AQsFAAOCAQEAGMSDQ4k1NflYI71roX3VGLxirxHOs4AhupSV6DlseBQT7ugre6lK
+	785Jm/pAjEBMJ+8WNsqPWkTCbATaZfxBsUkpCimoBV3yFab3mCzI85r2kDntiv8w
+	OYQpHvOJyv++SbMBd0N4DbYlr2fWJSwS5koiPDO3jbM0CbnQozED/zVAUdb6uJe+
+	u/dyzDyxboElN/Kbela7Fd6PR67jBx6ytPamUV12lgP7IrvLGv0SZAGsVq6o2/Lb
+	ZYMEcy/MCkuN/ulq3e0G0ZWd1P8fuJFIsLEiqgrAXqwnqC75MlE0ZoxaI5KlMkYz
+	BwhBn6UN7Dvx1T9oF+w2AFRMzPapzrNcSg==
+	</entry>
+	
+	<entry key="ASTX2_SERVER_CERT2">
+	</entry>	
+	
+	<entry key="ASTX2_SERVER_KEY1">
+	dreuGcNGorupGv_k2RmMSi0MDrSWmTps26__G7_prPzsoBzxNBmdD7_jGr_pAPes2
+	6_8kvuQNR_ImBwrrTLxi2PXlrWHq7uvAR_7z3-OAxN_rfzaijGYAi6jivKBq3W7dr
+	LKGBIW2BPKSjpGrfY-i60rAxZBArhar_pGofeadshpl2PXDB2W2dmniveMNn69Sd7
+	nzezcDimQzx0NAvGdLizn5xN3krY5Li0TrvnRDee6m6Y2qj60rT03r3St5n0sGvho
+	iVPXzeN7DdzpmdmroreODcpcmvwni8NMi8zpqjrTdBCnL67OmiYEdywLNdG9ziWDD
+	P_7mxzdr32tXxLMm3w0NR05kVPXl80aG_zGddp-m_utlPnTD7e8oB00DPugDn6bAi
+	0dmx0dNiwlqc0Pd76DD3_b2PGDqrNTXneCG6uurjYEDTmkNVPXGx_t2d0E2c62o7z
+	Mzv0jGTzrl_mxN6e6rBYMNxzlk3W5Ncp8mQ6M2QG6lTG52Rh9Ld0RzQlxz7vIDPWa
+	o8lnNZPXrR6YXnltd30pNPns2r__2BmjGr_7oTGKSReHDrun6j_KNBY8zPWoSBeKr
+	x6LS__rNPwb27njl8lxiQ6jNPYHm2PXNR_QmiNnN3NbGfmP6_6nXT6nlrWQN8murT
+	2IznGplrNID37Od6perruLzveG6Be5k3GIAnZEAxYGLTp-dswwmZPXlohuqimsNr6
+	alrWCAswMSrZWGvZBNfNc6izrGQlTlowaSB6bNnztod6yqoCImPYLD7N6icYBqvmW
+	k_eeLnYYlZPXXP_HmOJIoBnn5xbIijvnGe_zSimMLTpuLizuqe6zqiW3leN3DQlP6
+	cuBiRzzi6GIDvGbribOAvhOAPJTq7w-iVPXDxlMAOwoqjGeSc2trRZMSTN2m3EXAc
+	bWGizvlj0MrRWKofYQk8uv2PKtDTz_Dfezrr0eoc0-zxetNduTGe_kr2PX6r6sdvu
+	Ckc2OrBWGA_eN2BNNXB6Kdi_-rPmiA7z2d8uDq8G7zvuQq36GoPujrr2Po7mRNnz3
+	i6_jN3ZnmQ6i62PX63EnLdmgi7CWivbMz8-W5PZEriEXqRWvNB6RA6YYG7KnA3rEA
+	ywk2dGzoBwadPeoA7u_dd0tqvzKArnizj2E22PXLrwTr_LEd7wKNR7EGQ6QodpPoj
+	z-A8_fAie2GQuKNRmK6nm65n00m7ukXOwW2xet2e-Iqv6Qrnmkr6mEmj_kAKPX2PN
+	3drGQdeu8Arm2rjeCk6VESrhii7G-kcm52RmGGv-MNPeki80vmeLMishlr6-n6xSP
+	rx0WLP09zcuEoowBqVPXl3zGqie927_tDQLTGihW5npn5Pnnrd_HG3ZOqiCMooJnk
+	rnpAPbTlnGnrdNdDxltGTN6irh0z3WKD7WeGvuYmKPXSeYGl6uQAiN0qf08Ac6HlP
+	eX6nYz6TzGqvYx2d69dQmjDn2To_plGx6XlBYPNf68DeeWLizX6BKPLQNOD7wRrZP
+	Xr8ut2REvo_LnmPwsNn_vDPzaG808r8GB2em6mQzj6i_863Ye6epro6uaGrmQlnN2
+	lRY0lepYAxYKNjvIo3Ye6VPX6__bAshDz_0ri3zr6PwaiRYoNrh6ABYyzd665TuWm
+	i0nid00kiefq30-lBNHmre06Rzr6_ZIrevKNdSOd663oKPX63YLNBeCzQSK6fue6e
+	7t6ieN2QVKXPW0djYjrPuMDiGaSilTmnbPqfVWqihMzBEKre_9mjzESjNcrrwsNPm
+	erZPXq_m0Xx_D6i0Eifm3lnrOmimf6in6oruQoc6O277KArwDmiG6DR6Rlf69NinH
+	kowk2x0W680QSfzHmTrBrQuzlKPXmv6fq3m5iQmdrrzcDiW0lBPtzPGr6BKMo7vID
+	7uMmepNDPE2LP6RNrhzD60rk8mgijNH6iKTln_RGflWXxNjoVPXoRendvmi6R0L6x
+	mame0Wo32TSOwjLiep6sJTAxvto3GwNxm7qv2PDv_tGP_RGre-z3wlo8_zDTLTSih
+	TNfpkdZPXS600mf686rejN_uHrjvBqrLx6xp3DBvImfz0NOhC6PNEdv0_GBKBk30f
+	66YbSRe-q7_5ic_9DiwYoPz6dc0uSKPXNQ0roelBljN6d6mLmi0KzQu86Pz0lczIA
+	P0u6f_Nm8uWNxSxi3zDl3nik8_8Gc0PrB00A3YKlnGddRWrz7ZPo2PXNr_267G9l3
+	WW687MDi7W26uTk30sidZh	    
+	</entry>	
+
+	<entry key="ASTX2_SERVER_KEY2">
+	</entry>
+	
+</properties>

@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.mockup.service.impl.MockUpDAO">
+
+  	<typeAlias alias="MockUpVO" type="kr.co.koscom.oppf.apt.mockup.service.MockUpVO"/>
+	<typeAlias  alias="CmmFuncVO"  type="kr.co.koscom.oppf.cmm.service.CmmFuncVO"/>
+	<!--
+	   * @Method Name        : apt.MockUpDAO.selectLoginProfile
+	   * @Method description : MockUp List 조회
+	   * @param              : MockUpVO
+	   * @return             : MockUpVO
+	   * @throws             : Exception
+	-->
+	<sql id="fromWhereAnd">
+		<isNotEmpty property="searchKeyword">
+			<!-- 이름 -->
+			<isEqual property="searchCondition" compareValue="title" prepend="and">
+				a.title like concat('%', #searchKeyword#, '%')
+			</isEqual>
+			<!-- uri -->
+			<isEqual property="searchCondition" compareValue="mockupUri" prepend="and">
+				a.mockup_uri like concat('%', #searchKeyword#, '%')
+			</isEqual>
+			<!-- MSG.ID -->
+			<isEqual property="searchCondition" compareValue="mockupServiceNumber" prepend="and">
+				a.mockup_service_no like concat('%', #searchKeyword#, '%')
+			</isEqual>
+			<!-- 전체 -->
+			<isEqual property="searchCondition" compareValue="all" prepend="and">
+				(
+					a.title like concat('%', #searchKeyword#, '%') or
+					a.mockup_uri like concat('%', #searchKeyword#, '%') or
+					a.mockup_service_no like concat('%', #searchKeyword#, '%')
+				)
+			</isEqual>
+		</isNotEmpty>
+		<!-- 서비스 제공자 -->
+		<isNotEmpty property="searchPubcompanyCodeId" prepend="and">
+			<isNotEqual property="searchPubcompanyCodeIdAllYn" compareValue="Y">
+				a.company_code_id
+				<iterate  property="searchPubcompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+					#searchPubcompanyCodeId[]#
+				</iterate>
+			</isNotEqual>
+		</isNotEmpty>
+		<!-- Method 방식 -->
+		<isNotEmpty property="searchMethod" prepend="and">
+			<isNotEqual property="searchMethodAllYn" compareValue="Y">
+				a.method_type
+				<iterate  property="searchMethod" prepend="IN" open="(" close=")" conjunction=",">
+					#searchMethod[]#
+				</iterate>
+			</isNotEqual>
+		</isNotEmpty>
+		<!--HTTP Status-->
+		<isNotEmpty property="searchHttpStatus" prepend="and">
+			<isNotEqual property="searchHttpStatusAllYn" compareValue="Y">
+				a.http_status
+				<iterate  property="searchHttpStatus" prepend="IN" open="(" close=")" conjunction=",">
+					#searchHttpStatus[]#
+				</iterate>
+			</isNotEqual>
+		</isNotEmpty>
+		<!-- 조회일 -->
+		<isNotEmpty property="searchDateType">
+			<!-- 등록일 -->
+			<isEqual property="searchDateType" compareValue="create" prepend="and">
+				ifnull(date_format(a.create_date, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '')
+			</isEqual>
+			<!-- 수정일 -->
+			<isEqual property="searchDateType" compareValue="update" prepend="and">
+				ifnull(date_format(a.update_date, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '')
+			</isEqual>
+		</isNotEmpty>
+	</sql>
+	<select id="apt.MockUpDAO.selectMockUpServiceList" parameterClass="MockUpVO" resultClass="MockUpVO">
+		select
+			b.company_name_kor_alias as companyNameKorAlias,
+			c.code_name_kor as httpStatusName,
+			a.mockup_service_no as mockupServiceNumber,
+			a.company_code_id as companyCodeId,
+			a.mockup_uri as mockupUri,
+			a.title as title,
+			a.header_info as headerInfo,
+			a.method_type as methodType,
+			a.query_string_info as queryStringInfo,
+			a.body_info as bodyInfo,
+			a.http_status as httpStatus,
+			a.response_message as responseMessage,
+			date_format(a.create_date,"%Y-%m-%d %H:%i") as createDate,
+			a.create_id as createId,
+			date_format(a.update_date,"%Y-%m-%d %H:%i") as updateDate,
+			a.update_id as updateId,
+			date_format(a.delete_date,"%Y-%m-%d %H:%i") as deleteDate
+		from com_mockup_service_info a
+		left join com_company_profile b
+		on a.company_code_id = b.company_code_id
+		left join com_system_code c
+		on  c.system_grp_code = 'G033'
+		and a.http_status = concat(c.system_grp_code,c.system_code)
+		where a.delete_date is null
+		<include refid="fromWhereAnd"/>
+		<isEmpty property="listOrder">
+			order by a.mockup_service_no desc
+		</isEmpty>
+		<isEqual property="excelYn" compareValue="N">
+			limit
+			<isNotEmpty property="pageStart">#pageStart#</isNotEmpty>
+			<isEmpty property="pageStart">0</isEmpty>
+			<isNotEmpty property="pageRowsize">,#pageRowsize#</isNotEmpty>
+			<isEmpty property="pageRowsize">,10</isEmpty>
+		</isEqual>
+	</select>
+
+	<!--sortable
+	   * @Method Name        : apt.MockUpDAO.selectLoginProfile
+	   * @Method description : MockUp count 조회
+	   * @param              : MockUpVO
+	   * @return             : MockUpVO
+	   * @throws             : Exception
+	-->
+	<select id="apt.MockUpDAO.selectMockUpServiceListCnt" parameterClass="MockUpVO" resultClass="int">
+		select count(*) as totCnt
+		from com_mockup_service_info a
+		left join com_company_profile b
+		on a.company_code_id = b.company_code_id
+		left join com_system_code c
+		on  c.system_grp_code = 'G033'
+		and a.http_status = concat(c.system_grp_code,c.system_code)
+		where a.delete_date is null
+		<include refid="fromWhereAnd"/>
+	</select>
+
+	<!--
+    * @Method Name        : apt.MockUpDAO.selectMockUpServiceListExcel
+    * @Method description : MockUp excel 목록을 조회한다.
+    * @param              : MockUpVO
+    * @return             : MockUpVO
+    * @throws             : Exception
+    -->
+	<select id="apt.MockUpDAO.selectMockUpServiceListExcel" parameterClass="MockUpVO" resultClass="MockUpVO">
+		select
+			b.company_name_kor_alias as companyNameKorAlias,
+			c.code_name_kor as httpStatusName,
+			a.mockup_service_no as mockupServiceNumber,
+			a.company_code_id as companyCodeId,
+			a.mockup_uri as mockupUri,
+			a.title as title,
+			a.header_info as headerInfo,
+			a.method_type as methodType,
+			a.query_string_info as queryStringInfo,
+			a.body_info as bodyInfo,
+			a.http_status as httpStatus,
+			a.response_message as responseMessage,
+			date_format(a.create_date,"%Y-%m-%d %H:%i") as createDate,
+			a.create_id as createId,
+			date_format(a.update_date,"%Y-%m-%d %H:%i") as updateDate,
+			a.update_id as updateId,
+			date_format(a.delete_date,"%Y-%m-%d %H:%i") as deleteDate
+		from com_mockup_service_info a
+		left join com_company_profile b
+		on a.company_code_id = b.company_code_id
+		left join com_system_code c
+		on  c.system_grp_code = 'G033'
+		and a.http_status = concat(c.system_grp_code,c.system_code)
+		where a.delete_date is null
+		<isEqual property="excelType" compareValue="excel">
+			<include refid="fromWhereAnd"/>
+		</isEqual>
+		order by a.create_date desc
+	</select>
+
+	<!--
+    * @Method Name        : apt.MockUpDAO.selectMockUpServiceListExcel
+    * @Method description : MockUp Detail 조회.
+    * @param              : MockUpVO
+    * @return             : MockUpVO
+    * @throws             : Exception
+    -->
+	<select id="apt.MockUpDAO.selectMockUpServiceDtl" parameterClass="MockUpVO" resultClass="MockUpVO">
+		select
+			b.company_name_kor_alias as companyNameKorAlias,
+			c.code_name_kor as httpStatusName,
+			a.mockup_service_no as mockupServiceNumber,
+			a.company_code_id as companyCodeId,
+			a.mockup_uri as mockupUri,
+			a.title as title,
+			a.header_info as headerInfo,
+			a.method_type as methodType,
+			a.query_string_info as queryStringInfo,
+			a.body_info as bodyInfo,
+			a.http_status as httpStatus,
+			a.response_message as responseMessage,
+			date_format(a.create_date,"%Y-%m-%d %H:%i") as createDate,
+			a.create_id as createId,
+			date_format(a.update_date,"%Y-%m-%d %H:%i") as updateDate,
+			a.update_id as updateId,
+			date_format(a.delete_date,"%Y-%m-%d %H:%i") as deleteDate
+		from com_mockup_service_info a
+		left join com_company_profile b
+		on a.company_code_id = b.company_code_id
+		left join com_system_code c
+		on 	c.system_grp_code = 'G033'
+		and a.http_status = concat(c.system_grp_code,c.system_code)
+		where mockup_service_no = #mockupServiceNumber#
+	</select>
+
+	<!--
+   * @Method Name        : apt.MockUpDAO.selectMockUpServiceCnt
+   * @Method description : mockup message 저장 시 기존데이터가 있는지 여부를 가져온다.
+   * @param              : MockUpVO
+   * @return             : int
+   * @throws             : Exception
+   -->
+	<select id="apt.MockUpDAO.selectMockUpServiceCnt" parameterClass="MockUpVO" resultClass="int">
+		select count(*) as totalcount
+		from com_mockup_service_info
+		where mockup_service_no = #mockupServiceNumber#
+	</select>
+
+	<!--
+	* @Method Name        : apt.MockUpDAO.insertMockUpService
+	* @Method description : MockUp 정보 insert.
+	* @param              : MockUpVO
+	* @return             : int
+	* @throws             : Exception
+	-->
+	<insert id="apt.MockUpDAO.insertMockUpService" parameterClass="MockUpVO">
+		<selectKey keyProperty="mockupServiceNumber" resultClass="java.lang.String">
+			select  concat(date_format(sysdate(),'%Y%m%d'),
+				lpad((
+					select ifnull( max(cast(right(mockup_service_no,3) as signed)), 0)+1
+					from com_mockup_service_info
+					where left(mockup_service_no,8) = concat(date_format(sysdate(),'%Y%m%d'))
+				), 3, '0')
+			) as mockupServiceNumber;
+		</selectKey>
+		insert com_mockup_service_info
+			(
+				mockup_service_no,
+				company_code_id,
+				mockup_uri,
+				title,
+				header_info,
+				method_type,
+				query_string_info,
+				body_info,
+				http_status,
+				response_message,
+				create_date,
+				create_id,
+				update_date,
+				update_id
+			)
+		value
+			(
+				#mockupServiceNumber#,
+				#companyCodeId#,
+				#mockupUri#,
+				#title#,
+				#headerInfo#,
+				#methodType#,
+				#queryStringInfo#,
+				#bodyInfo#,
+				#httpStatus#,
+				#responseMessage#,
+				now(),
+				#createId#,
+				now(),
+				#createId#
+			)
+	</insert>
+
+	<!--
+	* @Method Name        : apt.MockUpDAO.updateMockUpService
+	* @Method description : MockUp 정보 update.
+	* @param              : MockUpVO
+	* @return             : int
+	* @throws             : Exception
+	-->
+	<update id="apt.MockUpDAO.updateMockUpService" parameterClass="MockUpVO">
+		update com_mockup_service_info
+		set
+			company_code_id = #companyCodeId#,
+			title = #title#,
+			header_info = #headerInfo#,
+			method_type = #methodType#,
+			query_string_info = #queryStringInfo#,
+			body_info = #bodyInfo#,
+			http_status = #httpStatus#,
+			response_message = #responseMessage#,
+			update_date = now(),
+			update_id = #createId#
+		where mockup_service_no = #mockupServiceNumber#;
+	</update>
+
+	<!--
+	* @Method Name        : apt.MockUpDAO.deleteMockUpService
+	* @Method description : MockUp 정보 delete(보류).
+	* @param              : MockUpVO
+	* @return             : int
+	* @throws             : Exception
+	-->
+	<update id="apt.MockUpDAO.deleteMockUpService" parameterClass="MockUpVO">
+		update com_mockup_service_info
+		set
+			delete_date = DATE_FORMAT(now(), '%Y%m%d'),
+			update_id = #updateId#,
+			update_date = DATE_FORMAT(now(), '%Y%m%d')
+		where mockup_service_no = #mockupServiceNumber#;
+	</update>
+
+	<!--
+        * @Method Name        : apt.MockUpDAO.insertMockUpServiceHist
+        * @Method description : MockUp 정보 history table 저장.
+        * @param              : MockUpVO
+        * @return             : int
+        * @throws             : Exception
+        -->
+	<insert id="apt.MockUpDAO.insertMockUpServiceHist" parameterClass="MockUpVO">
+		insert com_mockup_service_info_hist
+			(
+				mockup_seq,
+				mockup_service_no,
+				company_code_id,
+				mockup_uri,
+				title,
+				header_info,
+				method_type,
+				query_string_info,
+				body_info,
+				http_status,
+				response_message,
+				create_date,
+				create_id,
+				update_date,
+				update_id
+			)
+		select
+			(select ifnull((
+					select ifnull(max(cast(a.mockup_seq as SIGNED)), 0) + 1
+					from com_mockup_service_info_hist a), 1)
+			) as mockup_seq,
+			mockup_service_no,
+			company_code_id,
+			mockup_uri,
+			title,
+			header_info,
+			method_type,
+			query_string_info,
+			body_info,
+			http_status,
+			response_message,
+			create_date,
+			create_id,
+			update_date,
+			update_id
+		from com_mockup_service_info
+		where
+			mockup_service_no = #mockupServiceNumber#
+	</insert>
+
+	<select id="apt.MockUpDAO.selectCompanyCodeList" parameterClass="CmmFuncVO" resultClass="CmmFuncVO">
+		select
+			DISTINCT a.company_code_id as companyCodeId,
+			b.company_profile_reg_no  as companyProfileRegNo,
+			b.company_service_type    as companyServiceType,
+			b.company_name_kor        as companyNameKor,
+			b.company_name_eng        as companyNameEng,
+			b.company_name_kor_alias  as companyNameKorAlias,
+			b.company_name_eng_alias  as companyNameEngAlias
+		from  com_mockup_service_info a
+		left join com_company_profile b
+		on a.company_code_id = b.company_code_id
+		where b.delete_date is null
+		and a.delete_date is null
+
+	</select>
+</sqlMap>

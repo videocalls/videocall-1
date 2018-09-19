@@ -1,0 +1,55 @@
+<ion-view view-title="">
+	<ion-content>
+		<div class="container page_membership"> <!-- 회원가입 페이지 -->
+			<div class="inner_cont type2">
+				<div class="vi_area member">
+					회원가입 전 아래사항을 준비해주세요.
+					<!-- 비회원 인증 전 아래사항을 준비해주세요. --><!-- 비회원시 문구 -->
+				</div>
+				<!-- 아코디언 메뉴 -->
+				<div class="accordian-menu join_info" accordion>
+					<div class="accordian-cont cont_wrap">
+						<a href="#none" class="btn_bar not-active">1. 본인명의 휴대폰 <span class="txt_label label_red">필수</span></a> <!-- add class : not-active : 내용없을때 -->
+						<div class="detail_cont"><!-- 내용없음 --></div>
+					</div>
+
+					<div class="accordian-cont cont_wrap"> <!-- add active :열림 -->
+						<a href="#none" class="btn_bar">2. 범용 또는 증권 전용 공인인증서 <span class="txt_label label_red">필수</span></a>
+						<div class="detail_cont">
+							<div class="gray_box">인증서 발급 및 가져오기(단말기로  복사) 후 다음 단계를 진행해주세요.</div>
+						</div>
+					</div>
+
+					<div class="accordian-cont cont_wrap">
+						<a href="#none" class="btn_bar not-active">3. 증권계좌 </a> <!-- add class : not-active : 내용없을때 -->
+						<div class="detail_cont"><!-- 내용없음 --></div>
+					</div>
+
+					<div class="txt_error">만 14세 미만은 가입이 불가능합니다.</div> <!-- add class : hide_set : display:none; 처리  -->
+
+					<div class="accordian-cont cont_wrap long_space">
+						<a href="#none" class="btn_bar">공인인증서가 없어요!</a>
+						<div class="detail_cont">
+							<div class="gray_box">
+								<ul class="dot_list">
+									<li class="red_point">공인인증서 발급은 금융투자회사(증권사 등)를 이용하시기 바랍니다.</li>
+									<li>금융투자 핀테크 포털에서는 공인인증서를 발급 또는 재발급할 수 없습니다. </li>
+									<li>등록 가능한 공인인증서 : 회원의 주민등록번호로 발급된 개인용 공인인증서(범용 또는 증권전용 용도제한용)</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--// 아코디언 메뉴 -->
+			</div>
+		</div>
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<div class="button_area btn_both btn_bottom_area">
+			<a href="#go" class="btn_middle btn_black">인증서 가져오기</a>
+			<a href="#go" class="btn_middle btn_ing">인증진행 <span class="bg_icon"></span></a> <!-- 가입진행 --><!-- 비회원시 문구 -->
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+</ion-view>

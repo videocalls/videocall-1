@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.setting.service.impl.SystemCodeManageDAO">
+
+  	<typeAlias alias="SystemCodeManageVO" type="kr.co.koscom.oppf.apt.setting.service.SystemCodeManageVO"/>
+  	
+  	
+	<!--
+     * @Method Name        : apt.SystemCodeManageDAO.selectSystemCodeList
+     * @Method description : 공통코드 목록을 조회한다.
+     * @param              : SystemCodeManageVO
+     * @return             : SystemCodeManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.SystemCodeManageDAO.selectSystemCodeList" parameterClass="SystemCodeManageVO" resultClass="SystemCodeManageVO">
+		select  ''                      as treeParentCode,
+		        system_grp_code         as treeCode,
+		        0                       as treeLvl,
+		        system_grp_code         as systemGrpCode,
+		        system_grp_code         as systemCode,
+		        system_grp_code_desc    as codeName,
+		        ''                      as codeSeq,
+		        date_format(vld_start_date, '%Y-%m-%d')     as vldStartDate,
+		        date_format(vld_expire_date, '%Y-%m-%d')    as vldExpireDate,
+		        use_yn                  as useYn,
+		        ''                      as codeExtend1,
+		        ''                      as codeExtend2,
+		        ''                      as codeExtend3,
+		        ''                      as codeExtend4,
+		        ''                      as codeExtend5
+		from(        
+		    select *        
+		    from com_system_grp_code
+		    where delete_date is null
+		    order by system_grp_code_desc asc
+		) a    
+		union all
+		select  *
+		from(
+			select  b.system_grp_code                           as treeParentCode,
+			        concat(b.system_grp_code, b.system_code)    as treeCode,
+			        1                                           as treeLvl,
+			        b.system_grp_code                           as systemGrpCode,
+			        b.system_code                               as systemCode,
+			        b.code_name_kor                             as codeName,
+			        b.code_seq                                  as codeSeq,
+			        date_format(b.vld_start_date, '%Y-%m-%d')   as vldStartDate,
+			        date_format(b.vld_expire_date, '%Y-%m-%d')  as vldExpireDate,
+			        b.use_yn                                    as useYn,
+			        b.code_extend1                              as codeExtend1,
+			        b.code_extend2                              as codeExtend2,
+			        b.code_extend3                              as codeExtend3,
+			        b.code_extend4                              as codeExtend4,
+			        b.code_extend5                              as codeExtend5
+			from com_system_grp_code a, com_system_code b
+			where a.delete_date is null
+			and b.delete_date is null
+			and a.system_grp_code = b.system_grp_code
+			order by a.system_grp_code_desc asc, b.code_seq asc
+        ) a	
+    </select>
+    
+    <!--
+     * @Method Name        : apt.SystemCodeManageDAO.selectSystemGrpCodeDtl
+     * @Method description : 코드그룹의 상세정보를 조회한다.
+     * @param              : SystemCodeManageVO
+     * @return             : SystemCodeManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.SystemCodeManageDAO.selectSystemGrpCodeDtl" parameterClass="SystemCodeManageVO" resultClass="SystemCodeManageVO">
+		select  system_grp_code                               as systemGrpCode,
+		        system_grp_code_desc                          as systemGrpCodeDesc,
+		        date_format(vld_start_date, '%Y-%m-%d')       as vldStartDate,
+		        date_format(vld_expire_date, '%Y-%m-%d')      as vldExpireDate,
+		        use_yn                                        as useYn,
+		        date_format(create_date, '%Y-%m-%d %H:%i')    as createDate,
+		        date_format(update_date, '%Y-%m-%d %H:%i')    as updateDate
+		from com_system_grp_code
+		where system_grp_code = #systemGrpCode# 
+    </select>
+    
+    <!--
+     * @Method Name        : apt.SystemCodeManageDAO.chkSystemGrpCodeDtl
+     * @Method description : 코드그룹의 저장가능 여부를 체크한다.
+     * @param              : SystemCodeManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="apt.SystemCodeManageDAO.chkSystemGrpCodeDtl" parameterClass="SystemCodeManageVO" resultClass="int">
+		select count(*) codeChk
+		from com_system_grp_code
+		where system_grp_code = #systemGrpCode#  
+    </select>
+    
+    <!--
+     * @Method Name        : apt.SystemCodeManageDAO.insertSystemGrpCode
+     * @Method description : 코드그룹 등록
+     * @param              : SystemCodeManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="apt.SystemCodeManageDAO.insertSystemGrpCode" parameterClass="SystemCodeManageVO">
+		insert into com_system_grp_code(
+		    system_grp_code,
+		    system_grp_code_desc,
+		    vld_start_date,
+		    vld_expire_date,
+		    use_yn,
+		    create_date,
+		    create_id,
+		    update_date,
+		    update_id
+		)values(
+		    #systemGrpCode#,
+            #systemGrpCodeDesc#,
+            #vldStartDate#,
+            #vldExpireDate#,
+            #useYn#,
+            sysdate(),
+            #createId#,
+            sysdate(),
+            #createId#
+		)    
+    </insert>
+    
+    <!--
+     * @Method Name        : apt.SystemCodeManageDAO.updateSystemGrpCode
+     * @Method description : 코드그룹 수정
+     * @param              : SystemCodeManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="apt.SystemCodeManageDAO.updateSystemGrpCode" parameterClass="SystemCodeManageVO">
+        update com_system_grp_code set
+            system_grp_code_desc = #systemGrpCodeDesc#,
+            vld_start_date = #vldStartDate#,
+            vld_expire_date = #vldExpireDate#,
+            use_yn = #useYn#,
+            update_date = sysdate(),
+            update_id = #createId#
+        where system_grp_code = #systemGrpCode#
+    </update>
+    
+    <!--
+     * @Method Name        : apt.SystemCodeManageDAO.deleteSystemGrpCode
+     * @Method description : 코드그룹 삭제
+     * @param              : SystemCodeManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <delete id="apt.SystemCodeManageDAO.deleteSystemGrpCode" parameterClass="SystemCodeManageVO">
+        delete from com_system_grp_code
+        where system_grp_code = #systemGrpCode#
+    </delete>
+    
+    <!--
+     * @Method Name        : apt.SystemCodeManageDAO.selectSystemCodeDtl
+     * @Method description : 코드의 상세정보를 조회한다.
+     * @param              : SystemCodeManageVO
+     * @return             : SystemCodeManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.SystemCodeManageDAO.selectSystemCodeDtl" parameterClass="SystemCodeManageVO" resultClass="SystemCodeManageVO">
+		select  system_grp_code                             as systemGrpCode,
+		        system_code                                 as systemCode,
+		        code_name_kor                               as codeNameKor,
+		        code_name_eng                               as codeNameEng,
+		        date_format(vld_start_date, '%Y-%m-%d')     as vldStartDate,
+		        date_format(vld_expire_date, '%Y-%m-%d')    as vldExpireDate,
+		        use_yn                                      as useYn,
+		        code_seq                                    as codeSeq,
+		        code_extend1                                as codeExtend1,
+		        code_extend2                                as codeExtend2,
+		        code_extend3                                as codeExtend3,
+		        code_extend4                                as codeExtend4,
+		        code_extend5                                as codeExtend5,
+		        date_format(create_date, '%Y-%m-%d %H:%i')  as createDate,
+		        date_format(update_date, '%Y-%m-%d %H:%i')  as updateDate
+		from com_system_code
+		where system_grp_code = #systemGrpCode#
+		and system_code = #systemCode#        
+    </select>
+    
+    <!--
+     * @Method Name        : apt.SystemCodeManageDAO.chkSystemCodeDtl
+     * @Method description : 코드의 저장가능 여부를 체크한다.
+     * @param              : SystemCodeManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="apt.SystemCodeManageDAO.chkSystemCodeDtl" parameterClass="SystemCodeManageVO" resultClass="int">
+        select count(*) codeChk
+        from com_system_code
+        where system_grp_code = #systemGrpCode#
+        and system_code = #systemCode#  
+    </select>
+    
+    <!--
+     * @Method Name        : apt.SystemCodeManageDAO.insertSystemCode
+     * @Method description : 코드그룹 등록
+     * @param              : SystemCodeManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="apt.SystemCodeManageDAO.insertSystemCode" parameterClass="SystemCodeManageVO">
+        insert into com_system_code(
+			system_grp_code,
+			system_code,
+			code_name_kor,
+			code_name_eng,
+			vld_start_date,
+			vld_expire_date,
+			use_yn,
+			code_seq,
+			code_extend1,
+			code_extend2,
+			code_extend3,
+			code_extend4,
+			code_extend5,
+			create_date,
+			create_id,
+			update_date,
+			update_id
+        )values(
+            #systemGrpCode#,
+            #systemCode#,
+            #codeNameKor#,
+            #codeNameEng#,
+            #vldStartDate#,
+            #vldExpireDate#,
+            #useYn#,
+            #codeSeq#,
+            #codeExtend1#,
+            #codeExtend2#,
+            #codeExtend3#,
+            #codeExtend4#,
+            #codeExtend5#,
+            sysdate(),
+            #createId#,
+            sysdate(),
+            #createId#
+        )    
+    </insert>
+    
+    <!--
+     * @Method Name        : apt.SystemCodeManageDAO.updateSystemCode
+     * @Method description : 코드그룹 수정
+     * @param              : SystemCodeManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="apt.SystemCodeManageDAO.updateSystemCode" parameterClass="SystemCodeManageVO">
+        update com_system_code set
+            code_name_kor = #codeNameKor#,
+            code_name_eng = #codeNameEng#,
+            vld_start_date = #vldStartDate#,
+            vld_expire_date = #vldExpireDate#,
+            use_yn = #useYn#,
+            code_seq = #codeSeq#,
+            code_extend1 = #codeExtend1#,
+            code_extend2 = #codeExtend2#,
+            code_extend3 = #codeExtend3#,
+            code_extend4 = #codeExtend4#,
+            code_extend5 = #codeExtend5#,
+            update_date = sysdate(),
+            update_id = #createId#
+        where system_grp_code = #systemGrpCode#
+        and system_code = #systemCode#  
+    </update>
+    
+    <!--
+     * @Method Name        : apt.SystemCodeManageDAO.deleteSystemCode
+     * @Method description : 코드그룹 삭제
+     * @param              : SystemCodeManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <delete id="apt.SystemCodeManageDAO.deleteSystemCode" parameterClass="SystemCodeManageVO">
+        delete from com_system_code
+        where system_grp_code = #systemGrpCode#
+        <isNotEmpty property="systemCode" prepend="and">
+            system_code = #systemCode#
+        </isNotEmpty>
+    </delete>
+        
+</sqlMap>

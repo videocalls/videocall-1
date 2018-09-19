@@ -1,0 +1,110 @@
+<ion-modal-view>
+	<ion-header-bar>
+		<h1 class="title">가상계좌 추가발급</h1>
+		<button type="button" class="btn_icon btn_close">닫기</button>
+	</ion-header-bar>
+	<ion-content>
+		<div class="container">
+			<div class="vi_area ars_stage"> <!-- modify -->
+				<ul>
+					<li class="stage_01 ">인증전화요청</li>
+					<li class="stage_02 active">인증 진행</li>
+					<li class="stage_03">인증 결과</li>
+				</ul>
+			</div>
+			<div class="inner_cont type2">
+				<!-- 1단계 -->
+				<div>
+					<h2 class="title_h2">인증전화요청</h2>
+					<div class="gray_box ac">
+						<p class="ft_org">휴대폰 번호 </p>
+						<p class="">010-**22-3333</p>
+					</div>
+					<!-- ARS 인증안내 -->
+					<div class="ars_info"> <!-- modify -->
+						<!-- 아코디언 메뉴 -->
+						<div class="accordian-menu" accordion>
+							<!-- loop -->
+							<div class="accordian-cont cont_wrap">
+								<a href="#none" class="btn_bar">ARS 인증 안내</a>
+								<div class="detail_cont">
+									<div class="gray_box">
+										<ul class="dot_list">
+											<li>회원정보에 등록된 휴대폰 번호로 ARS 인증을 진행합니다.</li>
+											<li>발신번호(02-767-7114)가 휴대폰에서 "수신차단등록"된 경우 인증전화를 받을 수 없습니다. 인증 요청을 받지 못하는 경우 "수신차단등록"을 해제하여 주시기 바랍니다. </li>
+										</ul>
+									</div>
+								</div>
+							</div>
+							<!--// loop -->
+						</div>
+					</div>
+					<!--// ARS 인증안내 -->
+				</div>
+				<!--// 1단계 -->
+
+				<!-- 2단계 -->
+				<div>
+					<h2 class="title_h2">인증 진행</h2>
+					<div class="gray_box ac">
+						<p class="">ARS 인증 진행 중입니다. </p>
+					</div>
+					<!-- ARS 인증 유의사항 -->
+					<div class="ars_info"> <!-- modify -->
+						<!-- 아코디언 메뉴 -->
+						<div class="accordian-menu" accordion>
+							<!-- loop -->
+							<div class="accordian-cont cont_wrap">
+								<a href="#none" class="btn_bar">ARS 인증 유의사항</a>
+								<div class="detail_cont">
+									<div class="gray_box">
+										<ul class="dot_list">
+											<li>인증 진행 중 전화가 끊어졌을 경우 인증 창을 닫고 다시 시도해주시기 바랍니다.</li>
+											<li>전화가 오지 않는 경우 휴대폰 번호가 다르거나 착신이 정지되어 있는 것은 아닌지 확인하시기 바랍니다. </li>
+											<li>착신 전환된 전화번호로는 ARS 인증이 불가하오니 유의하시기 바랍니다. </li>
+										</ul>
+									</div>
+								</div>
+							</div>
+							<!--// loop -->
+						</div>
+					</div>
+					<!--// ARS 인증 유의사항 -->
+				</div>
+				<!--// 2단계 -->
+
+				<!-- 3단계 -->
+				<div>
+					<h2 class="title_h2">인증 결과</h2>
+					<div class="gray_box ac">
+						<p class=""><span class="ft_org">ARS 인증 완료</span>되었습니다.</p>
+						<p class=""><span class="ft_red">ARS 인증 실패</span>하였습니다.<br>인증을 다시 시도해 주시기 바랍니다.</p>
+					</div>
+				</div>
+				<!--// 3단계 -->
+			</div>
+		</div>
+	</ion-content>
+	<ion-footer-bar>
+		<div class="button_area btn_both btn_bottom_area">
+			<a href="#go" class="btn_middle btn_black">취소</a>
+			<a href="#go" class="btn_middle btn_black_org">인증 전화 요청</a>
+		</div>
+	</ion-footer-bar>
+	<!-- <!ion-footer-bar>
+		<div class="button_area btn_bottom_area">
+			<a href="#go" class="btn_middle btn_black">취소</a>
+		</div>
+	</ion-footer-bar> -->
+	<!-- <!ion-footer-bar>
+		<div class="button_area btn_bottom_area">
+			<a href="#go" class="btn_middle btn_black_org">확인</a>
+		</div>
+	</ion-footer-bar> -->
+	<!-- <!ion-footer-bar>
+		<div class="button_area btn_both btn_bottom_area">
+			<a href="#go" class="btn_middle btn_black">닫기</a>
+			<a href="#go" class="btn_middle btn_black_org">재시도</a>
+		</div>
+	</ion-footer-bar> -->
+</ion-modal-view>

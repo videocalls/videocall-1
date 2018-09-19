@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="ko">
+<head>
+	<title>통합관리시스템 | koscom OpenAPI Platform </title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="stylesheet" href="../../css/apt/import.css">
+	<!-- IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	  <script src="../../js/cmm/html5shiv.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="../../js/cmm/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../../js/cmm/jquery-ui.js"></script>
+
+	<script type="text/javascript" src="../../js/apt/common_pub.js"></script>	
+	
+	<script>
+	$(function() {
+		// 달력
+	    $("#datepicker1, #datepicker2").datepicker({
+	      showOn: "button",
+	      buttonImage: "../../images/apt/calendar.png",
+	      buttonImageOnly: true,
+	      buttonText: "달력보기"
+	    });
+	});
+	</script>
+
+</head>
+
+<body>
+	<header class="wrap_top">
+		<div>
+			<h1>
+                <a href="#none"><img src="../../images/apt/logo.png" alt="koscom OpenAPI Platform" /></a>
+				<span>서비스관리시스템</span>
+            </h1>
+			<div>
+				<div class="login_st1">
+					<span>관리자님</span><a href="#none" class="btn_logout">로그아웃</a>
+				</div>
+			</div>
+		</div>
+	</header>
+	<!-- // wrap_top -->
+	<article class="container">
+		<div>
+			<section class="lnbArea">
+				<nav>
+					<ul class="lnb">
+						<li><a href="#none" class="active">회원 관리</a><!-- 1depth -->
+							<ul>
+								<li><a href="#none" class="active">회원 조회</a></li><!-- 2depth -->
+								<li><a href="#none">메일 발송 이력 조회</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">운영자 관리</a>
+							<ul>
+								<li><a href="#none">운영자 조회</a></li>
+								<li><a href="#none">운영자 추가</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">API 관리</a>
+							<ul>
+								<li><a href="#none">API 조회</a></li>
+								<li><a href="#none">API 속성 추가</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">App. 관리</a>
+							<ul>
+								<li><a href="#none">App 조회</a></li>
+								<li><a href="#none">App 속성 추가</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">통계 관리</a></li>
+						<li><a href="#none">포털 관리</a></li>
+						<li><a href="#none">설정 관리</a></li>
+						<li><a href="#none">내 정보 관리</a></li>
+					</ul>
+				</nav>
+			</section>
+			<!-- // lnb -->
+			<section class="content">
+				<div class="location">
+					<h2>API 조회</h2>
+				</div>
+				<!-- // locatioin -->
+				
+				<div class="tb_write1">
+					<table>
+						<caption>API 검색 정보입력</caption>
+						<colgroup>
+							<col style="width:20%;">
+							<col style="width:*;">
+						</colgroup>
+						<tbody>
+                        <tr>
+							<th scope="row"><label for="chk1">구분</label></th>
+							<td class="txt_l"> 
+								<select title="구분 입력" id="chk1">
+                                    <option>전체</option>
+                                    <option>API ID</option>
+                                    <option>API 이름</option>
+                                </select>
+								<input type="text" style="width:350px">
+							</td>		
+						</tr>
+						<tr>
+							<th scope="row">API 종류</th>
+							<td class="txt_l">
+                                <ul class="wrap_input">
+                                    <li><input type="radio" name="kk" id="k1" checked="checked"><label for="k1">전체</label></li>
+                                    <li><input type="radio" name="kk" id="k2"><label for="k2">시세</label></li>
+                                    <li><input type="radio" name="kk" id="k3"><label for="k3">뉴스</label></li>
+                                    <li><input type="radio" name="kk" id="k4"><label for="k4">계좌</label></li>
+                                </ul> 
+                            </td>
+						</tr>
+						<tr>
+							<th scope="row">API 상태</th>
+							<td class="txt_l">
+                                <ul class="wrap_input">
+                                    <li><input type="radio" name="bb" id="b1" checked="checked"><label for="b1">전체</label></li>
+                                    <li><input type="radio" name="bb" id="b2"><label for="b2">등록</label></li>
+                                    <li><input type="radio" name="bb" id="b3"><label for="b3">승인</label></li>
+                                    <li><input type="radio" name="bb" id="b4"><label for="b4">정지</label></li>
+                                </ul> 
+                            </td>
+						</tr>
+						<tr>
+							<th scope="row">등록일</th>
+							<td class="txt_l"> 
+								<input type="text" id="datepicker1" readonly="readonly" style="width:80px;"><span class="dateDot">~</span><input type="text" id="datepicker2" readonly="readonly" style="width:80px;">
+							</td>	
+						</tr>
+						<tr>
+							<th scope="row">등록회사</th>
+							<td class="txt_l"> 
+								<div class="scroll_box">
+									<ul class="wrap_input type_2">
+										<li><input type="checkbox" name="cc" id="c1"><label for="c1">전체</label></li>
+										<li><input type="checkbox" name="cc" id="c2"><label for="c2">삼성증권</label></li>
+										<li><input type="checkbox" name="cc" id="c3"><label for="c3">키움증권</label></li>
+										<li><input type="checkbox" name="cc" id="c4"><label for="c4">HMC투자증권</label></li>
+										<li><input type="checkbox" name="cc" id="c5"><label for="c5">교보증권</label></li>
+										<li><input type="checkbox" name="cc" id="c6"><label for="c6">신영증권</label></li>
+										<li><input type="checkbox" name="cc" id="c7"><label for="c7">하나금융투자</label></li>
+										<li><input type="checkbox" name="cc" id="c8"><label for="c8">IBK투자증권</label></li>
+										<li><input type="checkbox" name="cc" id="c9"><label for="c9">대신증권</label></li>
+										<li><input type="checkbox" name="cc" id="c10"><label for="c10">신한금융투자</label></li>
+										<li><input type="checkbox" name="cc" id="c11"><label for="c11">하이투자증권</label></li>
+										<li><input type="checkbox" name="cc" id="c12"><label for="c12">IM투자증권</label></li>
+										<li><input type="checkbox" name="cc" id="c13"><label for="c13">DB금융투자</label></li>
+
+										<li><input type="checkbox" name="cc" id="c14"><label for="c14">유안타증권</label></li>
+										<li><input type="checkbox" name="cc" id="c15"><label for="c15">한국투자증권</label></li>
+										<li><input type="checkbox" name="cc" id="c16"><label for="c16">KDB대우증권</label></li>
+										<li><input type="checkbox" name="cc" id="c17"><label for="c17">메리츠종합금융증권</label></li>
+										<li><input type="checkbox" name="cc" id="c18"><label for="c18">유진투자증권</label></li>
+										<li><input type="checkbox" name="cc" id="c19"><label for="c19">한화투자증권</label></li>
+										<li><input type="checkbox" name="cc" id="c20"><label for="c20">LIG투자증권</label></li>
+										<li><input type="checkbox" name="cc" id="c21"><label for="c21">미래에셋증권</label></li>
+										<li><input type="checkbox" name="cc" id="c22"><label for="c22">이트레이드증권</label></li>
+										<li><input type="checkbox" name="cc" id="c23"><label for="c23">현대증권</label></li>
+										<li><input type="checkbox" name="cc" id="c24"><label for="c24">NH투자증권</label></li>
+									</ul> 
+								</div>
+							</td>	
+						</tr>
+						<tr>
+							<th scope="row">등록회사2</th>
+							<td class="txt_l"> 
+								<!-- chk_list_wrap -->
+								<div class="chk_list_wrap">
+									<ul>
+										<li><input type="checkbox" name="dd" id="d1"><label for="d1">전체</label></li>
+										<li><input type="checkbox" name="dd" id="d2"><label for="d2">삼성증권</label></li>
+										<li><input type="checkbox" name="dd" id="d3"><label for="d3">키움증권</label></li>
+										<li><input type="checkbox" name="dd" id="d4"><label for="d4">HMC투자증권</label></li>
+										<li><input type="checkbox" name="dd" id="d5"><label for="d5">교보증권</label></li>
+										<li><input type="checkbox" name="dd" id="d6"><label for="d6">신영증권</label></li>
+										<li><input type="checkbox" name="dd" id="d7"><label for="d7">하나금융투자</label></li>
+										<li><input type="checkbox" name="dd" id="d8"><label for="d8">IBK투자증권</label></li>
+										<li><input type="checkbox" name="dd" id="d9"><label for="d9">대신증권</label></li>
+										<li><input type="checkbox" name="dd" id="d10"><label for="d10">신한금융투자</label></li>
+										<li><input type="checkbox" name="dd" id="d11"><label for="d11">하이투자증권</label></li>
+										<li><input type="checkbox" name="dd" id="d12"><label for="d12">IM투자증권</label></li>
+										<li><input type="checkbox" name="dd" id="d13"><label for="d13">DB금융투자</label></li>
+										<li><input type="checkbox" name="dd" id="d14"><label for="d14">유안타증권</label></li>
+										<li><input type="checkbox" name="dd" id="d15"><label for="d15">한국투자증권</label></li>
+										<li><input type="checkbox" name="dd" id="d16"><label for="d16">KDB대우증권</label></li>
+										<li><input type="checkbox" name="dd" id="d17"><label for="d17">메리츠종합금융증권</label></li>
+										<li><input type="checkbox" name="dd" id="d18"><label for="d18">유진투자증권</label></li>
+										<li><input type="checkbox" name="dd" id="d19"><label for="d19">한화투자증권</label></li>
+										<li><input type="checkbox" name="dd" id="d20"><label for="d20">LIG투자증권</label></li>
+										<li><input type="checkbox" name="dd" id="d21"><label for="d21">미래에셋증권</label></li>
+										<li><input type="checkbox" name="dd" id="d22"><label for="d22">이트레이드증권</label></li>
+										<li><input type="checkbox" name="dd" id="d23"><label for="d23">현대증권</label></li>
+										<li><input type="checkbox" name="dd" id="d24"><label for="d24">NH투자증권</label></li>
+									</ul>
+									<a href="#none" class="btn_more">더보기</a>
+								</div>
+								<!-- // chk_list_wrap -->
+							</td>	
+						</tr>
+						<tr>
+							<th scope="row">등록회사3</th>
+							<td class="txt_l"> 
+								<!-- chk_list_wrap -->
+								<div class="chk_list_wrap type2">
+									<ul>
+										<li><input type="checkbox" name="dd" id="d1"><label for="d1">전체</label></li>
+										<li><input type="checkbox" name="dd" id="d2"><label for="d2">삼성증권</label></li>
+										<li><input type="checkbox" name="dd" id="d3"><label for="d3">키움증권</label></li>
+										<li><input type="checkbox" name="dd" id="d4"><label for="d4">HMC투자증권</label></li>
+										<li><input type="checkbox" name="dd" id="d5"><label for="d5">교보증권</label></li>
+										<li><input type="checkbox" name="dd" id="d6"><label for="d6">신영증권</label></li>
+										<li><input type="checkbox" name="dd" id="d7"><label for="d7">하나금융투자</label></li>
+										<li><input type="checkbox" name="dd" id="d8"><label for="d8">IBK투자증권</label></li>
+										<li><input type="checkbox" name="dd" id="d9"><label for="d9">대신증권</label></li>
+										<li><input type="checkbox" name="dd" id="d10"><label for="d10">신한금융투자</label></li>
+										<li><input type="checkbox" name="dd" id="d11"><label for="d11">하이투자증권</label></li>
+										<li><input type="checkbox" name="dd" id="d12"><label for="d12">IM투자증권</label></li>
+										<li><input type="checkbox" name="dd" id="d13"><label for="d13">DB금융투자</label></li>
+										<li><input type="checkbox" name="dd" id="d14"><label for="d14">유안타증권</label></li>
+										<li><input type="checkbox" name="dd" id="d15"><label for="d15">한국투자증권</label></li>
+										<li><input type="checkbox" name="dd" id="d16"><label for="d16">KDB대우증권</label></li>
+										<li><input type="checkbox" name="dd" id="d17"><label for="d17">메리츠종합금융증권</label></li>
+										<li><input type="checkbox" name="dd" id="d18"><label for="d18">유진투자증권</label></li>
+										<li><input type="checkbox" name="dd" id="d19"><label for="d19">한화투자증권</label></li>
+										<li><input type="checkbox" name="dd" id="d20"><label for="d20">LIG투자증권</label></li>
+										<li><input type="checkbox" name="dd" id="d21"><label for="d21">미래에셋증권</label></li>
+										<li><input type="checkbox" name="dd" id="d22"><label for="d22">이트레이드증권</label></li>
+										<li><input type="checkbox" name="dd" id="d23"><label for="d23">현대증권</label></li>
+										<li><input type="checkbox" name="dd" id="d24"><label for="d24">NH투자증권</label></li>
+									</ul>
+									<a href="#none" class="btn_more">더보기</a>
+								</div>
+								<!-- // chk_list_wrap -->
+							</td>	
+						</tr>
+						</tbody>
+					</table>
+				</div>
+                <div class="btn_type3">
+                    <span class="btn_gray1"><a href="#none;">검색</a></span>
+                    <span class="btn_gray2"><a href="#none;">초기화</a></span>
+				</div>
+				<!-- // btn_type3 -->
+				
+				<!-- 2016-07-12 추가 -->
+				<div class="info_box mt10">
+					<div class="tit">
+						<p class="icon_tip">Notice</p>
+						<a href="#none" class="btn_more">내용열기</a><!-- 2016-07-14 추가 -->
+					</div>
+					<div class="txt">
+						<ul class="list_type01">
+							<li><strong>분</strong> : 최대 2 시간 (현재 시간 기준 2시간)</li>
+							<li><strong>시간</strong> : 최대 2 일 (현재 일 기준 2일)</li>
+							<li><strong>일</strong> : 최대 2개월 (현재 일 기준 60일)</li>
+							<li><strong>개월</strong> : 최대 2년 (현재 월 기준 24개월)</li>
+						</ul>
+					</div>
+				</div>
+				<!-- // 2016-07-12 추가 -->
+
+				<p class="amount">총 <em>99999</em> 건</p>
+				<div class="tb_list1">
+					<table>
+						<caption>No, 이름, ID, 이메일, 상태, 등록일시 정보</caption>
+						<colgroup>
+							<col style="width:7%;">
+							<col style="width:12%;">
+							<col style="width:*;">
+							<col style="width:15%;">
+							<col style="width:7%;">
+							<col style="width:10%;">
+							<col style="width:13%;">
+							<col style="width:17%;">
+						</colgroup>
+						<thead>
+						<tr>
+							<th scope="col">NO.</th>
+							<th scope="col">등록회사</th>
+							<th scope="col">API ID</th>
+							<th scope="col">API 이름</th>
+							<th scope="col">버전</th>
+							<th scope="col">상태</th>
+							<th scope="col">등록자 ID</th>
+							<th scope="col">등록일시</th>
+						</tr>
+						</thead>
+						<tbody>
+						<tr>
+							<td>1</td>
+							<td><a href="#none">삼성증권</a></td>
+							<td><a href="#none">abcd1234abcd1234</a></td>
+							<td>잔고조회</td>
+							<td>v1</td>
+							<td>승인</td>
+							<td>abcd1234</td>
+							<td>2016-04-29 17:05</td>
+						</tr>
+						<tr>
+							<td>2</td>
+							<td><a href="#none">삼성증권</a></td>
+							<td><a href="#none">abcd1234abcd1234</a></td>
+							<td>포트폴리오조회</td>
+							<td>v1</td>
+							<td>정지</td>
+							<td>abcd1234</td>
+							<td>2016-04-29 17:05</td>
+						</tr>
+						<tr>
+							<td>3</td>
+							<td><a href="#none">대신증권</a></td>
+							<td><a href="#none">abcd1234abcd1234</a></td>
+							<td>관심종목조회</td>
+							<td>v3</td>
+							<td>등록</td>
+							<td>abcd1234</td>
+							<td>2016-04-29 17:05</td>
+						</tr>
+						<tr>
+							<td>4</td>
+							<td><a href="#none">대신증권</a></td>
+							<td><a href="#none">abcd1234abcd1234</a></td>
+							<td>거래내역조회</td>
+							<td>v2</td>
+							<td>등록</td>
+							<td>abcd1234</td>
+							<td>2016-04-29 17:05</td>
+						</tr>
+						<!-- 데이터가 없을 경우 -->
+						<tr>
+							<td colspan="8">등록된 정보가 없습니다.</td>
+						</tr>
+						<!-- // 데이터가 없을 경우 -->
+						</tbody>
+					</table>
+				</div>
+				<!-- // tb_list1 -->
+
+				<!-- pagination -->
+				<div class="pagination">
+					<a href="#" class="page first"></a>
+					<a href="#" class="page prev"></a>
+					<a href="#" class="on">1</a>
+					<a href="#">2</a>
+					<a href="#">3</a>
+					<a href="#">4</a>
+					<a href="#">5</a>
+					<a href="#">6</a>
+					<a href="#">7</a>
+					<a href="#">8</a>
+					<a href="#">9</a>
+					<a href="#">10</a>
+					<a href="#" class="page next"></a>
+					<a href="#" class="page last"></a>
+
+					<div class="btn_type3">
+						<div class="left"><span class="btn_gray1"><a href="#none;">엑셀</a></span></div>
+					</div>
+				</div>
+				<!-- // pagination -->				
+
+			</section>
+			<!-- // content -->
+		</div>
+	</article>
+	<!-- // container -->
+</body>
+</html>

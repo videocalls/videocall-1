@@ -1,0 +1,83 @@
+<!-- 
+ * (C) Copyright AhnLab, Inc.
+ *
+ * Any part of this source code can not be copied with
+ * any method without prior written permission from
+ * the author or authorized person.
+ *
+ * @version		$Revision: 15612 $
+ *
+ -->
+  
+<!DOCTYPE HTML> <!-- HTML5 -->
+<html>
+<head>
+<meta charset="utf-8" />
+<title>astx2</title>
+
+<script src="include.js"></script>
+
+<style>
+
+</style>
+
+</head>
+<body>
+
+<p>AhnLab Safe Transaction</p>
+
+<form name="form" action="filter/do_submit_login.jsp" onsubmit="return onSubmit()" method="post">
+<table>
+	<tr>
+		<td class="filed">userid:</td>
+		<td class="input"><input name="userid" id="userid" type="text" e2e_type="1" /></td>
+	</tr>
+	<tr>
+		<td class="filed">passwd:</td>
+		<td class="input"><input name="passwd" id="passwd" type="password" e2e_type="1" /></td>
+	</tr>
+	<tr>
+		<td class="filed">&nbsp;</td>
+		<td class="input"><input name="btn" class="button" type="submit" value="Submit"/></td>
+	</tr>
+</table>
+</form>
+
+<script>
+
+window.onload = function() 
+{
+	$ASTX2.setOption({autofocus:true});
+
+	checkInstallASTX2(
+		function onSuccess() {
+			$ASTX2.initE2E();
+		}
+	);
+}
+
+function onSubmit()
+{
+	$ASTX2.getE2EData(
+		document.form,
+		function onSuccess(data) {
+			$_astxu.log('ASTX.getE2EData() success');
+			
+			$ASTX2.setE2EData(document.form, data);
+			document.form.submit();
+		}, 
+		function onFailure() {
+			$_astxu.log('ASTX.getE2EData() failure: errno='+$ASTX2.getLastError());
+		}
+	);
+	
+	return false;
+}
+
+var debuger = new myDebuger();
+debuger.write_output(document, true);
+
+</script>
+
+</body>
+</html>

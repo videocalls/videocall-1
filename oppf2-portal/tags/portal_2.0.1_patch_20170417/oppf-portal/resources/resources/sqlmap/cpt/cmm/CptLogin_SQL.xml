@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.cpt.cmm.service.impl.CptLoginDAO">
+
+  	<typeAlias alias="CptLoginVO" type="kr.co.koscom.oppf.cpt.cmm.service.CptLoginVO"/>
+  	
+	<!--
+     * @Method Name        : cpt.LoginDAO.selectLoginProfile
+     * @Method description : 로그인 정보를 조회한다.
+     * @param              : CptLoginVO
+     * @return             : CptLoginVO
+     * @throws             : Exception
+     -->
+    <select id="cpt.LoginDAO.selectLoginProfile" parameterClass="CptLoginVO" resultClass="CptLoginVO">
+		select  a.company_profile_reg_no,  /* 기업 프로파일 등록번호 */                                                          
+		        a.operator_profile_reg_no, /* 기업 운영자 프로파일 등록번호 */
+		        a.operator_id,             /* 운영자 ID */
+		        a.operator_name_kor,       /* 운영자명 한글 */
+		        operator_name_eng,         /* 운영자명 영문 */
+		        b.company_name_kor as company_name,     /* 기업명 */
+		        if(
+                a.operator_password =
+                enc_char_ins(#operator_password#,10,'SHA','com_company_operator_profile','operator_password',user(),connection_id()),
+                'Y', 'N') as operator_password_yn,  /* 운영자 패스워드 유효여부 */
+		        a.operator_temp_password_yn,  /* 임시비밀번호여부 */
+		        a.operator_password_fail_cnt, /* 비밀번호 실패 카운트 */
+		        if(DATE_FORMAT(now(), '%Y%m%d') >= a.operator_expire_password_date, 'Y', 'N') as operator_expire_password_yn, /* 비밀번호 변경 예정일 이내 여부 */
+		        if(DATE_FORMAT(now(), '%Y%m%d') >= a.operator_final_password_date, 'Y', 'N') as operator_final_password_yn,   /* 비밀번호 변경 최종 예정일 이내 여부 */
+		        a.operator_email_auth_yn, /* 이메일 인증여부 */
+		        if(ifnull(a.delete_date, 'N') = 'N', 'N', 'Y') as delete_yn, /* 탈퇴여부 */
+		        a.operator_reg_status,
+		        b.company_service_type /* 기업핀테크서비스타입(=G002)(001:둘다,002:서비스제공자,003:앱개발자) */
+		from com_company_operator_profile a
+		left outer join com_company_profile b  on a.company_profile_reg_no = b.company_profile_reg_no
+		where a.operator_id = #operator_id#
+		limit 0,1
+    </select>
+    
+    <!--
+     * @Method Name        : cpt.LoginDAO.updateLoginFailCnt
+     * @Method description : 로그인 실패 카운트를 update한다.
+     * @param              : CptLoginVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="cpt.LoginDAO.updateLoginFailCnt" parameterClass="CptLoginVO">
+		update com_company_operator_profile set
+		operator_password_fail_cnt = if(#operator_password_fail_type# = 'Y', operator_password_fail_cnt + 1, 0),
+		update_date = now(),
+		update_id = #operator_id#
+		where company_profile_reg_no = #company_profile_reg_no#
+		and operator_profile_reg_no = #operator_profile_reg_no#  
+    </update>
+    
+    <!--
+     * @Method Name        : cpt.LoginDAO.insertLoginHist
+     * @Method description : 로그인 hist를 insert한다.
+     * @param              : CptLoginVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="cpt.LoginDAO.insertLoginHist" parameterClass="CptLoginVO">
+		insert into com_company_operator_profile_hist(
+			company_profile_reg_no,
+			operator_profile_reg_no,
+			operator_seq,
+			operator_name_kor,
+			operator_name_eng,
+			operator_id,
+			operator_password,
+			operator_temp_password_yn,
+			operator_chg_password_date,
+			operator_expire_password_date,
+			operator_final_password_date,
+			operator_password_fail_cnt, 
+			operator_phone_no,
+			operator_email,
+			operator_email_auth_type,
+			operator_email_auth_yn,
+			operator_email_auth_date,
+			operator_reg_date,
+			delete_date,
+			create_date,
+			create_id
+		)
+		select  company_profile_reg_no,
+				operator_profile_reg_no,
+				ifnull((
+                    select ifnull(max(cast(operator_seq as SIGNED)), 0) + 1
+                    from com_company_operator_profile_hist
+                    where company_profile_reg_no = a.company_profile_reg_no
+                    and operator_profile_reg_no = a.operator_profile_reg_no
+                ), 1),
+				operator_name_kor,
+				operator_name_eng,
+				operator_id,
+				operator_password,
+				operator_temp_password_yn,
+				operator_chg_password_date,
+				operator_expire_password_date,
+				operator_final_password_date,
+				operator_password_fail_cnt, 
+				operator_phone_no,
+				operator_email,
+				operator_email_auth_type,
+				operator_email_auth_yn,
+				operator_email_auth_date,
+				operator_reg_date,
+				delete_date,
+		        update_date,
+		        update_id
+		from com_company_operator_profile a        
+		where company_profile_reg_no = #company_profile_reg_no#
+		and operator_profile_reg_no = #operator_profile_reg_no#     
+    </insert>
+    
+    <!--
+     * @Method Name        : cpt.LoginDAO.selectIdFind
+     * @Method description : 아이디 찾기
+     * @param              : CptLoginVO
+     * @return             : CptLoginVO
+     * @throws             : Exception
+     -->
+    <select id="cpt.LoginDAO.selectIdFind" parameterClass="CptLoginVO" resultClass="CptLoginVO">
+        select concat(substr(operator_id, 1, length(operator_id)-3), '***') as operator_id
+        from com_company_operator_profile
+        where (
+            operator_name_kor = #searchName# or
+            operator_name_eng = #searchName#
+        )
+        and operator_email = enc_char_ins(#searchEmail#,10,'ARIA','com_company_operator_profile','operator_email',user(),connection_id())
+        order by operator_profile_reg_no desc /* 최근의 탈퇴회원이나 최근에 가입 및 재가입한 회원 */
+        limit 0,1
+    </select>
+    
+    <!--
+     * @Method Name        : cpt.LoginDAO.selectPwFind
+     * @Method description : 비밀번호 찾기
+     * @param              : CptLoginVO
+     * @return             : CptLoginVO
+     * @throws             : Exception
+     -->
+    <select id="cpt.LoginDAO.selectPwFind" parameterClass="CptLoginVO" resultClass="CptLoginVO">
+        select  company_profile_reg_no,
+                operator_profile_reg_no,
+                dec_char_sel(operator_email,10,'ARIA','com_company_operator_profile','operator_email',user(),connection_id()) as operator_email
+        from com_company_operator_profile
+        where (
+            operator_name_kor = #searchName# or
+            operator_name_eng = #searchName#
+        )
+        and operator_id = #searchId#
+        and operator_email = enc_char_ins(#searchEmail#,10,'ARIA','com_company_operator_profile','operator_email',user(),connection_id())
+        order by operator_profile_reg_no desc /* 최근의 탈퇴회원이나 최근에 가입 및 재가입한 회원 */
+        limit 0,1
+    </select>
+    
+    <!--
+     * @Method Name        : cpt.LoginDAO.updateTmpPassword
+     * @Method description : 임시비밀번호 발급
+     * @param              : CptLoginVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="cpt.LoginDAO.updateTmpPassword" parameterClass="CptLoginVO">
+        update com_company_operator_profile set
+            operator_password = enc_char_ins(#operator_password#,10,'SHA','com_company_operator_profile','operator_password',user(),connection_id()),
+            operator_temp_password_yn = 'Y',
+            operator_chg_password_date = sysdate(),
+            operator_expire_password_date = date_format(date_add(sysdate(), interval #operator_expire_password_date# month), '%Y%m%d'),
+            operator_final_password_date = date_format(date_add(sysdate(), interval #operator_final_password_date# month), '%Y%m%d'),
+            operator_password_fail_cnt = 0,
+            update_date = sysdate(),
+            update_id = #operator_profile_reg_no#
+        where company_profile_reg_no = #company_profile_reg_no#
+        and operator_profile_reg_no = #operator_profile_reg_no#
+    </update>
+    
+</sqlMap>

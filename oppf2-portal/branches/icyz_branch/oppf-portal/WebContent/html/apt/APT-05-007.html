@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ko">
+<head>
+	<title>통합관리시스템 | koscom OpenAPI Platform </title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="stylesheet" href="../../css/apt/import.css">
+	<!-- IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	  <script src="../../js/cmm/html5shiv.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="../../js/cmm/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../../js/cmm/jquery-ui.js"></script>
+
+	<script type="text/javascript" src="../../js/apt/common_pub.js"></script>	
+	
+	<script>
+	$(function() {
+		// 달력
+	    $("#datepicker1, #datepicker2").datepicker({
+	      showOn: "button",
+	      buttonImage: "../../images/apt/calendar.png",
+	      buttonImageOnly: true,
+	      buttonText: "달력보기"
+	    });
+	});
+	</script>
+
+</head>
+
+<body>
+	<header class="wrap_top">
+		<div>
+			<h1>
+                <a href="#none"><img src="../../images/apt/logo.png" alt="koscom OpenAPI Platform" /></a>
+				<span>서비스관리시스템</span>
+            </h1>
+			<div>
+				<div class="login_st1">
+					<span>관리자님</span><a href="#none" class="btn_logout">로그아웃</a>
+				</div>
+			</div>
+		</div>
+	</header>
+	<!-- // wrap_top -->
+	<article class="container">
+		<div>
+			<section class="lnbArea">
+				<nav>
+					<ul class="lnb">
+						<li><a href="#none" class="active">일반 회원 관리</a><!-- 1depth -->
+							<ul>
+								<li><a href="#none" class="active">일반 회원 조회</a></li><!-- 2depth -->
+								<li><a href="#none">가상계좌 목록 조회</a></li>
+								<li><a href="#none">금융정보제공 동의서<br>목록 조회</a></li>
+								<li><a href="#none">서비스 연결 현황</a></li>
+								<li><a href="#none">메일 발송 이력 조회</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">기업 회원 관리</a>
+							<ul>
+								<li><a href="#none">운영자 조회</a></li>
+								<li><a href="#none">운영자 추가</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">운영자 관리</a>
+							<ul>
+								<li><a href="#none">운영자 조회</a></li>
+								<li><a href="#none">운영자 추가</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">API 관리</a>
+							<ul>
+								<li><a href="#none">API 조회</a></li>
+								<li><a href="#none">API 속성 추가</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">App. 관리</a>
+							<ul>
+								<li><a href="#none">App 조회</a></li>
+								<li><a href="#none">App 속성 추가</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">통계 관리</a></li>
+						<li><a href="#none">포털 관리</a></li>
+						<li><a href="#none">설정 관리</a></li>
+						<li><a href="#none">내 정보 관리</a></li>
+					</ul>
+				</nav>
+			</section>
+			<!-- // lnb -->
+			<section class="content">
+				<div class="location">
+					<h2>Initiator 서버 관리</h2>
+				</div>
+				<!-- // locatioin -->
+				
+				<p class="info_right"><span class="icon_basic">*</span> 필수 입력사항</p>
+
+				<div class="tb_write1">
+					<table>
+						<caption>Buy-side 기업 정보 입력</caption>
+						<colgroup>
+							<col style="width:30%;">
+							<col style="width:*;">
+						</colgroup>
+						<tbody>
+						<tr>
+							<th scope="row">Server IDs</th>
+							<td class="txt_l">S000002</td>
+						</tr>
+                        <tr>
+							<th scope="row"><label for="chk2">Server IP<span class="icon_basic">*필수입력</span></label></th>
+							<td class="txt_l">
+								<input type="text" class="w100" id="chk2">&nbsp;<span class="btn_gray1"><a href="#1">중복확인</a></span>
+								<input type="text" class="w100" title="재입력">&nbsp;<span class="btn_gray1"><a href="#1">재입력</a></span>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row"><label for="chk5">SenderCompID<span class="icon_basic">*필수입력</span></label></th>
+							<td class="txt_l">                                
+                                <input type="text" class="w100" id="chk5">&nbsp;<span class="btn_gray1"><a href="#1">중복확인</a></span>
+								<input type="text" class="w100" title="재입력">&nbsp;<span class="btn_gray1"><a href="#1">재입력</a></span>
+                            </td>
+						</tr>
+						<tr>
+							<th scope="row">등록일시</th>
+							<td class="txt_l">2016-06-27 14:29</td>
+						</tr>
+						<tr>
+							<th scope="row">수정일시</th>
+							<td class="txt_l">2016-06-27 14:29</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+                <div class="btn_type3">
+					<div class="left">
+						<span class="btn_gray1"><a href="#none;">목록</a></span>
+					</div>
+					<div class="right"><span class="btn_gray1"><a href="#none;">저장</a></span></div>
+				</div>
+				<!-- // btn_type3 -->
+				
+			</section>
+			<!-- // content -->
+		</div>
+	</article>
+	<!-- // container -->
+</body>
+</html>

@@ -1,0 +1,137 @@
+<ion-view view-title="Form 샘플">
+	<!-- 왼쪽 헤더 버튼 예제 -->
+	<ion-nav-buttons side="left">
+		<button>버튼</button>
+	</ion-nav-buttons>
+	<!-- 오른쪽 헤더 버튼 예제 -->
+	<ion-nav-buttons side="right">
+		<button ng-disabled="$root.joinForm.$invalid">전송</button>
+		<button menu-toggle="right" class="button button-icon icon ion-navicon" on-tap="menuToggle()"></button>
+	</ion-nav-buttons>
+
+	<ion-content class="padding">
+		<h2>Tooltip Confirm</h2>
+        <a href="#go" class="btn_middle btn_black_org icon-tip" tooltips-confirm="bbbbbb">전자서명</a>
+		<br><br>
+        <br><br><br><br>
+        <br><br>
+		<form name="$root.joinForm" ng-submit="vm.submit();">
+			<fieldset>
+				<label>이름</label>
+				<input type="text" name="username" placeholder="이름을 입력하세요." ng-model="vm.username" required />
+				<div ng-messages="joinForm.username.$error" style="color:maroon" role="alert">
+				    <div ng-message="required">이름을 입력하세요.</div>
+					<div ng-message="required">이름을 입력하세요.</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<label>이름</label>
+				<input type="date" name="birthday" placeholder="생년월일을 입력하세요." ng-model="vm.birthday" required />
+				<div ng-messages="joinForm.birthday.$error" style="color:maroon" role="alert">
+				    <div ng-message="required">생년월일을 입력하세요.</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<label>통신사</label>
+				<select name="mobile" ng-model="vm.mobile" required>
+					<option value="">선택</option>
+					<option value="skt">SKT</option>
+					<option value="kt">KT</option>
+					<option value="lgt">LGT</option>
+				</select>
+				<div ng-messages="joinForm.mobile.$error" style="color:maroon" role="alert">
+				    <div ng-message="required">통신사를 선택하세요.</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<label>인증번호</label>
+				<input type="number" name="code" placeholder="인증번호를 입력하세요." ng-model="vm.code" required  mobileauth/>
+				<button>인증하기</button>
+				<div ng-messages="joinForm.code.$error" style="color:maroon" role="alert">
+				    <div ng-message="required">인증번호를 입력하세요.</div>
+				    <div ng-message="mobileauth">인증번호를 입력하세요.</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<input type="checkbox" name="agreeChk"/>
+				<label>전체동의</label>
+			</fieldset>
+			
+			<fieldset>
+				<input type="checkbox" name="agreeChk01" required ng-model="vm.agreeChk01"/>
+				<label>본인확인 서비스 이용(필수)</label>
+				<div ng-messages="joinForm.agreeChk01.$error" style="color:maroon" role="alert">
+				    <div ng-message="required">필수체크박스입니다.</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<input type="checkbox" name="agreeChk02" required ng-model="vm.agreeChk02"/>
+				<label>개인정보 수집 이용(필수)</label>
+				<div ng-messages="joinForm.agreeChk02.$error" style="color:maroon" role="alert">
+				    <div ng-message="required">필수체크박스입니다.</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<input type="checkbox" name="agreeChk03" required ng-model="vm.agreeChk03"/>
+				<label>고유식별정보 처리(필수)</label>
+				<div ng-messages="joinForm.agreeChk03.$error" style="color:maroon" role="alert">
+				    <div ng-message="required">필수체크박스입니다.</div>
+				</div>
+			</fieldset>
+			
+			<fieldset>
+				<input type="checkbox" name="agreeChk04" ng-model="vm.agreeChk04"/>
+				<label>통신사이용약관(선택)</label>
+			</fieldset>
+			
+			<button ng-disabled="$root.joinForm.$invalid">전송</button>
+		</form>
+	</ion-content>
+</ion-view>
+
+
+
+
+
+<div class="tips" id="bbbbbb">
+		<div class="detail_tip btn_btm_pop">
+			<div class="inner_popup">
+				<div class="cont_popup">
+					<div style="padding:20px 20px 15px 20px;margin:0;font-size: 12px;color: #1b1b1e;font-family:'Noto Sans Korean','Malgun Gothic',Dotum,'droid sans fallback','AppleGothic',sans-serif;">
+						<p style="color:1b1b1e;font-size:16px;padding:0;margin:0 0 5px 0;font-weight:bold;">금융거래 정보 재동의 안내</p>
+						<p style="padding:0;margin:0;">재동의 시 기존 동의서는 폐기되고, 신규 동의서가 발급됩니다</p>
+						<p style="padding:0;margin:0;font-weight:bold;font-size:13px;margin:10px 0 5px;;">&lt;기존 동의서 정보&gt;</p>
+						<ol style="font-size:12px; list-style:none; margin:0; padding:0;">
+							<li style="margin:0;padding:0;line-height:18px;">1. 정보를 제공받을 기업명 :
+							<span style="color:#ed6d1f;">
+								${subCompanyName}
+							</span></li>
+							<li style="margin-top:7px;line-height:18px;">2. 정보제공 금융투자회사
+								<div style="padding:20px 10px;border: 1px solid #dddfdf;margin: 7px 0;word-break:break-all;height:60px;overflow-x:hidden;overflow-y:auto;">
+									++[$termsPubCompanyList]++
+								</div>
+							</li>
+							<li style="margin-top:7px;line-height:18px;">3. 유효기간 :
+								<span style="color:#ed6d1f;">++[$termsStartDateY]++</span>년
+								<span style="color:#ed6d1f;">++[$termsStartDateM]++</span>월
+								<span style="color:#ed6d1f;">++[$termsStartDateD]++</span>일 ~
+								<span style="color:#ed6d1f;">++[$termsEndDateY]++</span>년
+								<span style="color:#ed6d1f;">++[$termsEndDateM]++</span>월
+								<span style="color:#ed6d1f;">++[$termsEndDateD]++</span>일
+								<span style="color:#ed6d1f;">(++[$termsPolicyYear]++년간)</span>
+							</li>
+						</ol>
+					</div>
+				</div>
+				<div class="button_area">
+					<button type="button" class="btn_btm">확인</button>
+				</div>
+			</div>
+		</div>
+	</div>

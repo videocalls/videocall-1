@@ -1,0 +1,22 @@
+<ion-view view-title="">
+	<ion-content class="bg_gray"> <!-- bg color -->
+		<div class="container"> <!-- 계좌 페이지 -->
+			<div class="top_wrap">
+				<h2 class="title_h2"><span class="ft_org">QARA</span> /  (주)큐에이알에이소프트</h2>
+				<div class="txt">연결 계좌 선택</div>
+				<a href="go" class="btn_plus">가상계좌추가발급</a>
+			</div>
+			<div class="inner_cont">
+				<div class="not_result">등록된 계좌가 없습니다.<br>가상계좌추가발급 버튼을 클릭하여 등록해주세요.</div> <!-- 결과없을때 -->
+			</div>
+		</div>
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<div class="button_area btn_both btn_bottom_area">
+			<a href="#go" class="btn_middle btn_black">취소</a>
+			<a href="#go" class="btn_middle btn_ing disabled">다음 <span class="bg_icon"></span></a> <!-- 비활성화 add class : disabled  / 활성시 disabled 제거 -->
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+</ion-view>

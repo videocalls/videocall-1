@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 자본시장 공동 핀테크 오픈플랫폼 구축
+* @FileName : CmmOtpReg_SQL.xml
+* @Comment  : OTP 정보를 관리하기  위한 SQL XML
+* @author   : 신동진
+* @since    : 2016.08.01
+* @version  : 1.0
+* @see
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2016.08.01   신동진        최초생성
+-->
+
+<sqlMap namespace="kr.co.koscom.oppf.cmm.otp.service.impl.CmmOtpReqDAO">
+  	<typeAlias alias="CmmOtpReqVO" type="kr.co.koscom.oppf.cmm.otp.service.CmmOtpReqVO"/>
+  	
+    <!--
+     * @Method Name        : cmm.CmmOtpReqDAO.checkOtpProfile
+     * @Method description : [개인회원정보]OTP정보가 있는지 확인한다.
+     * @param              : CmmOtpReqVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="cmm.CmmOtpReqDAO.checkOtpProfile" parameterClass="CmmOtpReqVO" resultClass="int">
+        select count(*) as totalcount
+        from spt_customer_otp_profile
+        where customer_reg_no = #customerRegNo#
+    </select>
+    
+    <!--
+     * @Method Name        : cmm.CmmOtpReqDAO.insertOtpProfile
+     * @Method description : OTP정보를 등록 한다.
+     * @param              : CmmOtpReqVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="cmm.CmmOtpReqDAO.insertOtpProfile" parameterClass="CmmOtpReqVO">
+        insert into spt_customer_otp_profile(
+            customer_reg_no,
+            customer_otp_id,
+            customer_otp_status,
+            otp_create_date,
+            otp_chg_date,
+            create_date,
+            create_id,
+            update_date,
+            update_id
+        )values(
+            #customerRegNo#,
+            #customerOtpId#,
+            'G019001',
+            sysdate(),
+            sysdate(),
+            sysdate(),
+            #customerRegNo#,
+            sysdate(),
+            #customerRegNo#
+        )        
+    </insert>
+    
+    <!--
+     * @Method Name        : cmm.CmmOtpReqDAO.updateOtpProfile
+     * @Method description : OTP정보를 수정 한다.
+     * @param              : CmmOtpReqVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="cmm.CmmOtpReqDAO.updateOtpProfile" parameterClass="CmmOtpReqVO">
+        update spt_customer_otp_profile set
+	        customer_otp_id = #customerOtpId#,
+	        customer_otp_status = 'G019002',
+	        otp_chg_date = sysdate(),
+	        update_date = sysdate(),
+	        update_id = #customerRegNo#
+        where customer_reg_no = #customerRegNo# 
+    </update>
+    
+    <!--
+     * @Method Name        : cmm.CmmOtpReqDAO.deleteOtpProfile
+     * @Method description : OTP정보를 폐기 한다.
+     * @param              : CmmOtpReqVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="cmm.CmmOtpReqDAO.deleteOtpProfile" parameterClass="CmmOtpReqVO">
+        update spt_customer_otp_profile set
+            customer_otp_status = 'G019003',
+            otp_chg_date = sysdate(),
+            update_date = sysdate(),
+            update_id = #customerRegNo#
+        where customer_reg_no = #customerRegNo# 
+    </update>
+    
+    <!--
+     * @Method Name        : cmm.CmmOtpReqDAO.insertOtpProfileHist
+     * @Method description : OTP정보의 hist를 등록한다.
+     * @param              : CmmOtpReqVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="cmm.CmmOtpReqDAO.insertOtpProfileHist" parameterClass="CmmOtpReqVO">
+        insert into spt_customer_otp_profile_hist(
+            customer_reg_no,
+            customer_otp_seq,
+            customer_otp_id,
+            customer_otp_status,
+            otp_create_date,
+            otp_chg_date,
+            create_date,
+            create_id
+        )
+        select  customer_reg_no,
+                ifnull((
+                    select ifnull(max(cast(customer_otp_seq as SIGNED)), 0) + 1
+                    from spt_customer_otp_profile_hist
+                    where customer_reg_no = a.customer_reg_no
+                ), 1),
+                customer_otp_id,
+                customer_otp_status,
+                otp_create_date,
+                otp_chg_date,
+                create_date,
+                create_id
+        from spt_customer_otp_profile a
+        where customer_reg_no = #customerRegNo#                 
+    </insert>    
+</sqlMap>

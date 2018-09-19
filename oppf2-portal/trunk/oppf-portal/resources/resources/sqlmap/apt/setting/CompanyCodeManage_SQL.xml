@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.setting.service.impl.CompanyCodeManageDAO">
+
+  	<typeAlias alias="CompanyCodeManageVO" type="kr.co.koscom.oppf.apt.setting.service.CompanyCodeManageVO"/>
+  	
+  	
+	<!--
+     * @Method Name        : apt.CompanyCodeManageDAO.selectCompanyCodeList
+     * @Method description : 기업코드 목록을 조회한다.
+     * @param              : CompanyCodeManageVO
+     * @return             : CompanyCodeManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.CompanyCodeManageDAO.selectCompanyCodeList" parameterClass="CompanyCodeManageVO" resultClass="CompanyCodeManageVO">
+		select  company_code_reg_no     as companyCodeRegNo,
+		        company_code_id         as companyCodeId,
+		        (
+                    select code_name_kor
+                    from com_system_code
+                    where concat(system_grp_code, system_code) = a.company_code_type
+                )                       as companyCodeType,
+		        (
+                    select code_name_kor
+                    from com_system_code
+                    where concat(system_grp_code, system_code) = a.company_code_kind
+                )                       as companyCodeKind,
+                (
+                    select code_name_kor
+                    from com_system_code
+                    where concat(system_grp_code, system_code) = a.company_div_code
+                )                       as companyDivCode,
+		        company_name_kor        as companyNameKor,
+		        company_name_eng        as companyNameEng,
+		        company_name_kor_alias  as companyNameKorAlias,
+		        company_name_eng_alias  as companyNameEngAlias,
+		        if(ifnull(delete_date, 'N') = 'N', 'N', 'Y') as deleteType
+		from com_company_code a
+		where delete_date is null
+		<!-- 기업종류 -->
+		<isNotEqual property="searchCompanyCodeKind" compareValue="ALL" prepend="and">
+		    company_code_kind = #searchCompanyCodeKind#
+		</isNotEqual>
+		
+		order by companyCodeId asc		
+    </select>
+        
+    <!--
+     * @Method Name        : apt.CompanyCodeManageDAO.selectCompanyCodeDtl
+     * @Method description : 기업코드 상세를 조회한다.
+     * @param              : CompanyCodeManageVO
+     * @return             : CompanyCodeManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.CompanyCodeManageDAO.selectCompanyCodeDtl" parameterClass="CompanyCodeManageVO" resultClass="CompanyCodeManageVO">
+		select  company_code_reg_no     as companyCodeRegNo,
+		        company_code_type       as companyCodeType,
+		        company_code_id         as companyCodeId,
+		        company_code_kind       as companyCodeKind,
+		        company_div_code        as companyDivCode,
+		        company_name_kor        as companyNameKor,
+		        company_name_eng        as companyNameEng,
+		        company_name_kor_alias  as companyNameKorAlias,
+		        company_name_eng_alias  as companyNameEngAlias,
+		        if(ifnull(delete_date, 'N') = 'N', 'N', 'Y') as deleteType
+		from com_company_code
+		where company_code_reg_no = #companyCodeRegNo#       
+    </select>
+    
+    <!--
+     * @Method Name        : apt.CompanyCodeManageDAO.chkCompanyCodeDtl
+     * @Method description : 기업코드 저장가능 여부를 체크한다.
+     * @param              : CompanyCodeManageVO
+     * @return             : CompanyCodeManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.CompanyCodeManageDAO.chkCompanyCodeDtl" parameterClass="CompanyCodeManageVO" resultClass="CompanyCodeManageVO">
+		select  'companyCodeId' as chkType,
+		        if(count(*) > 0, 'N', 'Y') as chkResult
+		from com_company_code
+		where company_code_id = #companyCodeId#
+		and delete_date is null
+		<isNotEmpty property="companyCodeRegNo" prepend="and">
+		    company_code_reg_no not in(#companyCodeRegNo#)
+		</isNotEmpty>
+		union all
+		select  'companyNameEngAlias' as chkType,
+		        if(count(*) > 0, 'N', 'Y') as chkResult
+		from com_company_code
+		where company_name_eng_alias = #companyNameEngAlias#
+		and delete_date is null
+		<isNotEmpty property="companyCodeRegNo" prepend="and">
+            company_code_reg_no not in(#companyCodeRegNo#)
+        </isNotEmpty>  
+    </select>
+    
+    <!--
+     * @Method Name        : apt.CompanyCodeManageDAO.insertCompanyCodeHist
+     * @Method description : 기업코드 hist 등록 
+     * @param              : CompanyCodeManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="apt.CompanyCodeManageDAO.insertCompanyCodeHist" parameterClass="CompanyCodeManageVO">
+		insert into com_company_code_hist(
+		    company_code_reg_no,
+		    company_seq,
+		    company_code_type,
+		    company_code_id,
+		    company_code_kind,
+		    company_div_code,
+		    company_name_kor,
+		    company_name_eng,
+		    company_name_kor_alias,
+		    company_name_eng_alias,
+		    delete_date,
+		    create_date,
+		    create_id
+		)
+		select  company_code_reg_no,
+		        ifnull((
+		            select ifnull(max(cast(company_seq as SIGNED)), 0) + 1
+		            from com_company_code_hist
+		            where company_code_reg_no = a.company_code_reg_no
+		        ), 1),
+		        company_code_type,
+		        company_code_id,
+		        company_code_kind,
+		        company_div_code,
+		        company_name_kor,
+		        company_name_eng,
+		        company_name_kor_alias,
+		        company_name_eng_alias,
+		        delete_date,
+		        update_date,
+                update_id
+		from com_company_code a
+		where company_code_reg_no = #companyCodeRegNo#
+    </insert>
+    
+    <!--
+     * @Method Name        : apt.CompanyCodeManageDAO.insertCompanyCode
+     * @Method description : 기업코드 등록
+     * @param              : AptUserManageVO
+     * @return             : string
+     * @throws             : Exception
+     -->
+    <insert id="apt.CompanyCodeManageDAO.insertCompanyCode" parameterClass="CompanyCodeManageVO">
+        <selectKey keyProperty="companyCodeRegNo" resultClass="java.lang.String">
+            select  concat(date_format(sysdate(),'%Y%m%d'), 
+                    lpad((
+                            select ifnull( max(cast(right(company_code_reg_no,3) as signed)), 0)+1 
+                            from com_company_code 
+                            where left(company_code_reg_no,8) = concat(date_format(sysdate(),'%Y%m%d'))
+                        ), 3, '0')
+                    ) as companyCodeRegNo
+        </selectKey>
+        insert into com_company_code(
+		    company_code_reg_no,
+		    company_code_type,
+		    company_code_id,
+		    company_code_kind,
+		    company_div_code,
+		    company_name_kor,
+		    company_name_eng,
+		    company_name_kor_alias,
+		    company_name_eng_alias,
+		    create_date,
+		    create_id,
+		    update_date,
+		    update_id
+		)values(
+		    #companyCodeRegNo#,
+            #companyCodeType#,
+            #companyCodeId#,
+            #companyCodeKind#,
+            #companyDivCode#,
+            #companyNameKor#,
+            #companyNameEng#,
+            #companyNameKorAlias#,
+            #companyNameEngAlias#,
+            sysdate(),
+            #createId#,
+            sysdate(),
+            #createId#
+		)
+    </insert>
+    
+    <!--
+     * @Method Name        : apt.CompanyCodeManageDAO.updateCompanyCode
+     * @Method description : 기업코드 수정
+     * @param              : CompanyCodeManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="apt.CompanyCodeManageDAO.updateCompanyCode" parameterClass="CompanyCodeManageVO">
+        update com_company_code set
+            company_code_type = #companyCodeType#,
+            company_code_kind = #companyCodeKind#,
+            company_div_code = #companyDivCode#,
+            company_name_kor = #companyNameKor#,
+            company_name_eng = #companyNameEng#,
+            company_name_kor_alias = #companyNameKorAlias#,
+            company_name_eng_alias = #companyNameEngAlias#,
+            update_date = sysdate(),
+            update_id = #createId#
+        where company_code_reg_no = #companyCodeRegNo#
+    </update>
+    
+    <!--
+     * @Method Name        : apt.CompanyCodeManageDAO.chkDeleteCompanyCode
+     * @Method description : 기업코드 삭제가능 여부를 체크한다.
+     * @param              : CompanyCodeManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="apt.CompanyCodeManageDAO.chkDeleteCompanyCode" parameterClass="CompanyCodeManageVO" resultClass="int">
+		select count(*) as cnt
+		from com_company_code a
+		join com_company_profile b on a.company_code_id = b.company_code_id
+		where a.company_code_reg_no = #companyCodeRegNo#     
+    </select>
+    
+    <!--
+     * @Method Name        : apt.CompanyCodeManageDAO.deleteCompanyCode
+     * @Method description : 기업코드 삭제
+     * @param              : CompanyCodeManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="apt.CompanyCodeManageDAO.deleteCompanyCode" parameterClass="CompanyCodeManageVO">
+        update com_company_code set
+            delete_date = sysdate(),
+            update_date = sysdate(),
+            update_id = #createId#
+        where company_code_reg_no = #companyCodeRegNo#
+    </update>
+    
+</sqlMap>

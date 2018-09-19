@@ -1,0 +1,45 @@
+<ion-view view-title="로그인">
+    <ion-content>
+        <div class="container page_login"> <!-- 로그인 페이지 -->
+            <div class="inner_cont type2">
+                <form name="$root.loginForm" ng-submit="vm.submit()">
+                <div class="login_input_area">
+                    <input type="text"  name="customerId" ng-model="vm.customerId" placeholder="아이디" ng-blur="vm.idFocusOut = true" required />
+                    <div class="txt_error" ng-messages="loginForm.customerId.$error" ng-show="vm.idFocusOut">
+                    	<div ng-message="required">아이디를 입력해주세요.</div>
+                    </div>
+                    <input type="password" name="passwordDisplayText"
+                           ng-model="vm.passwordDisplayText" placeholder="비밀번호" required ng-click="vm.keypadOpen();"
+                           ng-blur="vm.passwordFocusOut = true;" readonly/>
+                    <div class="txt_error" ng-messages="loginForm.passwordDisplayText.$error" ng-show="vm.passwordFocusOut">
+                    	<div ng-message="required">비밀번호를 입력해주세요.</div>
+                    </div>
+                </div>
+                
+                <div class="button_area">
+                    <button type="button" class="btn_middle btn_red" ng-click="vm.idLogin()">로그인</button>
+                </div>
+                <!--<div>
+                    <button type="button" class="btn_middle btn_red" ng-click="vm.testLoginAction()">Dev 로그인</button>
+                </div>-->
+                </form>
+                <div class="select_area">
+                    <div class="button_area btn_both mid_bar">
+                        <a href="#/findId" class="btn_middle">아이디 찾기</a>
+                        <a ng-click="vm.findPassword();" class="btn_middle">비밀번호 찾기</a>
+                    </div>
+                </div>
+
+                <div class="button_area">
+                    <button type="button" class="btn_middle btn_gray" ng-click="vm.memberLoginCert()">공인인증서 로그인</button>
+                </div>
+
+                <div class="midline_txt"><span>회원이 아니세요?</span></div>
+                <div class="button_area">
+                    <a href="" ng-click="vm.memberCreate();" class="btn_middle btn_white btn_line">회원가입</a>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>
+

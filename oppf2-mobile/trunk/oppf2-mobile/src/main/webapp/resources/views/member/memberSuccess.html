@@ -1,0 +1,42 @@
+<ion-view view-title="회원가입" hide-back-button="true">
+    <ion-content>
+        <div class="container page_membership"> <!-- 회원가입 페이지 -->
+            <div class="vi_area join_stage">
+                <ul>
+                    <li class="stage_01">약관 및 본인인증</li>
+                    <li class="stage_02">회원정보입력</li>
+                    <li class="stage_03 active">완료</li>
+                </ul>
+            </div>
+            <div class="inner_cont type2">
+                <div class="join_finish_area">
+                    <div class="top_txt"><strong class="ft_org">회원가입이 완료</strong>되었습니다.</div>
+                    <div class="midline_txt"><span>회원가입내역</span></div>
+                    <ul class=" self_info">
+                        <li>
+                            <span class="title">이 름</span>
+                            <span class="text">{{vm.customerNameKor}}</span>
+                        </li>
+                        <li>
+                            <span class="title">아이디</span>
+                            <span class="text">{{vm.customerId}}</span>
+                        </li>
+                        <li>
+                            <span class="title">이메일</span>
+                            <span class="text">{{vm.customerEmail}}</span>
+                        </li>
+                    </ul>
+                    <div class="ft_org tip_txt">회원정보는 설정>회원정보 메뉴에서 조회 및 수정이 가능합니다.</div>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+    <ion-footer-bar>
+        <!-- 하단 버튼 -->
+        <div class="button_area btn_both btn_bottom_area">
+            <a class="btn_middle btn_black_org" href="" ng-click="vm.goMain();">확인</a>
+            <a class="btn_middle btn_black" href="" ng-click="vm.goApps();">앱사용신청</a>
+        </div>
+        <!--// 하단 버튼 -->
+    </ion-footer-bar>
+</ion-view>

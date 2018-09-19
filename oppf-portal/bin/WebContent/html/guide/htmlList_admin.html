@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Koscom OpenAPI Platform HTML Guide</title>
+	<link rel="stylesheet" type="text/css" href="css/guide.css" />
+	<script type="text/javascript" src="js/jquery-1.9.1.js"></script>
+	<script language="javascript" type="text/javascript">
+		$(function(){
+			//카운트
+			$("table tr").each(function(){
+				var trNo =  $(this).index()+1;
+				$("td.no",this).html(trNo);
+			});
+			//진척율
+			var totalNum = $(".list .no").length;
+			$(".totalNum").html(totalNum);
+			var workingNum = $(".list .date span").length;
+			$(".workingNum").html(workingNum);
+			var workingper = Math.round(workingNum/totalNum*100);
+			$(".workingper").html(workingper + "%");
+
+			//공지팝업닫기
+			$(".notice_box .btn_close").click(function(){			
+				$(".notice_box").hide();
+			});
+		});
+	</script>	
+	<style type="text/css">
+	.red {color:red !important;}
+	.scrId a {color:#000; font-weight:bold;}
+	.date span {color:#cc0000;}
+	.scrTit span {color:#ea4721;}
+	.notice_box {position:fixed; top:40%; left:50%; margin:-165px; width:270px; font-size:14px; line-height:20px; text-align:center; border:2px solid #000; padding:30px; background:#fff;}
+	</style>
+</head>
+<body>
+
+<div class="notice_box">
+	<h1 style="font-size:14px; margin-bottom:5px; text-align:left;">모바일화면 퍼블가이드</h1>
+	<p style="font-size:12px; text-align:left;"><strong>'비고'</strong> 란의 <strong>'반응형페이지'</strong>는 모바일화면이 있는 페이지를 뜻하며 PC페이지와 소스는 동일하나 아래와 같이 class명의 유무로 화면이 제어됩니다. (css/spt/common.css)</p>
+	<img src="img/guide.jpg" alt="">
+	<a href="#none" class="btn_close"><strong>[닫기]</strong></a>
+</div>
+
+<div id="container">
+
+	<h1 class="scrTit">Koscom OpenAPI Platform HTML Guide <span>관리자</span></h1>
+
+	<div class="menuList">
+		<ul>	
+			<li><a href="#admin1">일반회원관리</a></li>
+			<li><a href="#admin2">기업회원관리</a></li>
+			<li><a href="#admin3">테스트자원관리</a></li>
+			<li><a href="#admin4">서비스관리</a></li>
+			<li><a href="#admin5">포털관리</a></li>
+			<li><a href="#admin6">통계/모니터링 관리</a></li>
+			<li><a href="#admin7">설정 관리</a></li>
+			<li><a href="#admin8">Admin 관리</a></li>		
+			<li><a href="#admin9">FIX Engine 관리</a></li>		
+		</ul>
+	</div>
+
+	<div class="workList">
+
+	<!-- <table summary="페이지 진척수" style="float:right; width:600px; margin-bottom:10px;">
+		<caption>페이지 진척수</caption>
+		<colgroup>
+			<col width="100px" />
+			<col width="100px" />
+			<col width="100px" />
+			<col width="100px" />
+			<col width="100px" />
+			<col width="100px" />
+		</colgroup>
+		<tbody>
+			<tr>
+				<th>전체 페이지</th>
+				<td class="totalNum"></td>
+				<th>완료 페이지</th>
+				<td class="workingNum"></td>
+				<th>진척률</th>
+				<td class="workingper"></td>
+			</tr>
+			<tr>
+	
+			</tr>
+		</tbody>
+	</table> -->
+
+	<div class="list">
+		<table summary="작업목록 리스트" class="tableType1">
+			<caption>작업 목록</caption>
+			<colgroup>
+				<col width="5%" />
+				<col width="12%" />
+				<col width="13%" />
+				<col width="12%" />
+				<col width="12%" />
+				<col width="12%" />
+				<col width="8%" />
+				<col width="8%" />
+				<col width="*" />
+			</colgroup>
+			<thead>
+				<tr>
+					<th>no.</th>
+					<th>1depth</th>					
+					<th>2depth</th>
+					<th>3depth</th>
+					<th>4depth</th>
+					<th>화면ID/링크</th>
+					<th class="name">작성자</th>
+					<th class="date">완료일</th>
+					<th class="notice">비고</th>
+				</tr>
+			</thead>
+			<tbody>
+				<!-- 테스트 자원 관리 -->
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1">테스트 자원 관리</td>					
+					<td class="dep2">테스트 데이터 관리</td>
+					<td class="dep3">목록</td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-03-001.html" target="_blank">APT-03-001</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-02-15</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1"></td>					
+					<td class="dep2"></td>
+					<td class="dep3">수정</td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-03-002.html" target="_blank">APT-03-002</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-02-15</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1"></td>					
+					<td class="dep2">목업 메시지 관리</td>
+					<td class="dep3">목록</td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-03-004.html" target="_blank">APT-03-004</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-02-15</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1"></td>					
+					<td class="dep2"></td>
+					<td class="dep3">등록</td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-03-005.html" target="_blank">APT-03-005</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-02-15</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1"></td>					
+					<td class="dep2"></td>
+					<td class="dep3">수정</td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-03-006.html" target="_blank">APT-03-006</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-02-15</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<!-- // 일반회원관리 -->
+
+				<!-- FIX Engine 관리 -->
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1">FIX Engine 관리</td>					
+					<td class="dep2">기업관리</td>
+					<td class="dep3"></td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-05-001.html" target="_blank">APT-05-001</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-03-03</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1"></td>					
+					<td class="dep2"></td>
+					<td class="dep3">등록</td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-05-002.html" target="_blank">APT-05-002</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-03-03</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1"></td>					
+					<td class="dep2"></td>
+					<td class="dep3">수정</td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-05-003.html" target="_blank">APT-05-003</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-03-03</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1"></td>					
+					<td class="dep2">Initiator 서버 관리</td>
+					<td class="dep3">목록</td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-05-004.html" target="_blank">APT-05-004</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-03-03</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1"></td>					
+					<td class="dep2"></td>
+					<td class="dep3">기업 정보 조회 윈도우 팝업</td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-05-018.html" target="_blank">APT-05-018</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-03-03</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1"></td>					
+					<td class="dep2"></td>
+					<td class="dep3">등록</td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-05-006.html" target="_blank">APT-05-006</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-03-03</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1"></td>					
+					<td class="dep2"></td>
+					<td class="dep3">수정</td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-05-007.html" target="_blank">APT-05-007</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-03-03</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1"></td>					
+					<td class="dep2">Simulator 케이스 관리</td>
+					<td class="dep3">목록</td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-05-010.html" target="_blank">APT-05-010</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-03-03</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1"></td>					
+					<td class="dep2"></td>
+					<td class="dep3">등록</td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-05-011.html" target="_blank">APT-05-011</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-03-03</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1"></td>					
+					<td class="dep2"></td>
+					<td class="dep3">수정</td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-05-012.html" target="_blank">APT-05-012</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-03-03</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1"></td>					
+					<td class="dep2">Acceptor(tab)</td>
+					<td class="dep3"></td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-05-013.html" target="_blank">APT-05-013</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-02-28</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1"></td>					
+					<td class="dep2">메시지 조회</td>
+					<td class="dep3">상세 팝업</td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-05-014.html" target="_blank">APT-05-014</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-02-28</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<!--// FIX Engine 관리 -->
+
+				<!-- 일반 회원 관리 -->
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1">일반 회원 관리</td>					
+					<td class="dep2">가상 계좌 목록조회 팝업</td>
+					<td class="dep3"></td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-01-005.html" target="_blank">APT-01-005</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-02-20</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1"></td>					
+					<td class="dep2">계좌 연결 추가 팝업</td>
+					<td class="dep3"></td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-01-009.html" target="_blank">APT-01-009</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-02-20</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1"></td>					
+					<td class="dep2">서비스 연결 추가 팝업</td>
+					<td class="dep3"></td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-01-010.html" target="_blank">APT-01-010</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-02-20</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<!--// 일반 회원 관리 -->
+
+				<!-- 통계/모니터링 관리 -->
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1">통계/모니터링 관리</td>					
+					<td class="dep2">트래픽통계</td>
+					<td class="dep3"></td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-06-001.html" target="_blank">APT-06-001</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-02-28</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1"></td>					
+					<td class="dep2"></td>
+					<td class="dep3"></td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-06-008.html" target="_blank">APT-06-008</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-02-28</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<tr id="#admin1" class="mainCTGR">
+					<td class="no"></td>
+					<td class="dep1"></td>					
+					<td class="dep2">FIX Engine 통계</td>
+					<td class="dep3"></td>
+					<td class="dep4"></td>
+					<td class="scrId"><a href="../apt/APT-06-004.html" target="_blank">APT-06-004</a></td>
+					<td class="name">이미영</td>
+					<td class="date"><span>2017-03-07</span></td><!-- 완료시 span태그포함 날짜삽입 -->
+					<td class="notice"></td>
+				</tr>
+				<!--// 통계/모니터링 관리 -->
+			</tbody>
+		</table>
+	</div>
+
+	</div>
+
+</div>
+
+<div class="goTop"><a href="#container">Top</a></div>
+
+</body>
+</html>

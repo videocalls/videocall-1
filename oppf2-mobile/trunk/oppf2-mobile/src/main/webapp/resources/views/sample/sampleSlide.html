@@ -1,0 +1,188 @@
+<ion-view view-title="샘플 슬라이드">
+	<ion-content  scroll="false" class="bg_gray"> <!-- bg color -->
+		<div class="container"> <!-- 통합계좌 조회 -->
+			<div class="combine_page">
+				<!-- tabs -->
+				<div class="tab-wrap">
+					<!-- 상단 -->
+					<ion-header-bar>
+						<div class="top_info">
+							금융투자회사 <span>3</span> / 등록계좌 <span>2</span>
+							<a href="go" class="btn_plus">가상계좌추가발급</a>
+						</div>
+						<ul class="btn_head tab-head">
+							<li ng-class="{active: vm.currentSlideIndex === 0}"><a href="#none" ng-click="vm.slideChange(0);$event.preventDefault();">자산현황</a></li>
+							<li ng-class="{active: vm.currentSlideIndex === 1}"><a href="#none" ng-click="vm.slideChange(1);$event.preventDefault();">거래내역</a></li>
+							<li ng-class="{active: vm.currentSlideIndex === 2}"><a href="#none" ng-click="vm.slideChange(2);$event.preventDefault();">포트폴리오</a></li>
+							<li ng-class="{active: vm.currentSlideIndex === 3}"><a href="#none" ng-click="vm.slideChange(3);$event.preventDefault();">관심종목</a></li>
+						</ul>
+						<div class="sel_cho_wrap">
+							<div class="select_box">
+								<select>
+									<option>선택</option>
+									<option>미래에셋증권투자증권</option>
+									<option>삼성증권</option>
+									<option>동양투자증권</option>
+									<option>키움증권</option>
+								</select>
+							</div>
+							<div class="select_box">
+								<select>
+									<option>선택</option>
+									<option>미래에셋증권투자증권</option>
+									<option>삼성증권</option>
+									<option>동양투자증권</option>
+									<option>키움증권</option>
+								</select>
+							</div>
+						</div>
+					</ion-header-bar>
+					<!--// 상단 -->
+					<ion-slide-box on-slide-changed="vm.slideChange2();" show-pager="false" does-continue="true" class="tab-body">
+						<!-- 자산현황 -->
+						<ion-slide>
+							<ion-content>
+								<div class="cont">
+									<!-- tabs -->
+									<div class="tab-wrap" tabs>
+										<!-- 상단 -->
+										<ul class="btn_head tab-head">
+											<li class="active"><a href="#none">전체</a></li>
+											<li><a href="#none">주식</a></li>
+											<li><a href="#none">펀드</a></li>
+											<li><a href="#none">기타</a></li>
+										</ul>
+										<!--// 상단 -->
+										<div class="tab-body">
+											<!-- 전체 -->
+											<div class="cont">
+												전체
+											</div>
+											<!--// 전체 -->
+											<!-- 주식 -->
+											<div class="cont">
+												주식
+											</div>
+											<!--// 주식 -->
+											<!-- 펀드 -->
+											<div class="cont">
+												펀드
+											</div>
+											<!--// 펀드 -->
+											<!-- 기타 -->
+											<div class="cont">
+												기타
+											</div>
+											<!--// 기타 -->
+										</div>
+									</div>
+									<!--// tabs  -->
+								</div>
+							</ion-content>
+						</ion-slide>
+						<!--// 자산현황 -->
+						<!-- 거래내역 -->
+						<ion-slide>
+							<ion-content>
+								<div class="cont">
+									<div class="date_bar">
+										<span class="date_box"><span class="input_area"><input type="date" ></span></span>
+										<span class="date_box"><span class="input_area"><input type="date" ></span></span>
+										<button type="button" class="btn_search">검색</button>
+									</div>
+									<div class="trade_area">
+										거래내역
+									</div>
+								</div>
+							</ion-content>
+						</ion-slide>
+						<!--// 거래내역 -->
+						<!-- 포트폴리오 -->
+						<ion-slide>
+							<ion-content>
+								<div class="cont">
+									<div style="width:100%;overflow-x:auto;">
+										<table cellspacing="0" cellpadding="0" border="0" style="width:200%; margin:5px 0; border-top:1px solid #dddfdf; border-right:1px solid #dddfdf;">
+											<colgroup>
+												<col style="width:85px;">
+												<col style="width:100px;">
+												<col style="width:85px;">
+												<col style="width:100px;">
+												<col style="width:85px;">
+												<col style="width:100px;">
+												<col style="width:85px;">
+												<col style="width:100px;">
+												<col style="width:100px;">
+												<col style="width:85px;">
+												<col style="width:100px;">
+												<col style="width:auto">
+											</colgroup>
+											<tbody>
+											<tr>
+												<th scope="row" style="padding:9px 7px; font-size:12px; border-right:1px solid #dddfdf; border-left:1px solid #dddfdf; border-bottom:1px solid #dddfdf;">
+													공인인증서
+												</th>
+												<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+													asgcn=홍길동-6832099,ou=HTS,ou=동양,ou=증권,o=SignKorea,c=KR
+												</td>
+												<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+													2342342
+												</td>
+												<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+													2342342
+												</td>
+												<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+													2342342
+												</td>
+												<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+													2342342
+												</td>
+												<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+													2342342
+												</td>
+												<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+													2342342
+												</td>
+												<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+													2342342
+												</td>
+												<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+													2342342
+												</td>
+												<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+													2342342
+												</td>
+												<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+													2342342
+												</td>
+											</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</ion-content>
+						</ion-slide>
+						<!--// 포트폴리오 -->
+						<!-- 관심종목 -->
+						<ion-slide>
+							<ion-content>
+							<div class="cont">
+								관심종목
+							</div>
+							</ion-content>
+						</ion-slide>
+						<!--// 관심종목 -->
+					</ion-slide-box>
+				</div>
+				<!--// tabs  -->
+			</div>
+		</div>
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<div class="button_area btn_bottom_area">
+			<a href="#go" class="btn_middle btn_black">확인</a>
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+</ion-view>

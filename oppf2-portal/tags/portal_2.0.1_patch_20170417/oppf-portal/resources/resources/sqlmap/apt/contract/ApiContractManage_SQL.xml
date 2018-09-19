@@ -1,0 +1,465 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.contract.service.impl.ApiContractManageDAO">
+
+  	<typeAlias alias="ApiContractManageVO" type="kr.co.koscom.oppf.apt.contract.service.ApiContractManageVO"/>
+  	
+  	<!-- api 목록 조회 조건 -->
+  	<sql id="fromWhereAnd">
+        <!-- 서비스 제공자 -->
+        <isNotEmpty property="searchPubcompanyCodeId" prepend="and">
+            <isNotEqual property="searchPubcompanyCodeIdAllYn" compareValue="Y">
+                a.pubcompany_code_id
+                <iterate  property="searchPubcompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchPubcompanyCodeId[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+        
+        <!-- 앱개발자 -->
+        <isNotEmpty property="searchSubcompanyCodeId" prepend="and">
+            <isNotEqual property="searchSubcompanyCodeIdAllYn" compareValue="Y">
+                a.subcompany_code_id
+                <iterate  property="searchSubcompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchSubcompanyCodeId[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+        
+        <!-- api 서비스 구분 -->
+        <isNotEmpty property="searchApiCategory" prepend="and">
+            <isNotEqual property="searchApiCategoryAllYn" compareValue="Y">
+                a.api_category
+                <iterate  property="searchApiCategory" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchApiCategory[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+        
+        <!-- api 서비스 계약 상태 -->
+        <isNotEmpty property="searchServiceContractStatus" prepend="and">
+            <isNotEqual property="searchServiceContractStatusAllYn" compareValue="Y">
+                b.service_contract_status
+                <iterate  property="searchServiceContractStatus" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchServiceContractStatus[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+        
+        <!-- api 서비스 계약기간 -->
+        <isNotEmpty property="searchDateFrom" prepend="and">
+            (
+		        b.contract_terms_start_date between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '') or
+		        b.contract_terms_expire_date between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '') or
+		        (
+			        replace(#searchDateFrom#, '-', '') between b.contract_terms_start_date and b.contract_terms_expire_date or
+			        replace(#searchDateTo#, '-', '') between b.contract_terms_start_date and b.contract_terms_expire_date
+			    )
+		    )
+        </isNotEmpty>
+  	</sql>
+  	
+  	
+  	<!--
+     * @Method Name        : apt.ApiContractManageDAO.selectApiContractManageListTotalCount
+     * @Method description : api 계약 목록의 총개수를 조회한다.
+     * @param              : ApiContractManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="apt.ApiContractManageDAO.selectApiContractManageListTotalCount" parameterClass="ApiContractManageVO" resultClass="int">
+        select count(a.api_id) as totalcount
+        from(
+	        select  a.*,
+	                b.api_category,
+	                b.company_code_id as pubcompany_code_id
+	        from(
+	            select  a.subcompany_code_id,
+                        a.api_id,
+                        b.api_name
+                from(                    
+                    select  b.company_code_id as subcompany_code_id, 
+                            a.api_id
+                    from com_app_apilist_view a
+                    left join com_app_view as b on a.app_id = b.app_id
+                    group by b.company_code_id, a.api_id            
+                ) a 
+                left join com_api_view as b on a.api_id = b.api_id
+	        ) a
+	        left join com_api_info as b on a.api_id = b.api_id
+	        where b.api_contract_code not in('G023006')
+	    ) a
+	    left join com_api_contract_info as b 
+	    on a.api_id = b.api_id
+	    and a.pubcompany_code_id = b.pubcompany_code_id
+	    and a.subcompany_code_id = b.subcompany_code_id
+	    where 1=1
+        <include refid="fromWhereAnd"/>
+    </select>
+  	
+	<!--
+     * @Method Name        : apt.ApiContractManageDAO.selectApiContractManageList
+     * @Method description : api 계약 목록을 조회한다.
+     * @param              : ApiContractManageVO
+     * @return             : ApiContractManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.ApiContractManageDAO.selectApiContractManageList" parameterClass="ApiContractManageVO" resultClass="ApiContractManageVO">
+		select  a.subcompany_code_id            as subcompanyCodeId,
+		        sub.company_name_kor_alias      as subcompanyName,
+		        a.api_id                        as apiId,
+		        a.api_name                      as apiName,
+		        a.api_category                  as apiCategory,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.api_category           
+		        )                               as apiCategoryName,
+		        a.pubcompany_code_id            as pubcompanyCodeId,
+		        pub.company_name_kor_alias      as pubcompanyName,
+		        a.service_contract_status       as serviceContractStatus,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.service_contract_status           
+		        )                               as serviceContractStatusName,
+		        a.contract_terms_start_date     as contractTermsStartDate,
+		        a.contract_terms_expire_date    as contractTermsExpireDate,
+		        a.create_id                     as createId,
+		        case when instr(a.create_id, 'A') > 0 then
+		            (
+		                select admin_name_kor
+		                from com_admin_profile
+		                where admin_profile_reg_no = a.create_id
+		            )
+		        else
+		            (
+		                select operator_name_kor
+		                from com_company_operator_profile
+		                where operator_profile_reg_no = a.create_id
+		            )
+		        end                             as createIdName,
+		        a.create_date                   as createDate
+		from(
+		    select  a.*,
+		            b.service_contract_status,
+		            case when b.service_contract_status = 'G023002' or b.service_contract_status = 'G023006' then 
+		                ''
+		            else 
+		                date_format(b.contract_terms_start_date, '%Y-%m-%d') 
+		            end as contract_terms_start_date,
+		            case when b.service_contract_status = 'G023002' or b.service_contract_status = 'G023006' then 
+		                ''
+		            else 
+		                date_format(b.contract_terms_expire_date, '%Y-%m-%d') 
+		            end as contract_terms_expire_date,
+		            ifnull(b.update_id, b.create_id) as create_id,
+		            date_format(ifnull(b.update_date, b.create_date), '%Y-%m-%d %H:%i') as create_date
+		    from(
+		        select  a.*,
+		                b.api_category,
+		                b.company_code_id as pubcompany_code_id
+		        from(
+		            select  a.subcompany_code_id,
+		                    a.api_id,
+		                    b.api_name
+		            from(                    
+		                select  b.company_code_id as subcompany_code_id, 
+		                        a.api_id
+		                from com_app_apilist_view a
+		                left join com_app_view as b on a.app_id = b.app_id
+		                group by b.company_code_id, a.api_id            
+		            ) a 
+		            left join com_api_view as b on a.api_id = b.api_id
+		        ) a
+		        left join com_api_info as b on a.api_id = b.api_id
+		        where b.api_contract_code not in('G023006')
+		    ) a
+		    left join com_api_contract_info as b 
+		    on a.api_id = b.api_id
+		    and a.pubcompany_code_id = b.pubcompany_code_id
+		    and a.subcompany_code_id = b.subcompany_code_id
+		    where 1=1
+		    <include refid="fromWhereAnd"/>
+		) a
+		left join com_company_profile as pub on a.pubcompany_code_id = pub.company_code_id and pub.delete_date is null  
+		left join com_company_profile as sub on a.subcompany_code_id = sub.company_code_id and sub.delete_date is null
+		<include refid="CmmnFuncDAO.CmmnPaging"/>
+    </select>
+    
+    <!--
+     * @Method Name        : apt.ApiContractManageDAO.selectApiContractManageListExcel
+     * @Method description : api 계약 excel 목록을 조회한다.
+     * @param              : ApiContractManageVO
+     * @return             : ApiContractManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.ApiContractManageDAO.selectApiContractManageListExcel" parameterClass="ApiContractManageVO" resultClass="ApiContractManageVO">
+        select  a.subcompany_code_id            as subcompanyCodeId,
+                sub.company_name_kor_alias      as subcompanyName,
+                a.api_id                        as apiId,
+                a.api_name                      as apiName,
+                a.api_category                  as apiCategory,
+                (
+                    select code_name_kor
+                    from com_system_code
+                    where concat(system_grp_code, system_code) = a.api_category           
+                )                               as apiCategoryName,
+                a.pubcompany_code_id            as pubcompanyCodeId,
+                pub.company_name_kor_alias      as pubcompanyName,
+                a.service_contract_status       as serviceContractStatus,
+                (
+                    select code_name_kor
+                    from com_system_code
+                    where concat(system_grp_code, system_code) = a.service_contract_status           
+                )                               as serviceContractStatusName,
+                a.contract_terms_start_date     as contractTermsStartDate,
+                a.contract_terms_expire_date    as contractTermsExpireDate,
+                a.create_id                     as createId,
+                case when instr(a.create_id, 'A') > 0 then
+                    (
+                        select admin_name_kor
+                        from com_admin_profile
+                        where admin_profile_reg_no = a.create_id
+                    )
+                else
+                    (
+                        select operator_name_kor
+                        from com_company_operator_profile
+                        where operator_profile_reg_no = a.create_id
+                    )
+                end                             as createIdName,
+                a.create_date                   as createDate
+        from(
+            select  a.*,
+                    b.service_contract_status,
+                    case when b.service_contract_status = 'G023002' or b.service_contract_status = 'G023006' then 
+                        ''
+                    else 
+                        date_format(b.contract_terms_start_date, '%Y-%m-%d') 
+                    end as contract_terms_start_date,
+                    case when b.service_contract_status = 'G023002' or b.service_contract_status = 'G023006' then 
+                        ''
+                    else 
+                        date_format(b.contract_terms_expire_date, '%Y-%m-%d') 
+                    end as contract_terms_expire_date,
+                    ifnull(b.update_id, b.create_id) as create_id,
+                    date_format(ifnull(b.update_date, b.create_date), '%Y-%m-%d %H:%i') as create_date
+            from(
+                select  a.*,
+                        b.api_category,
+                        b.company_code_id as pubcompany_code_id
+                from(
+                    select  a.subcompany_code_id,
+                            a.api_id,
+                            b.api_name
+                    from(                    
+                        select  b.company_code_id as subcompany_code_id, 
+                                a.api_id
+                        from com_app_apilist_view a
+                        left join com_app_view as b on a.app_id = b.app_id
+                        group by b.company_code_id, a.api_id            
+                    ) a 
+                    left join com_api_view as b on a.api_id = b.api_id
+                ) a
+                left join com_api_info as b on a.api_id = b.api_id
+                where b.api_contract_code not in('G023006')
+            ) a
+            left join com_api_contract_info as b 
+            on a.api_id = b.api_id
+            and a.pubcompany_code_id = b.pubcompany_code_id
+            and a.subcompany_code_id = b.subcompany_code_id
+            where 1=1
+            <isEqual property="excelType" compareValue="excel">
+	            <include refid="fromWhereAnd"/>
+	        </isEqual>
+        ) a
+        left join com_company_profile as pub on a.pubcompany_code_id = pub.company_code_id and pub.delete_date is null  
+        left join com_company_profile as sub on a.subcompany_code_id = sub.company_code_id and sub.delete_date is null
+        order by $listOrder$
+    </select>
+    
+    <!--
+     * @Method Name        : apt.ApiContractManageDAO.selectApiContractManageDtl
+     * @Method description : api 계약 상세를 조회한다.
+     * @param              : ApiContractManageVO
+     * @return             : ApiContractManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.ApiContractManageDAO.selectApiContractManageDtl" parameterClass="ApiContractManageVO" resultClass="ApiContractManageVO">
+		select  a.subcompany_code_id            as subcompanyCodeId,
+		        a.subcompany_name               as subcompanyName,
+		        a.api_id                        as apiId,
+		        a.api_name                      as apiName,
+		        a.pubcompany_code_id            as pubcompanyCodeId,
+		        a.pubcompany_name               as pubcompanyName,
+		        a.api_category                  as apiCategory,
+		        a.api_category_name             as apiCategoryName,
+		        a.api_contract_code             as apiContractCode,
+		        (
+                    select code_name_kor
+                    from com_system_code
+                    where concat(system_grp_code, system_code) = a.api_contract_code           
+                )                               as apiContractCodeName,
+		        a.api_terms_start_date          as apiTermsStartDate,
+		        a.api_terms_expire_date         as apiTermsExpireDate,
+		        b.service_contract_status       as serviceContractStatus,
+		        case when b.service_contract_status = 'G023002' or b.service_contract_status = 'G023006' then 
+		            ''
+		        else 
+		            date_format(b.contract_terms_start_date, '%Y-%m-%d') 
+		        end                             as contractTermsStartDate,
+		        case when b.service_contract_status = 'G023002' or b.service_contract_status = 'G023006' then 
+		            ''
+		        else 
+		            date_format(b.contract_terms_expire_date, '%Y-%m-%d') 
+		        end                             as contractTermsExpireDate
+		from(
+		    select  a.subcompany_code_id,
+		            sub.company_name_kor_alias  as subcompany_name,
+		            a.api_id,
+		            a.api_name,
+		            b.company_code_id           as pubcompany_code_id,
+		            pub.company_name_kor_alias  as pubcompany_name,
+		            b.api_category,
+		            (
+		                select code_name_kor
+		                from com_system_code
+		                where concat(system_grp_code, system_code) = b.api_category           
+		            )                           as api_category_name,
+		            ifnull(b.api_contract_code, 'G023002') as api_contract_code,
+		            b.api_terms_start_date,
+		            b.api_terms_expire_date
+		    from(
+		        select  a.subcompany_code_id,
+		                a.api_id,
+		                b.api_name
+		        from(                    
+		            select  b.company_code_id as subcompany_code_id, 
+		                    a.api_id
+		            from com_app_apilist_view a
+		            left join com_app_view as b on a.app_id = b.app_id
+		            group by b.company_code_id, a.api_id            
+		        ) a 
+		        left join com_api_view as b on a.api_id = b.api_id
+		        where a.subcompany_code_id = #subcompanyCodeId#
+		        and a.api_id = #apiId#
+		    ) a
+		    left join com_api_info as b on a.api_id = b.api_id
+		    left join com_company_profile as pub on b.company_code_id = pub.company_code_id and pub.delete_date is null  
+		    left join com_company_profile as sub on a.subcompany_code_id = sub.company_code_id and sub.delete_date is null
+		) a    
+		left join com_api_contract_info as b 
+		on a.api_id = b.api_id
+		and a.pubcompany_code_id = b.pubcompany_code_id
+		and a.subcompany_code_id = b.subcompany_code_id    
+    </select>
+    
+    <!--
+     * @Method Name        : apt.ApiContractManageDAO.selectApiContractManageChkCnt
+     * @Method description : api 계약 저장 시 기존데이터가 있는지 여부를 가져온다.
+     * @param              : ApiContractManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="apt.ApiContractManageDAO.selectApiContractManageChkCnt" parameterClass="ApiContractManageVO" resultClass="int">
+        select count(*) as totalcount
+        from com_api_contract_info
+        where api_id = #apiId#
+        and pubcompany_code_id = #pubcompanyCodeId#
+        and subcompany_code_id = #subcompanyCodeId#
+    </select>
+    
+    <!--
+     * @Method Name        : apt.ApiContractManageDAO.insertApiContractManage
+     * @Method description : api 계약 등록한다.
+     * @param              : ApiContractManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="apt.ApiContractManageDAO.insertApiContractManage" parameterClass="ApiContractManageVO">
+        insert into com_api_contract_info(
+			api_id,
+			pubcompany_code_id,
+			subcompany_code_id,
+			service_contract_status,
+			contract_terms_start_date,
+			contract_terms_expire_date,
+			create_date,
+			create_id,
+			update_date,
+			update_id
+        )values(
+            #apiId#,
+            #pubcompanyCodeId#,
+            #subcompanyCodeId#,
+            #serviceContractStatus#,
+            #contractTermsStartDate#,
+            #contractTermsExpireDate#,
+            sysdate(),
+            #createId#,
+            sysdate(),
+            #createId#
+        )    
+    </insert>
+    
+    <!--
+     * @Method Name        : apt.ApiContractManageDAO.updateApiContractManage
+     * @Method description : api 계약 수정한다.
+     * @param              : ApiContractManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="apt.ApiContractManageDAO.updateApiContractManage" parameterClass="ApiContractManageVO">
+        update com_api_contract_info set
+        service_contract_status = #serviceContractStatus#,
+        contract_terms_start_date = #contractTermsStartDate#,
+        contract_terms_expire_date = #contractTermsExpireDate#,
+        update_date = sysdate(),
+        update_id = #createId#
+        where api_id = #apiId#
+        and pubcompany_code_id = #pubcompanyCodeId#
+        and subcompany_code_id = #subcompanyCodeId#
+    </update>
+    
+    <!--
+     * @Method Name        : apt.ApiContractManageDAO.insertApiContractManageHist
+     * @Method description : api 계약 hist 정보를 insert한다.
+     * @param              : ApiContractManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="apt.ApiContractManageDAO.insertApiContractManageHist" parameterClass="ApiContractManageVO">
+        insert into com_api_contract_info_hist(
+            api_id,
+            pubcompany_code_id,
+            subcompany_code_id,
+            contract_seq,
+            service_contract_status,
+            contract_terms_start_date,
+            contract_terms_expire_date,
+            create_date,
+            create_id        
+        )
+        select  api_id,
+	            pubcompany_code_id,
+	            subcompany_code_id,
+                ifnull((
+                    select ifnull(max(cast(contract_seq as SIGNED)), 0) + 1
+                    from com_api_contract_info_hist
+                    where api_id = a.api_id
+                    and pubcompany_code_id = a.pubcompany_code_id
+                    and subcompany_code_id = a.subcompany_code_id
+                ), 1),
+                service_contract_status,
+	            contract_terms_start_date,
+	            contract_terms_expire_date,
+                update_date,
+                update_id
+        from com_api_contract_info a
+        where api_id = #apiId#
+        and pubcompany_code_id = #pubcompanyCodeId#
+        and subcompany_code_id = #subcompanyCodeId#                  
+    </insert>
+</sqlMap>

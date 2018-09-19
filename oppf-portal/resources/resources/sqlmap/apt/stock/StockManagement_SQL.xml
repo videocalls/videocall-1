@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.stock.service.impl.StockManagementDAO">
+
+  	<typeAlias alias="StockItemGroupVO" type="kr.co.koscom.oppf.apt.stock.service.StockItemGroupVO"/>
+	<typeAlias alias="StockItemVO" type="kr.co.koscom.oppf.apt.stock.service.StockItemVO"/>
+
+	<insert id="apt.StockManagementDAO.insertUpdateStockItem" parameterClass="java.util.HashMap" >
+		INSERT INTO com_stocks_info
+		(
+			isu_cd,
+			isu_srt_cd,
+			market_cd,
+			isu_kor_nm,
+			isu_kor_abbrv,
+			map_to,
+			create_date,
+			create_id,
+			update_date,
+			update_id
+		) VALUES
+		<iterate property="isuLists" conjunction=",">
+		(
+			#isuLists[].isuCd#,
+			#isuLists[].isuSrtCd#,
+			#marketCd#,
+			#isuLists[].isuKorNm#,
+			#isuLists[].isuKorAbbr#,
+			#isuLists[].map_to#,
+			NOW(),
+			'',
+			NOW(),
+			''
+		)
+		</iterate>
+		ON DUPLICATE KEY UPDATE
+		market_cd = VALUES(market_cd),
+		isu_kor_nm = VALUES(isu_kor_nm),
+		isu_kor_abbrv = VALUES(isu_kor_abbrv),
+		map_to = VALUES(map_to),
+		update_date = now(),
+		update_id = VALUES(update_id)
+	</insert>
+
+	<!--
+     * @Method Name        : selectStockItemList
+     * @Method description : [통합계좌]주식종목명 조회
+     * @return             : StockItemVO
+     * @throws             : Exception
+     -->
+	<select id="apt.StockManagementDAO.selectStockItemList" resultClass="StockItemVO" >
+		select isu_cd as isuCd,
+			    isu_srt_cd as isuSrtCd,
+			    market_cd as marketCd,
+			    isu_kor_nm as isuKorNm,
+			    isu_kor_abbrv as isuKorAbbrv,
+			    map_to as  map_to
+		   from com_stocks_info
+	</select>
+
+</sqlMap>

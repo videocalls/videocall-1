@@ -1,0 +1,175 @@
+<ion-view view-title="">
+	<ion-content class="bg_gray"> <!-- bg color -->
+		<div class="container"> <!-- 계좌 페이지 -->
+			<div class="top_wrap">
+				<h2 class="title_h2"><span class="ft_org">QARA</span> /  (주)큐에이알에이소프트</h2>
+				<div class="txt">연결 계좌 선택</div>
+				<a href="go" class="btn_service icon-tip">연계서비스</a>
+				<a href="go" class="btn_plus">가상계좌추가</a>
+			</div>
+			<div class="inner_cont">
+				<div class="acclist_area acc_cho_list"> <!-- 연결계좌 선택 --> <!-- modify : acc_cho_list 추가 -->
+					<!-- 아코디언 메뉴 -->
+					<div class="accordian-menu" accordion>
+						<!-- loop -->
+						<div class="accordian-cont cont_wrap">
+							<a href="#none" class="btn_bar">미래에셋대우증권</a>
+							<div class="detail_cont">
+								<ul>
+									<li>
+										<div class="form_input">
+											<input type="checkbox" id="acc1-1" name="acc1-1">
+											<label for="acc1-1">
+												목돈1계좌
+												<span class="num_right">1548-4875-02-112</span>
+											</label>
+										</div>
+									</li>
+									<li>
+										<div class="form_input">
+											<input type="checkbox" id="acc1-2" name="acc1-2">
+											<label for="acc1-2">
+												목돈2계좌
+												<span class="num_right">4875-02-112</span>
+											</label>
+										</div>
+									</li>
+								</ul>
+							</div>
+							<div class="form_input">
+								<input type="checkbox" id="acc11" name="acc11" class="all_not_check"><label for="acc11"></label> <!-- modify : all_not_check  -->
+							</div>
+						</div>
+						<!--// loop -->
+						<div class="accordian-cont cont_wrap"> <!-- add active :열림 -->
+							<a href="#none" class="btn_bar">KB증권</a>
+							<div class="detail_cont">
+								<ul>
+									<li>
+										<div class="form_input">
+											<input type="checkbox" id="acc2-1" name="acc2-1">
+											<label for="acc2-1">
+												목돈1계좌
+												<span class="num_right">1548-4875-02-112</span>
+											</label>
+										</div>
+									</li>
+									<li>
+										<div class="form_input">
+											<input type="checkbox" id="acc2-2" name="acc2-2">
+											<label for="acc2-2">
+												목돈2계좌
+												<span class="num_right">4875-02-112</span>
+											</label>
+										</div>
+									</li>
+									<li>
+										<div class="form_input">
+											<input type="checkbox" id="acc2-3" name="acc2-3">
+											<label for="acc2-3">
+												내 CMS계좌
+												<span class="num_right">4875-02-112</span>
+											</label>
+										</div>
+									</li>
+								</ul>
+							</div>
+							<div class="form_input">
+								<input type="checkbox" id="acc22" name="acc22"><label for="acc22"></label>
+							</div>
+						</div>
+						<div class="accordian-cont cont_wrap">
+							<a href="#none" class="btn_bar disabled">삼성증권</a> <!-- modify : disabled  -->
+							<div class="detail_cont">
+								<ul>
+									<li>
+										<div class="form_input">
+											<input type="checkbox" id="acc3-1" name="acc3-1" disabled>
+											<label for="acc3-1">
+												목돈1계좌
+												<span class="num_right">1548-4875-02-112</span>
+											</label>
+										</div>
+									</li>
+									<li>
+										<div class="form_input">
+											<input type="checkbox" id="acc3-2" name="acc3-2" disabled>
+											<label for="acc3-2">
+												목돈2계좌
+												<span class="num_right">4875-02-112</span>
+											</label>
+										</div>
+									</li>
+								</ul>
+							</div>
+							<div class="form_input">
+								<input type="checkbox" id="agree33" name="agree33" disabled><label for="agree33"></label>
+							</div>
+						</div>
+					</div>
+					<!--// 아코디언 메뉴 -->
+				</div>
+
+				<!-- <div class="not_result">등록된 계좌가 없습니다.<br>가상계좌추가발급 버튼을 클릭하여 등록해주세요.</div> <!-- 결과없을때 -->
+			</div>
+		</div>
+		<!-- 연계서비스 -->
+		<div class="tips">
+			<div class="detail_tip btn_btm_pop">
+				<div class="inner_popup">
+					<div class="cont_popup">
+						<div class="title_area">금융투자회사별 연계서비스</div>
+						<div class="scl_box">
+							<div class="table_wrap radius_type">
+								<table>
+									<colgroup><col style="width:50%;" ><col style="width:auto;" ></colgroup>
+									<thead>
+										<tr>
+											<th>금융투자회사</th>
+											<th>연계서비스</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>포스코</td>
+											<td>삼성전자</td>
+										</tr>
+										<tr>
+											<td>포스코 안녕</td>
+											<td>삼성전자 하세요</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="button_area">
+						<button type="button" class="btn_btm">확인</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="dimmed"></div> <!-- modify -->
+<script type="text/javascript">
+  $( '.icon-tip' ).on( 'click', function (e) {
+      $( '.dimmed' ).addClass( 'active' );
+     $( '.detail_tip' ).addClass( 'active' );
+      return false;
+   });
+   $('.btn_btm').click( function () {
+      $( '.dimmed' ).removeClass( 'active' );
+      $( '.detail_tip' ).removeClass( 'active' );
+      return false;
+   });
+</script>
+		<!--// 연계서비스 -->
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<div class="button_area btn_both btn_bottom_area">
+			<a href="#go" class="btn_middle btn_black">취소</a>
+			<a href="#go" class="btn_middle btn_ing">다음 <span class="bg_icon"></span></a> <!-- 비활성화 add class : disabled  / 활성시 disabled 제거 -->
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+</ion-view>

@@ -1,0 +1,64 @@
+<ion-view view-title="">
+	<ion-content>
+		<div class="container">
+			<div class="search_area">
+				<div class="select_box">
+					<select>
+						<option>전체</option>
+						<option>제목</option>
+						<option>내용</option>
+					</select>
+				</div>
+				<div class="input_area">
+					<input type="text" placeholder="검색어를 입력하세요.">
+					<button type="button" class="btn_del"></button>
+				</div>
+			</div>
+			<div class="inner_cont type2">
+				<div class="hits"><span class="ft_org">12</span> 건</div>
+				<!-- 아코디언 메뉴 -->
+				<div class="notice_area">
+					<div class="accordian-menu" accordion>
+						<div class="accordian-cont cont_wrap fix_noti"> <!-- 고정일때 -->
+							<a href="#none" class="btn_bar">
+								<span class="title">ARS 인증 안내ARS 인증 안내ARS 인증 안내ARS 인증 안내ARS 인증 안내</span>
+								<span class="date">2017.07.18</span>
+							</a>
+							<div class="detail_cont">
+								<div class="gray_box">
+									핀테크 포털의 정착을 위해 신규파트너를 모집하고 있습니다. 많은 관심부탁드립니다.핀테크 포털의 정착을 위해 신규파트너를 모집하고 있습니다. 많은 관심부탁드립니다.핀테크 포털의 정착을 위해 신규파트너를 모집하고 있습니다. 많은 관심부탁드립니다. 핀테크 포털의 정착을 위해 신규파트너를 모집하고 있습니다. 많은 관심부탁드립니다.
+								</div>
+							</div>
+						</div>
+						<div class="accordian-cont cont_wrap fix_noti"> <!-- 고정일때 -->
+							<a href="#none" class="btn_bar">
+								<span class="title">ARS 인증 안내ARS </span>
+								<span class="date">2017.07.18</span>
+							</a>
+							<div class="detail_cont">
+								<div class="gray_box">
+									핀테크 포털의 정착을 위해 신규파트너를 모집하고 있습니다. 많은 관심부탁드립니다.핀테크 포털의 정착을 위해 신규파트너를 모집하고 있습니다. 많은 관심부탁드립니다.핀테크 포털의 정착을 위해 신규파트너를 모집하고 있습니다. 많은 관심부탁드립니다. 핀테크 포털의 정착을 위해 신규파트너를 모집하고 있습니다. 많은 관심부탁드립니다.
+								</div>
+							</div>
+						</div>
+						<div class="accordian-cont cont_wrap">
+							<a href="#none" class="btn_bar">
+								<span class="title">ARS 인증 안내ARS 인증 안내ARS 인증 안내ARS 인증 안내ARS 인증 안내</span>
+								<span class="date">2017.07.18</span>
+							</a>
+							<div class="detail_cont">
+								<div class="gray_box">
+									핀테크 포털의 정착을 위해 신규파트너를 모집하고 있습니다. 많은 관심부탁드립니다.핀테크 포털의 정착을 위해 신규파트너를 모집하고 있습니다. 많은 관심부탁드립니다.핀테크 포털의 정착을 위해 신규파트너를 모집하고 있습니다. 많은 관심부탁드립니다. 핀테크 포털의 정착을 위해 신규파트너를 모집하고 있습니다. 많은 관심부탁드립니다.
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- 결과 없을때 -->
+					<div class="not_result">검색 결과가 없습니다.</div>
+					<!--// 결과 없을때 -->
+				</div>
+				<!--// 아코디언 메뉴 -->
+			</div>
+		</div>
+	</ion-content>
+</ion-view>

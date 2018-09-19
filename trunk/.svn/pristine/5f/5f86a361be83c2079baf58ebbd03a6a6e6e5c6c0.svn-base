@@ -1,0 +1,83 @@
+ <ion-view title="dddddd">
+  	<ion-content scroll="false">
+		<HorizontalScrollView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			>
+			<FrameLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				>
+				<GridView
+			android:id="@+id/add_grid"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:columnWidth="160px"
+			android:horizontalSpacing="0dp"
+			android:listSelector="@drawable/grid_padding"
+			android:stretchMode="none"
+			android:verticalSpacing="0dp" >
+		</GridView>
+			</FrameLayout>
+		</HorizontalScrollView>
+
+  		<div style="width:100%;overflow-x:auto;">
+			<table cellspacing="0" cellpadding="0" border="0" style="width:200%; margin:5px 0; border-top:1px solid #dddfdf; border-right:1px solid #dddfdf;">
+				<colgroup>
+					<col style="width:85px;">
+					<col style="width:100px;">
+					<col style="width:85px;">
+					<col style="width:100px;">
+					<col style="width:85px;">
+					<col style="width:100px;">
+					<col style="width:85px;">
+					<col style="width:100px;">
+					<col style="width:100px;">
+					<col style="width:85px;">
+					<col style="width:100px;">
+					<col style="width:auto">
+				</colgroup>
+				<tbody>
+				<tr>
+					<th scope="row" style="padding:9px 7px; font-size:12px; border-right:1px solid #dddfdf; border-left:1px solid #dddfdf; border-bottom:1px solid #dddfdf;">
+						공인인증서
+					</th>
+					<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+						asgcn=홍길동-6832099,ou=HTS,ou=동양,ou=증권,o=SignKorea,c=KR
+					</td>
+					<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+						2342342
+					</td>
+					<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+						2342342
+					</td>
+					<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+						2342342
+					</td>
+					<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+						2342342
+					</td>
+					<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+						2342342
+					</td>
+					<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+						2342342
+					</td>
+					<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+						2342342
+					</td>
+					<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+						2342342
+					</td>
+					<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+						2342342
+					</td>
+					<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+						2342342
+					</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</ion-content>
+</ion-view>

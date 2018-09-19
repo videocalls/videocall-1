@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 자본시장 공동 핀테크 오픈플랫폼 구축
+* @FileName : FaqDAO.java
+* @Comment  : [FAQ]정보관리를 위한 SQL XML
+* @author   : 포털 유제량
+* @since    : 2016.05.02
+* @version  : 1.0
+* @see
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2016.05.02   유제량        최초생성
+-->
+
+<sqlMap namespace="kr.co.koscom.oppf.cmm.faq.service.impl.FaqDAO">
+  	<typeAlias alias="FaqVO" type="kr.co.koscom.oppf.cmm.faq.service.FaqVO"/>
+  	
+  	<!-- FAQ목록조회조건 -->
+  	<sql id="fromWhereAnd">
+	  	from com_faq_info a /* faq a */
+	  	where 1=1
+	  	and a.delete_date is null
+	  	and ifnull(date_format(now(), '%Y%m%d'), '') between a.faq_start_date and a.faq_expire_date  	  
+	    <isNotEmpty property="searchName">
+	        and upper(a.faq_title) like upper(concat('%',#searchName#,'%'))
+	    </isNotEmpty>
+	    <isNotEmpty property="searchKeyword">
+        <isEqual property="searchCondition" compareValue="sj" prepend="and">
+          a.faq_title like concat('%',#searchKeyword#,'%')
+        </isEqual>
+        <isEqual property="searchCondition" compareValue="cn" prepend="and">
+          a.faq_content like concat('%',#searchKeyword#,'%')
+        </isEqual>
+        <isEqual property="searchCondition" compareValue="sjcn" prepend="and">
+          (
+              a.faq_title like concat('%',#searchKeyword#,'%') or
+              a.faq_content like concat('%',#searchKeyword#,'%')
+          )
+        </isEqual>
+      </isNotEmpty>
+	    <isNotEmpty property="searchKind">
+          <isEqual property="searchKind" compareValue="spt" prepend="and">
+              a.faq_kind in ('G003001','G003002')
+          </isEqual>
+          <isEqual property="searchKind" compareValue="cpt" prepend="and">
+              a.faq_kind in ('G003001','G003003')
+          </isEqual>
+      </isNotEmpty>
+      <isEmpty property="searchKind" prepend="and">
+          a.faq_kind = 'G003001'
+      </isEmpty>
+  	</sql>
+
+    <!--
+     * @Method Name        : selectFaqListTotalCount
+     * @Method description : [FAQ목록:총갯수]정보를 조회한다.
+     * @param              : FaqVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="cmm.FaqDAO.selectFaqListTotalCount" parameterClass="FaqVO" resultClass="int">
+        select count(a.faq_seq) as totalCount
+        <include refid="fromWhereAnd"/>
+    </select>
+    
+    <!--
+     * @Method Name        : selectFaqList
+     * @Method description : [FAQ목록:목록]정보를 조회한다.
+     * @param              : FaqVO
+     * @return             : List<FaqVO>
+     * @throws             : Exception
+     -->
+    <select id="cmm.FaqDAO.selectFaqList" parameterClass="FaqVO" resultClass="FaqVO">
+        select 
+		     a.faq_seq              as faqSeq                                        /* 순번             */
+		    ,a.faq_kind             as faqKind                                       /* FAQ 노출       */
+		    ,a.faq_title            as faqTitle                                      /* 제목             */
+		    ,a.faq_content          as faqContent                                    /* 내용             */		    
+		    ,a.file_id              as fileId                                        /* 첨부파일 ID   */
+		    ,ifnull(date_format(a.delete_date, '%Y-%m-%d %H:%i'), '') as deleteDate  /* 삭제일시         */
+		    ,ifnull(date_format(a.create_date, '%Y-%m-%d %H:%i'), '') as createDate  /* 생성 일시        */
+		    ,ifnull(a.create_id,'') as createId                                      /* 생성 관리자      */
+		    ,ifnull(date_format(a.update_date, '%Y-%m-%d %H:%i'), '') as updateDate  /* 변경 일시        */
+		    ,ifnull(a.update_id,'') as updateId                                      /* 변경 관리자      */
+	    <include refid="fromWhereAnd"/>
+	    <include refid="CmmnFuncDAO.CmmnPaging"/>
+    </select>
+    
+    <!--
+     * @Method Name        : selectFaqDetail
+     * @Method description : [FAQ상세:상세]정보를 조회한다.
+     * @param              : FaqVO
+     * @return             : FaqVO
+     * @throws             : Exception
+     -->
+    <select id="cmm.FaqDAO.selectFaqDetail" parameterClass="FaqVO" resultClass="FaqVO">
+	    <![CDATA[
+	    select
+		     a.faq_seq              as faqSeq                                               /* 순번         */  
+		    ,a.faq_kind             as faqKind                                              /* FAQ 노출   */
+		    ,a.faq_title            as faqTitle                                             /* 제목         */
+		    ,a.faq_content          as faqContent                                           /* 내용         */ 
+		    ,ifnull(a.read_count,0) as readCount                                            /* 조회수       */     
+		    ,a.file_id              as fileId                                               /* 첨부파일 ID */  
+		    ,ifnull(date_format(a.delete_date, '%Y-%m-%d %H:%i'), '') as deleteDate         /* 삭제일시     */  
+		    ,ifnull(date_format(a.create_date, '%Y-%m-%d %H:%i'), '') as createDate         /* 생성 일시    */   
+		    ,ifnull(a.create_id,'') as createId                                             /* 생성 관리자  */  
+		    ,ifnull(date_format(a.update_date, '%Y-%m-%d %H:%i'), '') as updateDate         /* 변경 일시    */   
+		    ,ifnull(a.update_id,'') as updateId
+	    from com_faq_info a
+	    where 1=1
+	    ]]>
+	    and a.faq_seq = #faqSeq#
+    </select>
+    
+    <!--
+     * @Method Name        : selectFaqBeforeAfterInfo
+     * @Method description : [FAQ상세:이전글다음글]정보를 조회한다.
+     * @param              : FaqVO
+     * @return             : FaqVO
+     * @throws             : Exception
+     -->
+    <select id="cmm.FaqDAO.selectFaqBeforeAfterInfo" parameterClass="FaqVO" resultClass="FaqVO">
+        select 
+		     (select a.faq_seq   <include refid="fromWhereAnd"/> and a.faq_seq <![CDATA[>]]> #faqSeq# order by a.faq_seq asc limit 1) as beforeId
+		    ,(select a.faq_title <include refid="fromWhereAnd"/> and a.faq_seq <![CDATA[>]]> #faqSeq# order by a.faq_seq asc limit 1) as beforeSj
+		    ,(select a.faq_seq   <include refid="fromWhereAnd"/> and a.faq_seq <![CDATA[<]]> #faqSeq# order by a.faq_seq desc limit 1) as afterId
+		    ,(select a.faq_title <include refid="fromWhereAnd"/> and a.faq_seq <![CDATA[<]]> #faqSeq# order by a.faq_seq desc limit 1) as afterSj
+        from dual
+    </select>
+    
+    <!--
+     * @Method Name        : updateFaqReadCount
+     * @Method description : [FAQ목록:해당건]을 클릭 시 조회수 증가
+     * @param              : FaqVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="cmm.FaqDAO.updateFaqReadCount" parameterClass="FaqVO">
+	    update com_faq_info set
+	        read_count = ifnull(read_count,0)+1
+	    where 1=1
+	    and faq_seq = #faqSeq#
+    </update>
+    
+    <!--
+     * @Method Name        : selectReadCount
+     * @Method description : [FAQ목록:해당건]조회수 증가 후 조회수 취득
+     * @param              : FaqVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="cmm.FaqDAO.selectFaqReadCount" parameterClass="FaqVO" resultClass="int">
+	    select ifnull(read_count,0) as readCount 
+	    from com_faq_info
+	    where 1=1
+	    and faq_seq = #faqSeq#
+    </select>
+    
+    <!--
+     * @Method Name        : insertFaq
+     * @Method description : [FAQ목록:등록]을 한다.
+     * @param              : FaqVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="cmm.FaqDAO.insertFaq" parameterClass="FaqVO">
+        insert into com_faq_info(
+			 faq_seq             /* 순번         */
+			,faq_kind            /* FAQ 노출   */
+			,faq_title           /* 제목         */
+			,faq_content         /* 내용         */
+			,read_count          /* 조회수       */
+			,file_id             /* 첨부파일 ID */
+			,delete_date         /* 삭제일시     */
+			,create_date         /* 생성 일시    */
+			,create_id           /* 생성 관리자  */
+			,update_date         /* 변경 일시    */
+			,update_id           /* 변경 관리자  */
+	        )
+		     select 
+	         (select ifnull( max(cast(faq_seq as signed)), 0)+1 from com_faq_info)
+		    <isNotEmpty property="faq_kind">
+		    ,#faqKind#
+		    </isNotEmpty>
+		    <isNotEmpty property="faq_title">
+		    ,#faqTitle#
+		    </isNotEmpty>
+		    <isNotEmpty property="faq_content">
+	        ,#faqContent#
+	        </isNotEmpty>
+	        ,0
+		    <isNotEmpty property="file_id">
+	        ,#fileId#
+	        </isNotEmpty>	      
+		    ,null
+		    ,sysdate()
+		    ,#userId#
+		    ,sysdate()
+		    ,#userId#
+	    from dual      
+    </insert>
+    
+    <!--
+     * @Method Name        : updateFaq
+     * @Method description : [FAQ상세:수정]을 한다.
+     * @param              : FaqVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="cmm.FaqDAO.updateFaq" parameterClass="FaqVO">
+        update com_faq_info set
+	          update_date = sysdate()
+	         ,update_id = #userId#
+	        <isNotEmpty property="faq_kind">
+	         ,faq_kind = #faqKind#
+	        </isNotEmpty>
+	        <isNotEmpty property="faq_title">
+	         ,faq_title = #faqTitle#
+	        </isNotEmpty>
+	        <isNotEmpty property="faq_content">
+	         ,faq_content = #faqContent#
+	        </isNotEmpty>
+	        <isNotEmpty property="file_id">
+	         ,file_id = #fileId#
+	        </isNotEmpty>
+	    where 1=1
+	    and faq_seq = #faqSeq#
+    </update>
+    
+    <!--
+     * @Method Name        : deleteFaq
+     * @Method description : [FAQ상세:삭제]를 한다.
+     * @param              : FaqVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="cmm.FaqDAO.deleteFaq" parameterClass="FaqVO">
+        update com_faq_info set
+	         delete_date = sysdate()
+	        ,update_date = sysdate()
+	        ,update_id   = #userId#
+	    where 1=1
+	    and faq_seq = #faqSeq#
+    </update>
+    
+</sqlMap>

@@ -1,0 +1,63 @@
+<!-- saved from url=(0014)about:internet -->
+
+<OBJECT classid=CLSID:EC5D5118-9FDE-4A3E-84F3-C2B711740E70
+        codeBase="http://www.signkorea.com/SKCommAX.cab#version=9,9,0,5"
+        id=CertManX width=1 height=1>
+</OBJECT>
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+<script type="text/javascript" src="../app/library/json3.min.js"></script>
+<script type="text/javascript" src="../app/library/iecompatibility.js"></script>
+
+<script type="text/javascript" src="../app/vestsign.js"></script>
+<script type="text/javascript" src="../app/js/koscom.js"></script>
+<script type="text/javascript" src="../app/activexAdp.js"></script>
+
+<SCRIPT language=javascript>
+
+    // 발급데몬으로 (재)인가 후 리턴받은 데이터 입력
+    var pszRefNo = "403566";					// 참조번호
+    var pszAuthCode = "67482165520836435261";	// 인가코드
+
+    /* 모듈에서 제공하는 약관은 skip하고 홈페이지에서 따로 이용약관 게시 후 동의받아야함. (약관 skip 방법은 3번째 인자값에 NO_CPS 적용)*/
+    function Issue_skip() {
+        var CertManX;
+        
+        if(getCookieForActiveX() === "true"){
+            CertManX = loadActiveObject();
+        }else{
+            CertManX = ytMain;
+        }
+        
+        //BOOL CertManager_Issue(BSTR pszRefNo,BSTR pszAuthCode, BSTR pszUserID, BSTR pszPassword)
+        if(CertManX.doubleClickBlock(arguments.callee)) return;
+        CertManX.SetKeySaferMode(3);
+        CertManX.CertManager_Issue(pszRefNo, pszAuthCode, "NO_CPS", "", function (issue) {
+            if (issue == "") {
+                alert("CertManager_Issue 실패 : [" + CertManX.GetLastErrorCode() + "]" + CertManX.GetLastErrorMsg());
+                return;
+            }
+            alert("성공");
+        });
+    }
+</SCRIPT>
+<form name="form" method="post">
+    <BR>
+    <HR align="left" size="5" width="100%" noshade>
+    <FONT size="7">
+        <center> 인증서 발급</center>
+    </FONT>
+    <HR align="left" size="5" width="100%" noshade>
+    <BR>
+    <center>
+        <table width="50%" border="1">
+
+            <tr>
+                <td align="center" height="200">
+                    <input type=button onclick=Issue_skip() value="발급(약관 Skip)" style="width:250px;height:50"><br></td>
+            </tr>
+
+        </table>
+    </center>
+</form>

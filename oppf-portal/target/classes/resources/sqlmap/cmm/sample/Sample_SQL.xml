@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 자본시장 공동 핀테크 오픈플랫폼 구축
+* @FileName : SampleDAO.java
+* @Comment  : [샘플]정보관리를 위한 SQL XML
+* @author   : 포털 이환덕
+* @since    : 2016.04.28
+* @version  : 1.0
+* @see
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2015.09.24   이환덕        최초생성
+-->
+
+<sqlMap namespace="kr.co.koscom.oppf.sample.service.impl.SampleDAO">
+  	<typeAlias alias="SampleVO" type="kr.co.koscom.oppf.sample.service.SampleVO"/>
+  	
+  	<!-- 샘플목록조회조건 -->
+  	<sql id="fromWhereAnd">
+  	  FROM test A
+  	  WHERE 1=1
+  	  AND A.use_yn = 'Y'
+      <isNotEmpty property="searchName">
+         AND UPPER(A.name) LIKE UPPER(concat('%',#searchName#,'%'))
+      </isNotEmpty>
+      <isNotEmpty property="searchState">
+         AND UPPER(A.state) LIKE UPPER(concat('%',#searchState#,'%'))
+      </isNotEmpty>
+      <isNotEmpty property="searchCountry">
+         AND UPPER(A.country) LIKE UPPER(concat('%',#searchCountry#,'%'))
+      </isNotEmpty>
+      <isNotEmpty property="searchName">
+         AND UPPER(A.name) LIKE UPPER(concat('%',#searchName#,'%'))
+      </isNotEmpty>
+      <isNotEmpty property="searchState">
+         AND UPPER(A.state) LIKE UPPER(concat('%',#searchState#,'%'))
+      </isNotEmpty>
+      <isNotEmpty property="searchCountry">
+         AND UPPER(A.country) LIKE UPPER(concat('%',#searchCountry#,'%'))
+      </isNotEmpty>
+  	</sql>
+
+    <!--
+     * @Method Name        : selectSampleListTotalCount
+     * @Method description : [샘플목록:총갯수]정보를 조회한다.
+     * @param              : SampleVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="SampleDAO.selectSampleListTotalCount" parameterClass="SampleVO" resultClass="int">
+      SELECT COUNT(A.id) AS totalcount
+      <include refid="fromWhereAnd"/>
+    </select>
+    
+    <!--
+     * @Method Name        : selectSampleList
+     * @Method description : [샘플목록:목록]정보를 조회한다.
+     * @param              : SampleVO
+     * @return             : List<SampleVO>
+     * @throws             : Exception
+     -->
+    <select id="SampleDAO.selectSampleList" parameterClass="SampleVO" resultClass="SampleVO">
+      SELECT 
+       A.id
+      ,A.name
+      ,A.state
+      ,A.country
+      ,A.use_yn AS useYn
+      ,IFNULL(A.read_count,0) AS readCount
+      ,IFNULL(date_format(A.create_date,'%Y/%m/%d'),'') AS createDate
+      ,IFNULL(A.create_id,'') AS createId
+      ,IFNULL(date_format(A.update_date,'%Y/%m/%d'),'') AS updateDate
+      ,IFNULL(A.update_id,'') AS updateId
+      <include refid="fromWhereAnd"/>
+      <include refid="CmmnFuncDAO.CmmnPaging"/>
+    </select>
+    
+    <!--
+     * @Method Name        : selectSampleDetail
+     * @Method description : [샘플상세:상세]정보를 조회한다.
+     * @param              : SampleVO
+     * @return             : SampleVO
+     * @throws             : Exception
+     -->
+    <select id="SampleDAO.selectSampleDetail" parameterClass="SampleVO" resultClass="SampleVO">
+      <![CDATA[
+      SELECT 
+       A.id
+      ,A.name
+      ,A.state
+      ,A.country
+      ,A.use_yn AS useYn
+      ,IFNULL(A.read_count,0) AS readCount
+      ,IFNULL(date_format(A.create_date,'%Y/%m/%d%r'),'') AS createDate
+      ,IFNULL(A.create_id,'') AS createId
+      ,IFNULL(date_format(A.update_date,'%Y/%m/%d%r'),'') AS updateDate
+      ,IFNULL(A.update_id,'') AS updateId
+      FROM test A
+      WHERE 1=1
+      ]]>
+      AND A.id = #detailId#
+    </select>
+    
+    <!--
+     * @Method Name        : selectSampleBeforeAfterInfo
+     * @Method description : [샘플상세:이전글다음글]정보를 조회한다.
+     * @param              : SampleVO
+     * @return             : SampleVO
+     * @throws             : Exception
+     -->
+    <select id="SampleDAO.selectSampleBeforeAfterInfo" parameterClass="SampleVO" resultClass="SampleVO">
+      SELECT 
+       (SELECT A.id   <include refid="fromWhereAnd"/> AND A.id <![CDATA[>]]> #detailId# ORDER BY A.id ASC LIMIT 1) AS beforeId
+      ,(SELECT A.name <include refid="fromWhereAnd"/> AND A.id <![CDATA[>]]> #detailId# ORDER BY A.id ASC LIMIT 1) AS beforeSj
+      ,(SELECT A.id   <include refid="fromWhereAnd"/> AND A.id <![CDATA[<]]> #detailId# ORDER BY A.id DESC LIMIT 1) AS afterId
+      ,(SELECT A.name <include refid="fromWhereAnd"/> AND A.id <![CDATA[<]]> #detailId# ORDER BY A.id DESC LIMIT 1) AS afterSj
+      FROM dual
+    </select>
+    
+    <!--
+     * @Method Name        : updateSampleReadCount
+     * @Method description : [샘플목록:해당건]을 클릭 시 조회수 증가
+     * @param              : SampleVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="SampleDAO.updateSampleReadCount" parameterClass="SampleVO">
+      UPDATE test SET
+        read_count = IFNULL(read_count,0)+1
+      WHERE 1=1
+      AND id = #detailId#
+    </update>
+    
+    <!--
+     * @Method Name        : selectReadCount
+     * @Method description : [샘플목록:해당건]조회수 증가 후 조회수 취득
+     * @param              : SampleVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="SampleDAO.selectSampleReadCount" parameterClass="SampleVO" resultClass="int">
+      SELECT IFNULL(read_count,0) AS read_count 
+      FROM test
+      WHERE 1=1
+      AND id = #detailId#
+    </select>
+    
+    <!--
+     * @Method Name        : insertSample
+     * @Method description : [샘플목록:등록]을 한다.
+     * @param              : SampleVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="SampleDAO.insertSample" parameterClass="SampleVO">
+      INSERT INTO test(
+        name
+       ,state
+       ,country
+       ,use_yn
+       ,read_count
+       ,create_date
+       ,create_id
+       ,update_date
+       ,update_id
+      )VALUES(
+        #insertName#
+       ,#insertState#
+       ,#insertCountry#
+       ,'Y'
+       ,0
+       ,SYSDATE()
+       ,'tester'
+       ,SYSDATE()
+       ,'tester'
+      )
+    </insert>
+    
+    <!--
+     * @Method Name        : updateSample
+     * @Method description : [샘플상세:수정]을 한다.
+     * @param              : SampleVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="SampleDAO.updateSample" parameterClass="SampleVO">
+      UPDATE test SET
+          update_date = SYSDATE()
+         ,update_id = 'tester'
+        <isNotNull property="updateName">
+         ,name = #updateName#
+        </isNotNull>
+        <isNotNull property="updateState">
+         ,state = #updateState#
+        </isNotNull>
+        <isNotNull property="updateCountry">
+         ,country = #updateCountry#
+        </isNotNull>
+      WHERE 1=1
+      AND id = #updateId#
+    </update>
+    
+    <!--
+     * @Method Name        : deleteSample
+     * @Method description : [샘플상세:삭제]를 한다.
+     * @param              : SampleVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="SampleDAO.deleteSample" parameterClass="SampleVO">
+      UPDATE test SET
+          use_yn = 'N'
+      WHERE 1=1
+      AND id = #deleteId#
+    </update>
+    
+</sqlMap>

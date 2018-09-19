@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.setting.service.impl.MenuManageDAO">
+
+  	<typeAlias alias="MenuManageVO" type="kr.co.koscom.oppf.apt.setting.service.MenuManageVO"/>
+  	
+  	
+	<!--
+     * @Method Name        : apt.MenuManageDAO.selectMenuManageList
+     * @Method description : 메뉴 목록을 조회한다.
+     * @param              : MenuManageVO
+     * @return             : MenuManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.MenuManageDAO.selectMenuManageList" parameterClass="MenuManageVO" resultClass="MenuManageVO">
+		select  a.system_kind_id      as systemKindId,
+		        a.menu_id             as menuId,
+		        a.parent_menu_id      as parentMenuId,
+		        a.menu_name           as menuName,
+		        a.menu_type           as menuType,
+		        (
+		            select code_seq
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.menu_type
+		        )                     as menuTypeOrder,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.menu_type
+		        )                     as menuTypeName,
+		        a.menu_order          as menuOrder,
+		        a.menu_url            as menuUrl,
+		        a.login_yn            as loginYn,
+		        a.mobile_yn           as mobileYn,
+		        a.use_yn              as useYn,
+		        a.menu_id             as treeMenuId,
+		        a.parent_menu_id      as treeParentMenuId,
+		        case when ifnull(c.menu_id, '') != '' then 
+		            '3'
+		        else
+		            case when ifnull(b.menu_id, '') != '' then 
+		                '2'
+		            else
+		                '1'
+		            end
+		        end as treeLvl,
+		        cast(
+		            case when ifnull(c.menu_id, '') != '' then 
+		                concat(ifnull(c.menu_order, 0), ifnull(b.menu_order, 0), ifnull(a.menu_order, 0))
+		            else
+		                case when ifnull(b.menu_id, '') != '' then 
+		                    concat(ifnull(b.menu_order, 0), ifnull(a.menu_order, 0), 0)
+		                else
+		                    concat(ifnull(a.menu_order, 0), 0, 0)
+		                end
+		            end 
+		        as UNSIGNED) as treeOrder
+		from(
+		    select  system_kind_id,
+		            menu_id,
+		            parent_menu_id,
+		            menu_name,
+		            menu_type,
+		            menu_order,
+		            menu_url,
+		            login_yn,
+		            mobile_yn,
+		            use_yn
+		    from com_menu_info
+		    where system_kind_id = #searchSystemKindId#
+		) a 
+		left join com_menu_info as b on b.system_kind_id = a.system_kind_id and b.menu_id = a.parent_menu_id
+		left join com_menu_info as c on c.system_kind_id = b.system_kind_id and c.menu_id = b.parent_menu_id
+		order by menuTypeOrder, treeOrder    	 		
+    </select>
+    
+    <!--
+     * @Method Name        : apt.MenuManageDAO.selectMenuManageDtl
+     * @Method description : 메뉴의 상세정보를 조회한다.
+     * @param              : MenuManageVO
+     * @return             : MenuManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.MenuManageDAO.selectMenuManageDtl" parameterClass="MenuManageVO" resultClass="MenuManageVO">
+		select  system_kind_id      as systemKindId,
+		        menu_id             as menuId,  
+		        parent_menu_id      as parentMenuId,
+		        menu_name           as menuName,
+		        menu_type           as menuType,
+		        menu_order          as menuOrder,
+		        menu_url            as menuUrl,
+		        login_yn            as loginYn,
+		        mobile_yn           as mobileYn,
+		        use_yn              as useYn,
+		        date_format(create_date, '%Y-%m-%d %H:%i')    as createDate,
+		        date_format(update_date, '%Y-%m-%d %H:%i')    as updateDate
+		from com_menu_info
+		where system_kind_id = #searchSystemKindId#
+		and menu_id = #searchMenuId#    
+    </select>
+    
+    <!--
+     * @Method Name        : apt.MenuManageDAO.selectMenuId
+     * @Method description : 메뉴 ID를 조회한다.
+     * @param              : MenuManageVO
+     * @return             : MenuManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.MenuManageDAO.selectMenuId" parameterClass="MenuManageVO" resultClass="MenuManageVO">
+		select  ifnull((
+		    select  cast(case
+		                when #treeLvl# = '1' then 
+		                    lpad(ifnull(max(cast(menu_id as signed)), 0) + 1, 2, '0')
+		                else
+		                    concat(parent_menu_id,
+		                        lpad(
+		                            ifnull(max(cast(right(menu_id, 3) as signed)), 0) + 1
+		                        , 3, '0')
+		                    )   
+		            end as char ) as menuId
+		    from com_menu_info
+		    where system_kind_id = #systemKindId#
+		    <!-- 1lvl -->
+	        <isEqual property="treeLvl" compareValue="1" prepend="and">
+	            length(menu_id) = 2
+	        </isEqual>
+	        <!-- 1lvl other -->
+	        <isNotEqual property="treeLvl" compareValue="1" prepend="and">
+	            parent_menu_id = #parentMenuId#
+	        </isNotEqual>
+		    ) , 
+		    concat(#parentMenuId#, '001')
+		) as menuId
+    </select>
+    
+    <!--
+     * @Method Name        : apt.MenuManageDAO.insertMenu
+     * @Method description : 메뉴 등록
+     * @param              : MenuManageVO
+     * @return             : string
+     * @throws             : Exception
+     -->
+    <insert id="apt.MenuManageDAO.insertMenu" parameterClass="MenuManageVO">
+        insert into com_menu_info(
+			system_kind_id,
+			menu_id,
+			parent_menu_id,
+			menu_name,
+			menu_type,
+			menu_order,
+			menu_url,
+			login_yn,
+			mobile_yn,
+			use_yn,
+			create_date,
+			create_id,
+			update_date,
+			update_id            
+        )values(
+            #systemKindId#,
+            #menuId#,
+            #parentMenuId#,
+            #menuName#,
+            #menuType#,
+            #menuOrder#,
+            #menuUrl#,
+            #loginYn#,
+            #mobileYn#,
+            #useYn#,
+            sysdate(),
+            #createId#,
+            sysdate(),
+            #createId#
+        )
+    </insert>
+    
+    <!--
+     * @Method Name        : apt.MenuManageDAO.updateMenu
+     * @Method description : 메뉴 수정
+     * @param              : MenuManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="apt.MenuManageDAO.updateMenu" parameterClass="MenuManageVO">
+        update com_menu_info set
+            menu_name = #menuName#,
+            menu_type = #menuType#,
+            menu_order = #menuOrder#,
+            menu_url = #menuUrl#,
+            login_yn = #loginYn#,
+            mobile_yn = #mobileYn#,
+            use_yn = #useYn#,
+            update_date = sysdate(),
+            update_id = #createId#
+        where system_kind_id = #systemKindId#
+        and menu_id = #menuId#
+    </update>
+    
+    <!--
+     * @Method Name        : apt.MenuManageDAO.deleteMenu
+     * @Method description : 메뉴 삭제
+     * @param              : MenuManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <delete id="apt.MenuManageDAO.deleteMenu" parameterClass="MenuManageVO">
+		delete a
+		from com_menu_info as a
+		join (
+		    select a.system_kind_id, a.menu_id
+		    from(
+		        select  system_kind_id,
+		                menu_id,
+		                parent_menu_id
+		        from com_menu_info
+		        where system_kind_id = #systemKindId#
+		    ) a 
+		    left join com_menu_info as b on b.system_kind_id = a.system_kind_id and b.menu_id = a.parent_menu_id
+		    left join com_menu_info as c on c.system_kind_id = b.system_kind_id and c.menu_id = b.parent_menu_id
+		    where (
+		        a.menu_id = #menuId# or
+		        b.menu_id = #menuId# or
+		        c.menu_id = #menuId#
+		    )
+		) b
+		on b.system_kind_id = a.system_kind_id and b.menu_id = a.menu_id
+    </delete>
+        
+</sqlMap>

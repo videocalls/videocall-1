@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+
+<configuration scan="true" scanPeriod="30 seconds" >
+
+    <include resource="config/logbackConf-${spring.profiles.active:-local}.xml" />
+  <property name="LOG_PATH" value="${catalina.home}" />
+    
+ 
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+          <Pattern>
+            [%d{yyyy-MM-dd HH:mm:ss.SSS, GMT+9:00}] %-5level [%thread] %logger{36}[%method:%line] - %msg%n
+          </Pattern>
+        </layout>
+    </appender>
+  
+    <appender name="ROLLING-FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <encoder>
+            <pattern>[%d{yyyy-MM-dd HH:mm:ss.SSS, GMT+9:00}] %-5level [%thread] %logger{36}[%method:%line] - %msg%n</pattern>
+        </encoder>
+        <file>${catalina.home}/logs/catalina.out</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${catalina.home}/logs/%d{yyyy,aux}/%d{MM,aux}/catalina.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>100</maxHistory><!-- 100 일 이후 삭제 -->
+        </rollingPolicy>
+    </appender>
+ 
+    <logger name="org.springframework" level="info" additivity="false">
+        <appender-ref ref="${APPENDER_TYPE}" />
+    </logger>
+    
+    <!-- Application Loggers -->
+    <logger name="kr.co.koscom.oppfm" level="${OPPF_LEVEL}" additivity="false">
+        <appender-ref ref="${APPENDER_TYPE}" />
+    </logger>
+    
+    
+    
+    <root level="${ROOT_LEVEL}">
+        <appender-ref ref="${APPENDER_TYPE}" />
+    </root>
+ 
+</configuration>

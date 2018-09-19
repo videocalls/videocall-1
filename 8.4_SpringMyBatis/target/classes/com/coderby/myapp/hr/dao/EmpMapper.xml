@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.coderby.myapp.hr.dao.IEmpRepository">
+	<resultMap id="ClientMap" type="com.coderby.myapp.hr.model.ClientVO">
+		<result property="clntid" column="CLNT_ID" />
+		<result property="clntci" column="CLNT_CI" />
+		<result property="clntemail" column="CLNT_EMAIL" />
+		<result property="pwd" column="PWD" />
+		<result property="name" column="NAME" />
+		<result property="dob" column="DOB" />
+		<result property="gender" column="GENDER" />
+		<result property="hpno" column="HP_NO" />
+		<result property="smsprslyn" column="SMS_PRSL_YN" />
+		<result property="postno" column="POST_NO" />
+		<result property="dtladdr" column="DTL_ADDR" />
+		<result property="ip" column="IP" />
+		<result property="newregdate" column="NEW_REG_DATE" />
+		<result property="chgdate" column="CHG_DATE" />
+		<result property="outyn" column="OUT_YN" />
+		<result property="outdate" column="OUT_DATE" />
+	</resultMap>
+
+
+	<select id="getClientCount" parameterType="int" resultType="int">
+		SELECT COUNT(*) FROM CLNT
+		<if test="email != null">
+			 WHERE EMAIL = #{email}
+		</if>
+	</select>
+	
+	<select id="getClientList" resultMap="ClientMap">
+		SELECT * FROM CLNT
+	</select>
+	
+	<select id="getClientInfo" parameterType="int" resultType="com.coderby.myapp.hr.model.ClientVO">
+		SELECT 	CLNT_ID 	AS 	clntid,
+				CLNT_CI		AS 	clntci,
+				CLNT_EMAIL 	AS 	clntemail,
+				PWD 		AS 	pwd,
+				NAME		AS	name,
+				DOB			AS	dob,
+				GENDER		AS	gender,
+				HP_NO		AS	hpno,
+				SMS_PRSL_YN	AS	smsprslyn,
+				POST_NO		AS	postno,
+				DTL_ADDR 	AS dtladdr,
+				IP 			AS ip,
+				NEW_REG_DATE AS newregdate,
+				CHG_DATE 	AS chgdate,
+				OUT_YN 		AS outyn,
+				OUT_DATE 	AS outdate				
+		FROM CLNT WHERE CLNT_ID = #{clntid}
+	</select>
+
+	<update id="updateClient" parameterType="com.coderby.myapp.hr.model.ClientVO">
+		UPDATE CLNT 
+		SET CLNT_CI=#{clntci},CLNT_EMAIL=#{clntemail},PWD=#{pwd},NAME=#{name},DOB=#{dob},GENDER=#{gender},HP_NO=#{hpno},SMS_PRSL_YN=#{smsprslyn},POST_NO=#{postno},
+			DTL_ADDR=#{dtladdr},IP=#{ip},NEW_REG_DATE=#{newregdate},CHG_DATE=sysdate,OUT_YN=#{outyn},OUT_DATE=#{outdate} WHERE CLNT_ID=#{clntid}
+	</update>
+	
+	<insert id="insertClient" parameterType="com.coderby.myapp.hr.model.ClientVO">
+		INSERT INTO CLNT (CLNT_ID, CLNT_CI,CLNT_EMAIL,PWD,NAME,DOB,GENDER,HP_NO,SMS_PRSL_YN,POST_NO,DTL_ADDR,IP,NEW_REG_DATE,CHG_DATE,OUT_YN,OUT_DATE)
+		VALUES (#{clntid},#{clntci},#{clntemail},#{pwd},#{name},#{dob},#{gender},#{hpno},#{smsprslyn},#{postno},#{dtladdr},#{ip},sysdate,sysdate,#{outyn},sysdate)
+
+	</insert>
+	
+	<delete id="deleteClient">
+		DELETE FROM CLNT 
+		WHERE CLNT_ID=#{clntid}
+	</delete>
+<!-- 	
+	<delete id="deleteHistory" parameterType="int">
+		DELETE FROM clnt_HISTORY 
+		WHERE CLNT_ID=#{clntid}
+	</delete>
+	 -->
+
+	<resultMap id="empMap" type="com.coderby.myapp.hr.model.EmpVO">
+		<result property="employeeId" column="EMPLOYEE_ID" />
+		<result property="firstName" column="FIRST_NAME" />
+		<result property="lastName" column="LAST_NAME" />
+		<result property="email" column="EMAIL" />
+		<result property="phoneNumber" column="PHONE_NUMBER" />
+		<result property="hireDate" column="HIRE_DATE" />
+		<result property="jobId" column="JOB_ID" />
+		<result property="salary" column="SALARY" />
+		<result property="commissionPct" column="COMMISSION_PCT" />
+		<result property="managerId" column="MANAGER_ID" />
+		<result property="departmentId" column="DEPARTMENT_ID" />
+	</resultMap>
+
+	<!-- 
+	<select id="getEmpCount" resultType="int">
+		SELECT COUNT(*) FROM EMPLOYEES
+	</select>
+	-->
+	
+	<select id="getEmpCount" parameterType="int" resultType="int">
+		SELECT COUNT(*) FROM EMPLOYEES
+		<if test="deptid != null">
+			 WHERE DEPARTMENT_ID = #{deptid}
+		</if>
+	</select>
+	
+	<select id="getEmpList" resultMap="empMap">
+		SELECT * FROM EMPLOYEES
+	</select>
+	
+	<select id="getEmpInfo" parameterType="int" resultType="com.coderby.myapp.hr.model.EmpVO">
+		SELECT 	EMPLOYEE_ID 	AS 	employeeId,
+				FIRST_NAME 		AS 	firstName,
+				LAST_NAME 		AS 	lastName,
+				EMAIL 			AS 	email,
+				PHONE_NUMBER 	AS 	phoneNumber,
+				HIRE_DATE		AS	hireDate,
+				JOB_ID			AS	jobId,
+				SALARY			AS	salary,
+				COMMISSION_PCT	AS	commissionPct,
+				MANAGER_ID		AS	managerId,
+				DEPARTMENT_ID	AS	departmentId
+		FROM EMPLOYEES WHERE EMPLOYEE_ID = #{empid}
+	</select>
+
+	<update id="updateEmp" parameterType="com.coderby.myapp.hr.model.EmpVO">
+		UPDATE EMPLOYEES 
+		SET FIRST_NAME=#{firstName}, LAST_NAME=#{lastName}, SALARY=#{salary} 
+		WHERE EMPLOYEE_ID=#{employeeId}
+	</update>
+	
+	<insert id="insertEmp" parameterType="com.coderby.myapp.hr.model.EmpVO">
+		INSERT INTO EMPLOYEES (
+			EMPLOYEE_ID, FIRST_NAME, LAST_NAME, EMAIL, PHONE_NUMBER,
+			HIRE_DATE, JOB_ID, SALARY, COMMISSION_PCT, MANAGER_ID, DEPARTMENT_ID)
+		VALUES (
+			#{employeeId}, #{firstName}, #{lastName}, #{email}, #{phoneNumber},
+			SYSDATE, #{jobId}, #{salary}, #{commissionPct}, #{managerId}, #{departmentId})
+	</insert>
+	
+	<delete id="deleteEmp">
+		DELETE FROM EMPLOYEES 
+		WHERE EMPLOYEE_ID=#{empid} AND EMAIL=#{email}
+	</delete>
+	
+	<delete id="deleteJobHistory" parameterType="int">
+		DELETE FROM JOB_HISTORY 
+		WHERE EMPLOYEE_ID=#{empid}
+	</delete>
+	
+	<select id="getAllJobId" resultType="hashmap">
+		SELECT JOB_ID AS "jobId", JOB_TITLE AS "title" FROM JOBS
+	</select>
+	
+	<select id="getAllManagerId" resultType="hashmap">
+		SELECT 
+			D.MANAGER_ID AS "managerId", 
+			E.FIRST_NAME AS "firstName" 
+		FROM DEPARTMENTS D JOIN EMPLOYEES E 
+			ON D.MANAGER_ID = E.EMPLOYEE_ID
+		ORDER BY D.MANAGER_ID
+	</select>
+	
+	<select id="getAllDeptId" resultType="hashmap">
+		SELECT 
+			DEPARTMENT_ID AS "departmentId", 
+			DEPARTMENT_NAME AS "departmentName" 
+		FROM DEPARTMENTS
+	</select>
+
+</mapper>

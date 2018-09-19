@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 자본시장 공동 핀테크 오픈플랫폼 구축
+* @FileName : SampleDAO.java
+* @Comment  : [샘플]정보관리를 위한 SQL XML
+* @author   : 포털 이환덕
+* @since    : 2016.04.28
+* @version  : 1.0
+* @see
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2015.09.24   이환덕        최초생성
+-->
+
+<sqlMap namespace="kr.co.koscom.oppf.sample.service.impl.SampleDAO2">
+    <select id="SampleDAO2.selectSampleReadCount" resultClass="int">
+      select count(*) from cmsorganization
+    </select>
+
+</sqlMap>

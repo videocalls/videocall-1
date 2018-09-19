@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="ko">
+<head>
+	<title>koscom OpenAPI Platform 통합관리시스템</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="stylesheet" href="../../css/apt/import.css">
+	<!-- IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	  <script src="../../js/cmm/html5shiv.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="../../js/cmm/jquery-1.11.3.min.js"></script>
+
+	<script type="text/javascript" src="../../js/apt/common_pub.js"></script>
+</head>
+
+<body>
+	<section class="pop_wrap">
+		<div class="tb_write1">
+			<table>
+				<caption>Initiator ID, Initiator IP 정보</caption>
+				<colgroup>
+					<col style="width:36%;">
+					<col style="width:64%;">
+				</colgroup>
+				<tbody>
+				<tr>
+					<th scope="row">Initiator ID</th>
+					<td>S000001</td>
+				</tr>
+				<tr>
+					<th scope="row">Initiator IP</th>
+					<td>111.222.333.444</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<p class="amount mt10">총 <em>99999</em> 건</p>
+	   
+		<div class="tb_write1">
+			<table>
+				<caption>기업명, 기업코드, CompID</caption>
+				<colgroup>
+					<col style="width:36%;">
+					<col style="width:32%;">
+					<col style="width:32%;">
+				</colgroup>
+				<thead>
+					<tr>
+						<th scope="col">기업명</th>
+						<th scope="col">기업코드</th>
+						<th scope="col">CompID</th>
+					</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td></td>
+					<td></td>
+					<td></td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="btn_type3">
+			<span class="btn_gray1"><a href="#none">확인</a></span>
+		</div>
+		<!-- // btn_type3 -->
+		
+	</section>
+	<!-- // content -->
+		</div>
+	</article>
+	<!-- // container -->
+</body>
+</html>

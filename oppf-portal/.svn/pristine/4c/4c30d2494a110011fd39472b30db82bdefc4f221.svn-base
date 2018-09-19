@@ -1,0 +1,229 @@
+<!-- saved from url=(0014)about:internet -->
+
+<OBJECT classid=CLSID:EC5D5118-9FDE-4A3E-84F3-C2B711740E70
+        codeBase="http://www.signkorea.com/SKCommAX.cab#version=9,9,0,5"
+        id=CertManX width=1 height=1>
+</OBJECT>
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+<script type="text/javascript" src="../app/library/json3.min.js"></script>
+<script type="text/javascript" src="../app/library/iecompatibility.js"></script>
+
+<script type="text/javascript" src="../app/vestsign.js"></script>
+<script type="text/javascript" src="../app/js/koscom.js"></script>
+<script type="text/javascript" src="../app/activexAdp.js"></script>
+
+<SCRIPT language=javascript>
+    var i = 0;
+    function idpwsign() {
+        if (i > 4) {
+            alert("비밀번호 입력횟수 초과");
+            return;
+        }
+
+        var CertManX;
+        var dn = "";
+        var plaintext = "testplain";
+
+
+        if(getCookieForActiveX() === "true"){
+            CertManX = loadActiveObject();
+        }else{
+            CertManX = ytMain;
+        }
+
+        if (CertManX.doubleClickBlock(arguments.callee)) return;
+        CertManX.CertServiceSetup(function(result){
+            if(result == ""){
+                var errorCode = CertManX.GetLastErrorCode();
+                if(errorCode == 90000){
+                    alert("activeX로 실행됩니다.");
+                    return;
+                }
+                if(errorCode == 90001 || errorCode == 90002){
+                    alert("모듈 업데이트 필요");
+                    return;
+                }
+                else{
+                    alert(errorCode + "//" + CertManX.GetLastErrorMsg());
+                    return;
+                }
+            }
+
+            CertManX.SetDeviceOrder("HRUS"); // 인증서 우선 검색 순위
+            CertManX.SetPasswordEncMode(1 + 16); // 패스워드 ENC 모드
+            CertManX.SetExipreCheckSkip(0); // 인증서 만료 안내창
+
+            CertManX.SetDeviceViewOrder("RUSH"); //저장매체 이미지 순서
+            // CertManX.SetPolicyFilter(1+16, "");  //인증서 정책 필터
+
+            CertManX.SetWebAccMode(1);           //장애인 웹접근성
+
+            CertManX.SetScanByDialogChoiceMode(0); //저장매체 선택시 인증서 검색
+            CertManX.SetLanguageMode(0); //모듈 언어 설정
+
+            //CertManX.SetLogoFile("");  //선택창 로고
+
+            CertManX.SetKeySaferMode(1);         // 키보드보안모듈 연동
+            CertManX.SetWrongPasswordLimit(1);   // 패스워드 입력제한
+            CertManX.UnSetMatchedContext(function () {
+                CertManX.SetMatchedContextExt("", "", "", 256 + 0 + 1, function (dn) {
+
+                    if (dn == "") {
+                        if (CertManX.GetLastErrorCode() == 2417) {
+                            i++;
+                            alert("비밀번호 오류 [" + i + "회]");
+                            //sign();
+                            return;
+                        }
+                        else {
+                            alert("SetMatchedContextExt 실패 : [" + CertManX.GetLastErrorCode() + "]" + CertManX.GetLastErrorMsg());
+                            i = 0;
+                            return;
+                        }
+                    }
+                    i = 0;
+
+                    //BSTR SignDataB64(BSTR pPassword, BSTR pPlainText, long mode)
+                    CertManX.SignDataB64("", plaintext, 0, function (signdata) {
+                        if (signdata == "") {
+                            alert("SignDataB64 실패 : [" + CertManX.GetLastErrorCode() + "]" + CertManX.GetLastErrorMsg());
+                            return;
+                        }
+                        //form.t_signdata1.value = CertManX.RemoveLF(signdata);
+                        form.t_signdata2.value = signdata;
+                    });
+                });
+
+            }); // 선택정보 초기화
+        });
+    }
+
+    function devTest() {
+        if (i > 4) {
+            alert("비밀번호 입력횟수 초과");
+            return;
+        }
+
+        var CertManX;
+        var dn = "";
+        var plaintext = "testplain";
+
+
+        if(getCookieForActiveX() === "true"){
+            CertManX = loadActiveObject();
+        }else{
+            CertManX = ytMain;
+        }
+
+        if (CertManX.doubleClickBlock(arguments.callee)) return;
+        CertManX.CertServiceSetup(function(result){
+            if(result == ""){
+                var errorCode = CertManX.GetLastErrorCode();
+                if(errorCode == 90000){
+                    alert("activeX로 실행됩니다.");
+                    return;
+                }
+                if(errorCode == 90001 || errorCode == 90002){
+                    alert("모듈 업데이트 필요");
+                    return;
+                }
+                else{
+                    alert(errorCode + "//" + CertManX.GetLastErrorMsg());
+                    return;
+                }
+            }
+
+            CertManX.SetDeviceOrder("HRUS"); // 인증서 우선 검색 순위
+            CertManX.SetPasswordEncMode(1 + 16); // 패스워드 ENC 모드
+            CertManX.SetExipreCheckSkip(0); // 인증서 만료 안내창
+
+            CertManX.SetDeviceViewOrder("RUSH"); //저장매체 이미지 순서
+            // CertManX.SetPolicyFilter(1+16, "");  //인증서 정책 필터
+
+            CertManX.SetWebAccMode(1);           //장애인 웹접근성
+
+            CertManX.SetScanByDialogChoiceMode(0); //저장매체 선택시 인증서 검색
+            CertManX.SetLanguageMode(0); //모듈 언어 설정
+
+            //CertManX.SetLogoFile("");  //선택창 로고
+
+            CertManX.SetKeySaferMode(3);         // 키보드보안모듈 연동
+            CertManX.SetWrongPasswordLimit(1);   // 패스워드 입력제한
+            CertManX.UnSetMatchedContext(function () {
+                CertManX.SetMatchedContextExt("", "", "", 256 + 16 + 1, function (dn) {
+
+                    if (dn == "") {
+                        if (CertManX.GetLastErrorCode() == 2417) {
+                            i++;
+                            alert("비밀번호 오류 [" + i + "회]");
+                            //sign();
+                            return;
+                        }
+                        else {
+                            alert("SetMatchedContextExt 실패 : [" + CertManX.GetLastErrorCode() + "]" + CertManX.GetLastErrorMsg());
+                            i = 0;
+                            return;
+                        }
+                    }
+                    i = 0;
+
+                    //BSTR SignDataB64(BSTR pPassword, BSTR pPlainText, long mode)
+                    CertManX.SignDataB64("", plaintext, 0, function (signdata) {
+                        if (signdata == "") {
+                            alert("SignDataB64 실패 : [" + CertManX.GetLastErrorCode() + "]" + CertManX.GetLastErrorMsg());
+                            return;
+                        }
+                        //form.t_signdata1.value = CertManX.RemoveLF(signdata);
+                        form.t_signdata2.value = signdata;
+                    });
+                });
+
+            }); // 선택정보 초기화
+        });
+    }
+
+
+</SCRIPT>
+<form name="form" method="post">
+    <BR>
+    <HR align="center" size="5" width="100%" noshade>
+    <FONT size="7">
+        <center> 전자서명</center>
+    </FONT>
+    <HR align="center" size="5" width="100%" noshade>
+    <BR>
+
+    <table width="50%" border="1" align="center">
+        <tr>
+            <td>
+                <BR>
+                <BR>
+                <center><b>&nbsp아이디&nbsp</b><INPUT type="text" name="t_id" value="test" style="width:200">
+                    <BR>
+                    <BR>
+                    <BR>
+                    <b>&nbsp비밀번호&nbsp</b><INPUT type="password" name="t_pw" style="width:200">
+                    <BR>
+                    <BR>
+                    <BR>
+                    <b>&nbsp인증서비밀번호&nbsp</b><INPUT type="password" name="t_certpw" style="width:200">
+                    <BR>
+                    <BR>
+                    <BR>
+                    <INPUT type="button" value="전자서명" onclick="idpwsign()" style="width:200px;height:30">
+                    <BR>
+                    <INPUT type="button" value="모달 테스트" onclick="devTest()" style="width:200px;height:30">
+                    <BR>
+                    <BR>
+                    <b>서명 데이터</b>
+                    <BR>
+                    <TEXTAREA name="t_signdata2" style="height:100; width:400"></TEXTAREA>
+                    <BR>
+                    <BR>
+                </center>
+            </td>
+        </tr>
+    </table>
+</form>

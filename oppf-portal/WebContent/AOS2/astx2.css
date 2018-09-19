@@ -1,0 +1,20 @@
+/**
+ * (C) Copyright AhnLab, Inc.
+ *
+ * Any part of this source code can not be copied with
+ * any method without prior written permission from
+ * the author or authorized person.
+ *
+ * @version				$Revision: 15816 $
+ *
+ */
+
+@-moz-document url-prefix() { 
+	/* for firefox */
+	input[type=text], input[type=password] { 
+		background-color:white; border:1px solid #C0C0C0; padding:2px;
+	}
+}
+
+.astx2 input[type=text]::-ms-clear{display:none}
+.astx2 input[type=password]::-ms-reveal{display:none}

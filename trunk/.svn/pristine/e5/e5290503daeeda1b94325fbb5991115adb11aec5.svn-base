@@ -1,0 +1,27 @@
+<ion-view view-title="">
+	<ion-content>
+		<div class="container"> <!-- 비밀번호 확인 -->
+			<div class="inner_cont type2">
+				<div class="top_ac">
+					개인정보를 안전하게 보호하기 위해<br>비밀번호를 한번 더 입력해주세요.
+					<!-- 본인확인을 위해 탈퇴하려는 아이디의<br> 비밀번호를 한번 더 입력해주세요 --> <!-- 회원탈퇴시 -->
+				</div>
+				<!-- 정보입력 -->
+				<ul class="entry_area">
+					<li>
+						<div class="title_s">비밀번호입력</div>
+						<div class="input_area"><input type="password" placeholder="비밀번호를 입력해주세요" /></div>
+					</li>
+				</ul>
+				<!--// 정보입력 -->
+			</div>
+		</div>
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<div class="button_area btn_bottom_area">
+			<a href="#go" class="btn_middle btn_black_org disabled" disabled>확인</a>
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+</ion-view>

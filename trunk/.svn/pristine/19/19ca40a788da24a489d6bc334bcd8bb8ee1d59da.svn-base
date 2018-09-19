@@ -1,0 +1,178 @@
+<ion-view view-title="금융거래정보 제공동의">
+	<ion-nav-buttons side="right"></ion-nav-buttons>
+	<ion-content> <!-- bg color -->
+		<div id="appTerms">
+			<p style="color:1b1b1e;font-size:18px;margin:18px 0 18px 0;padding:0 25px;font-family:'Noto Sans KR','Malgun Gothic',Dotum,'droid sans fallback','AppleGothic',sans-serif;">금융거래 정보 제공동의서</p>
+			<div style="padding:0 25px;font-size: 12px;color: #1b1b1e;font-family:'Noto Sans KR','Malgun Gothic',Dotum,'droid sans fallback','AppleGothic',sans-serif;">
+				<ol style="font-size:12px; list-style:none; margin:0; padding:0;">
+					<li style="margin-top:12px;line-height:18px;">1. 정보를 제공받을 기업명 :
+				<span style="color:#ed6d1f;">
+					{{vm.appTermsInfo.subCompanyName}}({{vm.appTermsInfo.subCompanyCodeId}})
+				</span></li>
+					<li style="margin-top:12px;line-height:18px;">2. 정보제공의 범위와 사용목적
+						<p style="margin:0; padding:0;">정보제공 범위 : <span style="color:#ed6d1f;">동의자 명의의 금융거래정보</span></p>
+						<p style="margin:0; padding:0;">- 금융 상품 잔고 및 거래 정보 자산 구성 정보와 관심 금융상품 정보</p>
+						<p style="margin:0; padding:0;">사용목적 : 핀테크 서비스를 통한 금융서비스 제공</p>
+					</li>
+					<li style="margin-top:12px;line-height:18px;">3. 유효기간 :
+						<span style="color:#ed6d1f;">{{vm.appTermsInfo.termsStartDate}}</span> ~
+						<span style="color:#ed6d1f;">{{vm.appTermsInfo.termsEndDate}}</span>
+						<span style="color:#ed6d1f;" ng-if="!isAppToApp">(1년간)</span>
+					</li>
+					<li  style="margin-top:12px;line-height:18px;">4. 금융거래 정보 제공 동의자 인적 사항
+						<table cellspacing="0" cellpadding="0" border="0" style="width:100%; margin:5px 0; border-top:1px solid #dddfdf; border-right:1px solid #dddfdf;">
+							<caption style="display:none;">성명, 이메일, 생년월일 정보</caption>
+							<colgroup>
+								<col style="width:85px;">
+								<col style="width:auto">
+							</colgroup>
+							<tbody>
+							<tr>
+								<th scope="row" style="padding:9px 7px; font-size:12px; border-right:1px solid #dddfdf; border-left:1px solid #dddfdf; border-bottom:1px solid #dddfdf;">
+									성 명
+								</th>
+								<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+									{{vm.appTermsInfo.customerName}}
+								</td>
+							</tr>
+							<tr>
+								<th scope="row" style="padding:9px 7px; font-size:12px; border-right:1px solid #dddfdf; border-left:1px solid #dddfdf; border-bottom:1px solid #dddfdf;">
+									생년월일
+								</th>
+								<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+									{{vm.appTermsInfo.customerBirthDay}}
+								</td>
+							</tr>
+							<tr>
+								<th scope="row" style="padding:9px 7px; font-size:12px; border-right:1px solid #dddfdf; border-left:1px solid #dddfdf; border-bottom:1px solid #dddfdf;">
+									휴대폰
+								</th>
+								<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+									{{vm.appTermsInfo.customerPhone}}
+								</td>
+							</tr>
+							<tr>
+								<th scope="row" style="padding:9px 7px; font-size:12px; border-right:1px solid #dddfdf; border-left:1px solid #dddfdf; border-bottom:1px solid #dddfdf;">
+									이메일
+								</th>
+								<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+									{{vm.appTermsInfo.customerEmail}}
+								</td>
+							</tr>
+							</tbody>
+						</table>
+					</li>
+					<li style="margin-top:12px;line-height:18px;">5. 정보제공 금융투자회사
+						<div style="height: 82px;overflow-x: hidden;overflow-y: auto;padding: 10px;border: 1px solid #dddfdf;margin: 7px 0;word-break:all-break;">
+							<span ng-repeat="pubCompany in vm.appTermsInfo.pubCompanyList">
+								0 <span style="color:#ed6d1f;">{{pubCompany}}</span>
+							</span>
+						</div>
+					</li>
+					<li style="margin-top:12px;line-height:18px;">6. 제공받은 정보의 보유 및 이용기간
+						<p style="margin:0; padding:0;">금융거래정보는 제공된 날로부터 동의 철회 시 또는 제공된 목적을 달성할 때까지 보유·이용됩니다.<br>
+							동의 철회 또는 제공된 목적 달성 후에는 위 기재된 사용목적과 관련된 금융사고 조사, 분쟁해결, 민원처리, 법령상 의무이행을 위하여 필요한 범위 내에서만 보유·이용 됩니다.
+						</p>
+					</li>
+				</ol>
+				<div style="font-size:12px; color:#1b1b1b; margin:10px 0; padding:10px 20px; background:#f8f8f8;">
+					O 금융거래정보를 제공하는 것에 대한 동의를 거부하실 수 있으나, 금융거래내역의 제공을 위해서는 반드시 동의가 필요하므로 거부하실 경우 금융거래 제공 요청을 신청할 수 없습니다<br>
+					O 「금융실명거래 및 비밀보장에 관한 법률」 제4조의2 제1항 규정의 거래정보 등의 제공사실 통보를 1년 단위로 포괄하여 통보하는 것에 대하여 동의합니다.<br>
+					<div style="font-size:13px; font-weight:bold; text-align:center;margin: 14px 0;padding:0;">
+						<span style="color:#ed6d1f;">{{vm.appTermsInfo.termsCreateDate}}</span>
+					</div>
+					<div style="font-size:13px; font-weight:bold; text-align:right;">
+						금융투자회사 대표이사 귀하
+					</div>
+				</div>
+				<div style="font-size:12px;color:#ed6d1f;" ng-if="vm.type != 'detail'">참고사항 : 동의 확인의 증명은 공인인증서를 이용한 전자서명과 공인인증센터의 시점확인을 통해 이루어집니다<br><br><br></div>
+
+			</div>
+
+			<p style="color:1b1b1e;font-size:15px;margin:18px 0 10px 0;padding:0 25px;font-family:'Noto Sans Korean','Malgun Gothic',Dotum,'droid sans fallback','AppleGothic',sans-serif;" ng-if="vm.type && vm.type == 'detail'">동의 서명 정보</p>
+			<div style="padding:0 25px 25px 25px;" ng-if="vm.type && vm.type == 'detail'">
+				<table cellspacing="0" cellpadding="0" border="0" style="width:100%; margin:5px 0; border-top:1px solid #dddfdf; border-right:1px solid #dddfdf;">
+					<colgroup>
+						<col style="width:85px;">
+						<col style="width:auto">
+					</colgroup>
+					<tbody>
+						<tr>
+							<th scope="row" style="padding:9px 7px; font-size:12px; border-right:1px solid #dddfdf; border-left:1px solid #dddfdf; border-bottom:1px solid #dddfdf;" ng-if="vm.appTermsInfo.termsAuthType == 'G032001'">공인인증서</th>
+							<th scope="row" style="padding:9px 7px; font-size:12px; border-right:1px solid #dddfdf; border-left:1px solid #dddfdf; border-bottom:1px solid #dddfdf;" ng-if="vm.appTermsInfo.termsAuthType == 'G032002'">인증일시</th>
+							<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;" ng-if="vm.appTermsInfo.termsAuthType == 'G032001'">{{vm.appTermsInfo.customerSignDn}}</td>
+							<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;" ng-if="vm.appTermsInfo.termsAuthType == 'G032002'">{{vm.appTermsInfo.termsCreateDate}}</td>
+						</tr>
+						<tr>
+							<th scope="row" style="padding:9px 7px; font-size:12px; border-right:1px solid #dddfdf; border-left:1px solid #dddfdf; border-bottom:1px solid #dddfdf;" ng-if="vm.appTermsInfo.termsAuthType == 'G032001'">전자서명키</th>
+							<th scope="row" style="padding:9px 7px; font-size:12px; border-right:1px solid #dddfdf; border-left:1px solid #dddfdf; border-bottom:1px solid #dddfdf;" ng-if="vm.appTermsInfo.termsAuthType == 'G032002'">ARS 인증번호</th>
+							<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;" ng-if="vm.appTermsInfo.termsAuthType == 'G032001'">{{vm.appTermsInfo.customerSignData}}...</td>
+							<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;" ng-if="vm.appTermsInfo.termsAuthType == 'G032002'">{{vm.appTermsInfo.customerSignData}}</td>
+						</tr>
+						<tr>
+							<th scope="row" style="padding:9px 7px; font-size:12px; border-right:1px solid #dddfdf; border-left:1px solid #dddfdf; border-bottom:1px solid #dddfdf;" ng-if="vm.appTermsInfo.termsAuthType == 'G032001'">시점확인키</th>
+							<th scope="row" style="padding:9px 7px; font-size:12px; border-right:1px solid #dddfdf; border-left:1px solid #dddfdf; border-bottom:1px solid #dddfdf;" ng-if="vm.appTermsInfo.termsAuthType == 'G032002'">인증 ID</th>
+							<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">{{vm.appTermsInfo.customerTsaData}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<!--ARS인증: vm.isArs->true 일때 사용가능 -->
+		<div class="button_area btn_three btn_bottom_area" ng-if="vm.type != 'detail' && (vm.arsUseYn == 'Y' && vm.arsCompanyLimit >= vm.appTermsInfo.pubCompanyList.length)">
+			<a href="#" class="btn_middle btn_black" ng-click="vm.cancel()">거부</a>
+			<a href="#" class="btn_middle btn_black_org" ng-click="vm.signKorea()" ng-if="vm.beforeAppTermsInfo == null">전자서명</a>
+			<a href="#" class="btn_middle btn_black_org" ng-click="vm.arsPopUp()" ng-if="vm.beforeAppTermsInfo == null">ARS인증</a>
+			<a href="#" class="btn_middle btn_black_org" ng-click="vm.setBtnClickType('sign')" ng-if="vm.beforeAppTermsInfo != null" tooltips-confirm="appTermsNotice">전자서명</a>
+			<a href="#" class="btn_middle btn_black_org" ng-click="vm.setBtnClickType('ars')" ng-if="vm.beforeAppTermsInfo != null" tooltips-confirm="appTermsNotice">ARS인증</a>
+		</div>
+		<div class="button_area btn_both btn_bottom_area" ng-if="vm.type != 'detail' && !(vm.arsUseYn == 'Y' && vm.arsCompanyLimit >= vm.appTermsInfo.pubCompanyList.length)">
+			<a href="#" class="btn_middle btn_black" ng-click="vm.cancel()">거부</a>
+			<a href="#" class="btn_middle btn_black_org" ng-click="vm.signKorea()" ng-if="vm.beforeAppTermsInfo == null">전자서명</a>
+			<a href="#" class="btn_middle btn_black_org" ng-click="vm.setBtnClickType('sign')" ng-if="vm.beforeAppTermsInfo != null" tooltips-confirm="appTermsNotice">전자서명</a>
+		</div>		
+		<div class="button_area btn_both btn_bottom_area" ng-if="vm.type && vm.type == 'detail'">
+			<a href="#" class="btn_middle btn_black" ng-click="vm.appTermsDelete(vm.appId)">폐기</a>
+			<a href="#" class="btn_middle btn_black_org" ng-click="vm.cancel()">확인</a>
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+
+	<div class="tips" id="appTermsNotice" style="display:none;">
+		<div class="detail_tip btn_btm_pop">
+			<div class="inner_popup">
+				<div class="cont_popup">
+					<div style="padding:20px 20px 15px 20px;margin:0;font-size: 12px;color: #1b1b1e;font-family:'Noto Sans Korean','Malgun Gothic',Dotum,'droid sans fallback','AppleGothic',sans-serif;">
+						<p style="color:1b1b1e;font-size:16px;padding:0;margin:0 0 5px 0;font-weight:bold;">금융거래 정보 재동의 안내</p>
+						<p style="padding:0;margin:0;">재동의 시 기존 동의서는 폐기되고, 신규 동의서가 발급됩니다</p>
+						<p style="padding:0;margin:0;font-weight:bold;font-size:13px;margin:10px 0 5px;;">&lt;기존 동의서 정보&gt;</p>
+						<ol style="font-size:12px; list-style:none; margin:0; padding:0;">
+							<li style="margin:0;padding:0;line-height:18px;">1. 정보를 제공받을 기업명 :
+							<span style="color:#ed6d1f;" ng-if="vm.beforeAppTermsInfo != null">
+								{{vm.beforeAppTermsInfo.subCompanyName}}({{vm.beforeAppTermsInfo.subCompanyCodeId}})
+							</span></li>
+							<li style="margin-top:7px;line-height:18px;">2. 정보제공 금융투자회사
+								<div style="padding:20px 10px;border: 1px solid #dddfdf;margin: 7px 0;word-break:break-all;height:60px;overflow-x:hidden;overflow-y:auto;" ng-if="vm.beforeAppTermsInfo != null">
+								<span ng-repeat="pubCompany in vm.beforeAppTermsInfo.pubCompanyList">
+									0 <span style="color:#ed6d1f;">{{pubCompany}}</span>
+								</span>
+								</div>
+							</li>
+							<li style="margin-top:7px;line-height:18px;" ng-if="vm.beforeAppTermsInfo != null">3. 유효기간 :
+								<span style="color:#ed6d1f;">{{vm.beforeAppTermsInfo.termsStartDate}}</span> ~
+								<span style="color:#ed6d1f;">{{vm.beforeAppTermsInfo.termsEndDate}}</span>
+								<span style="color:#ed6d1f;" ng-if="!isAppToApp">(1년간)</span>
+							</li>
+						</ol>
+					</div>
+				</div>
+				<div class="button_area">
+					<button type="button" class="btn_btm">확인</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</ion-view>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<!-- saved from url=(0104)http://10.10.10.104:9000/oppf2/oppf2-portal/files/394/oppf-portal/WebContent/html/cpt/email/email10.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	
+	<title>이메일 | koscom OpenAPI Platform</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+</head>
+
+<body style="margin:0; padding:0;"> 
+
+<!-- 이메일 -->
+<div style="width:720px; margin:0 auto; padding:0; background:#e2e3e5; font-family:&#39;돋움&#39;,Dotum;">
+	<div style="width:680px; margin:0 auto;padding-bottom:20px;">
+
+		<div style="padding:18px 30px; background:#f5f6f8;"><a href="http://10.10.10.104:9000/oppf2/oppf2-portal/files/394/oppf-portal/WebContent/html/cpt/email/email10.html#none"><img src="http://10.10.10.104:9000/oppf2/oppf2-portal/files/394/oppf-portal/WebContent/images/cpt/email/logo.png" alt="Koscom OpenAPI Platform"></a></div>
+
+		<!-- contents -->
+		<div style="width:570px; padding:20px 55px 80px; background:#fff;">			
+			<img src="http://10.10.10.104:9000/oppf2/oppf2-portal/files/394/oppf-portal/WebContent/images/cpt/email/icon_head_04.png" alt="">
+			<!-- 2016-06-25 수정 -->
+			<p style="margin-top:22px; font-size:23px; color:#0a2035; text-align:center;line-height:30px;">금융투자 핀테크 포털<br><strong>정보제공동의 만료 및 재동의 안내</strong> </p>
+			<!-- // 2016-06-25 수정 -->
+			<p style="margin-top:40px; font-size:14px; line-height:28px; color:#0a2035;">
+				안녕하세요. 금융투자 핀테크 포털입니다. <br>
+				아래 금융거래정보 제공 동의서의 유효기간이 만료될 예정입니다. <br><br>
+				동의서의 유효기간은 최대 1년으로 만료되기 전 재동의하셔야 정상적인 서비스 이용이 가능합니다. <br>
+				- 미동의 시, 서비스가 중단될 수 있습니다. <br>
+				- 「금융실명거래 및 비밀보장에 관한 법률」 제4조의2 제1항 규정의 거래정보 등의 제공사실 통보를 1년 단위로 포괄하여 통보합니다.
+			</p>
+			<p style="font-size:15px; font-weight:bold; margin:25px 0 10px; padding:0;vertical-align:middle;"><img src="../../../resources/images/icon_dot.png" style="border:0;vertical-align:2px;margin:0;;padding:0 6px 0 0;;">정보 제공 동의</p>
+			<table cellspacing="0" cellpadding="0" border="0" style="width:100%; font-size:13px; border-top:2px solid #bec3c7; text-align:left;">
+				<caption style="display:none;">정보를 제공받을 기업명, 사용범위, 사용목적, 유효기간, 정보제공 금융투자회사</caption>
+				<colgroup>
+					<col style="width:35%;">
+					<col style="width:auto;">
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row" style="font-weight:normal; color:#303030; border-bottom:1px solid #bec3c7; padding:12px 30px; background:#f5f6f8;">정보를 제공받을 기업명</th>
+						<td style="color:#0c0c0c; border-bottom:1px solid #bec3c7; padding:12px 30px;"><strong>코스콤</strong></td>
+					</tr>
+					<tr>
+						<th scope="row" style="font-weight:normal; color:#303030; border-bottom:1px solid #bec3c7; padding:12px 30px; background:#f5f6f8;">사용범위</th>
+						<td style="color:#0c0c0c; border-bottom:1px solid #bec3c7; padding:12px 30px;"><strong>동의자 명의의 금융거래정보</strong></td>
+					</tr>
+					<tr>
+						<th scope="row" style="font-weight:normal; color:#303030; border-bottom:1px solid #bec3c7; padding:12px 30px; background:#f5f6f8;">사용목적</th>
+						<td style="color:#0c0c0c; border-bottom:1px solid #bec3c7; padding:12px 30px;"><strong>자본시장 공동 핀테크 오픈플랫폼을 통한 금융거래정보 전달</strong></td>
+					</tr>
+					<tr>
+						<th scope="row" style="font-weight:normal; color:#303030; border-bottom:1px solid #bec3c7; padding:12px 30px; background:#f5f6f8;">유효기간</th>
+						<td style="color:#0c0c0c; border-bottom:1px solid #bec3c7; padding:12px 30px;"><strong>2016년 5월 3일 ~ </strong><strong style="color:#fe4d0a;">2017년 5월 2일</strong></td>
+					</tr>
+					<tr>
+						<th scope="row" style="font-weight:normal; color:#303030; border-bottom:1px solid #bec3c7; padding:12px 30px; background:#f5f6f8;">정보제공 금융투자회사
+</th>
+						<td style="color:#0c0c0c; border-bottom:1px solid #bec3c7; padding:12px 30px;"><strong>삼성증권, 대신증권, 교보증권</strong></td>
+					</tr>
+				</tbody>
+			</table>
+
+			<div style="text-align:center;">
+				<a href="" style="display:block; width:160px; height:50px; font-size:15px; font-weight:bold; line-height:50px; text-decoration:none; color:#fff; margin:0 auto; border-radius:5px; margin-top:30px; background:#fe4d0a">바로가기</a>
+			</div>			
+		</div>
+		<!-- // contents -->
+
+		<!-- footer -->
+		<div style="padding:30px; background:#fffae7;">
+			<p style="padding:10px 0 10px 50px; background:url(&#39;../../../images/cpt/email/icon_lock.png&#39;) 0 0 no-repeat; font-size:13px; color:#ed4737; line-height:18px; letter-spacing:-1px;">
+				본 메일은 고객님의 수신 동의와 관계없이 발송되는 발신 전용 메일로 회신하실 경우 답변이 되지 않습니다.<br>문의 사항은 웹마스터 메일(<a href="mailto:open@koscom.co.kr" style="color:#ed4737;">open@koscom.co.kr</a>)을 이용해 주시기 바랍니다.				
+			</p>
+			<p style="font-size:13px; color:#595c65; text-align:center; margin-top:40px;">서울시 영등포구 여의나루로 76 ㈜코스콤<br>이메일 : <a href="mailto:open@koscom.co.kr" style="color:#595c65;">open@koscom.co.kr</a></p>
+			<p style="font-size:12px; color:#0c1a3f; text-align:center; margin-top:15px;">Copyright 2016 ⓒ Koscom Corp. All rights reserved.</p>
+		</div>
+		<!-- // footer -->
+	</div>
+</div>
+<!-- // 이메일 -->
+
+
+</body></html>

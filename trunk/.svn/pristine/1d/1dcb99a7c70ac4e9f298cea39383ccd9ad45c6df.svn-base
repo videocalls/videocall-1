@@ -1,0 +1,157 @@
+<ion-view view-title="핀테크 포털 소개">
+    <ion-content scroll="false">
+        <div class="container">
+            <div class="inner_cont wide_s">
+                <ion-header-bar class="vi_head">
+                    <div class="vi_area_fin">
+                        <p class="title_m">자본시장 공동 금융투자 핀테크 포털</p>
+                        <p class="title_s">금융회사, 핀테크기업 등과 함께<br>자본시장의 상생과 혁신을 추구합니다.</p>
+                    </div>
+                </ion-header-bar>
+                <ion-slide-box show-pager="true" does-continue="true">
+                    <ion-slide>
+                        <ion-header-bar class="slide_head">금융투자 핀테크 포털 소개</ion-header-bar>
+                        <ion-content>
+                            <div class="slide_content">
+                                <div class="slide_body">
+                                    <p class="img_area"><img src="/resources/images/img_fin_01.png"></p>
+                                    <p>자본시장 공동 핀테크 오픈플랫폼(오픈플랫폼)은 금융회사, 유관기관, 핀테크 기업 및 기타 기업의 데이터와 서비스를 API로 게시하고, 상호 융합을 통해 경제적인 방식으로 혁신 적 비즈니스를 만들 수 있는 기술기반입니다.<br><br>오픈플랫폼은 다수의 참여자 간 상호 교류를 위해 상호 양방 향 서비스를 지향합니다.<br><br>API서비스의 공급자로서, 또한 API 서비스의 사용자로서 자유롭게 오픈플랫폼에 참여하여 새로운 금융서비스를 창출할 수 있는 기회를 경험하시기 바랍니다.</p>
+                                    <div class="fin_pic">
+                                        <div class="img_area"><img src="/resources/images/img_fin_02.png"></div>
+                                        <!-- <div class="fin_biz">핀테크 기업</div>
+                                        <div class="fin_form">
+                                            <div class="txt_org">자본시장오픈플랫폼</div>
+                                            <div class="txt_both">
+                                                <div class="left_area">
+                                                    <div class="f_head"><p>API Gateway</p></div>
+                                                    <div class="f_body">
+                                                        <ul>
+                                                            <li>핀테크<br>기업<br>서비스</li>
+                                                            <li>금투사<br>등<br>서비스</li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                                <div class="right_area">
+                                                    <div class="f_head"><p>금투사 대외기관<br>연계서비스</p></div>
+                                                    <div class="f_body">가상계좌 권한,인증관리 서비스 연동</div>
+                                                </div>
+                                            </div>
+                                            <div claass="txt_btm">양방향 서비스 제공</div>
+                                        </div>
+                                        <div class="fin_btn">
+                                            <div class="left_area">금투사</div>
+                                            <div class="right_area">공공 / 금융기관</div>
+                                        </div> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </ion-content>
+                    </ion-slide>
+                    <ion-slide>
+                        <ion-header-bar class="slide_head">단계 별 성장 로드맵</ion-header-bar>
+                        <ion-content>
+                            <div class="slide_content">
+                                <div class="slide_body">
+                                    <!-- 아코디언 메뉴 -->
+                                    <div class="accordian-menu" accordion="">
+                                        <!-- loop -->
+                                        <div class="accordian-cont cont_wrap active">
+                                            <a href="#none" class="btn_bar"><span class="ft_org">1세대</span> 금융 데이터 통합 조회 서비스 기반 구축</a>
+                                            <div class="detail_cont">
+                                                <ul class="fin_map map01">
+                                                    <li>
+                                                        <div class="box"><span class="icon_area"><img src="/resources/images/icon_fin_1_1.png"></span><span class="text">은행권계좌<br>통합서비스</span></div>
+                                                        <div class="box"><span class="icon_area"><img src="/resources/images/icon_fin_1_2.png"></span><span class="text">금투권계좌<br>통합서비스</span></div>
+                                                        <div class="box"><span class="icon_area"><img src="/resources/images/icon_fin_1_3.png"></span><span class="text">여신권카드<br>통합서비스</span></div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="box"><span class="icon_area"><img src="/resources/images/icon_fin_1_4.png"></span><span class="text">보험권계약<br>통합서비스</span></div>
+                                                        <div class="box"><span class="icon_area"><img src="/resources/images/icon_fin_1_5.png"></span><span class="text">부동산정보<br>서비스</span></div>
+                                                        <div class="box"><span class="icon_area"><img src="/resources/images/icon_fin_1_6.png"></span><span class="text">개인연금<br>정보서비스</span></div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <!--// loop -->
+                                        <div class="accordian-cont cont_wrap">
+                                            <a href="#none" class="btn_bar"><span class="ft_org">2세대</span> 조회 서비스를 기반으로 하는 부가 서비스</a>
+                                            <div class="detail_cont">
+                                                <ul class="fin_map map02">
+                                                    <li>
+                                                        <div class="box"><span class="icon_area"><img src="/resources/images/icon_fin_2_1.png"></span><span class="text">금융뉴스<br>제공서비스</span></div>
+                                                        <div class="box"><span class="icon_area"><img src="/resources/images/icon_fin_2_2.png"></span><span class="text">개인금융정보<br>통합조회 서비스</span></div>
+                                                        <div class="box"><span class="icon_area"><img src="/resources/images/icon_fin_2_3.png"></span><span class="text">초보적 투자<br>자문서비스</span></div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="box"><span class="icon_area"><img src="/resources/images/icon_fin_2_4.png"></span><span class="text">투자자산<br>추천서비스</span></div>
+                                                        <div class="box"><span class="icon_area"><img src="/resources/images/icon_fin_2_5.png"></span><span class="text">투자도구<br>제공서비스</span></div>
+                                                        <div class="box"><span class="icon_area"><img src="/resources/images/icon_fin_2_6.png"></span><span class="text">온라인펀드<br>비교서비스</span></div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="box"></div>
+                                                        <div class="box"><span class="icon_area"><img src="/resources/images/icon_fin_2_7.png"></span><span class="text">분석정보<br>제공서비스</span></div>
+                                                        <div class="box"></div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                        <div class="accordian-cont cont_wrap">
+                                            <a href="#none" class="btn_bar"><span class="ft_org">3세대</span> 금융투자회사와 핀테크 기업 간 융합 One-Stop 서비스</a>
+                                            <div class="detail_cont">
+                                                <ul class="fin_map map03">
+                                                    <li>
+                                                        <div class="box"><span class="icon_area"><img src="/resources/images/icon_fin_3_1.png"></span><span class="text">개인종합자산<br>관리서비스</span></div>
+                                                        <div class="box"><span class="icon_area"><img src="/resources/images/icon_fin_3_2.png"></span><span class="text">독립 투자자문업자<br>솔루션</span></div>
+                                                        <div class="box"><span class="icon_area"><img src="/resources/images/icon_fin_3_3.png"></span><span class="text">로보 어드<br>바이저 서비스</span></div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="box"><span class="icon_area"><img src="/resources/images/icon_fin_3_4.png"></span><span class="text">온라인펀드<br>비교판매 서비스</span></div>
+                                                        <div class="box"><span class="icon_area"><img src="/resources/images/icon_fin_3_5.png"></span><span class="text">온라인펀드<br>추천판매 서비스</span></div>
+                                                        <div class="box"><span class="icon_area"><img src="/resources/images/icon_fin_3_6.png"></span><span class="text">Retail 알고리즘<br>트레이딩 서비스</span></div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!--// 아코디언 메뉴 -->
+                                </div>
+                            </div>
+                        </ion-content>
+                    </ion-slide>
+                    <ion-slide>
+                        <ion-header-bar class="slide_head">핀테크 서비스</ion-header-bar>
+                        <ion-content>
+                            <div class="slide_content">
+                                <div class="slide_body">
+                                    <p>금융투자 핀테크 포털은 다음과 같은 핀테크 서비스 제공을 위해 핀테크 스타트업과 함께 노력하고 있으며, 새로운 핀테크 서비스 출시와 관련된 소식이 있으면 알려드리겠습니다.</p>
+                                    <div class="fin_service">
+                                        <div class="left_icon"><img width="28" src="/resources/images/icon_fin_sv_01.png"></div>
+                                        <div class="right_area">
+                                            <p>빠르고 간편하게 금융자산을 통합하여 조회하고 관리할 수 있는 핀테크 서비스</p>
+                                            <ul class="dot_list"><li>가계부앱, 통합자산관리앱 등</li><ul>
+                                        </div>
+                                    </div>
+                                    <div class="fin_service">
+                                        <div class="left_icon"><img width="27" src="/resources/images/icon_fin_sv_02.png"></div>
+                                        <div class="right_area">
+                                            <p>기존 투자자산과 거래내역을 분석하여 재산증식을 돕는 핀테크 서비스</p>
+                                            <ul class="dot_list"><li>온라인자산자문 및 로보어드바이저 서비스, 투자정보 및 금융뉴스 알림 서비스 등</li><ul>
+                                        </div>
+                                    </div>
+                                    <div class="fin_service">
+                                        <div class="left_icon"><img width="23" src="/resources/images/icon_fin_sv_03.png"></div>
+                                        <div class="right_area">
+                                            <p>금융투자상품의 비교 및 추천 핀테크 서비스</p>
+                                            <ul class="dot_list"><li>금융투자회사 별 상품비교 및 추천, 신상품 출시 안내</li><ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </ion-content>
+                    </ion-slide>
+                </ion-slide-box>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

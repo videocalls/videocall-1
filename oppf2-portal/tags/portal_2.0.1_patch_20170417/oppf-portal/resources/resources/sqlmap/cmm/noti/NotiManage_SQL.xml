@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 자본시장 공동 핀테크 오픈플랫폼 구축
+* @FileName : NotiManageDAO.java
+* @Comment  : 관리자의 공지사항 관리를 위한 SQL XML
+* @author   : 신동진
+* @since    : 2016.05.19
+* @version  : 1.0
+* @see
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2016.05.19   신동진        최초생성
+-->
+
+<sqlMap namespace="kr.co.koscom.oppf.cmm.noti.service.impl.NotiManageDAO">
+    <typeAlias alias="NotiManageVO" type="kr.co.koscom.oppf.cmm.noti.service.NotiManageVO"/>
+    <typeAlias alias="NotiFileManageVO" type="kr.co.koscom.oppf.cmm.noti.service.NotiFileManageVO"/>
+  	
+    <!-- 공지사항목록조회조건 -->
+    <sql id="fromWhereAnd">
+        <!-- 제목/내용 -->
+        <isNotEmpty property="searchKeyword">
+            <!-- 제목 -->
+            <isEqual property="searchCondition" compareValue="sj" prepend="and">
+                notice_title like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <!-- 내용 -->
+            <isEqual property="searchCondition" compareValue="cn" prepend="and">
+                notice_content like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <!-- 전체 -->
+            <isEqual property="searchCondition" compareValue="sjcn" prepend="and">
+                (
+                    notice_title like concat('%', #searchKeyword#, '%') or
+                    notice_content like concat('%', #searchKeyword#, '%')
+                )
+            </isEqual>
+        </isNotEmpty>
+        
+        <!-- 노출종류 -->
+        <isNotEmpty property="searchNoticeKind" prepend="and">
+            notice_kind
+            <iterate  property="searchNoticeKind" prepend="IN" open="(" close=")" conjunction=",">
+                #searchNoticeKind[]#
+            </iterate> 
+        </isNotEmpty>
+        
+        <!-- 팝업여부 -->
+        <isNotEqual property="searchNoticePopYn" compareValue="ALL" prepend="and">
+            notice_pop_yn = #searchNoticePopYn#            
+        </isNotEqual>
+        
+        <!-- 사용여부 -->
+        <isNotEqual property="searchUseYn" compareValue="ALL" prepend="and">
+            use_yn = #searchUseYn#            
+        </isNotEqual>
+        
+        <!-- 조회일 -->
+        <isNotEmpty property="schDateFrom" prepend="and">
+            date_format(ifnull(update_date, create_date), '%Y%m%d') between replace(#schDateFrom#, '-', '') and replace(#schDateTo#, '-', '')
+        </isNotEmpty>
+  	</sql>
+
+    <!--
+     * @Method Name        : com.NotiManageDAO.selectNotiManageListTotalCount
+     * @Method description : 공지사항 목록의 총개수를 조회한다.
+     * @param              : NotiManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="com.NotiManageDAO.selectNotiManageListTotalCount" parameterClass="NotiManageVO" resultClass="int">
+	    select count(a.notice_seq) as totalcount
+	    from com_notice_info a
+	    where delete_date is null
+	    <include refid="fromWhereAnd"/>
+    </select>
+    
+    <!--
+     * @Method Name        : com.NotiManageDAO.selectNotiManageList
+     * @Method description : 공지사항 목록을 조회한다.
+     * @param              : NotiManageVO
+     * @return             : NotiManageVO
+     * @throws             : Exception
+     -->
+    <select id="com.NotiManageDAO.selectNotiManageList" parameterClass="NotiManageVO" resultClass="NotiManageVO">
+		select  a.notice_seq            as noticeSeq,
+	            a.notice_fix_yn         as noticeFixYn,
+	            (
+                    select code_name_kor
+                    from com_system_code
+                    where concat(system_grp_code, system_code) = a.notice_kind
+                ) as noticeKindName,
+	            a.notice_kind           as noticeKind,
+	            a.notice_pop_yn         as noticePopYn,
+	            if(a.notice_pop_yn = 'Y', '팝업', '일반') as noticePopYnName, 
+	            a.notice_title          as noticeTitle,
+	            a.read_count            as readCount,
+	            a.use_yn                as useYn,
+	            a.notice_start_date     as noticeStartDate,
+	            a.notice_expire_date    as noticeExpireDate,
+	            a.create_date           as createDate
+	    from(  
+	        select  *
+	        from(
+	            select  notice_seq,
+	                    notice_fix_yn,
+	                    notice_kind,
+	                    notice_pop_yn,
+	                    notice_title,
+	                    read_count,
+	                    use_yn,
+	                    date_format(notice_start_date, '%Y-%m-%d') as notice_start_date,
+	                    date_format(notice_expire_date, '%Y-%m-%d') as notice_expire_date,
+	                    date_format(create_date, '%Y-%m-%d') as create_date,
+	                    ifnull(update_date, create_date) as sort_date        
+	            from com_notice_info a
+	            where delete_date is null
+	            and notice_fix_yn = 'Y'
+		            
+		        <include refid="fromWhereAnd"/>
+            ) a
+	        order by a.sort_date desc
+	    ) a
+		union all
+		select  *
+		from(
+		    select  a.notice_seq            as noticeSeq,
+		            a.notice_fix_yn         as noticeFixYn,
+		            (
+		                select code_name_kor
+		                from com_system_code
+		                where concat(system_grp_code, system_code) = a.notice_kind
+		            ) as noticeKindName,
+		            a.notice_kind           as noticeKind,
+		            a.notice_pop_yn         as noticePopYn,
+		            if(a.notice_pop_yn = 'Y', '팝업', '일반') as noticePopYnName, 
+		            a.notice_title          as noticeTitle,
+		            a.read_count            as readCount,
+		            a.use_yn                as useYn,
+		            a.notice_start_date     as noticeStartDate,
+	                a.notice_expire_date    as noticeExpireDate,
+		            a.create_date           as createDate
+		    from(        
+	            
+	            select  notice_seq,
+	                    notice_fix_yn,
+	                    notice_kind,
+	                    notice_pop_yn,
+	                    notice_title,
+	                    read_count,
+	                    use_yn,
+	                    date_format(notice_start_date, '%Y-%m-%d') as notice_start_date,
+	                    date_format(notice_expire_date, '%Y-%m-%d') as notice_expire_date,
+	                    date_format(create_date, '%Y-%m-%d') as create_date,
+	                    ifnull(update_date, create_date) as sort_date       
+	            from com_notice_info a
+	            where delete_date is null
+	            and notice_fix_yn = 'N'
+	            
+	            <include refid="fromWhereAnd"/>
+		    ) a
+		    <include refid="CmmnFuncDAO.CmmnPaging"/>
+        ) a		    
+    </select>
+    
+    <!--
+     * @Method Name        : com.NotiManageDAO.selectNotiManageDetail
+     * @Method description : 공지사항 상세정보를 조회한다.
+     * @param              : NotiManageVO
+     * @return             : NotiManageVO
+     * @throws             : Exception
+     -->
+    <select id="com.NotiManageDAO.selectNotiManageDetail" parameterClass="NotiManageVO" resultClass="NotiManageVO">
+		select  notice_seq            as noticeSeq,
+		        notice_fix_yn         as noticeFixYn,
+		        notice_kind           as noticeKind,
+		        notice_pop_yn         as noticePopYn,
+		        notice_title          as noticeTitle,
+		        notice_content        as noticeContent,
+		        read_count            as readCount,  
+		        file_id               as fileId,
+		        use_yn                as useYn,
+		        notice_pop_width      as noticePopWidth,
+                notice_pop_height     as noticePopHeight,
+		        date_format(ifnull(notice_start_date, ''), '%Y-%m-%d')    as noticeStartDate,
+		        date_format(ifnull(notice_expire_date, ''), '%Y-%m-%d')   as noticeExpireDate,
+		        date_format(ifnull(create_date, ''), '%Y-%m-%d %H:%i')    as createDate,
+		        date_format(ifnull(update_date, ''), '%Y-%m-%d %H:%i')    as updateDate        
+		from com_notice_info a
+		where notice_seq = #noticeSeq#  
+    </select>
+    
+    <!--
+     * @Method Name        : com.NotiManageDAO.selectNotiManageDetailFileList
+     * @Method description : 공지사항 첨부파일 목록을 조회한다.
+     * @param              : NotiManageVO
+     * @return             : NotiManageVO
+     * @throws             : Exception
+     -->
+    <select id="com.NotiManageDAO.selectNotiManageDetailFileList" parameterClass="NotiManageVO" resultClass="NotiFileManageVO">
+		select  file_id                     as fileId,
+		        file_seq                    as fileSeq,
+		        file_name                   as fileName,
+		        file_extention              as fileExtention,
+		        round(file_size / 1000)     as fileSize
+		from com_file_data
+		where file_id = #fileId#
+		order by file_seq asc    
+    </select>
+    
+    <!--
+     * @Method Name        : com.NotiManageDAO.selectNotiFileId
+     * @Method description : 공지사항 file id를 조회한다.
+     * @param              : NotiManageVO
+     * @return             : NotiManageVO
+     * @throws             : Exception
+     -->
+    <select id="com.NotiManageDAO.selectNotiFileId" parameterClass="NotiManageVO" resultClass="String">
+		select  concat(date_format(sysdate(),'%Y%m%d'), 
+		        lpad((
+		            select ifnull( max(cast(right(file_id, 2) as signed)), 0)+1 
+		            from com_file_data 
+		            where left(file_id, 8) = date_format(sysdate(),'%Y%m%d')
+		            ), 2, '0')
+		        ) as file_id        
+    </select>
+    
+    <!--
+     * @Method Name        : com.NotiManageDAO.insertNotiFileData
+     * @Method description : 공지사항 file을 등록한다.
+     * @param              : NotiFileManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="com.NotiManageDAO.insertNotiFileData" parameterClass="NotiFileManageVO">
+        insert into com_file_data(
+			file_id,
+			file_seq,
+			file_name,
+			file_extention,
+			file_size,
+			file_data,
+			create_date,
+			create_id        
+        )
+        select  #fileId#,
+	            ifnull((
+	                select ifnull(max(cast(file_seq as SIGNED)), 0) + 1
+	                from com_file_data
+	                where file_id = #fileId#
+	            ), 1),
+	            #fileName#,
+	            #fileExtention#,
+	            ifnull(#fileSize#, 0),
+	            #fileData:BLOB#,
+	            sysdate(),
+	            #createId#
+        from dual	            
+    </insert>
+    
+    <!--
+     * @Method Name        : com.NotiManageDAO.deleteNotiFileData
+     * @Method description : 공지사항 file을 삭제한다.
+     * @param              : NotiFileManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <delete id="com.NotiManageDAO.deleteNotiFileData" parameterClass="NotiFileManageVO">
+        delete from com_file_data
+        where file_id = #fileId#
+        <isNotEmpty property="fileSeq" prepend="and">
+            file_seq = #fileSeq#
+        </isNotEmpty>
+    </delete>    
+    
+    <!--
+     * @Method Name        : com.NotiManageDAO.insertNoti
+     * @Method description : 공지사항을 등록한다.
+     * @param              : NotiManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="com.NotiManageDAO.insertNoti" parameterClass="NotiManageVO">
+		insert into com_notice_info(
+		    notice_seq,
+		    notice_fix_yn,
+		    notice_kind,
+		    notice_pop_yn,
+		    notice_title,
+		    notice_content,
+		    read_count,
+		    notice_start_date,
+		    notice_expire_date,
+		    notice_pop_width,
+		    notice_pop_height,
+		    file_id,
+		    use_yn,
+		    create_date,
+		    create_id,
+		    update_date,
+		    update_id
+		)
+		select  concat(date_format(sysdate(),'%Y%m%d'), 
+		        lpad((
+		            select ifnull( max(cast(right(notice_seq,2) as signed)), 0)+1 
+		            from com_notice_info 
+		            where left(notice_seq,8) = date_format(sysdate(),'%Y%m%d')
+		            ), 2, '0')
+		        ) as notice_seq,
+		        #noticeFixYn#,
+		        #noticeKind#,
+		        #noticePopYn#,
+		        #noticeTitle#,
+		        #noticeContent#,
+		        0 read_count,
+		        #noticeStartDate#,
+		        #noticeExpireDate#,
+		        ifnull(#noticePopWidth#, 0),
+		        ifnull(#noticePopHeight#, 0),
+		        #fileId#,
+		        #useYn#,
+		        sysdate(),
+		        #createId#,
+		        sysdate(),
+		        #createId#
+		from dual            
+    </insert>
+    
+    <!--
+     * @Method Name        : com.NotiManageDAO.updateNoti
+     * @Method description : 공지사항을 수정한다.
+     * @param              : NotiManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="com.NotiManageDAO.updateNoti" parameterClass="NotiManageVO">
+        update com_notice_info set
+            notice_fix_yn = #noticeFixYn#,
+            notice_kind = #noticeKind#,
+            notice_pop_yn = #noticePopYn#,
+            notice_title = #noticeTitle#,
+            notice_content = #noticeContent#,
+            notice_start_date = #noticeStartDate#,
+            notice_expire_date = #noticeExpireDate#,
+            notice_pop_width = ifnull(#noticePopWidth#, 0),
+            notice_pop_height = ifnull(#noticePopHeight#, 0),
+            file_id = #fileId#,
+            use_yn = #useYn#,
+            update_date = sysdate(),
+            update_id = #createId#
+        where notice_seq = #noticeSeq#
+    </update>
+    
+    <!--
+     * @Method Name        : com.NotiManageDAO.deleteNoti
+     * @Method description : 공지사항을 삭제한다.
+     * @param              : NotiManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="com.NotiManageDAO.deleteNoti" parameterClass="NotiManageVO">
+        update com_notice_info set
+            file_id = null,
+            delete_date = sysdate(),
+            update_date = sysdate(),
+            update_id = #createId#
+        where notice_seq = #noticeSeq#
+    </update>
+    
+</sqlMap>

@@ -1,0 +1,520 @@
+<!-- saved from url=(0014)about:internet -->
+
+<OBJECT classid=CLSID:EC5D5118-9FDE-4A3E-84F3-C2B711740E70
+        codeBase="http://www.signkorea.com/SKCommAX.cab#version=9,9,0,5"
+        id=CertManX width=1 height=1>
+</OBJECT>
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
+<script type="text/javascript" src="../app/library/json3.min.js"></script>
+<script type="text/javascript" src="../app/library/iecompatibility.js"></script>
+
+<script type="text/javascript" src="../app/vestsign.js"></script>
+<script type="text/javascript" src="../app/js/koscom.js"></script>
+<script type="text/javascript" src="../app/activexAdp.js"></script>
+<SCRIPT language=javascript>
+
+    function Status() {
+        var CertManX;
+
+        if (getCookieForActiveX() === "true") {
+            CertManX = loadActiveObject();
+        } else {
+            CertManX = ytMain;
+        }
+
+        if (CertManX.doubleClickBlock(arguments.callee)) return;
+        CertManX.CertServiceSetup(function (result) {
+            if (result == "") {
+                var errorCode = CertManX.GetLastErrorCode();
+                if (errorCode == 90000) {
+                    alert("모듈이 실행되지 않았습니다.");
+                    return;
+                }
+                if (errorCode == 90001 || errorCode == 90002) {
+                    alert("모듈 업데이트 필요");
+                    return;
+                }
+                else {
+                    alert(errorCode + "//" + CertManX.GetLastErrorMsg());
+                    return;
+                }
+            }
+            CertManX.SetKeySaferMode(3);
+            CertManX.CertManager_Status("", function () {
+
+            });
+        });
+    }
+
+    function Suspend() {
+        var CertManX;
+
+        if (getCookieForActiveX() === "true") {
+            CertManX = loadActiveObject();
+        } else {
+            CertManX = ytMain;
+        }
+
+        //BOOL CertManager_Suspend(BSTR pszUserID, BSTR pszPassword)
+        if (CertManX.doubleClickBlock(arguments.callee)) return;
+        CertManX.CertServiceSetup(function (result) {
+            if (result == "") {
+                var errorCode = CertManX.GetLastErrorCode();
+                if (errorCode == 90000) {
+                    alert("모듈이 실행되지 않았습니다.");
+                    return;
+                }
+                if (errorCode == 90001 || errorCode == 90002) {
+                    alert("모듈 업데이트 필요");
+                    return;
+                }
+                else {
+                    alert(errorCode + "//" + CertManX.GetLastErrorMsg());
+                    return;
+                }
+            }
+            CertManX.SetKeySaferMode(3);
+            CertManX.CertManager_Suspend("", "", function (ex) {
+                if (ex == "") {
+                    alert("CertManager_Suspend 실패 : [" + CertManX.GetLastErrorCode() + "]" + CertManX.GetLastErrorMsg());
+                    return;
+                }
+                console.log(ex);
+            });
+
+        });
+    }
+
+    function Revoke() {
+        var CertManX;
+
+        if (getCookieForActiveX() === "true") {
+            CertManX = loadActiveObject();
+        } else {
+            CertManX = ytMain;
+        }
+
+        //BOOL CertManager_Revoke(BSTR pszUserID, BSTR pszPassword)
+        if (CertManX.doubleClickBlock(arguments.callee)) return;
+        CertManX.CertServiceSetup(function (result) {
+            if (result == "") {
+                var errorCode = CertManX.GetLastErrorCode();
+                if (errorCode == 90000) {
+                    alert("모듈이 실행되지 않았습니다.");
+                    return;
+                }
+                if (errorCode == 90001 || errorCode == 90002) {
+                    alert("모듈 업데이트 필요");
+                    return;
+                }
+                else {
+                    alert(errorCode + "//" + CertManX.GetLastErrorMsg());
+                    return;
+                }
+            }
+            CertManX.SetKeySaferMode(3);
+            CertManX.CertManager_Revoke("", "", function (ex) {
+                if (ex == "") {
+                    alert("CertManager_Revoke 실패 : [" + CertManX.GetLastErrorCode() + "]" + CertManX.GetLastErrorMsg());
+                    return;
+                }
+                console.log(ex);
+            });
+        });
+    }
+
+    function CertNew() {
+        var CertManX;
+
+        if (getCookieForActiveX() === "true") {
+            CertManX = loadActiveObject();
+        } else {
+            CertManX = ytMain;
+        }
+
+        //BOOL CertManager_CertNew(BSTR pszUserID, BSTR pszPassword)
+        if (CertManX.doubleClickBlock(arguments.callee)) return;
+        CertManX.CertServiceSetup(function (result) {
+            if (result == "") {
+                var errorCode = CertManX.GetLastErrorCode();
+                if (errorCode == 90000) {
+                    alert("모듈이 실행되지 않았습니다.");
+                    return;
+                }
+                if (errorCode == 90001 || errorCode == 90002) {
+                    alert("모듈 업데이트 필요");
+                    return;
+                }
+                else {
+                    alert(errorCode + "//" + CertManX.GetLastErrorMsg());
+                    return;
+                }
+            }
+            CertManX.SetKeySaferMode(3);
+            CertManX.CertManager_CertNew("", "", function (ex) {
+                if (ex == "") {
+                    alert("CertManager_CertNew 실패 : [" + CertManX.GetLastErrorCode() + "]" + CertManX.GetLastErrorMsg());
+                    return;
+                }
+                console.log(ex);
+            });
+        });
+    }
+
+    function CertNewUrlInfo() {
+        var CertManX;
+
+        if (getCookieForActiveX() === "true") {
+            CertManX = loadActiveObject();
+        } else {
+            CertManX = ytMain;
+        }
+
+        // BOOL SetCertnewUrlInfo(BSTR pCertNewUrl) 인증서 갱신시 URL 변경
+        CertManX.CertServiceSetup(function (result) {
+            if (result == "") {
+                var errorCode = CertManX.GetLastErrorCode();
+                if (errorCode == 90000) {
+                    alert("모듈이 실행되지 않았습니다.");
+                    return;
+                }
+                if (errorCode == 90001 || errorCode == 90002) {
+                    alert("모듈 업데이트 필요");
+                    return;
+                }
+                else {
+                    alert(errorCode + "//" + CertManX.GetLastErrorMsg());
+                    return;
+                }
+            }
+            
+            CertManX.SetCertNewUrlInfo("https://www.html5cert.kr");
+            CertManX.SetExipreCheckSkip(0);
+            CertManX.SignDataB64("", " ", 0, function (signdata) {
+
+            });
+        });
+    }
+
+    function ExportP12() //내보내기
+    {
+        var CertManX;
+
+        if (getCookieForActiveX() === "true") {
+            CertManX = loadActiveObject();
+        } else {
+            CertManX = ytMain;
+        }
+
+        if (CertManX.doubleClickBlock(arguments.callee)) return;
+        CertManX.CertServiceSetup(function (result) {
+            if (result == "") {
+                var errorCode = CertManX.GetLastErrorCode();
+                if (errorCode == 90000) {
+                    alert("모듈이 실행되지 않았습니다.");
+                    return;
+                }
+                if (errorCode == 90001 || errorCode == 90002) {
+                    alert("모듈 업데이트 필요");
+                    return;
+                }
+                else {
+                    alert(errorCode + "//" + CertManX.GetLastErrorMsg());
+                    return;
+                }
+            }
+            CertManX.SetKeySaferMode(3);
+            CertManX.UnSetMatchedContext(function () {
+                CertManX.SetWrongPasswordLimit(1);
+
+                //BOOL ExportP12(BSTR pszUserID, BSTR pszPassword)
+                CertManX.ExportP12("", "", function (ex) {
+                    if (ex == "") {
+                        alert("내보내기 실패 : [" + CertManX.GetLastErrorCode() + "]" + CertManX.GetLastErrorMsg());
+                        return;
+                    }
+                    console.log(ex);
+                });
+            });
+        });
+    }
+
+    function ImportP12() //가져오기
+    {
+        var CertManX;
+
+        if (getCookieForActiveX() === "true") {
+            CertManX = loadActiveObject();
+        } else {
+            CertManX = ytMain;
+        }
+
+        if (CertManX.doubleClickBlock(arguments.callee)) return;
+        CertManX.CertServiceSetup(function (result) {
+            if (result == "") {
+                var errorCode = CertManX.GetLastErrorCode();
+                if (errorCode == 90000) {
+                    alert("모듈이 실행되지 않았습니다.");
+                    return;
+                }
+                if (errorCode == 90001 || errorCode == 90002) {
+                    alert("모듈 업데이트 필요");
+                    return;
+                }
+                else {
+                    alert(errorCode + "//" + CertManX.GetLastErrorMsg());
+                    return;
+                }
+            }
+            CertManX.SetKeySaferMode(3);
+            CertManX.UnSetMatchedContext(function () {
+                CertManX.SetWrongPasswordLimit(1);
+
+                //BOOL ImportP12(BSTR pszPassword)
+                CertManX.ImportP12("", function (im) {
+                    if (im == "") {
+                        alert("가져오기 실패 : [" + CertManX.GetLastErrorCode() + "]" + CertManX.GetLastErrorMsg());
+                        return;
+                    }
+                    console.log(im);
+                });
+            });
+        });
+    }
+
+    function VerifyPassword()  //비밀번호 확인
+    {
+        var CertManX;
+
+        if (getCookieForActiveX() === "true") {
+            CertManX = loadActiveObject();
+        } else {
+            CertManX = ytMain;
+        }
+
+        if (CertManX.doubleClickBlock(arguments.callee)) return;
+        CertManX.CertServiceSetup(function (result) {
+            if (result == "") {
+                var errorCode = CertManX.GetLastErrorCode();
+                if (errorCode == 90000) {
+                    alert("모듈이 실행되지 않았습니다.");
+                    return;
+                }
+                if (errorCode == 90001 || errorCode == 90002) {
+                    alert("모듈 업데이트 필요");
+                    return;
+                }
+                else {
+                    alert(errorCode + "//" + CertManX.GetLastErrorMsg());
+                    return;
+                }
+            }
+            CertManX.SetKeySaferMode(3);
+            CertManX.UnSetMatchedContext(function () {
+
+                //BOOL VerifyPassword(BSTR pszUserID)
+                CertManX.VerifyPassword("", function (verifypw) {
+                    if (verifypw == "") {
+                        alert(" 비밀번호 확인실패 : [" + CertManX.GetLastErrorCode() + "]" + CertManX.GetLastErrorMsg());
+                    }
+                    console.log(verifypw);
+                });
+            });
+        });
+    }
+
+    function CertManager_ChangePassword()  //비밀번호 변경
+    {
+        var CertManX;
+
+        if (getCookieForActiveX() === "true") {
+            CertManX = loadActiveObject();
+        } else {
+            CertManX = ytMain;
+        }
+
+        if (CertManX.doubleClickBlock(arguments.callee)) return;
+        CertManX.CertServiceSetup(function (result) {
+            if (result == "") {
+                var errorCode = CertManX.GetLastErrorCode();
+                if (errorCode == 90000) {
+                    alert("모듈이 실행되지 않았습니다.");
+                    return;
+                }
+                if (errorCode == 90001 || errorCode == 90002) {
+                    alert("모듈 업데이트 필요");
+                    return;
+                }
+                else {
+                    alert(errorCode + "//" + CertManX.GetLastErrorMsg());
+                    return;
+                }
+            }
+            CertManX.SetKeySaferMode(3);
+            CertManX.UnSetMatchedContext(function () {
+                CertManX.SetWrongPasswordLimit(1);
+
+                //BOOL CertManager_ChangePassword(BSTR pszUserID, BSTR pszOldPassword, BSTR pszNewPassword)
+                CertManX.CertManager_ChangePassword("", "", "", function (changepw) {
+                    if (changepw == "") {
+                        alert(" 비밀번호 변경실패 : [" + CertManX.GetLastErrorCode() + "]" + CertManX.GetLastErrorMsg());
+                        return;
+                    }
+                    console.log(changepw);
+                });
+            });
+        });
+    }
+
+    function ChangeStorageMedia()   //저장매체변경
+    {
+        var CertManX;
+
+        if (getCookieForActiveX() === "true") {
+            CertManX = loadActiveObject();
+        } else {
+            CertManX = ytMain;
+        }
+
+        if (CertManX.doubleClickBlock(arguments.callee)) return;
+        CertManX.CertServiceSetup(function (result) {
+            if (result == "") {
+                var errorCode = CertManX.GetLastErrorCode();
+                if (errorCode == 90000) {
+                    alert("모듈이 실행되지 않았습니다.");
+                    return;
+                }
+                if (errorCode == 90001 || errorCode == 90002) {
+                    alert("모듈 업데이트 필요");
+                    return;
+                }
+                else {
+                    alert(errorCode + "//" + CertManX.GetLastErrorMsg());
+                    return;
+                }
+            }
+            CertManX.SetKeySaferMode(3);
+            CertManX.UnSetMatchedContext(function () {
+                CertManX.SetWrongPasswordLimit(1);
+
+                //BOOL ChangeStorageMedia(BSTR pszUserID)
+                CertManX.ChangeStorageMedia("", function (ChangeStorage) {
+                    if (ChangeStorage == "") {
+                        alert("저장매체변경 실패 : [" + CertManX.GetLastErrorCode() + "]" + CertManX.GetLastErrorMsg());
+                        return;
+                    }
+                    console.log(ChangeStorage);
+                });
+                //    	alert("성공")
+            });
+        });
+    }
+
+    function RemoveFromMedia()    //저장된인증서 삭제
+    {
+        var CertManX;
+
+        if (getCookieForActiveX() === "true") {
+            CertManX = loadActiveObject();
+        } else {
+            CertManX = ytMain;
+        }
+
+        if (CertManX.doubleClickBlock(arguments.callee)) return;
+        CertManX.CertServiceSetup(function (result) {
+            if (result == "") {
+                var errorCode = CertManX.GetLastErrorCode();
+                if (errorCode == 90000) {
+                    alert("모듈이 실행되지 않았습니다.");
+                    return;
+                }
+                if (errorCode == 90001 || errorCode == 90002) {
+                    alert("모듈 업데이트 필요");
+                    return;
+                }
+                else {
+                    alert(errorCode + "//" + CertManX.GetLastErrorMsg());
+                    return;
+                }
+            }
+            CertManX.SetKeySaferMode(3);
+            CertManX.UnSetMatchedContext(function () {
+                CertManX.SetWrongPasswordLimit(1);
+
+                //BOOL RemoveFromMedia(BSTR pszUserID)
+                CertManX.RemoveFromMedia("", function (RemoveFromMedia) {
+                    if (RemoveFromMedia == "") {
+                        alert("RemoveFromMedia 실패 : [" + CertManX.GetLastErrorCode() + "]" + CertManX.GetLastErrorMsg());
+                        return;
+                    }
+                    console.log(RemoveFromMedia);
+                });
+            });
+        });
+    }
+
+    function ConfigMenu() {
+        var CertManX;
+
+        if (getCookieForActiveX() === "true") {
+            CertManX = loadActiveObject();
+        } else {
+            CertManX = ytMain;
+        }
+
+        if (CertManX.doubleClickBlock(arguments.callee)) return;
+        CertManX.CertServiceSetup(function (result) {
+            if (result == "") {
+                var errorCode = CertManX.GetLastErrorCode();
+                if (errorCode == 90000) {
+                    alert("모듈이 실행되지 않았습니다.");
+                    return;
+                }
+                if (errorCode == 90001 || errorCode == 90002) {
+                    alert("모듈 업데이트 필요");
+                    return;
+                }
+                else {
+                    alert(errorCode + "//" + CertManX.GetLastErrorMsg());
+                    return;
+                }
+            }
+            CertManX.ShowConfigMenuX(function(){
+
+            });
+        });
+    }
+
+
+</SCRIPT>
+<form name="form" method="post">
+
+    <BR>
+    <HR align="left" size="5" width="100%" noshade>
+    <FONT size="7">
+        <center> 인증서 관리</center>
+    </FONT>
+    <HR align="left" size="5" width="100%" noshade>
+    <BR>
+    <table border="1" align="center" width=50%>
+        <tr>
+            <td align=center><br><br>
+                <input type=button onclick=Status() value="인증서 내용보기" style="width:150">
+                <input type=button onclick=Suspend() value="정지" style="width:150"><br><br>
+                <input type=button onclick=Revoke() value="폐지" style="width:150">
+                <input type=button onclick=CertNew() value="갱신" style="width:150"><br><br>
+                <input type=button onclick=CertNewUrlInfo() value="갱신페이지이동" style="width:150">
+                <input type=button onclick=RemoveFromMedia() value="삭제" style="width:150"><br><Br>
+
+                <input type=button onclick=VerifyPassword() value="비밀번호 확인" style="width:150">
+                <input type=button onclick=CertManager_ChangePassword() value="비밀번호 변경" style="width:150"><br><br>
+                <input type=button onclick=ExportP12() value="내보내기" style="width:150">
+                <input type=button onclick=ImportP12() value="가져오기" style="width:150"><br><br>
+                <input type=button onclick=ChangeStorageMedia() value="저장매체 변경" style="width:150">
+                <input type=button onclick=ConfigMenu() value="환경설정" style="width:150"><br><br><br>
+            </td>
+        </tr>
+    </table>
+</form>

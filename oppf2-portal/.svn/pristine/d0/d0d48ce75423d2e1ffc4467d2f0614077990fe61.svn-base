@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.stats.service.impl.StatsServiceDAO">
+
+  	<typeAlias alias="StatsServiceVO" type="kr.co.koscom.oppf.apt.stats.service.StatsServiceVO"/>
+  	
+  	<!--
+     * @Method Name        : apt.StatsServiceDAO.selectStatsServicePubCompanyList
+     * @Method description : API 서비스 제공자 코드 조회
+     * @param              : StatsServiceVO
+     * @return             : StatsServiceVO
+     * @throws             : Exception
+     -->
+    <select id="apt.StatsServiceDAO.selectStatsServicePubCompanyList" parameterClass="StatsServiceVO" resultClass="StatsServiceVO">
+		select c.company_code_id           as code,
+		        c.company_name_kor_alias    as codeName
+		from(
+		    select  b.api_id
+		    from(
+		        select  a.*, b.std_date
+		        from(
+		            select  a.customer_reg_no,
+		                    a.service_reg_no,
+		                    a.terms_reg_no,
+		                    a.app_id,
+		                    b.company_code_id as subcompany_code_id
+		            from (
+		                select *
+		                from spt_customer_service_profile
+		                where delete_date is null
+                        and terms_reg_no is not null
+		            ) a
+		            join com_app_view b on a.app_id = b.app_id   
+		        ) a
+		        join (
+		            select  a.customer_reg_no,
+		                    a.terms_reg_no,
+		                    a.subcompany_code_id,
+		                    date_format(a.terms_chg_date, '%Y%m%d%H') as std_date
+		            from spt_customer_service_terms_profile a
+		            where a.delete_date is null
+		            and a.terms_auth_yn = 'N'   /* 동의완료 */
+		        ) b
+		        on a.customer_reg_no = b.customer_reg_no
+		        and a.terms_reg_no = b.terms_reg_no
+		        and a.subcompany_code_id = b.subcompany_code_id
+		    ) a 
+		    join spt_customer_service_account_profile b
+		    on a.customer_reg_no = b.customer_reg_no
+		    and a.service_reg_no = b.service_reg_no
+		    and a.app_id = b.app_id
+		    group by b.api_id
+		) a
+		join com_api_info b on a.api_id = b.api_id
+		join com_company_profile c on b.company_code_id = c.company_code_id
+		group by c.company_code_id, c.company_name_kor_alias
+		order by max(c.exposure_order) asc, c.company_name_kor_alias asc
+    </select>
+    
+    <!--
+     * @Method Name        : apt.StatsServiceDAO.selectStatsServiceApiCategoryList
+     * @Method description : API 서비스 구분 코드 조회
+     * @param              : StatsServiceVO
+     * @return             : StatsServiceVO
+     * @throws             : Exception
+     -->
+    <select id="apt.StatsServiceDAO.selectStatsServiceApiCategoryList" parameterClass="StatsServiceVO" resultClass="StatsServiceVO">
+		select  a.api_category      as code,
+		        code.code_name_kor  as codeName
+		from(
+		    select  b.api_category
+		    from(
+		        select  b.api_id
+		        from(
+		            select  a.*, b.std_date
+		            from(
+		                select  a.customer_reg_no,
+		                        a.service_reg_no,
+		                        a.terms_reg_no,
+		                        a.app_id,
+		                        b.company_code_id as subcompany_code_id
+		                from (
+		                    select *
+		                    from spt_customer_service_profile
+		                    where delete_date is null
+                            and terms_reg_no is not null
+		                ) a
+		                join com_app_view b on a.app_id = b.app_id   
+		            ) a
+		            join (
+		                select  a.customer_reg_no,
+		                        a.terms_reg_no,
+		                        a.subcompany_code_id,
+		                        date_format(a.terms_chg_date, '%Y%m%d%H') as std_date
+		                from spt_customer_service_terms_profile a
+		                where a.delete_date is null
+		                and a.terms_auth_yn = 'N'   /* 동의완료 */
+		            ) b
+		            on a.customer_reg_no = b.customer_reg_no
+		            and a.terms_reg_no = b.terms_reg_no
+		            and a.subcompany_code_id = b.subcompany_code_id
+		        ) a 
+		        join spt_customer_service_account_profile b
+		        on a.customer_reg_no = b.customer_reg_no
+		        and a.service_reg_no = b.service_reg_no
+		        and a.app_id = b.app_id
+		        group by b.api_id
+		    ) a
+		    join com_api_info b on a.api_id = b.api_id
+		    join com_company_profile c on b.company_code_id = c.company_code_id
+		    where 1=1
+		    <!-- API 서비스 제공자 -->
+            <isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+                <isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+                    b.company_code_id
+                    <iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+                        #searchPubCompanyCodeId[]#
+                    </iterate> 
+                </isNotEqual>
+            </isNotEmpty>
+		    group by b.api_category
+		) a
+		join com_system_code code on code.system_grp_code = 'G026' and concat(code.system_grp_code, code.system_code) = a.api_category
+		order by code.code_seq asc, code.code_name_kor asc         
+    </select>
+    
+    <!--
+     * @Method Name        : apt.StatsServiceDAO.selectStatsServiceSubCompanyList
+     * @Method description : 앱 개발자 코드 조회
+     * @param              : StatsServiceVO
+     * @return             : StatsServiceVO
+     * @throws             : Exception
+     -->
+    <select id="apt.StatsServiceDAO.selectStatsServiceSubCompanyList" parameterClass="StatsServiceVO" resultClass="StatsServiceVO">
+        select  a.company_code_id           as code,
+                b.company_name_kor_alias    as codeName
+        from(
+            select  a.subcompany_code_id as company_code_id
+            from spt_customer_service_terms_profile a
+            where a.delete_date is null
+            and a.terms_auth_yn = 'N'   /* 동의완료 */
+            group by a.subcompany_code_id
+        ) a
+        join com_company_profile b on a.company_code_id = b.company_code_id
+        order by b.exposure_order asc, b.company_name_kor_alias asc
+    </select>
+    
+    <!--
+     * @Method Name        : apt.StatsServiceDAO.selectStatsServiceAppNameList
+     * @Method description : 앱이름 코드 조회
+     * @param              : StatsServiceVO
+     * @return             : StatsServiceVO
+     * @throws             : Exception
+     -->
+    <select id="apt.StatsServiceDAO.selectStatsServiceAppNameList" parameterClass="StatsServiceVO" resultClass="StatsServiceVO">
+		select  a.app_id        as code,
+		        b.app_name      as codeName
+		from(
+		    select  a.app_id, a.subcompany_code_id
+		    from(
+		        select  a.customer_reg_no,
+		                a.service_reg_no,
+		                a.terms_reg_no,
+		                a.app_id,
+		                b.company_code_id as subcompany_code_id
+		        from (
+		            select *
+		            from spt_customer_service_profile
+		            where delete_date is null
+                    and terms_reg_no is not null
+		        ) a
+		        join com_app_view b on a.app_id = b.app_id   
+		    ) a
+		    join (
+		        select  a.customer_reg_no,
+		                a.terms_reg_no,
+		                a.subcompany_code_id
+		        from spt_customer_service_terms_profile a
+		        where a.delete_date is null
+		        and a.terms_auth_yn = 'N'   /* 동의완료 */
+		        group by a.customer_reg_no, a.terms_reg_no, a.subcompany_code_id
+		    ) b
+		    on a.customer_reg_no = b.customer_reg_no
+		    and a.terms_reg_no = b.terms_reg_no
+		    and a.subcompany_code_id = b.subcompany_code_id
+		    where 1=1
+		    <!-- 앱 개발자  -->
+	        <isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+	            <isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+	                a.subcompany_code_id
+	                <iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+	                    #searchSubCompanyCodeId[]#
+	                </iterate> 
+	            </isNotEqual>
+	        </isNotEmpty>
+		    group by a.app_id
+		) a
+		join com_app_view b on a.app_id = b.app_id
+		join com_app_info c on a.app_id = c.app_id
+		order by c.exposure_order asc, b.app_name asc
+    </select>
+  	      	
+  	<!--
+     * @Method Name        : apt.StatsServiceDAO.selectStatsServiceSearchDate
+     * @Method description : 회원 통계 목록의 기준일을 조회한다.
+     * @param              : StatsServiceVO
+     * @return             : StatsServiceVO
+     * @throws             : Exception
+     -->
+    <select id="apt.StatsServiceDAO.selectStatsServiceSearchDate" parameterClass="StatsServiceVO" resultClass="StatsServiceVO">
+        <!-- 시간 : 최대 2 일 (조회일/시 기준 -2일) -->
+        <isEqual property="searchType" compareValue="hourly">
+            select  concat(searchDate, searchTime) as searchStdDate,
+                    date_format(str_to_date(concat(searchDate, searchTime), '%Y%m%d%H%i'), '%m/%d %H:%i') as searchStdDateText
+            from(
+                select searchDate
+                from(
+                    select date_format(adddate(date_format(str_to_date(#searchDateTime#, '%Y%m%d%H') - INTERVAL 47 HOUR, '%Y%m%d'),t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m%d') searchDate
+                    from
+                    (select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+                    (select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+                    (select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+                    (select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+                    (select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+                ) v
+                where searchDate 
+                between date_format(str_to_date(#searchDateTime#, '%Y%m%d%H') - INTERVAL 47 HOUR, '%Y%m%d')
+                and date_format(str_to_date(#searchDateTime#, '%Y%m%d%H'), '%Y%m%d') 
+            ) a,
+            (
+                select '00' as searchTime
+                union select '01' union select '02' union select '03' union select '04' union select '05' union select '06'
+                union select '07' union select '08' union select '09' union select '10' union select '11' union select '12'
+                union select '13' union select '14' union select '15' union select '16' union select '17' union select '18'
+                union select '19' union select '20' union select '21' union select '22' union select '23'
+            ) b
+            where concat(searchDate, searchTime)
+            between date_format(str_to_date(#searchDateTime#, '%Y%m%d%H') - INTERVAL 47 HOUR, '%Y%m%d%H') 
+            and date_format(str_to_date(#searchDateTime#, '%Y%m%d%H'), '%Y%m%d%H') 
+            order by searchStdDate asc      
+        </isEqual>
+        
+        <!-- 일 : 최대 2개월 (조회 일 기준 -60일) -->
+        <isEqual property="searchType" compareValue="daily">
+            select  searchDate as searchStdDate,
+                    date_format(str_to_date(searchDate, '%Y%m%d'), '%y/%m/%d') as searchStdDateText
+            from(
+                select date_format(adddate(date_format(str_to_date(#searchDateTime#, '%Y%m%d') - INTERVAL 60 DAY, '%Y%m%d'),t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m%d') searchDate
+                from
+                (select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+                (select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+                (select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+                (select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+                (select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+            ) v
+            where searchDate 
+            between date_format(str_to_date(#searchDateTime#, '%Y%m%d') - INTERVAL 60 DAY, '%Y%m%d')
+            and date_format(str_to_date(#searchDateTime#, '%Y%m%d'), '%Y%m%d')
+        </isEqual>
+        
+        <!-- 개월 : 최대 2년 (조회 월 기준 -23개월) -->
+        <isEqual property="searchType" compareValue="monthly">
+            select  searchDate as searchStdDate,
+                    date_format(str_to_date(concat(searchDate,'01'), '%Y%m%d'), '%y/%m') as searchStdDateText
+            from(
+                select date_format(adddate(date_format(str_to_date(#searchDateTime#, '%Y%m%d') - INTERVAL 23 MONTH, '%Y%m%d'),t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m') searchDate
+                from
+                (select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+                (select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+                (select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+                (select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+                (select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+            ) v
+            where searchDate
+            between date_format(str_to_date(#searchDateTime#, '%Y%m%d%H') - INTERVAL 23 MONTH, '%Y%m') 
+            and date_format(str_to_date(#searchDateTime#, '%Y%m%d%H'), '%Y%m')          
+            group by searchDate
+        </isEqual>       
+    </select>
+  	
+  	<!-- 목록 조회조건 -->
+    <sql id="fromWhereAnd">
+        <!-- API 서비스 제공자 -->
+        <isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+            <isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+                api.company_code_id
+                <iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchPubCompanyCodeId[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+        
+        <!-- API 서비스 구분 -->
+        <isNotEmpty property="searchApiCategory" prepend="and">
+            <isNotEqual property="searchApiCategoryAllYn" compareValue="Y">
+                api.api_category
+                <iterate  property="searchApiCategory" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchApiCategory[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+        
+        <!-- 앱 개발자  -->
+        <isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+            <isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+                app.company_code
+                <iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchSubCompanyCodeId[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+        <!-- 앱 이름  -->
+        <isNotEmpty property="searchAppName" prepend="and">
+            <isNotEqual property="searchAppNameAllYn" compareValue="Y">
+                app.app_id
+                <iterate  property="searchAppName" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchAppName[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+    </sql>
+    
+	<!--
+     * @Method Name        : apt.StatsServiceDAO.selectStatsServiceList
+     * @Method description : 서비스 연결 통계 목록을 조회한다.
+     * @param              : StatsServiceVO
+     * @return             : StatsServiceVO
+     * @throws             : Exception
+     -->
+    <select id="apt.StatsServiceDAO.selectStatsServiceList" parameterClass="StatsServiceVO" resultClass="java.util.HashMap" remapResults="true">
+		select  a.app_id                                    as appId,
+		        a.app_name                                  as appName,
+		        a.subcompany_code_id                        as subcompanyCodeId,
+		        sub.company_name_kor_alias                  as subcompanyName,
+		        a.api_id                                    as apiId,
+		        a.api_name                                  as apiName,
+		        a.api_category                              as apiCategory,
+		        code.code_name_kor                          as apiCategoryName,
+		        a.pubcompany_code_id                        as pubcompanyCodeId,
+		        pub.company_name_kor_alias                  as pubcompanyName
+		        $sql1$
+		from(
+		    select  a.app_id,
+		            max(a.app_name) as app_name,
+		            a.subcompany_code_id,
+		            a.api_id,
+		            max(a.api_name) as api_name,
+		            a.api_category,
+		            a.pubcompany_code_id
+		            $sql2$
+		    from(        
+		        select  a.app_id,
+		                app.app_name,
+		                app.company_code_id as subcompany_code_id,
+		                a.api_id,
+		                api.api_name,
+		                api.api_category,
+		                api.company_code_id as pubcompany_code_id,
+		                a.std_date
+		        from(
+		            /* base data */
+		            select  a.customer_reg_no,
+		                    a.app_id,
+		                    b.api_id,
+		                    a.std_date
+		            from(
+		                select  a.*, b.std_date
+		                from(
+		                    select  a.customer_reg_no,
+		                            a.service_reg_no,
+		                            a.terms_reg_no,
+		                            a.app_id,
+		                            b.company_code_id as subcompany_code_id
+		                    from (
+		                        select *
+		                        from spt_customer_service_profile
+		                        where delete_date is null
+                                and terms_reg_no is not null
+		                    ) a
+		                    join com_app_view b on a.app_id = b.app_id   
+		                ) a
+		                join (
+		                    select  a.customer_reg_no,
+		                            a.terms_reg_no,
+		                            a.subcompany_code_id
+		                            $sql3$
+		                    from spt_customer_service_terms_profile a
+		                    where a.delete_date is null
+		                    and a.terms_auth_yn = 'N'   /* 동의완료 */
+		                    $searchTableCondition$
+		                ) b
+		                on a.customer_reg_no = b.customer_reg_no
+		                and a.terms_reg_no = b.terms_reg_no
+		                and a.subcompany_code_id = b.subcompany_code_id
+		            ) a 
+		            join spt_customer_service_account_profile b
+		            on a.customer_reg_no = b.customer_reg_no
+		            and a.service_reg_no = b.service_reg_no
+		            and a.app_id = b.app_id
+		            group by a.customer_reg_no, a.app_id, b.api_id, a.std_date
+		        ) a
+		        join com_app_view app on a.app_id = app.app_id
+		        join com_api_info api on a.api_id = api.api_id
+		        where 1=1
+		        <include refid="fromWhereAnd"/>
+		    ) a    
+		    group by a.app_id, a.subcompany_code_id, a.api_id, a.api_category, a.pubcompany_code_id
+		) a
+		join com_company_profile sub on a.subcompany_code_id = sub.company_code_id
+		join com_company_profile pub on a.pubcompany_code_id = pub.company_code_id
+		join com_system_code code on code.system_grp_code = 'G026' and concat(code.system_grp_code, code.system_code) = a.api_category
+		order by 
+		pub.exposure_order asc, pub.company_name_kor_alias asc,
+		code.code_seq asc,
+		sub.exposure_order asc, sub.company_name_kor_alias asc,
+		a.app_name asc		      
+    </select>
+    
+</sqlMap>

@@ -1,0 +1,50 @@
+<ion-view view-title="">
+	<ion-content>
+		<div class="container page_membership"> <!-- ID 찾기 -->
+			<div class="inner_cont type2">
+				<!-- 정보입력 -->
+				<ul class="entry_area">
+					<li>
+						<div class="title_s">이름</div>
+						<div class="input_area"><input type="text" placeholder="홍길동" /></div>
+						<div class="txt_error">이름을 입력해주세요</div> <!-- add class : hide_set : display:none; 처리  -->
+					</li>
+					<li>
+						<div class="title_s">이메일</div>
+						<div class="email_area">
+							<div class="top_box">
+								<div class="input_area"><input type="text" placeholder="이메일" /></div>
+								<span class="txt_at">@</span>
+								<div class="input_area"><input type="text" value="직접입력" /></div>
+							</div>
+							<div class="select_box">
+								<select>
+									<option>직접입력</option>
+									<option>네이버</option>
+									<option>다음</option>
+									<option>네이트</option>
+									<option>구글</option>
+								</select>
+							</div>
+						</div>
+						<div class="txt_error">이메일을 입력해주세요</div> <!-- add class : hide_set : display:none; 처리  -->
+					</li>
+				</ul>
+				<!--// 정보입력 -->
+				<div class="gray_box">
+					<ul class="dot_list">
+						<li>가입 시 입력한 이름과 이메일 주소를 입력해주세요. </li>
+						<li>입력하신 정보와 등록 정보가 일치 시 아이디를 확인하실 수 있습니다. </li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<div class="button_area btn_bottom_area">
+			<button type="button" class="btn_middle btn_black_org disabled" disabled>확인</button>
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+</ion-view>

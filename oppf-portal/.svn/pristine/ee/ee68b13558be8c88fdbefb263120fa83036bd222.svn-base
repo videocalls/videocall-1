@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>이메일 | koscom OpenAPI Platform</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<style type="text/css">
+		* {margin:0; padding:0;}
+	</style>
+</head>
+
+<body style="margin:0; padding:0;"> 
+
+<!-- 이메일 -->
+<div style="width:720px; margin:0 auto; padding:0; background:#e2e3e5; font-family:'돋움',Dotum;">
+	<div style="width:680px; margin:0 auto;padding-bottom:20px;">
+
+		<div style="padding:18px 30px; background:#f5f6f8;"><a href="#none"><img src="../../../images/cpt/email/logo.png" alt="Koscom OpenAPI Platform"></a></div>
+
+		<!-- contents -->
+		<div style="width:570px; padding:20px 55px 80px; background:#fff;">			
+			<img src="../../../images/cpt/email/icon_head_04.png" alt="">
+
+			<p style="margin-top:22px; font-size:23px; color:#0a2035; text-align:center;">금융투자 핀테크 포털 <br><strong>회원탈퇴 확인 메일입니다.</strong></p>
+
+			<p style="font-size:15px; font-weight:bold; margin:25px 0 10px; padding-left:13px; background:url('../../../images/cpt/email/icon_dot.png') 0 50% no-repeat;">회원탈퇴 정보</p>
+			
+			<table cellspacing="0" cellpadding="0" border="0" style="width:100%; font-size:13px; border-top:2px solid #bec3c7; text-align:left;">
+				<caption style="display:none;">이름, 아이디, 이메일, 가입일 정보</caption>
+				<colgroup>
+					<col style="width:30%;">
+					<col style="">
+				</colgroup>
+				<tbody>
+					<tr>
+						<th scope="row" style="font-weight:normal; color:#303030; border-bottom:1px solid #bec3c7; padding:12px 30px; background:#f5f6f8;">이름</th>
+						<td style="color:#0c0c0c; border-bottom:1px solid #bec3c7; padding:12px 30px;"><strong>신*준</strong></td>
+					</tr>
+					<tr>
+						<th scope="row" style="font-weight:normal; color:#303030; border-bottom:1px solid #bec3c7; padding:12px 30px; background:#f5f6f8;">아이디</th>
+						<td style="color:#0c0c0c; border-bottom:1px solid #bec3c7; padding:12px 30px;"><strong>dong***</strong></td>
+					</tr>
+					<tr>
+						<th scope="row" style="font-weight:normal; color:#303030; border-bottom:1px solid #bec3c7; padding:12px 30px; background:#f5f6f8;">이메일</th>
+						<td style="color:#0c0c0c; border-bottom:1px solid #bec3c7; padding:12px 30px;"><strong>dong***@gmail.com</strong></td>
+					</tr>
+					<tr>
+						<th scope="row" style="font-weight:normal; color:#303030; border-bottom:1px solid #bec3c7; padding:12px 30px; background:#f5f6f8;">탈퇴일</th>
+						<td style="color:#0c0c0c; border-bottom:1px solid #bec3c7; padding:12px 30px;"><strong>2016-07-14</strong></td>
+					</tr>
+				</tbody>
+			</table>
+
+			<div style="font-size:13px; color:#303030; margin-top:10px; line-height:22px; letter-spacing:-1px;">
+				※ 탈퇴 후 그동안 보유하셨던<br>
+				<div style="padding:10px 20px; border:1px solid #ddd; margin:10px 0;">
+					- 회원정보<br>
+					- 가상계좌 정보<br>
+					- 거래 내역 정보
+				</div>
+				등 개인정보는 삭제하였으며, 그동안 서비스 이용 시 거래 내역은 안전하게 보관하도록 하겠습니다.<br>
+				저희 코스콤 금융투자 서비스 포털을 이용해 주셔서 대단히 감사합니다.<br>
+				추후 다시 만나뵙기를 기대하겠습니다.				
+			</div>	
+		</div>
+		<!-- // contents -->
+
+		<!-- footer -->
+		<div style="padding:30px; background:#fffae7;">
+			<p style="padding:10px 0 10px 50px; background:url('../../../images/cpt/email/icon_lock.png') 0 0 no-repeat; font-size:13px; color:#ed4737; line-height:18px; letter-spacing:-1px;">
+				본 메일은 고객님의 수신 동의와 관계없이 발송되는 발신 전용 메일로 회신하실 경우 답변이 되지 않습니다.<br>문의 사항은 웹마스터 메일(<a href="mailto:open@koscom.co.kr" style="color:#ed4737;">open@koscom.co.kr</a>)을 이용해 주시기 바랍니다.				
+			</p>
+			<p style="font-size:13px; color:#595c65; text-align:center; margin-top:40px;">서울시 영등포구 여의나루로 76 ㈜코스콤<br>이메일 : <a href="mailto:open@koscom.co.kr" style="color:#595c65;">open@koscom.co.kr</a></p>
+			<p style="font-size:12px; color:#0c1a3f; text-align:center; margin-top:15px;">Copyright 2016 ⓒ Koscom Corp. All rights reserved.</p>
+		</div>
+		<!-- // footer -->
+	</div>
+</div>
+<!-- // 이메일 -->
+
+</body>
+</html>

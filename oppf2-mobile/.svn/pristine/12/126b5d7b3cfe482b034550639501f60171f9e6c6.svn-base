@@ -1,0 +1,35 @@
+<ion-view view-title="Sample 1" ng-controller="Sample1 as vm">
+	<!-- 왼쪽 헤더 버튼 예제 -->
+	<ion-nav-buttons side="left">
+		<button class="aaaa">버튼</button>
+	</ion-nav-buttons>
+	<!-- 오른쪽 헤더 버튼 예제 -->
+	<ion-nav-buttons side="right">
+		<button>버튼1</button>
+		<button>버튼2</button>
+		
+		<!-- ion-nav-buttons를 사용하면 슬라이드 메뉴 버튼이 사라지므로 다시 정의 -->
+		<button menu-toggle="right" class="button button-icon icon ion-navicon" on-tap="menuToggle()"></button>
+	</ion-nav-buttons>
+
+	<ion-content class="padding">
+		<ul class="list">
+			<li>
+				<a href="#/sample2">sample2 진입</a>
+			</li>
+		</ul>
+		<button ng-click="vm.alert();">Alert</button>
+		<button ng-click="vm.confirm();">Confirm</button>
+	</ion-content>
+
+	<ion-footer-bar>
+		<button>버튼</button>
+	</ion-footer>
+	
+	<!-- floating menu -->
+	<ion-floating-menu>
+		<ion-floating-item text="계좌추가" icon="add"></ion-floating-item>
+		<ion-floating-item text="앱사용신청" icon="app"></ion-floating-item>
+	</ion-floating-menu>
+</ion-view>
+<!-- <div class="dimmed"></div> -->

@@ -1,0 +1,72 @@
+<ion-view view-title="설정">
+
+    <ion-content class="bg_gray"> <!-- bg color -->
+        <div class="container">
+            <div class="inner_cont">
+                <div class="set_link">
+                    <ul>
+                        <li class="version">
+                            <span class="left_area">버전<em>현재 : {{vm.displayCurrentVersion}} / <span class="ft_org">최신 : {{vm.displayServerVersion}}</span></em></span>
+                            <button class="btn_update" ng-show="vm.isShowUpdateButton" ng-click="vm.appUpdate()">업데이트</button>
+                        </li>
+                        <li><a href="" ng-click="vm.goUrlParam('signKoreaInfo', {});">공인인증서 등록</a></li>
+                        <li class="notify">
+                            <span class="left_area">알림</span>
+
+                            <label class="toggle" ng-show="isLogin">
+                                <input type="checkbox" ng-model="vm.checkboxPushChecked" ng-click="vm.updatePushYn()">
+                                <div class="track">
+                                    <div class="handle"></div>
+                                </div>
+                            </label>
+                            <label class="toggle" ng-show="!isLogin">
+                                <input type="checkbox" ng-model="vm.checkboxPushChecked" ng-click="vm.requestLogin()">
+                                <div class="track">
+                                    <div class="handle"></div>
+                                </div>
+                            </label>
+
+                        </li>
+                        <li><a href="" ng-click="vm.goUrlParam('memberDetail', {});">회원정보</a></li>
+                        <li><a href="" ng-click="vm.goUrlParam('passwordChange', {})">비밀번호 변경</a></li>
+                    </ul>
+                </div>
+                <div class="button_area btn_both mid_bar">
+                    <a href="" ng-click="vm.goUrlParam('termsService', {});" class="btn_middle">서비스 이용약관</a>
+                    <a href="" ng-click="vm.goUrlParam('termsPersonal', {});" class="btn_middle">개인정보취급방침</a>
+<!--                     <a href="" ng-click="vm.modalSiteTerms(1)" class="btn_middle">서비스 이용약관</a> -->
+<!--                     <a href="" ng-click="vm.modalSiteTerms(2)" class="btn_middle">개인정보취급방침</a> -->
+                </div>
+            </div>
+        </div>
+
+
+<!--         <br><br> -->
+<!--         <a href="" ng-click="vm.getApiVersion()">버전</a> -->
+<!--         <br> -->
+<!--         현재 : {{vm.displayCurrentVersion}} / 최신 : {{vm.displayServerVersion}} -->
+<!--         <a ng-show="vm.isShowUpdateButton" href="" ng-click="vm.alert('', '업데이트')">업데이트 버튼</a> -->
+
+<!--         <br> -->
+<!--         api version : {{vm.mobileVersion}}<br> -->
+<!--         device version : {{vm.deviceVersion }} -->
+
+
+
+<!--         <br><br> -->
+<!--         <a href="" ng-click="vm.goUrlParam('signKoreaInfo', {});">공인인증서 등록</a> -->
+
+<!--         <br><br> -->
+<!--         <a href="#/memberDetail" >회원정보</a> -->
+
+<!--         <br><br> -->
+<!--         <a href="" ng-click="vm.alert('', '비밀번호 변경')">비밀번호 변경</a> -->
+
+<!--         <br><br> -->
+<!--         <br><br> -->
+<!--         <a href="" ng-click="vm.modalSiteTerms(1)">서비스 이용약관</a> -->
+<!--         <br> -->
+<!--         <a href="" ng-click="vm.modalSiteTerms(2)">개인정보취급방침</a> -->
+
+    </ion-content>
+</ion-view>

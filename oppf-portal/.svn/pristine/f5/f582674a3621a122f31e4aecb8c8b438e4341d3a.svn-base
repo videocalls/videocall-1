@@ -1,0 +1,720 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.stats.service.impl.StatsTrafficDAO">
+
+  	<typeAlias alias="StatsTrafficVO" type="kr.co.koscom.oppf.apt.stats.service.StatsTrafficVO"/>
+  	
+  	<!--
+     * @Method Name        : apt.StatsTrafficDAO.selectStatsTrafficPubCompanyList
+     * @Method description : API 서비스 제공자 코드 조회
+     * @param              : StatsTrafficVO
+     * @return             : StatsTrafficVO
+     * @throws             : Exception
+     -->
+    <select id="apt.StatsTrafficDAO.selectStatsTrafficPubCompanyList" parameterClass="StatsTrafficVO" resultClass="StatsTrafficVO">
+		select  b.company_code_id           as pubcompanyCodeId,
+		        c.company_name_kor_alias    as pubcompanyName
+		from(
+		    select api_id
+		    from adm_api_traffic_min
+		    group by api_id
+		) a
+		join com_api_info b on a.api_id = b.api_id
+		join com_company_profile c on b.company_code_id = c.company_code_id and c.delete_date is null
+		group by b.company_code_id, c.company_name_kor_alias
+		order by c.company_name_kor_alias asc    
+    </select>
+    
+    <!--
+     * @Method Name        : apt.StatsTrafficDAO.selectStatsTrafficApiCategoryList
+     * @Method description : API 서비스 구분 코드 조회
+     * @param              : StatsTrafficVO
+     * @return             : StatsTrafficVO
+     * @throws             : Exception
+     -->
+    <select id="apt.StatsTrafficDAO.selectStatsTrafficApiCategoryList" parameterClass="StatsTrafficVO" resultClass="StatsTrafficVO">
+		select  a.api_category  as apiCategory,
+		        b.code_name_kor as apiCategoryName
+		from(
+		    select  b.api_category
+		    from(
+		        select api_id
+		        from adm_api_traffic_min
+		        group by api_id
+		    ) a
+		    join com_api_info b on a.api_id = b.api_id
+		    where 1=1 
+		    <!-- API 서비스 제공자 -->
+	        <isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+	            <isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+	                b.company_code_id
+	                <iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+	                    #searchPubCompanyCodeId[]#
+	                </iterate> 
+	            </isNotEqual>
+	        </isNotEmpty>
+		    group by b.api_category
+		) a
+		join com_system_code b 
+		on concat(b.system_grp_code, b.system_code) = a.api_category
+		and b.system_grp_code = 'G026'
+		and b.delete_date is null
+		order by b.code_seq asc, b.code_name_kor asc           
+    </select>
+    
+    <!--
+     * @Method Name        : apt.StatsTrafficDAO.selectStatsTrafficApiNameList
+     * @Method description : API 서비스 이름 코드 조회
+     * @param              : StatsTrafficVO
+     * @return             : StatsTrafficVO
+     * @throws             : Exception
+     -->
+    <select id="apt.StatsTrafficDAO.selectStatsTrafficApiNameList" parameterClass="StatsTrafficVO" resultClass="StatsTrafficVO">
+		select  c.api_id      as apiId,
+		        b.api_name    as apiName
+		from(
+		    select api_id
+		    from adm_api_traffic_min
+		    group by api_id
+		) a
+		join com_api_view b on a.api_id = b.api_id
+		join com_api_info c on a.api_id = c.api_id
+		where 1=1
+		<!-- API 서비스 제공자 -->
+        <isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+            <isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+                c.company_code_id
+                <iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchPubCompanyCodeId[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+        <!-- API 서비스 구분 -->
+        <isNotEmpty property="searchApiCategory" prepend="and">
+            <isNotEqual property="searchApiCategoryAllYn" compareValue="Y">
+                c.api_category
+                <iterate  property="searchApiCategory" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchApiCategory[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+		order by c.exposure_order asc, b.api_name asc                   
+    </select>
+    
+    <!--
+     * @Method Name        : apt.StatsTrafficDAO.selectStatsTrafficApiServiceList
+     * @Method description : 세부 API 서비스 코드 조회
+     * @param              : StatsTrafficVO
+     * @return             : StatsTrafficVO
+     * @throws             : Exception
+     -->
+    <select id="apt.StatsTrafficDAO.selectStatsTrafficApiServiceList" parameterClass="StatsTrafficVO" resultClass="StatsTrafficVO">
+		select  a.api_service as apiService,
+		        replace(a.api_service, '/', '_') as apiResource
+		from adm_api_traffic_min a
+		where a.api_id in (
+		    select  c.api_id
+		    from(
+		        select a.api_id
+		        from adm_api_traffic_min a
+		        where 1=1
+		        $trafficTableCondition$
+		        group by a.api_id
+		    ) a
+		    join com_api_view b on a.api_id = b.api_id
+		    join com_api_info c on a.api_id = c.api_id
+		    where 1=1
+		    <!-- API 서비스 제공자 -->
+	        <isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+	            <isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+	                c.company_code_id
+	                <iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+	                    #searchPubCompanyCodeId[]#
+	                </iterate> 
+	            </isNotEqual>
+	        </isNotEmpty>
+	        <!-- API 서비스 구분 -->
+	        <isNotEmpty property="searchApiCategory" prepend="and">
+	            <isNotEqual property="searchApiCategoryAllYn" compareValue="Y">
+	                c.api_category
+	                <iterate  property="searchApiCategory" prepend="IN" open="(" close=")" conjunction=",">
+	                    #searchApiCategory[]#
+	                </iterate> 
+	            </isNotEqual>
+	        </isNotEmpty>
+	        <!-- API 서비스 이름 -->
+            <isNotEmpty property="searchApiName" prepend="and">
+                <isNotEqual property="searchApiNameAllYn" compareValue="Y">
+                    c.api_id
+                    <iterate  property="searchApiName" prepend="IN" open="(" close=")" conjunction=",">
+                        #searchApiName[]#
+                    </iterate> 
+                </isNotEqual>
+            </isNotEmpty>
+		)
+		group by a.api_service  
+		order by a.api_service asc  
+    </select>
+    
+    <!--
+     * @Method Name        : apt.StatsTrafficDAO.selectStatsTrafficSubCompanyList
+     * @Method description : 앱 개발자 코드 조회
+     * @param              : StatsTrafficVO
+     * @return             : StatsTrafficVO
+     * @throws             : Exception
+     -->
+    <select id="apt.StatsTrafficDAO.selectStatsTrafficSubCompanyList" parameterClass="StatsTrafficVO" resultClass="StatsTrafficVO">
+		select  b.company_code_id           as subcompanyCodeId,
+		        b.company_name_kor_alias    as subcompanyName
+		from(        
+		    select  b.company_code_id
+		    from(
+		        select app_id
+		        from adm_api_traffic_min
+		        group by app_id
+		    ) a
+		    join com_app_view b on a.app_id = b.app_id
+		    join com_app_info c on a.app_id = c.app_id
+		    group by b.company_code_id
+		) a    
+		join com_company_profile b on a.company_code_id = b.company_code_id and b.delete_date is null
+		group by b.company_code_id, b.company_name_kor_alias
+		order by b.company_name_kor_alias asc    
+    </select>
+    
+    <!--
+     * @Method Name        : apt.StatsTrafficDAO.selectStatsTrafficAppNameList
+     * @Method description : 앱이름 코드 조회
+     * @param              : StatsTrafficVO
+     * @return             : StatsTrafficVO
+     * @throws             : Exception
+     -->
+    <select id="apt.StatsTrafficDAO.selectStatsTrafficAppNameList" parameterClass="StatsTrafficVO" resultClass="StatsTrafficVO">
+		select  b.app_id      as appId,
+		        a.app_name    as appName
+		from com_app_view a
+		join com_app_info b on a.app_id = b.app_id
+		where a.company_code_id is not null
+		<!-- 앱 개발자  -->
+        <isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+            <isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+                a.company_code_id
+                <iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchSubCompanyCodeId[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+		order by b.exposure_order asc, a.app_name asc
+    </select>
+    
+    <!--
+     * @Method Name        : apt.StatsTrafficDAO.selectStatsTrafficApiPlanNameList
+     * @Method description : Plan 종류
+     * @param              : StatsTrafficVO
+     * @return             : StatsTrafficVO
+     * @throws             : Exception
+     -->
+    <select id="apt.StatsTrafficDAO.selectStatsTrafficApiPlanNameList" parameterClass="StatsTrafficVO" resultClass="StatsTrafficVO">
+		select  a.api_plan_id       as apiPlanId,
+		        code.code_name_kor  as apiPlanName
+		from(
+		    select b.api_plan_id
+		    from(
+		        select app_id, api_id
+		        from adm_api_traffic_min
+		        group by app_id, api_id
+		    ) a
+		    join com_app_apilist_view b on a.app_id = b.app_id and a.api_id = b.api_id
+		    group by b.api_plan_id
+		) a
+		left join (
+		    select  concat(system_grp_code, system_code) as system_code,
+		            code_name_kor,
+		            code_extend1,
+		            code_seq
+		    from com_system_code
+		    where system_grp_code = 'G024'
+		    and delete_date is null    
+		) code on a.api_plan_id = code.code_extend1
+		order by code.code_seq asc, code.code_name_kor asc    
+    </select>
+      	
+  	<!--
+     * @Method Name        : apt.StatsTrafficDAO.selectStatsTrafficSearchDate
+     * @Method description : 트레픽 통계 목록의 기준일을 조회한다.
+     * @param              : StatsTrafficVO
+     * @return             : StatsTrafficVO
+     * @throws             : Exception
+     -->
+    <select id="apt.StatsTrafficDAO.selectStatsTrafficSearchDate" parameterClass="StatsTrafficVO" resultClass="StatsTrafficVO">
+        <!-- 분 : 최대 2 시간 (조회 시간 기준 -2시간) -->
+        <isEqual property="searchTrafficType" compareValue="min">
+            select date_format(str_to_date(#searchDateTime#, '%Y%m%d%H') - INTERVAL 1 HOUR, '%m/%d %H') as searchStdDate,
+                   date_format(str_to_date(#searchDateTime#, '%Y%m%d%H') - INTERVAL 1 HOUR, '%m/%d %H') as searchStdDateText
+            union all                                
+            select date_format(str_to_date(#searchDateTime#, '%Y%m%d%H'), '%m/%d %H')                   as searchStdDate,
+                   date_format(str_to_date(#searchDateTime#, '%Y%m%d%H'), '%m/%d %H')                   as searchStdDateText
+        </isEqual>
+        
+        <!-- 시간 : 최대 2 일 (조회일/시 기준 -2일) -->
+        <isEqual property="searchTrafficType" compareValue="hourly">
+			select  concat(searchDate, searchTime) as searchStdDate,
+                    date_format(str_to_date(concat(searchDate, searchTime), '%Y%m%d%H'), '%m/%d %H') as searchStdDateText
+			from(
+			    select searchDate
+			    from(
+			        select date_format(adddate(date_format(str_to_date(#searchDateTime#, '%Y%m%d%H') - INTERVAL 47 HOUR, '%Y%m%d'),t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m%d') searchDate
+			        from
+			        (select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+			        (select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+			        (select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+			        (select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+			        (select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+			    ) v
+			    where searchDate 
+			    between date_format(str_to_date(#searchDateTime#, '%Y%m%d%H') - INTERVAL 47 HOUR, '%Y%m%d')
+			    and date_format(str_to_date(#searchDateTime#, '%Y%m%d%H'), '%Y%m%d') 
+			) a,
+			(
+			    select '00' as searchTime
+			    union select '01' union select '02' union select '03' union select '04' union select '05' union select '06'
+			    union select '07' union select '08' union select '09' union select '10' union select '11' union select '12'
+			    union select '13' union select '14' union select '15' union select '16' union select '17' union select '18'
+			    union select '19' union select '20' union select '21' union select '22' union select '23'
+			) b
+			where concat(searchDate, searchTime)
+			between date_format(str_to_date(#searchDateTime#, '%Y%m%d%H') - INTERVAL 47 HOUR, '%Y%m%d%H') 
+			and date_format(str_to_date(#searchDateTime#, '%Y%m%d%H'), '%Y%m%d%H') 
+			order by searchStdDate asc		
+        </isEqual>
+        
+        <!-- 일 : 최대 2개월 (조회 일 기준 -60일) -->
+        <isEqual property="searchTrafficType" compareValue="daily">
+			select  searchDate as searchStdDate,
+			        date_format(str_to_date(searchDate, '%Y%m%d'), '%m/%d') as searchStdDateText
+			from(
+			    select date_format(adddate(date_format(str_to_date(#searchDateTime#, '%Y%m%d') - INTERVAL 60 DAY, '%Y%m%d'),t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m%d') searchDate
+			    from
+			    (select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+			    (select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+			    (select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+			    (select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+			    (select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+			) v
+			where searchDate 
+			between date_format(str_to_date(#searchDateTime#, '%Y%m%d') - INTERVAL 60 DAY, '%Y%m%d')
+			and date_format(str_to_date(#searchDateTime#, '%Y%m%d'), '%Y%m%d')
+        </isEqual>
+        
+        <!-- 개월 : 최대 2년 (조회 월 기준 -23개월) -->
+        <isEqual property="searchTrafficType" compareValue="monthly">
+			select  searchDate as searchStdDate,
+			        date_format(str_to_date(searchDate, '%Y%m'), '%Y/%m') as searchStdDateText
+			from(
+			    select date_format(adddate(date_format(str_to_date(#searchDateTime#, '%Y%m%d') - INTERVAL 23 MONTH, '%Y%m%d'),t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m') searchDate
+			    from
+			    (select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+			    (select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+			    (select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+			    (select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+			    (select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+			) v
+			where searchDate
+			between date_format(str_to_date(#searchDateTime#, '%Y%m%d%H') - INTERVAL 23 MONTH, '%Y%m') 
+			and date_format(str_to_date(#searchDateTime#, '%Y%m%d%H'), '%Y%m') 			
+			group by searchDate
+        </isEqual>
+    </select>
+  	
+  	<!-- 목록 조회조건 -->
+    <sql id="fromWhereAnd">
+		<!-- API 서비스 제공자 -->
+        <isNotEmpty property="searchPubCompanyCodeId" prepend="and">
+            <isNotEqual property="searchPubCompanyCodeIdAllYn" compareValue="Y">
+                a.pubcompany_code_id
+                <iterate  property="searchPubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchPubCompanyCodeId[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+        <!-- API 서비스 구분 -->
+        <isNotEmpty property="searchApiCategory" prepend="and">
+            <isNotEqual property="searchApiCategoryAllYn" compareValue="Y">
+                a.api_category
+                <iterate  property="searchApiCategory" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchApiCategory[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+        <!-- API 서비스 이름 -->
+        <isNotEmpty property="searchApiName" prepend="and">
+            <isNotEqual property="searchApiNameAllYn" compareValue="Y">
+                a.api_id
+                <iterate  property="searchApiName" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchApiName[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+        <!-- 세부 API 서비스 코드 -->
+        <isNotEmpty property="searchApiService" prepend="and">
+            <isNotEqual property="searchApiServiceAllYn" compareValue="Y">
+                a.api_service
+                <iterate  property="searchApiService" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchApiService[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+        
+        <!-- 앱 개발자  -->
+        <isNotEmpty property="searchSubCompanyCodeId" prepend="and">
+            <isNotEqual property="searchSubCompanyCodeIdAllYn" compareValue="Y">
+                a.subcompany_code_id
+                <iterate  property="searchSubCompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchSubCompanyCodeId[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+        <!-- 앱 이름  -->
+        <isNotEmpty property="searchAppName" prepend="and">
+            <isNotEqual property="searchAppNameAllYn" compareValue="Y">
+                a.app_id
+                <iterate  property="searchAppName" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchAppName[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+        
+        <!-- 성공여부  -->
+        <isNotEmpty property="searchResponseResultYn" prepend="and">
+            <isNotEqual property="searchResponseResultYnAllYn" compareValue="Y">
+                a.response_result_yn
+                <iterate  property="searchResponseResultYn" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchResponseResultYn[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+        
+        <!-- Plan 종류  -->
+        <isNotEmpty property="searchApiPlanName" prepend="and">
+            <isNotEqual property="searchApiPlanNameAllYn" compareValue="Y">
+                a.api_plan_id
+                <iterate  property="searchApiPlanName" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchApiPlanName[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+    </sql>
+  	
+	<!--
+     * @Method Name        : apt.StatsTrafficDAO.selectStatsTrafficListCnt
+     * @Method description : 트레픽 통계 목록을 조회한다. (건수 기준)
+     * @param              : StatsTrafficVO
+     * @return             : StatsTrafficVO
+     * @throws             : Exception
+     -->
+    <select id="apt.StatsTrafficDAO.selectStatsTrafficListCnt" parameterClass="StatsTrafficVO" resultClass="java.util.HashMap" remapResults="true">
+		select  a.app_id                                    as appId,
+                a.app_name                                  as appName,
+                a.subcompany_code_id                        as subcompanyCodeId,
+                a.subcompany_name                           as subcompanyName,
+                a.api_id                                    as apiId,
+                a.api_name                                  as apiName,
+                a.api_group                                 as apiGroup,
+                a.api_service                               as apiService,
+                a.api_method                                as apiMethod,
+                a.api_resource                              as apiResource,
+                a.pubcompany_code_id                        as pubcompanyCodeId,
+                a.pubcompany_name                           as pubcompanyName,
+                a.api_category                              as apiCategory,
+                (
+                    select code_name_kor
+                    from com_system_code
+                    where concat(system_grp_code, system_code) = a.api_category           
+                )                                           as apiCategoryName,
+                a.api_plan_id                               as apiPlanId,
+                a.api_plan_code                             as apiPlanCode,
+                a.api_plan_name                             as apiPlanName,
+                a.response_result_yn                        as responseResultYn,
+                format(ifnull(a.cnt_api_duration, 0), 0)    as cntApiDuration
+		        $sql1$
+		from(
+		    /* 구조 - 건수 */
+		    select  a.*,
+		            b.api_plan_id,
+		            code.system_code as api_plan_code,
+		            code.code_name_kor as api_plan_name
+		    from(
+		        select  a.*,
+		                c.company_code_id as pubcompany_code_id,
+		                company.company_name_kor_alias as pubcompany_name,
+		                b.api_name,
+		                c.api_category
+		        from(
+		            select  a.*,
+		                    b.company_code_id as subcompany_code_id,
+		                    company.company_name_kor_alias as subcompany_name,
+		                    b.app_name
+		            from(
+		                select  a.*,
+		                        b.response_result_yn
+		                from(
+		                    select  a.app_id,
+		                            a.api_id,
+		                            a.api_group,
+		                            a.api_service,
+		                            a.api_method,
+		                            a.api_resource,
+		                            sum(a.cnt_api_duration) as cnt_api_duration
+		                    from $trafficTable$ a
+		                    where 1=1
+		                    $trafficTableCondition$
+		                    group by a.app_id, a.api_id, a.api_group, a.api_service, a.api_method, a.api_resource
+		                ) a,
+		                (
+		                    select 'Y' as response_result_yn
+		                    union all
+		                    select 'N' as response_result_yn
+		                ) b
+		            ) a
+		            join com_app_view b on a.app_id = b.app_id
+		            join com_app_info c on a.app_id = c.app_id
+		            join com_company_profile company on b.company_code_id = company.company_code_id
+		        ) a
+		        join com_api_view b on a.api_id = b.api_id
+		        join com_api_info c on a.api_id = c.api_id
+		        join com_company_profile company on c.company_code_id = company.company_code_id
+		    ) a
+		    left join com_app_apilist_view b on a.app_id = b.app_id and a.api_id = b.api_id
+		    left join (
+		        select  concat(system_grp_code, system_code) as system_code,
+		                code_name_kor,
+		                code_extend1
+		        from com_system_code
+		        where system_grp_code = 'G024'
+		        and delete_date is null    
+		    ) code on b.api_plan_id = code.code_extend1
+		) a
+		left join (
+		    /* data */
+		    select  a.app_id,
+		            a.api_id,
+		            a.api_group,
+		            a.api_service,
+		            a.response_result_yn,
+		            sum(cnt_api_duration) as cnt_api_duration
+		            $sql2$
+		    from(        
+		        select  a.std_date,
+		                a.app_id,
+		                a.api_id,
+		                a.api_group,
+		                a.api_service,
+		                a.response_result_yn,
+		                a.cnt_api_duration
+		                $sql3$
+		        from(                
+		            select  a.*,
+		                    a.cnt_api_duration as duration_data
+		            from $trafficTable$ a
+		            where 1=1
+		            $trafficTableCondition$
+		        ) a                
+		    ) a
+		    group by a.app_id, a.api_id, a.api_group, a.api_service, a.response_result_yn
+		) b 
+		on a.app_id = b.app_id
+		and a.api_id = b.api_id
+		and a.api_group = b.api_group
+		and a.api_service = b.api_service
+		and a.response_result_yn = b.response_result_yn
+		where 1=1
+		<include refid="fromWhereAnd"/>
+		order by a.pubcompany_name asc, a.subcompany_name asc, a.api_resource asc, a.response_result_yn desc        
+    </select>
+    
+    <!--
+     * @Method Name        : apt.StatsTrafficDAO.selectStatsTrafficListDuration
+     * @Method description : 트레픽 통계 목록을 조회한다. (응답시간 기준)
+     * @param              : StatsTrafficVO
+     * @return             : StatsTrafficVO
+     * @throws             : Exception
+     -->
+    <select id="apt.StatsTrafficDAO.selectStatsTrafficListDuration" parameterClass="StatsTrafficVO" resultClass="java.util.HashMap" remapResults="true">
+		select  a.app_id                                    as appId,
+		        a.app_name                                  as appName,
+		        a.subcompany_code_id                        as subcompanyCodeId,
+		        a.subcompany_name                           as subcompanyName,
+		        a.api_id                                    as apiId,
+		        a.api_name                                  as apiName,
+		        a.api_group                                 as apiGroup,
+		        a.api_service                               as apiService,
+		        a.api_method                                as apiMethod,
+		        a.api_resource                              as apiResource,
+		        a.pubcompany_code_id                        as pubcompanyCodeId,
+		        a.pubcompany_name                           as pubcompanyName,
+		        a.api_category                              as apiCategory,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.api_category           
+		        )                                           as apiCategoryName,
+		        a.api_plan_id                               as apiPlanId,
+		        a.api_plan_code                             as apiPlanCode,
+		        a.api_plan_name                             as apiPlanName,
+		        a.response_result_yn                        as responseResultYn,
+		        format(ifnull(a.cnt_api_duration, 0), 0)    as cntApiDuration,
+		        a.duration_type                             as durationType,
+		        a.duration_name                             as durationName
+		        $sql1$
+		from(
+		    /* 구조 - duration */
+		    select  a.*,
+		            b.api_plan_id,
+		            code.system_code as api_plan_code,
+		            code.code_name_kor as api_plan_name
+		    from(
+		        select  a.*,
+		                c.company_code_id as pubcompany_code_id,
+		                company.company_name_kor_alias as pubcompany_name,
+		                b.api_name,
+		                c.api_category
+		        from(
+		            select  a.*,
+		                    b.company_code_id as subcompany_code_id,
+		                    company.company_name_kor_alias as subcompany_name,
+		                    b.app_name
+		            from(
+		                select  a.*,
+		                        b.response_result_yn,
+		                        c.duration_type,
+		                        c.duration_name
+		                from(
+		                    select  a.app_id,
+		                            a.api_id,
+		                            a.api_group,
+		                            a.api_service,
+		                            a.api_method,
+		                            a.api_resource,
+		                            sum(a.cnt_api_duration) as cnt_api_duration
+		                    from $trafficTable$ a
+		                    where 1=1
+		                    $trafficTableCondition$
+		                    group by a.app_id, a.api_id, a.api_group, a.api_service, a.api_method, a.api_resource
+		                ) a,
+		                (
+		                    select 'Y' as response_result_yn
+		                    union all
+		                    select 'N' as response_result_yn
+		                ) b,
+		                (
+		                    /* max : 0, min : 1, sum : 2, avg : 3 */
+		                    select '0' as duration_type, 'max' as duration_name
+		                    union all
+		                    select '1' as duration_type, 'min' as duration_name
+		                    union all
+		                    select '2' as duration_type, 'sum' as duration_name
+		                    union all
+		                    select '3' as duration_type, 'avg' as duration_name
+		                ) c
+		            ) a
+		            join com_app_view b on a.app_id = b.app_id
+		            join com_app_info c on a.app_id = c.app_id
+		            join com_company_profile company on b.company_code_id = company.company_code_id
+		        ) a
+		        join com_api_view b on a.api_id = b.api_id
+		        join com_api_info c on a.api_id = c.api_id
+		        join com_company_profile company on c.company_code_id = company.company_code_id
+		    ) a
+		    left join com_app_apilist_view b on a.app_id = b.app_id and a.api_id = b.api_id
+		    left join (
+		        select  concat(system_grp_code, system_code) as system_code,
+		                code_name_kor,
+		                code_extend1
+		        from com_system_code
+		        where system_grp_code = 'G024'
+		        and delete_date is null    
+		    ) code on b.api_plan_id = code.code_extend1
+		) a
+		left join (
+		    /* data */
+		    select  a.app_id,
+		            a.api_id,
+		            a.api_group,
+		            a.api_service,
+		            a.response_result_yn,
+		            a.duration_type
+		            $sql2$
+		    from(
+		        select  a.std_date,
+		                a.app_id,
+		                a.api_id,
+		                a.api_group,
+		                a.api_service,
+		                a.response_result_yn,
+		                a.duration_type
+		                $sql3$
+		        from(        
+		            select  a.std_date,
+		                    a.app_id,
+		                    a.api_id,
+		                    a.api_group,
+		                    a.api_service,
+		                    a.response_result_yn,
+		                    '0' as duration_type,   /* max : 0, min : 1, sum : 2, avg : 3 */
+		                    a.max_api_duration as duration_data
+		            from $trafficTable$ a
+		            where 1=1
+		            $trafficTableCondition$
+		            union all    
+		            select  a.std_date,
+		                    a.app_id,
+		                    a.api_id,
+		                    a.api_group,
+		                    a.api_service,
+		                    a.response_result_yn,
+		                    '1' as duration_type,   /* max : 0, min : 1, sum : 2, avg : 3 */
+		                    a.min_api_duration as duration_data
+		            from $trafficTable$ a
+		            where 1=1
+		            $trafficTableCondition$
+		            union all    
+		            select  a.std_date,
+		                    a.app_id,
+		                    a.api_id,
+		                    a.api_group,
+		                    a.api_service,
+		                    a.response_result_yn,
+		                    '2' as duration_type,   /* max : 0, min : 1, sum : 2, avg : 3 */
+		                    a.sum_api_duration as duration_data
+		            from $trafficTable$ a
+		            where 1=1
+		            $trafficTableCondition$    
+		            union all    
+		            select  a.std_date,
+		                    a.app_id,
+		                    a.api_id,
+		                    a.api_group,
+		                    a.api_service,
+		                    a.response_result_yn,
+		                    '3' as duration_type,   /* max : 0, min : 1, sum : 2, avg : 3 */
+		                    a.avg_api_duration as duration_data
+		            from $trafficTable$ a
+		            where 1=1
+		            $trafficTableCondition$
+		        ) a       
+		    ) a    
+		    group by a.app_id, a.api_id, a.api_group, a.api_service, a.response_result_yn, a.duration_type
+		) b 
+		on a.app_id = b.app_id
+		and a.api_id = b.api_id
+		and a.api_group = b.api_group
+		and a.api_service = b.api_service
+		and a.response_result_yn = b.response_result_yn
+		and a.duration_type = b.duration_type
+		where 1=1
+        <include refid="fromWhereAnd"/>
+		order by a.pubcompany_name asc, a.subcompany_name asc, a.api_resource asc, a.response_result_yn desc, a.duration_type asc        
+    </select>
+    
+</sqlMap>

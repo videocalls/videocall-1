@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+    "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>	
+   <settings 
+   	enhancementEnabled="true" 
+   	cacheModelsEnabled="true"
+   	lazyLoadingEnabled="true"
+   	useStatementNamespaces="true"   	
+   />
+   
+   <sqlMap resource="resources/sqlmap/apt/setting/CompanyCodeManage_SQL.xml"/>      <!-- 기업코드 관리 -->
+   <sqlMap resource="resources/sqlmap/apt/setting/SystemCodeManage_SQL.xml"/>       <!-- 공통코드 관리 -->
+   <sqlMap resource="resources/sqlmap/apt/setting/MenuManage_SQL.xml"/>             <!-- 메뉴 관리 -->
+    
+</sqlMapConfig>

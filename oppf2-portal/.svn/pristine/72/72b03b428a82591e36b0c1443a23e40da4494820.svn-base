@@ -1,0 +1,77 @@
+package kr.co.koscom.oppf.cmm.util;
+
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
+@Slf4j
+public class JsonUtils {
+
+    ObjectMapper mapper;
+
+	public JsonUtils() {
+		mapper = new ObjectMapper();
+	}
+
+	public String getJsonString(Object obj) throws Exception {
+		try {
+			return mapper.writeValueAsString(obj);
+		} catch (JsonProcessingException e) {
+			log.error("Json 문자열 생성 에러 :: " + e);
+			throw new Exception("Json 문자열 생성 에러");
+		}
+	}
+
+	public <T> T readValue(String jsonString, Class<T> valueType) throws Exception {
+		try {
+			return mapper.readValue(jsonString, valueType);
+		} catch (JsonParseException e) {
+			log.error("Json 문자열 생성 에러 :: " + e);
+			throw new Exception("Json 문자열 생성 에러");
+		} catch (JsonMappingException e) {
+			log.error("JsonMappingException :: " + e);
+			throw new Exception("JsonMappingException :: " + e);
+		} catch (IOException e) {
+			log.error("IOException :: " + e);
+			throw new Exception("IOException :: " + e);
+		}
+	}
+
+	public static void printByte(byte[] bytes) {
+		for (int i = 0; i < bytes.length; i++) {
+			System.out.println(i + " [" + bytes[i] + "]");
+		}
+	}
+
+	public static void main(String[] aa) throws UnsupportedEncodingException {
+		String str = "가나다";
+
+		//System.out.println("euc_kr bytes");
+		byte[] eucByte = str.getBytes("euc_kr");
+		JsonUtils.printByte(eucByte);
+
+		//System.out.println("utf-8 bytes");
+		byte[] utfByte = str.getBytes("utf-8");
+		JsonUtils.printByte(utfByte);
+		
+		//System.out.println("euc byte to utf String : ["+new String(eucByte,"utf-8")+"]");
+		
+		//System.out.println("utf byte to euc String : ["+new String(utfByte,"euc_kr")+"]");
+		
+		//System.out.println("euc byte to String : ["+new String(eucByte)+"]");
+		
+		//System.out.println("utf byte to String : ["+new String(utfByte)+"]");
+		
+		
+		//System.out.println("euc byte to euc String : ["+new String(eucByte,"euc_kr")+"]");
+		
+		//System.out.println("utf byte to utf String : ["+new String(utfByte,"utf-8")+"]");
+		
+		
+	}
+}

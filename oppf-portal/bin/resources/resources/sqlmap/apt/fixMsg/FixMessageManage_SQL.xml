@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.fixMsg.service.impl.ViewFixMessageDAO">
+
+    <typeAlias alias="SearchFixMessageVO" type="kr.co.koscom.oppf.apt.fixMsg.service.SearchFixMessageVO"/>
+    <typeAlias alias="FixMessageVO" type="kr.co.koscom.oppf.apt.fixMsg.service.FixMessageVO"/>
+
+    <sql id="fromWhereAnd">
+        <isNotEmpty property="searchKeyword">
+            <!-- seq -->
+            <isEqual property="searchCondition" compareValue="seq" prepend="and">
+                a.seq like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <!-- sendCompId -->
+            <isEqual property="searchCondition" compareValue="sendCompId" prepend="and">
+                a.sender_comp_id like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <!-- deliverToCompId -->
+            <isEqual property="searchCondition" compareValue="deliverToCompId" prepend="and">
+                a.deliver_comp_id like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <isEqual property="searchCondition" compareValue="cliOrdId" prepend="and">
+                if(a.cl_ord_id='' or a.cl_ord_id is null, '-', a.cl_ord_id) like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <isEqual property="searchCondition" compareValue="listId" prepend="and">
+                if(a.list_ord_id='' or a.list_ord_id is null, '-', a.list_ord_id) like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <!-- 전체 -->
+            <isEqual property="searchCondition" compareValue="all" prepend="and">
+                (
+                a.seq like concat('%', #searchKeyword#, '%') or
+                a.sender_comp_id like concat('%', #searchKeyword#, '%') or
+                a.deliver_comp_id like concat('%', #searchKeyword#, '%') or
+                if(a.cl_ord_id='' or a.cl_ord_id is null, '-', a.cl_ord_id) like concat('%', #searchKeyword#, '%') or
+                if(a.list_ord_id='' or a.list_ord_id is null, '-', a.list_ord_id) like concat('%', #searchKeyword#, '%')
+                )
+            </isEqual>
+        </isNotEmpty>
+        <!-- messageType -->
+        <isNotEmpty property="searchMessageType" prepend="and">
+            <isNotEqual property="searchMessageTypeAllYn" compareValue="Y">
+                a.msg_type
+                <iterate  property="searchMessageType" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchMessageType[]#
+                </iterate>
+            </isNotEqual>
+        </isNotEmpty>
+        <!-- Method 방식 -->
+        <isNotEmpty property="rejectYn" prepend="and">
+            <isNotEqual property="rejectYnAllYn" compareValue="Y">
+                a.reject_yn
+                <iterate  property="rejectYn" prepend="IN" open="(" close=")" conjunction=",">
+                    #rejectYn[]#
+                </iterate>
+            </isNotEqual>
+        </isNotEmpty>
+        <!-- Hub Type division (stp, simulator)-->
+        <isNotEmpty property="hubType" prepend="and">
+            <isNotEqual property="hubTypeAllYn" compareValue="Y">
+                a.hub_tp
+                <iterate  property="hubType" prepend="IN" open="(" close=")" conjunction=",">
+                    #hubType[]#
+                </iterate>
+            </isNotEqual>
+        </isNotEmpty>
+        <!-- 조회일 -->
+        <isNotEmpty property="searchDateTimeFrom" prepend="and">
+            ifnull(date_format(a.create_time, '%Y%m%d%H%i'), '') between replace(#searchDateTimeFrom#, '-', '') and replace(#searchDateTimeTo#, '-', '')
+        </isNotEmpty>
+    </sql>
+
+    <select id="apt.ViewFixMessageDAO.selectFixMessageList" parameterClass="SearchFixMessageVO" resultClass="FixMessageVO">
+        SELECT b.company_id                                                     AS companyId,
+        b.company_name                                                          AS companyName,
+        a.dt                                                                    AS dt,
+        a.sender_comp_id                                                        AS senderCompId,
+        a.seq                                                                   AS seq,
+        a.deliver_comp_id                                                       AS deliverCompId,
+        a.msg_type                                                              AS msgType,
+        c.code_nm                                                               AS msgTypeName,
+        a.hub_tp                                                                AS hubType,
+        d.code_nm                                                               AS hubTypeName,
+        a.data_send_json                                                        AS dataSendJson,
+        if(a.cl_ord_id='' or a.cl_ord_id is null, '-', a.cl_ord_id)             AS clientOrderId,
+        if(a.list_ord_id='' or a.list_ord_id is null, '-', a.list_ord_id)       AS listOrderId,
+        a.order_count                                                           AS orderId,
+        a.reject_yn                                                             AS rejectYn,
+        if(a.reject_yn = 'Y', '거부', '승인')    	                                AS rejectYnNameKor,
+        a.create_id                                                             AS createId,
+        a.update_id                                                             AS updateId,
+        date_format(a.create_time, '%Y-%m-%d %H:%i')                            AS createDate,
+        date_format(a.update_time, '%Y-%m-%d %H:%i')                            AS updateDate
+        FROM rs_send_tb a
+        LEFT JOIN company_info_tb b ON a.sender_comp_id = b.sender_comp_id
+        LEFT JOIN code_info_tb c ON a.msg_type = c.code AND c.id = 'msg_type'
+        LEFT JOIN code_info_tb d ON a.hub_tp = d.code AND d.id = 'hub_tp'
+        WHERE dt IS NOT NULL
+        <include refid="fromWhereAnd"/>
+        <include refid="CmmnFuncDAO.CmmnFixPaging"/>
+    </select>
+
+    <select id="apt.ViewFixMessageDAO.selectFixMessageListCnt" parameterClass="SearchFixMessageVO" resultClass="int">
+        select count(1)
+        FROM rs_send_tb a
+        LEFT JOIN company_info_tb b ON a.sender_comp_id = b.sender_comp_id
+        LEFT JOIN code_info_tb c ON a.msg_type = c.code AND c.id = 'msg_type'
+        LEFT JOIN code_info_tb d ON a.hub_tp = d.code AND d.id = 'hub_tp'
+        WHERE dt IS NOT NULL
+        <include refid="fromWhereAnd"/>
+    </select>
+
+    <select id="apt.ViewFixMessageDAO.viewFixMessageAccountExcel" parameterClass="SearchFixMessageVO" resultClass="FixMessageVO">
+        SELECT b.company_id                                                     AS companyId,
+        b.company_name                                                          AS companyName,
+        a.dt                                                                    AS dt,
+        a.sender_comp_id                                                        AS senderCompId,
+        a.seq                                                                   AS seq,
+        a.deliver_comp_id                                                       AS deliverCompId,
+        a.msg_type                                                              AS msgType,
+        c.code_nm                                                               AS msgTypeName,
+        a.hub_tp                                                                AS hubType,
+        d.code_nm                                                               AS hubTypeName,
+        a.data_send_json                                                        AS dataSendJson,
+        if(a.cl_ord_id='' or a.cl_ord_id is null, '-', a.cl_ord_id)             AS clientOrderId,
+        if(a.list_ord_id='' or a.list_ord_id is null, '-', a.list_ord_id)       AS listOrderId,
+        a.order_count                                                           AS orderId,
+        a.reject_yn                                                             AS rejectYn,
+        if(a.reject_yn = 'Y', '거부', '승인')    	                                AS rejectYnNameKor,
+        a.create_id                                                             AS createId,
+        a.update_id                                                             AS updateId,
+        date_format(a.create_time, '%Y-%m-%d %H:%i')                            AS createDate,
+        date_format(a.update_time, '%Y-%m-%d %H:%i')                            AS updateDate
+        FROM rs_send_tb a
+        LEFT JOIN company_info_tb b ON a.sender_comp_id = b.sender_comp_id
+        LEFT JOIN code_info_tb c ON a.msg_type = c.code AND c.id = 'msg_type'
+        LEFT JOIN code_info_tb d ON a.hub_tp = d.code AND d.id = 'hub_tp'
+        WHERE dt IS NOT NULL
+        <isEqual property="excelType" compareValue="excel">
+            <include refid="fromWhereAnd"/>
+        </isEqual>
+        order by a.create_time desc
+    </select>
+
+    <select id="apt.ViewFixMessageDAO.selectFixMessageInitList" parameterClass="SearchFixMessageVO" resultClass="FixMessageVO">
+        SELECT b.company_id                                 AS companyId,
+        b.company_name                               AS companyName,
+        a.dt                                         AS dt,
+        a.sender_comp_id                             AS senderCompId,
+        a.seq                                        AS seq,
+        a.deliver_comp_id                            AS deliverCompId,
+        a.msg_type                                   AS msgType,
+        c.code_nm                                    AS msgTypeName,
+        a.hub_tp                                     AS hubType,
+        d.code_nm                                    AS hubTypeName,
+        a.data_recv_json                             AS dataRecvJson,
+        a.process_yn                                 AS processYn,
+        if(a.cl_ord_id = '' OR a.cl_ord_id IS NULL, '-', a.cl_ord_id)
+        AS clientOrderId,
+        if(a.list_ord_id = '' OR a.list_ord_id IS NULL, '-', a.list_ord_id)
+        AS listOrderId,
+        date_format(a.create_time, '%Y-%m-%d %H:%i') AS createDate,
+        date_format(a.update_time, '%Y-%m-%d %H:%i') AS updateDate
+        FROM fx_recv_tb a
+        LEFT JOIN company_info_tb b ON a.deliver_comp_id = b.sender_comp_id
+        LEFT JOIN code_info_tb c ON a.msg_type = c.code AND c.id = 'msg_type'
+        LEFT JOIN code_info_tb d ON a.hub_tp = d.code AND d.id = 'hub_tp'
+        WHERE dt IS NOT NULL
+        <include refid="fromWhereAnd"/>
+        <include refid="CmmnFuncDAO.CmmnFixPaging"/>
+    </select>
+
+    <select id="apt.ViewFixMessageDAO.selectFixMessageListInitCnt" parameterClass="SearchFixMessageVO" resultClass="int">
+        select count(1)
+        FROM fx_recv_tb a
+        LEFT JOIN company_info_tb b ON a.deliver_comp_id = b.sender_comp_id
+        LEFT JOIN code_info_tb c ON a.msg_type = c.code AND c.id = 'msg_type'
+        LEFT JOIN code_info_tb d ON a.hub_tp = d.code AND d.id = 'hub_tp'
+        WHERE dt IS NOT NULL
+        <include refid="fromWhereAnd"/>
+    </select>
+
+    <select id="apt.ViewFixMessageDAO.viewFixMessageInitiatorExcel" parameterClass="SearchFixMessageVO" resultClass="FixMessageVO">
+        SELECT b.company_id                                 AS companyId,
+        b.company_name                               AS companyName,
+        a.dt                                         AS dt,
+        a.sender_comp_id                             AS senderCompId,
+        a.seq                                        AS seq,
+        a.deliver_comp_id                            AS deliverCompId,
+        a.msg_type                                   AS msgType,
+        c.code_nm                                    AS msgTypeName,
+        a.hub_tp                                     AS hubType,
+        d.code_nm                                    AS hubTypeName,
+        a.data_recv_json                             AS dataRecvJson,
+        a.process_yn                                 AS processYn,
+        if(a.cl_ord_id = '' OR a.cl_ord_id IS NULL, '-', a.cl_ord_id)
+        AS clientOrderId,
+        if(a.list_ord_id = '' OR a.list_ord_id IS NULL, '-', a.list_ord_id)
+        AS listOrderId,
+        date_format(a.create_time, '%Y-%m-%d %H:%i') AS createDate,
+        date_format(a.update_time, '%Y-%m-%d %H:%i') AS updateDate
+        FROM fx_recv_tb a
+        LEFT JOIN company_info_tb b ON a.deliver_comp_id = b.sender_comp_id
+        LEFT JOIN code_info_tb c ON a.msg_type = c.code AND c.id = 'msg_type'
+        LEFT JOIN code_info_tb d ON a.hub_tp = d.code AND d.id = 'hub_tp'
+        WHERE dt IS NOT NULL
+        <isEqual property="excelType" compareValue="excel">
+            <include refid="fromWhereAnd"/>
+        </isEqual>
+        order by a.create_time desc
+    </select>
+
+
+    <select id="apt.ViewFixMessageDAO.selectAcceptorDtl" parameterClass="FixMessageVO" resultClass="FixMessageVO">
+        SELECT b.company_id                                                     AS companyId,
+        b.company_name                                                          AS companyName,
+        a.dt                                                                    AS dt,
+        a.sender_comp_id                                                        AS senderCompId,
+        a.seq                                                                   AS seq,
+        a.deliver_comp_id                                                       AS deliverCompId,
+        a.msg_type                                                              AS msgType,
+        c.code_nm                                                               AS msgTypeName,
+        a.hub_tp                                                                AS hubType,
+        d.code_nm                                                               AS hubTypeName,
+        a.data_send_json                                                        AS dataSendJson,
+        if(a.cl_ord_id='' or a.cl_ord_id is null, '-', a.cl_ord_id)             AS clientOrderId,
+        if(a.list_ord_id='' or a.list_ord_id is null, '-', a.list_ord_id)       AS listOrderId,
+        a.order_count                                                           AS orderId,
+        a.reject_yn                                                             AS rejectYn,
+        if(a.reject_yn = 'Y', '거부', '승인')    	                                AS rejectYnNameKor,
+        a.create_id                                                             AS createId,
+        a.update_id                                                             AS updateId,
+        date_format(a.create_time, '%Y-%m-%d %H:%i')                            AS createDate,
+        date_format(a.update_time, '%Y-%m-%d %H:%i')                            AS updateDate
+        FROM rs_send_tb a
+        LEFT JOIN company_info_tb b ON a.sender_comp_id = b.sender_comp_id
+        LEFT JOIN code_info_tb c ON a.msg_type = c.code AND c.id = 'msg_type'
+        LEFT JOIN code_info_tb d ON a.hub_tp = d.code AND d.id = 'hub_tp'
+        WHERE dt IS NOT NULL
+        and a.dt = #dt#
+        and a.sender_comp_id = #senderCompId#
+        and a.seq = #seq#
+    </select>
+
+    <select id="apt.ViewFixMessageDAO.selectInitiatorDtl" parameterClass="FixMessageVO" resultClass="FixMessageVO">
+          SELECT b.company_id                                 AS companyId,
+        b.company_name                               AS companyName,
+        a.dt                                         AS dt,
+        a.sender_comp_id                             AS senderCompId,
+        a.seq                                        AS seq,
+        a.deliver_comp_id                            AS deliverCompId,
+        a.msg_type                                   AS msgType,
+        c.code_nm                                    AS msgTypeName,
+        a.hub_tp                                     AS hubType,
+        d.code_nm                                    AS hubTypeName,
+        a.data_recv_json                             AS dataRecvJson,
+        a.process_yn                                 AS processYn,
+        if(a.cl_ord_id = '' OR a.cl_ord_id IS NULL, '-', a.cl_ord_id)
+        AS clientOrderId,
+        if(a.list_ord_id = '' OR a.list_ord_id IS NULL, '-', a.list_ord_id)
+        AS listOrderId,
+        date_format(a.create_time, '%Y-%m-%d %H:%i') AS createDate,
+        date_format(a.update_time, '%Y-%m-%d %H:%i') AS updateDate
+        FROM fx_recv_tb a
+        LEFT JOIN company_info_tb b ON a.deliver_comp_id = b.sender_comp_id
+        LEFT JOIN code_info_tb c ON a.msg_type = c.code AND c.id = 'msg_type'
+        LEFT JOIN code_info_tb d ON a.hub_tp = d.code AND d.id = 'hub_tp'
+        WHERE dt IS NOT NULL
+        and a.dt = #dt#
+        and a.deliver_comp_id = #deliverCompId#
+        and a.seq = #seq#
+    </select>
+
+    <!--공통코드 리스트-->
+    <select id="apt.ViewFixMessageDAO.selectCommonCodeName" parameterClass="SearchFixMessageVO" resultClass="SearchFixMessageVO">
+        select
+        code_nm as commonCodeName,
+        id as commonCodeId,
+        code as commonCode
+        from code_info_tb
+        where 1 = 1
+        and id = #commonCodeId#
+        order by code_nm
+    </select>
+</sqlMap>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.terms.service.impl.TermsContentManageDAO">
+
+  	<typeAlias alias="TermsContentManageVO" type="kr.co.koscom.oppf.apt.terms.service.TermsContentManageVO"/>
+  	
+  	
+	<!--
+     * @Method Name        : apt.TermsContentManageDAO.selectTermsContentList
+     * @Method description : 약관동의 내용의 목록을 조회한다.
+     * @param              : TermsContentManageVO
+     * @return             : TermsContentManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.TermsContentManageDAO.selectTermsContentList" parameterClass="TermsContentManageVO" resultClass="TermsContentManageVO">
+		select  a.customer_terms_system_kind                                    as customerTermsSystemKind,
+                (
+                    select code_name_kor
+                    from com_system_code
+                    where concat(system_grp_code, system_code) = a.customer_terms_system_kind           
+                )                                                               as customerTermsSystemKindName,
+		        a.customer_terms_type                                           as customerTermsType,
+		        concat(b.code_name_kor, ' (ver. ', a.customer_terms_content_ver, ')') as customerTermsTypeName,
+		        a.customer_terms_content_reg_seq                                as customerTermsContentRegSeq,
+		        a.customer_email_yn                                             as customerEmailYn,
+		        if(ifnull(a.customer_email_yn, 'N') = 'N', '미고지', '고지')       as customerEmailYnName,
+		        date_format(a.customer_email_date, '%Y-%m-%d %H:%i')            as customerEmailDate,
+		        date_format(a.create_date, '%Y-%m-%d %H:%i')                    as createDate,
+		        date_format(a.update_date, '%Y-%m-%d %H:%i')                    as updateDate
+		from spt_customer_terms_content_profile a,
+		(
+		    select *    
+		    from com_system_code
+		    where use_yn = 'Y'
+		    and DATE_FORMAT(now(), '%Y%m%d') between vld_start_date and vld_expire_date
+		    and system_grp_code = 'G008'
+		    and code_extend1 = 'Y'
+		) b
+		where a.customer_terms_type = concat(b.system_grp_code, b.system_code)
+		and a.customer_terms_type = #searchTermsType#
+		order by a.customer_terms_system_kind asc, a.customer_terms_content_ver desc, a.customer_terms_content_reg_seq desc				
+    </select>
+        
+    <!--
+     * @Method Name        : apt.TermsContentManageDAO.selectTermsContentDtl
+     * @Method description : 약관동의 내용의 상세를 조회한다.
+     * @param              : TermsContentManageVO
+     * @return             : TermsContentManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.TermsContentManageDAO.selectTermsContentDtl" parameterClass="TermsContentManageVO" resultClass="TermsContentManageVO">
+		select  a.customer_terms_type                                           as customerTermsType,
+		        a.customer_terms_content_reg_seq                                as customerTermsContentRegSeq,
+		        a.customer_terms_system_kind                                    as customerTermsSystemKind,
+		        a.customer_terms_content_ver                                    as customerTermsContentVer,
+		        a.customer_terms_content                                        as customerTermsContent,
+		        a.customer_email_yn                                             as customerEmailYn,
+		        date_format(a.customer_email_date, '%Y-%m-%d %H:%i')            as customerEmailDate,
+		        date_format(a.create_date, '%Y-%m-%d %H:%i')                    as createDate,
+		        date_format(a.update_date, '%Y-%m-%d %H:%i')                    as updateDate
+		from spt_customer_terms_content_profile a
+		where customer_terms_type = #customerTermsType#
+		and customer_terms_content_reg_seq = #customerTermsContentRegSeq#
+    </select>
+    
+    <!--
+     * @Method Name        : apt.TermsContentManageDAO.insertTermsContentHist
+     * @Method description : 약관동의 내용 hist 등록
+     * @param              : TermsContentManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="apt.TermsContentManageDAO.insertTermsContentHist" parameterClass="TermsContentManageVO">
+		insert into spt_customer_terms_content_profile_hist(
+		    customer_terms_type,
+		    customer_terms_content_reg_seq,
+		    customer_terms_content_seq,
+		    customer_terms_system_kind,
+		    customer_terms_content_ver,
+		    customer_terms_content,
+		    customer_email_yn,
+		    customer_email_date,
+		    create_date,
+		    create_id
+		)    
+		select  customer_terms_type,
+		        customer_terms_content_reg_seq,
+                ifnull((
+                    select ifnull(max(cast(customer_terms_content_seq as SIGNED)), 0) + 1
+                    from spt_customer_terms_content_profile_hist
+                    where customer_terms_type = a.customer_terms_type
+                    and customer_terms_content_reg_seq = a.customer_terms_content_reg_seq
+                ), 1),
+                customer_terms_system_kind,
+                customer_terms_content_ver,
+                customer_terms_content,
+	            customer_email_yn,
+	            customer_email_date,
+	            update_date,
+                update_id
+        from spt_customer_terms_content_profile a
+        where customer_terms_type = #customerTermsType#
+        and customer_terms_content_reg_seq = #customerTermsContentRegSeq#
+    </insert>
+    
+    <!--
+     * @Method Name        : apt.TermsContentManageDAO.insertTermsContent
+     * @Method description : 약관동의 내용 등록
+     * @param              : TermsContentManageVO
+     * @return             : string
+     * @throws             : Exception
+     -->
+    <insert id="apt.TermsContentManageDAO.insertTermsContent" parameterClass="TermsContentManageVO">
+        <selectKey keyProperty="customerTermsContentRegSeq" resultClass="java.lang.String">
+            select  concat(date_format(sysdate(),'%Y%m%d'), 
+                    lpad((
+                            select ifnull( max(cast(right(customer_terms_content_reg_seq,3) as signed)), 0)+1 
+                            from spt_customer_terms_content_profile 
+                            where customer_terms_type = #customerTermsType#  
+                            and left(customer_terms_content_reg_seq,8) = concat(date_format(sysdate(),'%Y%m%d'))
+                        ), 3, '0')
+                    ) as customerTermsContentRegSeq
+        </selectKey>
+		insert into spt_customer_terms_content_profile(
+		    customer_terms_type,
+		    customer_terms_content_reg_seq,
+		    customer_terms_system_kind,
+		    customer_terms_content_ver,
+		    customer_terms_content,
+		    customer_email_yn,
+		    <isEqual property="emailSendFlag" compareValue="Y">
+		        customer_email_date,
+		    </isEqual>
+		    create_date,
+		    create_id,
+		    update_date,
+		    update_id
+		)values(
+            #customerTermsType#,
+            #customerTermsContentRegSeq#,
+            #customerTermsSystemKind#,
+            #customerTermsContentVer#,
+            #customerTermsContent#,
+            #customerEmailYn#,
+            <isEqual property="emailSendFlag" compareValue="Y">
+                sysdate(),
+            </isEqual>
+            sysdate(),
+            #createId#,
+            sysdate(),
+            #createId#	  
+		)
+    </insert>
+    
+    <!--
+     * @Method Name        : apt.TermsContentManageDAO.updateTermsContent
+     * @Method description : 약관동의 내용 수정
+     * @param              : TermsContentManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="apt.TermsContentManageDAO.updateTermsContent" parameterClass="TermsContentManageVO">
+        update spt_customer_terms_content_profile set
+            customer_terms_system_kind = #customerTermsSystemKind#,
+            customer_terms_content_ver = #customerTermsContentVer#,
+            customer_terms_content = #customerTermsContent#,
+            customer_email_yn = #customerEmailYn#,
+            <isEqual property="emailSendFlag" compareValue="Y">
+                customer_email_date = sysdate(), 
+            </isEqual>
+            update_date = sysdate(),
+            update_id = #createId#
+        where customer_terms_type = #customerTermsType#
+        and customer_terms_content_reg_seq = #customerTermsContentRegSeq#
+    </update>
+    
+</sqlMap>

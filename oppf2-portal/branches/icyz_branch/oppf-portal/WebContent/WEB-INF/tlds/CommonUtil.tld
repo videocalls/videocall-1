@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+
+    <description>CommonUtil functions library</description>
+    <display-name>CommonUtil functions</display-name>
+    <tlib-version>1.1</tlib-version>
+    <short-name>cutil</short-name>
+    <uri>tld/CommonUtil.tld</uri>
+
+    <function>
+        <description>증권사 이름 리턴</description>
+        <name>companyName</name>
+        <function-class>kr.co.koscom.oppf.cmm.util.CommonFunction</function-class>
+        <function-signature>java.lang.String companyName(java.lang.String)</function-signature>
+        <example>
+            ${cutil:companyName(code)}
+        </example>
+    </function>
+    
+    <function>
+        <name>escapeJS</name>
+        <function-class>org.apache.commons.lang.StringEscapeUtils</function-class>
+        <function-signature>java.lang.String escapeJavaScript(java.lang.String)</function-signature>
+        <example>
+            ${cutil:escapeJS(str)}
+        </example>
+    </function>    
+</taglib>

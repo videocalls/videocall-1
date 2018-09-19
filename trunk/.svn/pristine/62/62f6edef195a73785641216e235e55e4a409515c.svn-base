@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE xml>
+
+
+<included>
+  <!-- override the default value; or comment out to leave it at default -->
+  <property name="OPPF_LEVEL"       value="debug" />
+  <property name="ROOT_LEVEL"       value="debug" />
+  
+  <property name="APPENDER_TYPE"    value="ROLLING-FILE" />
+</included>

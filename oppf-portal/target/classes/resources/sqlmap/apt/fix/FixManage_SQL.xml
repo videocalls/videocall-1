@@ -1,0 +1,1474 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.fix.service.impl.FixManageDAO">
+
+	<typeAlias alias="FixManageVO"
+		type="kr.co.koscom.oppf.apt.fix.service.FixManageVO" />
+
+	<typeAlias alias="StatsTrafficVO"
+		type="kr.co.koscom.oppf.apt.stats.service.StatsTrafficVO" />
+
+	<select id="FixManageDAO.selectRsSendTbCount" resultClass="int">
+		select count(*) as cnt from RS_SEND_TB
+	</select>
+
+
+	<sql id="searchFixDayStd">
+		<!-- 분 -->
+		<isEqual property="searchTrafficType" compareValue="min">
+			select  concat(a.std_date, b.std_date) as resultDt,
+					 date_format(str_to_date(concat(a.std_date, b.std_date), '%Y%m%d%H%i'), '%m/%d %H:%i') as Date
+			from(
+					select  concat(searchDate, searchTime) as std_date
+					from(
+					select searchDate
+					from(
+					select date_format(adddate(date_format(str_to_date(#searchDateTimeFrom#, '%Y%m%d%H'), '%Y%m%d'), t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m%d') searchDate
+					from
+						(select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+						(select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+						(select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+						(select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+						(select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+			) v
+			where searchDate <![CDATA[<=]]> #searchDateTimeTo#
+			) a,
+			(
+					select '00' as searchTime
+					union select '01' union select '02' union select '03' union select '04' union select '05' union select '06'
+					union select '07' union select '08' union select '09' union select '10' union select '11' union select '12'
+					union select '13' union select '14' union select '15' union select '16' union select '17' union select '18'
+					union select '19' union select '20' union select '21' union select '22' union select '23'
+			) b
+			where concat(searchDate, searchTime)
+			between #searchDateTimeFrom# and #searchDateTimeTo#
+			) a,
+			(
+					select '00' as std_date union select '05' union
+					select '10' as std_date union select '15' union
+					select '20' as std_date union select '25' union
+					select '30' as std_date union select '35' union
+					select '40' as std_date union select '45' union
+					select '50' as std_date union select '55'
+			) b
+		</isEqual>
+
+		<!-- 시간 -->
+		<isEqual property="searchTrafficType" compareValue="hourly">
+			select  concat(searchDate, searchTime) as resultDt,
+					 date_format(str_to_date(concat(searchDate, searchTime), '%Y%m%d%H'), '%m/%d %H:%i') as Date
+			from(
+					select searchDate
+					from(
+					select date_format(adddate(date_format(str_to_date(#searchDateTimeFrom#, '%Y%m%d%H'), '%Y%m%d'), t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m%d') searchDate
+					from
+						(select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+						(select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+						(select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+						(select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+						(select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+			) v
+			where searchDate <![CDATA[<=]]> #searchDateTimeTo#
+			) a,
+			(
+					select '00' as searchTime
+					union select '01' union select '02' union select '03' union select '04' union select '05' union select '06'
+					union select '07' union select '08' union select '09' union select '10' union select '11' union select '12'
+					union select '13' union select '14' union select '15' union select '16' union select '17' union select '18'
+					union select '19' union select '20' union select '21' union select '22' union select '23'
+			) b
+			where concat(searchDate, searchTime)
+			between #searchDateTimeFrom# and #searchDateTimeTo#
+		</isEqual>
+
+		<!-- 일 -->
+		<isEqual property="searchTrafficType" compareValue="daily">
+			select  searchDate as resultDt,
+					 date_format(str_to_date(searchDate, '%Y%m%d'), '%y/%m/%d') as Date
+			from(
+					select date_format(adddate(date_format(#searchDateTimeFrom#, '%Y%m%d'),t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m%d') searchDate
+					from
+						(select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+						(select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+						(select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+						(select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+						(select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+			) v
+			where searchDate
+			between #searchDateTimeFrom# and #searchDateTimeTo#
+		</isEqual>
+
+		<!-- 개월 -->
+		<isEqual property="searchTrafficType" compareValue="monthly">
+			select  searchDate as resultDt,
+					 date_format(str_to_date(searchDate, '%Y%m'), '%y/%m') as Date
+			from(
+					select date_format(adddate(date_format(concat(#searchDateTimeFrom#, '01'), '%Y%m%d'),t4*10000 + t3*1000 + t2*100 + t1*10 + t0), '%Y%m') searchDate
+					from
+						(select 0 t0 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t0,
+						(select 0 t1 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t1,
+						(select 0 t2 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t2,
+						(select 0 t3 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t3,
+						(select 0 t4 union select 1 union select 2 union select 3 union select 4 union select 5 union select 6 union select 7 union select 8 union select 9) t4
+			) v
+			where searchDate
+			between #searchDateTimeFrom# and #searchDateTimeTo#
+			group by searchDate
+		</isEqual>
+	</sql>
+
+	<sql id="fromWhereAnd">
+		<isNotEmpty property="searchKeyword">
+			<!-- 이름 -->
+			<isEqual property="searchCondition" compareValue="senderCompName"
+				prepend="and">
+				sender_comp_name like concat('%', #searchKeyword#, '%')
+			</isEqual>
+			<!-- companyId -->
+			<isEqual property="searchCondition" compareValue="companyId"
+				prepend="and">
+				company_id like concat('%', #searchKeyword#, '%')
+			</isEqual>
+			<!-- compId -->
+			<isEqual property="searchCondition" compareValue="compId"
+				prepend="and">
+				sender_comp_id like concat('%', #searchKeyword#, '%')
+			</isEqual>
+
+			<!-- 전체 -->
+			<isEqual property="searchCondition" compareValue="all"
+				prepend="and">
+				(
+				sender_comp_name like concat('%', #searchKeyword#, '%') or
+				company_id like concat('%', #searchKeyword#, '%') or
+				sender_comp_id like concat('%', #searchKeyword#, '%')
+
+				)
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="fixQueueId">
+			and fix_queue_id = #fixQueueId#
+		</isNotEmpty>
+
+		<isNotEmpty property="useStatus" prepend="and">
+			<isNotEqual property="useStatusAllYn" compareValue="Y">
+				use_yn 
+				<iterate property="useStatus" prepend="IN" open="(" close=")" conjunction=",">
+					#useStatus[]#
+				</iterate>
+			</isNotEqual>
+		</isNotEmpty>
+		
+
+		/*SunHaLee*/
+		<isNotEmpty property="useYnStatus" prepend="and">
+			use_yn != #useYnStatus#
+		</isNotEmpty>
+	</sql>
+
+
+	<sql id="whereSearchDate">
+		<isNotEmpty property="searchDateType">
+			<!-- 등록일 -->
+			<isEqual property="searchDateType" compareValue="create"
+				prepend="and">
+				ifnull(date_format(create_Time, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and
+				replace(#searchDateTo#, '-', '')
+			</isEqual>
+			<!-- 수정일 -->
+			<isEqual property="searchDateType" compareValue="update"
+				prepend="and">
+				ifnull(date_format(update_time, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and
+				replace(#searchDateTo#, '-', '')
+			</isEqual>
+		</isNotEmpty>
+	</sql>
+
+
+	<sql id="fixFromWhereAnd">
+		<isNotEmpty property="searchKeyword">
+			<!-- serverId-->
+			<isEqual property="searchCondition" compareValue="serverId"
+				prepend="and">
+				init_server_id like concat('%', #searchKeyword#, '%')
+			</isEqual>
+			<!-- serverIp -->
+			<isEqual property="searchCondition" compareValue="serverIp"
+				prepend="and">
+				init_server_ip like concat('%', #searchKeyword#, '%')
+			</isEqual>
+			<!-- senderCompId -->
+			<isEqual property="searchCondition" compareValue="senderCompId"
+				prepend="and">
+				init_sender_comp_id like concat('%', #searchKeyword#, '%')
+			</isEqual>
+			<!-- createNm -->
+			<isEqual property="createNm" compareValue="createNm" prepend="and">
+				create_nm like concat('%', #searchKeyword#, '%')
+			</isEqual>
+
+			<!-- 전체 -->
+			<isEqual property="searchCondition" compareValue="all"
+				prepend="and">
+				(
+				init_server_id like concat('%', #searchKeyword#, '%') or
+				init_server_ip like concat('%', #searchKeyword#, '%') or
+				init_sender_comp_id like concat('%', #searchKeyword#, '%') or
+				create_nm like concat('%', #searchKeyword#, '%')
+				)
+			</isEqual>
+		</isNotEmpty>
+
+		<isNotEmpty property="useStatus" prepend="and">
+			<isNotEqual property="useStatusAllYn" compareValue="Y">
+				fix_state_cd 
+				<iterate property="useStatus" prepend="IN" open="(" close=")" conjunction=",">
+					#useStatus[]#
+				</iterate>
+			</isNotEqual>
+		</isNotEmpty>
+		
+		<isNotEmpty property="connectionHost">
+			and connection_host like concat('%', #connectionHost#, '%')
+		</isNotEmpty>
+		
+		<isNotEmpty property="connectionPort">
+			and connection_port like concat('%', #connectionPort#, '%')
+		</isNotEmpty>
+		
+	</sql>
+
+
+	<select id="apt.fix.selectQueueListCombo" parameterClass="FixManageVO"
+		resultClass="FixManageVO">
+		select
+		fix_queue_id as fixQueueId
+		from fx_comp_queue_tb
+		order by fix_queue_id asc
+	</select>
+
+
+
+	<select id="apt.fix.fixBuySideListSearch" parameterClass="FixManageVO"
+		resultClass="FixManageVO">
+		select
+		sender_comp_name as senderCompName,
+		company_id as companyId,
+		sender_comp_id as senderCompId,
+		fix_queue_id as fixQueueId,
+		IF(Ifnull(use_yn, 'N') = 'Y', '가능', '불가능')    AS useYnStatus, 
+		create_nm as createNm,
+		session_sender_comp_id as sessionSenderCompId,
+		ifnull(date_format(create_time, '%Y-%m-%d %H:%i'), '') as createTime,
+		ifnull(date_format(update_time, '%Y-%m-%d %H:%i'), '') as updateTime
+		from rs_comp_tb
+		where 1=1
+		AND use_yn is not null
+		<include refid="fromWhereAnd" />
+		<include refid="whereSearchDate" />
+		<include refid="CmmnFuncDAO.CmmnFixPaging" />
+	</select>
+
+
+	<select id="apt.fix.fixBuySideListSearchCombo" parameterClass="FixManageVO"
+		resultClass="FixManageVO">
+		select
+		sender_comp_name as senderCompName,
+		company_id as companyId,
+		sender_comp_id as senderCompId,
+		fix_queue_id as fixQueueId,
+		IF(Ifnull(use_yn, 'N') = 'Y', '가능', '불가능')    AS useYnStatus, 
+		create_nm as createNm,
+		ifnull(date_format(create_time, '%Y-%m-%d %H:%i'), '') as createTime,
+		ifnull(date_format(update_time, '%Y-%m-%d %H:%i'), '') as updateTime
+		from rs_comp_tb
+		where 1=1
+		AND use_yn is not null
+		order by  sender_comp_name asc
+	</select>
+	
+    <select id="apt.fix.fixBuySideListCommon" parameterClass="FixManageVO"
+            resultClass="FixManageVO">
+        select
+        sender_comp_name as senderCompName,
+        company_id as companyId,
+        sender_comp_id as senderCompId,
+        fix_queue_id as fixQueueId,
+        IF(Ifnull(use_yn, 'N') = 'Y', '가능', '불가능')    AS useYnStatus,
+        create_nm as createNm,
+        ifnull(date_format(create_time, '%Y-%m-%d %H:%i'), '') as createTime,
+        ifnull(date_format(update_time, '%Y-%m-%d %H:%i'), '') as updateTime
+        from rs_comp_tb
+        where 1=1
+        AND use_yn is not null
+        order by sender_comp_name asc
+    </select>
+
+	<select id="apt.fix.fixBuySideListSearchExcel" parameterClass="FixManageVO"
+		resultClass="FixManageVO">
+		select
+		sender_comp_name as senderCompName,
+		company_id as companyId,
+		sender_comp_id as senderCompId,
+		fix_queue_id as fixQueueId,
+		IF(Ifnull(use_yn, 'N') = 'Y', '가능', '불가능')    AS useYnStatus, 
+		create_nm as createNm,
+		session_sender_comp_id as sessionSenderCompId,
+		ifnull(date_format(create_time, '%Y-%m-%d %H:%i'), '') as createTime,
+		ifnull(date_format(update_time, '%Y-%m-%d %H:%i'), '') as updateTime
+		from rs_comp_tb
+		where 1=1
+		AND use_yn is not null
+		<isEqual property="excelType" compareValue="excel">
+		<include refid="fromWhereAnd" />
+		<include refid="whereSearchDate" />
+		</isEqual>
+		order by create_time desc
+	</select>
+
+
+	<select id="apt.fix.resultListTotalCount" parameterClass="FixManageVO"
+		resultClass="int">
+		select
+		count(sender_comp_name) as cnt
+		from rs_comp_tb
+		where 1=1
+		<include refid="fromWhereAnd" />
+		<include refid="whereSearchDate" />
+
+	</select>
+
+	<select id="apt.fix.selectCompanyIdCnt" parameterClass="FixManageVO"
+		resultClass="int">
+		select
+		count(company_id) as cnt
+		from rs_comp_tb
+		where company_id = #companyId#
+	</select>
+
+	<select id="apt.fix.fixBuySideDtl" parameterClass="FixManageVO"
+		resultClass="FixManageVO">
+		select
+		sender_comp_name as senderCompName,
+		company_id as companyId,
+		sender_comp_id as senderCompId,
+		fix_queue_id as fixQueueId,
+		if(ifnull(use_yn, '') = 'N', '불가능', '가능') as useYnStatus,
+		use_yn as useYn,
+		session_sender_comp_id as sessionSenderCompId,
+		create_nm as createNm,
+		update_nm as updateNm,
+		ifnull(date_format(create_time, '%Y-%m-%d %H:%i'), '') as createTime,
+		ifnull(date_format(update_time, '%Y-%m-%d %H:%i'), '') as updateTime
+		from rs_comp_tb
+		where 1=1
+		and sender_comp_id = #senderCompId#
+	</select>
+
+
+	<select id="apt.fix.countSenderCompId" parameterClass="FixManageVO"
+		resultClass="int">
+		select
+		count(sender_comp_id) as cnt
+		from rs_comp_tb
+		where sender_comp_id = #senderCompId#
+	</select>
+
+
+
+	<select id="apt.fix.fixInitiatorListSearch" parameterClass="FixManageVO"
+		resultClass="FixManageVO">
+			SELECT
+			      init_server_id         AS initServerId, 
+			      init_server_ip         AS initServerIp, 
+			      session_target_comp_id AS sessionTargetCompId, 
+			      session_sender_comp_id AS sessionSenderCompId, 
+			      connection_host        AS connectionHost, 
+			      connection_port        AS connectionPort, 
+			      fixStateCdNm           AS fixStateCdNm, 
+			      fixStateCd             AS fixStateCd 
+			FROM   (SELECT a.init_server_id, 
+			               a.init_server_ip, 
+			               c.session_target_comp_id, 
+			               c.session_sender_comp_id, 
+			               c.connection_host, 
+			               c.connection_port, 
+			               case when Ifnull(c.fix_state_cd, '')  = '' then 
+			                        ''
+			                    else 
+			                        IF(Ifnull(c.fix_state_cd, '') = '0', '정상', '중지') 
+			                    end fixStateCdNm, 
+			               Ifnull(c.fix_state_cd, '') AS fixStateCd 
+			        FROM   fx_comp_tb a 
+			        right join fx_session_tb c 
+			          ON c.init_server_id = a.init_server_id
+					where 1=1		        
+					<isNotEmpty property="searchKeyword">
+						<!-- 이름 -->
+						<isEqual property="searchCondition" compareValue="initiatorId"
+							prepend="and">
+							a.init_server_id like concat('%', #searchKeyword#, '%')
+						</isEqual>
+						<!-- id -->
+						<isEqual property="searchCondition" compareValue="initiatorIp"
+							prepend="and">
+							a.init_server_ip like concat('%', #searchKeyword#, '%')
+						</isEqual>
+						<!-- targetCompId -->
+						<isEqual property="searchCondition" compareValue="targetCompId"
+							prepend="and">
+							b.session_target_comp_id like concat('%', #searchKeyword#, '%')
+						</isEqual>
+						<!-- senderCompId -->
+						<isEqual property="searchCondition" compareValue="senderCompId"
+							prepend="and">
+							b.session_sender_comp_id like concat('%', #searchKeyword#, '%')
+						</isEqual>
+						<!-- socketHost -->
+						<isEqual property="searchCondition" compareValue="socketHost"
+							prepend="and">
+							b.connection_host like concat('%', #searchKeyword#, '%')
+						</isEqual>
+						<!-- senderCompId -->
+						<isEqual property="searchCondition" compareValue="socketPort"
+							prepend="and">
+							b.connection_port like concat('%', #searchKeyword#, '%')
+						</isEqual>
+			
+						<!-- 전체 -->
+						<isEqual property="searchCondition" compareValue="all"
+							prepend="and">
+							(
+							a.init_server_id like concat('%', #searchKeyword#, '%') or
+							a.init_server_ip like concat('%', #searchKeyword#, '%') or
+							b.session_target_comp_id like concat('%', #searchKeyword#, '%') or
+							b.session_sender_comp_id like concat('%', #searchKeyword#, '%') or
+							b.connection_host like concat('%', #searchKeyword#, '%') or
+							b.connection_port like concat('%', #searchKeyword#, '%')
+							)
+						</isEqual>
+					</isNotEmpty> 
+					<isNotEmpty property="useStatus" prepend="and">
+						<isNotEqual property="useStatusAllYn" compareValue="Y">
+							c.fix_state_cd 
+							<iterate property="useStatus" prepend="IN" open="(" close=")" conjunction=",">
+								#useStatus[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+			        UNION ALL 
+			        SELECT
+			              a.init_server_id, 
+			              a.init_server_ip, 
+			              b.session_target_comp_id, 
+			              b.session_sender_comp_id, 
+			              b.connection_host, 
+			              b.connection_port, 
+			              
+			               case when Ifnull(b.fix_state_cd, '')  = '' then 
+			                        ''
+			                    else 
+			                        IF(Ifnull(b.fix_state_cd, '') = '0', '정상', '중지') 
+			                    end fixStateCdNm, 
+			              Ifnull(b.fix_state_cd, '') AS fixStateCd 
+			        FROM   fx_comp_tb a 
+			        left join fx_session_tb b 
+			          ON a.init_server_id = b.init_server_id
+					where 1=1		        
+					<isNotEmpty property="searchKeyword">
+						<!-- 이름 -->
+						<isEqual property="searchCondition" compareValue="initiatorId"
+							prepend="and">
+							a.init_server_id like concat('%', #searchKeyword#, '%')
+						</isEqual>
+						<!-- id -->
+						<isEqual property="searchCondition" compareValue="initiatorIp"
+							prepend="and">
+							a.init_server_ip like concat('%', #searchKeyword#, '%')
+						</isEqual>
+						<!-- targetCompId -->
+						<isEqual property="searchCondition" compareValue="targetCompId"
+							prepend="and">
+							b.session_target_comp_id like concat('%', #searchKeyword#, '%')
+						</isEqual>
+						<!-- senderCompId -->
+						<isEqual property="searchCondition" compareValue="senderCompId"
+							prepend="and">
+							b.session_sender_comp_id like concat('%', #searchKeyword#, '%')
+						</isEqual>
+						<!-- socketHost -->
+						<isEqual property="searchCondition" compareValue="socketHost"
+							prepend="and">
+							b.connection_host like concat('%', #searchKeyword#, '%')
+						</isEqual>
+						<!-- senderCompId -->
+						<isEqual property="searchCondition" compareValue="socketPort"
+							prepend="and">
+							b.connection_port like concat('%', #searchKeyword#, '%')
+						</isEqual>
+			
+						<!-- 전체 -->
+						<isEqual property="searchCondition" compareValue="all"
+							prepend="and">
+							(
+							a.init_server_id like concat('%', #searchKeyword#, '%') or
+							a.init_server_ip like concat('%', #searchKeyword#, '%') or
+							b.session_target_comp_id like concat('%', #searchKeyword#, '%') or
+							b.session_sender_comp_id like concat('%', #searchKeyword#, '%') or
+							b.connection_host like concat('%', #searchKeyword#, '%') or
+							b.connection_port like concat('%', #searchKeyword#, '%')
+							)
+						</isEqual>
+					</isNotEmpty> 
+					<isNotEmpty property="useStatus" prepend="and">
+						<isNotEqual property="useStatusAllYn" compareValue="Y">
+							b.fix_state_cd 
+							<iterate property="useStatus" prepend="IN" open="(" close=")" conjunction=",">
+								#useStatus[]#
+							</iterate>
+						</isNotEqual>
+					</isNotEmpty>
+					) a 
+					where 1=1	
+					
+			GROUP  BY init_server_id, 
+			          init_server_ip, 
+			          session_target_comp_id, 
+			          session_sender_comp_id, 
+			          connection_host, 
+			          connection_port, 
+			          fixStateCdNm, 
+			          fixStateCd 
+			ORDER  BY init_server_id DESC, 
+			          init_server_ip ASC, 
+			          session_target_comp_id ASC, 
+			          session_sender_comp_id ASC
+	</select>
+	
+	<select id="apt.fix.fixInitiatorListSearchCombo" parameterClass="FixManageVO"
+		resultClass="FixManageVO">
+		select
+			init_server_id as initServerId,
+			init_server_ip as initServerIp
+		from fx_comp_tb
+		where 1=1
+		order by initServerId asc
+	</select>
+	
+	<select id="apt.fix.fixSessionAddDtl" parameterClass="FixManageVO" resultClass="FixManageVO">
+		select
+			session_sender_comp_id as sessionSenderCompId,
+			session_target_comp_id as sessionTargetCompId,
+			connection_host as connectionHost,
+			connection_port as connectionPort,
+			init_server_id as initServerId,
+			ifnull(date_format(create_time, '%Y-%m-%d %H:%i'), '') as createTime,
+			ifnull(date_format(update_time, '%Y-%m-%d %H:%i'), '') as updateTime
+		from fx_session_tb
+		where 1=1
+			and session_target_comp_id = #sessionTargetCompId#
+			and session_sender_comp_id = #sessionSenderCompId#
+	</select>
+	
+	<select id="apt.fix.fixInitiatorListSearchExcel" parameterClass="FixManageVO"
+		resultClass="FixManageVO">
+			SELECT
+			      init_server_id         AS initServerId, 
+			      init_server_ip         AS initServerIp, 
+			      session_target_comp_id AS sessionTargetCompId, 
+			      session_sender_comp_id AS sessionSenderCompId, 
+			      connection_host        AS connectionHost, 
+			      connection_port        AS connectionPort, 
+			      fixStateCdNm           AS fixStateCdNm, 
+			      fixStateCd             AS fixStateCd 
+			FROM   (SELECT a.init_server_id, 
+			               a.init_server_ip, 
+			               c.session_target_comp_id, 
+			               c.session_sender_comp_id, 
+			               c.connection_host, 
+			               c.connection_port, 
+			               case when Ifnull(c.fix_state_cd, '')  = '' then 
+			                        ''
+			                    else 
+			                        IF(Ifnull(c.fix_state_cd, '') = '0', '정상', '중지') 
+			                    end fixStateCdNm, 
+			               Ifnull(c.fix_state_cd, '') AS fixStateCd 
+			        FROM   fx_comp_tb a 
+			        right join fx_session_tb c 
+			          ON c.init_server_id = a.init_server_id
+					where 1=1		
+			        <isEqual property="excelType" compareValue="excel">        
+						<isNotEmpty property="searchKeyword">
+							<!-- 이름 -->
+							<isEqual property="searchCondition" compareValue="initiatorId"
+								prepend="and">
+								a.init_server_id like concat('%', #searchKeyword#, '%')
+							</isEqual>
+							<!-- id -->
+							<isEqual property="searchCondition" compareValue="initiatorIp"
+								prepend="and">
+								a.init_server_ip like concat('%', #searchKeyword#, '%')
+							</isEqual>
+							<!-- targetCompId -->
+							<isEqual property="searchCondition" compareValue="targetCompId"
+								prepend="and">
+								b.session_target_comp_id like concat('%', #searchKeyword#, '%')
+							</isEqual>
+							<!-- senderCompId -->
+							<isEqual property="searchCondition" compareValue="senderCompId"
+								prepend="and">
+								b.session_sender_comp_id like concat('%', #searchKeyword#, '%')
+							</isEqual>
+							<!-- socketHost -->
+							<isEqual property="searchCondition" compareValue="socketHost"
+								prepend="and">
+								b.connection_host like concat('%', #searchKeyword#, '%')
+							</isEqual>
+							<!-- senderCompId -->
+							<isEqual property="searchCondition" compareValue="socketPort"
+								prepend="and">
+								b.connection_port like concat('%', #searchKeyword#, '%')
+							</isEqual>
+				
+							<!-- 전체 -->
+							<isEqual property="searchCondition" compareValue="all"
+								prepend="and">
+								(
+								a.init_server_id like concat('%', #searchKeyword#, '%') or
+								a.init_server_ip like concat('%', #searchKeyword#, '%') or
+								b.session_target_comp_id like concat('%', #searchKeyword#, '%') or
+								b.session_sender_comp_id like concat('%', #searchKeyword#, '%') or
+								b.connection_host like concat('%', #searchKeyword#, '%') or
+								b.connection_port like concat('%', #searchKeyword#, '%')
+								)
+							</isEqual>
+						</isNotEmpty> 
+						<isNotEmpty property="useStatus" prepend="and">
+							<isNotEqual property="useStatusAllYn" compareValue="Y">
+								c.fix_state_cd 
+								<iterate property="useStatus" prepend="IN" open="(" close=")" conjunction=",">
+									#useStatus[]#
+								</iterate>
+							</isNotEqual>
+						</isNotEmpty>
+					</isEqual>
+			        UNION ALL 
+			        SELECT
+			              a.init_server_id, 
+			              a.init_server_ip, 
+			              b.session_target_comp_id, 
+			              b.session_sender_comp_id, 
+			              b.connection_host, 
+			              b.connection_port, 
+			              
+			               case when Ifnull(b.fix_state_cd, '')  = '' then 
+			                        ''
+			                    else 
+			                        IF(Ifnull(b.fix_state_cd, '') = '0', '정상', '중지') 
+			                    end fixStateCdNm, 
+			              Ifnull(b.fix_state_cd, '') AS fixStateCd 
+			        FROM   fx_comp_tb a 
+			        left join fx_session_tb b 
+			          ON a.init_server_id = b.init_server_id
+					where 1=1
+			        <isEqual property="excelType" compareValue="excel">        
+						<isNotEmpty property="searchKeyword">
+							<!-- 이름 -->
+							<isEqual property="searchCondition" compareValue="initiatorId"
+								prepend="and">
+								a.init_server_id like concat('%', #searchKeyword#, '%')
+							</isEqual>
+							<!-- id -->
+							<isEqual property="searchCondition" compareValue="initiatorIp"
+								prepend="and">
+								a.init_server_ip like concat('%', #searchKeyword#, '%')
+							</isEqual>
+							<!-- targetCompId -->
+							<isEqual property="searchCondition" compareValue="targetCompId"
+								prepend="and">
+								b.session_target_comp_id like concat('%', #searchKeyword#, '%')
+							</isEqual>
+							<!-- senderCompId -->
+							<isEqual property="searchCondition" compareValue="senderCompId"
+								prepend="and">
+								b.session_sender_comp_id like concat('%', #searchKeyword#, '%')
+							</isEqual>
+							<!-- socketHost -->
+							<isEqual property="searchCondition" compareValue="socketHost"
+								prepend="and">
+								b.connection_host like concat('%', #searchKeyword#, '%')
+							</isEqual>
+							<!-- senderCompId -->
+							<isEqual property="searchCondition" compareValue="socketPort"
+								prepend="and">
+								b.connection_port like concat('%', #searchKeyword#, '%')
+							</isEqual>
+				
+							<!-- 전체 -->
+							<isEqual property="searchCondition" compareValue="all"
+								prepend="and">
+								(
+								a.init_server_id like concat('%', #searchKeyword#, '%') or
+								a.init_server_ip like concat('%', #searchKeyword#, '%') or
+								b.session_target_comp_id like concat('%', #searchKeyword#, '%') or
+								b.session_sender_comp_id like concat('%', #searchKeyword#, '%') or
+								b.connection_host like concat('%', #searchKeyword#, '%') or
+								b.connection_port like concat('%', #searchKeyword#, '%')
+								)
+							</isEqual>
+						</isNotEmpty> 
+						<isNotEmpty property="useStatus" prepend="and">
+							<isNotEqual property="useStatusAllYn" compareValue="Y">
+								b.fix_state_cd 
+								<iterate property="useStatus" prepend="IN" open="(" close=")" conjunction=",">
+									#useStatus[]#
+								</iterate>
+							</isNotEqual>
+						</isNotEmpty>
+								
+			        </isEqual>
+					) a 
+					where 1=1	
+					
+			GROUP  BY init_server_id, 
+			          init_server_ip, 
+			          session_target_comp_id, 
+			          session_sender_comp_id, 
+			          connection_host, 
+			          connection_port, 
+			          fixStateCdNm, 
+			          fixStateCd 
+			ORDER  BY init_server_id DESC, 
+			          init_server_ip ASC, 
+			          session_target_comp_id ASC, 
+			          session_sender_comp_id ASC
+	</select>
+
+	<select id="apt.fix.selectServerIp" parameterClass="FixManageVO"
+		resultClass="String">
+		select
+		code_nm
+		from code_info_tb
+		where 1 = 1
+		and id = #fixServerId#
+		and code = #fixServerCode#
+	</select>
+
+	<select id="apt.fix.fixInitiatorServerIpDupChk" parameterClass="FixManageVO"
+		resultClass="int">
+		select
+		count(init_server_ip) as cnt
+		from fx_comp_tb
+		where init_server_ip = #initServerIp#
+	</select>
+
+	<select id="apt.fix.fixCompIdDupChk" parameterClass="FixManageVO"
+		resultClass="int">
+		select
+		count(session_target_comp_id) as cnt
+		from fx_session_tb
+		where session_target_comp_id =  #sessionTargetCompId#
+		and session_sender_comp_id =  #sessionSenderCompId#
+	</select>
+
+	<select id="apt.fix.fixSocketDupChk" parameterClass="FixManageVO"
+		resultClass="int">
+		select
+		count(connection_host) as cnt
+		from fx_session_tb
+		where connection_host = #connectionHost#
+		and connection_port = #connectionPort#
+	</select>
+
+
+	<select id="apt.fix.fixInitiatorUpdateSearchDtl" parameterClass="FixManageVO"
+		resultClass="FixManageVO">
+		select
+		init_server_id as initServerId,
+		init_server_ip as initServerIp,
+		ifnull(date_format(create_time, '%Y-%m-%d %H:%i'), '') as createTime,
+		ifnull(date_format(update_time, '%Y-%m-%d %H:%i'), '') as updateTime
+		from fx_comp_tb
+		where 1=1
+		and init_server_id = #initServerId#
+	</select>
+
+
+
+	<select id="apt.fix.fixInitiatorCompSearch" parameterClass="FixManageVO"
+		resultClass="FixManageVO">
+		select
+		comp.sender_comp_name as senderCompName,
+		comp.company_id as companyId,
+		comp.sender_comp_id as senderCompId
+		from
+		fx_comp_queue_tb as queue
+		join rs_comp_tb comp
+		on queue.fix_queue_id = comp.fix_queue_id
+		where queue.init_server_id = #initServerId#
+		<include refid="CmmnFuncDAO.CmmnFixPaging" />
+	</select>
+
+	<select id="apt.fix.fixInitiatorCompSearchTotal" parameterClass="FixManageVO"
+		resultClass="int">
+		select
+		count(comp.sender_comp_name) as totCnt
+		from
+		fx_comp_queue_tb as queue
+		join rs_comp_tb comp
+		on queue.fix_queue_id = comp.fix_queue_id
+		where queue.init_server_id = #initServerId#
+	</select>
+
+	<select id="apt.fix.fixCodeListSearch" parameterClass="FixManageVO"
+		resultClass="FixManageVO">
+		select
+		id as codeId,
+		code as codeValue,
+		code_nm as codeNm
+		from code_info_tb
+		where 1 = 1
+		<isNotEmpty property="searchId">
+			and id = #searchId#
+		</isNotEmpty>
+		<isNotEmpty property="searchCode">
+			and code = #searchCode#
+		</isNotEmpty>
+		order by codeNm asc
+	</select>
+
+	<select id="apt.fix.statsFixEngineRequestSearch" parameterClass="StatsTrafficVO" resultClass="java.util.HashMap" remapResults="true">
+		Select
+		A.resultDt as rsDt,
+		A.Date as resultDt,
+		ifnull(B.totCnt, 0) as totCnt,
+		ifnull(B.sucCnt, 0) as sucCnt,
+		ifnull(B.failCnt, 0) as failCnt
+		from
+		(
+		<include refid="searchFixDayStd" />
+		) A
+		left OUTER JOIN
+		(
+			SELECT dt as resultDt,
+			ifnull(Sum(totcnt),0) as totCnt,
+			ifnull(Sum(succescnt),0) as sucCnt,
+			ifnull(Sum(failcnt),0) as failCnt
+			FROM (
+				SELECT fail.dt,
+				0 AS totcnt,
+				0 AS succesCnt,
+				
+				<isEqual property="rejectYn" compareValue="all">
+					ifnull(sum(fail.cnt),0) AS failCnt
+				</isEqual>
+				<isEqual property="rejectYn" compareValue="Y">
+					ifnull(sum(fail.cnt),0) AS failCnt
+				</isEqual>
+				<isEqual property="rejectYn" compareValue="N">
+					0 AS failCnt
+				</isEqual>
+				FROM $trafficTable$ fail
+				WHERE 1 = 1
+		 			and fail.dt between #searchDateTimeFrom# and #searchDateTimeTo#
+				<isNotEmpty property="searchFixBuySideList" prepend="and">
+					<isNotEqual property="searchFixBuySideListAllYn"
+						compareValue="Y">
+						fail.sender_comp_id
+						<iterate property="searchFixBuySideList" prepend="IN" open="("
+							close=")" conjunction=",">
+							#searchFixBuySideList[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+				<isNotEmpty property="searchMsgTypeCodeId" prepend="and">
+					<isNotEqual property="searchMsgTypeCodeIdAllYn"
+						compareValue="Y">
+						fail.msg_type
+						<iterate property="searchMsgTypeCodeId" prepend="IN" open="("
+							close=")" conjunction=",">
+							#searchMsgTypeCodeId[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+				and fail.reject_yn = 'Y'
+				GROUP BY fail.dt
+				UNION ALL
+				SELECT suc.dt,
+				0 AS totcnt,
+				<isEqual property="rejectYn" compareValue="all">
+					ifnull(sum(suc.cnt),0) AS succesCnt,
+				</isEqual>
+				<isEqual property="rejectYn" compareValue="N">
+					ifnull(sum(suc.cnt),0) AS succesCnt,
+				</isEqual>
+				<isEqual property="rejectYn" compareValue="Y">
+					0 AS succesCnt,
+				</isEqual>
+				0 AS failCnt
+				FROM $trafficTable$ suc
+				WHERE 1 = 1
+		 			and suc.dt between #searchDateTimeFrom# and #searchDateTimeTo#
+				<isNotEmpty property="searchFixBuySideList" prepend="and">
+					<isNotEqual property="searchFixBuySideListAllYn"
+						compareValue="Y">
+						suc.sender_comp_id
+						<iterate property="searchFixBuySideList" prepend="IN" open="("
+							close=")" conjunction=",">
+							#searchFixBuySideList[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+				<isNotEmpty property="searchMsgTypeCodeId" prepend="and">
+					<isNotEqual property="searchMsgTypeCodeIdAllYn"
+						compareValue="Y">
+						suc.msg_type
+						<iterate property="searchMsgTypeCodeId" prepend="IN" open="("
+							close=")" conjunction=",">
+							#searchMsgTypeCodeId[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+				and suc.reject_yn='N'
+				GROUP BY suc.dt
+				UNION ALL
+				SELECT tot.dt,
+				ifnull(sum(tot.cnt),0) AS totcnt,
+				0 AS succesCnt,
+				0 AS failCnt
+				FROM $trafficTable$ tot
+				WHERE 1 = 1
+		 			and tot.dt between #searchDateTimeFrom# and #searchDateTimeTo#
+				<isNotEmpty property="searchFixBuySideList" prepend="and">
+					<isNotEqual property="searchFixBuySideListAllYn"
+						compareValue="Y">
+						tot.sender_comp_id
+						<iterate property="searchFixBuySideList" prepend="IN" open="("
+							close=")" conjunction=",">
+							#searchFixBuySideList[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+				<isNotEmpty property="searchMsgTypeCodeId" prepend="and">
+					<isNotEqual property="searchMsgTypeCodeIdAllYn"
+						compareValue="Y">
+						tot.msg_type
+						<iterate property="searchMsgTypeCodeId" prepend="IN" open="("
+							close=")" conjunction=",">
+							#searchMsgTypeCodeId[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+				<isNotEmpty property="searchReject" prepend="and">
+					<isNotEqual property="searchRejectAllYn" compareValue="Y">
+						tot.reject_yn
+						<iterate property="searchReject" prepend="IN" open="("
+							close=")" conjunction=",">
+							#searchReject[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+				GROUP BY tot.dt
+				) fixEngine
+			GROUP BY fixEngine.dt
+			order by dt asc
+		) B on 1=1 and A.resultDt = B.resultDt
+		GROUP
+		BY rsDt
+			
+	</select>
+
+
+
+	<select id="apt.fix.statsFixEngineRequestSearchBuySide" parameterClass="StatsTrafficVO" resultClass="java.util.HashMap" remapResults="true">
+		/* 통계 기준이 buy-side 이고 buy-side가 전체가 아닌경우*/
+		Select
+		A.resultDt as resultDt,
+		ifnull(B.senderCompId, 0) as codeId,
+		ifnull(B.totCnt, 0) as totCnt,
+		ifnull(B.sucCnt, 0) as sucCnt,
+		ifnull(B.failCnt, 0) as failCnt
+		from
+		(
+		<include refid="searchFixDayStd" />
+		) A
+		left OUTER JOIN
+		(
+			SELECT dt as resultDt,
+			sender_comp_id as senderCompId,
+			ifnull(Sum(totcnt),0) as totCnt,
+			ifnull(Sum(succescnt),0) as sucCnt,
+			ifnull(Sum(failcnt),0) as failCnt
+			FROM (SELECT fail.dt,
+			fail.sender_comp_id,
+			0 AS totcnt,
+			0 AS succesCnt,
+			<isEqual property="rejectYn" compareValue="all">
+				ifnull(sum(fail.cnt),0) AS failCnt
+			</isEqual>
+			<isEqual property="rejectYn" compareValue="N">
+				0 AS failCnt
+			</isEqual>
+			<isEqual property="rejectYn" compareValue="Y">
+				ifnull(Sum(fail.cnt),0) AS failCnt
+			</isEqual>
+			FROM $trafficTable$ fail
+			WHERE 1 = 1
+	 			and fail.dt between #searchDateTimeFrom# and #searchDateTimeTo#
+			<isNotEmpty property="searchFixBuySideList" prepend="and">
+				<isNotEqual property="searchFixBuySideListAllYn"
+					compareValue="Y">
+					fail.sender_comp_id
+					<iterate property="searchFixBuySideList" prepend="IN" open="("
+						close=")" conjunction=",">
+						#searchFixBuySideList[]#
+					</iterate>
+				</isNotEqual>
+			</isNotEmpty>
+			<isNotEmpty property="searchMsgTypeCodeId" prepend="and">
+				<isNotEqual property="searchMsgTypeCodeIdAllYn"
+					compareValue="Y">
+					fail.msg_type
+					<iterate property="searchMsgTypeCodeId" prepend="IN" open="("
+						close=")" conjunction=",">
+						#searchMsgTypeCodeId[]#
+					</iterate>
+				</isNotEqual>
+			</isNotEmpty>
+			and fail.reject_yn = 'Y'
+			GROUP BY fail.dt ,
+			fail.sender_comp_id
+			UNION ALL
+			SELECT suc.dt,
+			suc.sender_comp_id,
+			0 AS totcnt,
+			<isEqual property="rejectYn" compareValue="all">
+				ifnull(sum(suc.cnt),0) AS succesCnt,
+			</isEqual>
+			<isEqual property="rejectYn" compareValue="N">
+				ifnull(sum(suc.cnt),0) AS succesCnt,
+			</isEqual>
+			<isEqual property="rejectYn" compareValue="Y">
+				0 AS succesCnt,
+			</isEqual>
+			0 AS failCnt
+			FROM $trafficTable$ suc
+			WHERE 1 = 1
+	 			and suc.dt between #searchDateTimeFrom# and #searchDateTimeTo#
+			<isNotEmpty property="searchFixBuySideList" prepend="and">
+				<isNotEqual property="searchFixBuySideListAllYn"
+					compareValue="Y">
+					suc.sender_comp_id
+					<iterate property="searchFixBuySideList" prepend="IN" open="("
+						close=")" conjunction=",">
+						#searchFixBuySideList[]#
+					</iterate>
+				</isNotEqual>
+			</isNotEmpty>
+			<isNotEmpty property="searchMsgTypeCodeId" prepend="and">
+				<isNotEqual property="searchMsgTypeCodeIdAllYn"
+					compareValue="Y">
+					suc.msg_type
+					<iterate property="searchMsgTypeCodeId" prepend="IN" open="("
+						close=")" conjunction=",">
+						#searchMsgTypeCodeId[]#
+					</iterate>
+				</isNotEqual>
+			</isNotEmpty>
+			and suc.reject_yn='N'
+			GROUP BY suc.dt,
+			suc.sender_comp_id
+			UNION ALL
+			SELECT tot.dt,
+			tot.sender_comp_id,
+			ifnull(sum(tot.cnt),0) AS totcnt,
+			0 AS succesCnt,
+			0 AS failCnt
+			FROM $trafficTable$ tot
+			WHERE 1 = 1
+	 			and tot.dt between #searchDateTimeFrom# and #searchDateTimeTo#
+			<isNotEmpty property="searchFixBuySideList" prepend="and">
+				<isNotEqual property="searchFixBuySideListAllYn"
+					compareValue="Y">
+					tot.sender_comp_id
+					<iterate property="searchFixBuySideList" prepend="IN" open="("
+						close=")" conjunction=",">
+						#searchFixBuySideList[]#
+					</iterate>
+				</isNotEqual>
+			</isNotEmpty>
+			<isNotEmpty property="searchMsgTypeCodeId" prepend="and">
+				<isNotEqual property="searchMsgTypeCodeIdAllYn"
+					compareValue="Y">
+					tot.msg_type
+					<iterate property="searchMsgTypeCodeId" prepend="IN" open="("
+						close=")" conjunction=",">
+						#searchMsgTypeCodeId[]#
+					</iterate>
+				</isNotEqual>
+			</isNotEmpty>
+			<isNotEmpty property="searchReject" prepend="and">
+				<isNotEqual property="searchRejectAllYn" compareValue="Y">
+					tot.reject_yn
+					<iterate property="searchReject" prepend="IN" open="("
+						close=")" conjunction=",">
+						#searchReject[]#
+					</iterate>
+				</isNotEqual>
+			</isNotEmpty>
+			GROUP BY tot.dt,
+			tot.sender_comp_id
+			) fixEngine
+			GROUP BY fixEngine.dt, fixEngine.sender_comp_id
+			order by sender_comp_id asc, dt asc
+		) B on 1=1 and A.resultDt = B.resultDt
+		GROUP
+		BY resultDt,senderCompId
+
+	</select>
+
+	<select id="apt.fix.statsFixEngineRequestSearchMsgType" parameterClass="StatsTrafficVO" resultClass="java.util.HashMap" remapResults="true">
+		SELECT dt as resultDt,
+		msg_type as codeId,
+		ifnull(Sum(totcnt),0) as totCnt,
+		ifnull(Sum(succescnt),0) as sucCnt,
+		ifnull(Sum(failcnt),0) as failCnt
+		FROM (
+		SELECT fail.dt,
+		fail.msg_type,
+		0 AS totcnt,
+		0 AS succesCnt,
+		ifnull(sum(fail.cnt),0) AS failCnt
+		FROM $trafficTable$ fail
+		WHERE 1 = 1
+	 			and fail.dt between #searchDateTimeFrom# and #searchDateTimeTo#
+		<isNotEmpty property="searchFixBuySideList" prepend="and">
+			<isNotEqual property="searchFixBuySideListAllYn"
+				compareValue="Y">
+				fail.sender_comp_id
+				<iterate property="searchFixBuySideList" prepend="IN" open="("
+					close=")" conjunction=",">
+					#searchFixBuySideList[]#
+				</iterate>
+			</isNotEqual>
+		</isNotEmpty>
+		<isNotEmpty property="searchMsgTypeCodeId" prepend="and">
+			<isNotEqual property="searchMsgTypeCodeIdAllYn"
+				compareValue="Y">
+				fail.msg_type
+				<iterate property="searchMsgTypeCodeId" prepend="IN" open="("
+					close=")" conjunction=",">
+					#searchMsgTypeCodeId[]#
+				</iterate>
+			</isNotEqual>
+		</isNotEmpty>
+		and fail.reject_yn = 'Y'
+		GROUP BY fail.dt ,
+		fail.msg_type
+		UNION ALL
+		SELECT suc.dt,
+		suc.msg_type,
+		0 AS totcnt,
+		ifnull(sum(suc.cnt),0) AS succesCnt,
+		0 AS failCnt
+		FROM $trafficTable$ suc
+		WHERE 1 = 1
+	 			and suc.dt between #searchDateTimeFrom# and #searchDateTimeTo#
+		<isNotEmpty property="searchFixBuySideList" prepend="and">
+			<isNotEqual property="searchFixBuySideListAllYn"
+				compareValue="Y">
+				suc.sender_comp_id
+				<iterate property="searchFixBuySideList" prepend="IN" open="("
+					close=")" conjunction=",">
+					#searchFixBuySideList[]#
+				</iterate>
+			</isNotEqual>
+		</isNotEmpty>
+		<isNotEmpty property="searchMsgTypeCodeId" prepend="and">
+			<isNotEqual property="searchMsgTypeCodeIdAllYn"
+				compareValue="Y">
+				suc.msg_type
+				<iterate property="searchMsgTypeCodeId" prepend="IN" open="("
+					close=")" conjunction=",">
+					#searchMsgTypeCodeId[]#
+				</iterate>
+			</isNotEqual>
+		</isNotEmpty>
+		and suc.reject_yn = 'N'
+		GROUP BY suc.dt,
+		suc.msg_type
+		UNION ALL
+		SELECT tot.dt,
+		tot.msg_type,
+		ifnull(sum(tot.cnt),0) AS totcnt,
+		0 AS succesCnt,
+		0 AS failCnt
+		FROM $trafficTable$ tot
+		WHERE 1 = 1
+	 			and tot.dt between #searchDateTimeFrom# and #searchDateTimeTo#
+		<isNotEmpty property="searchFixBuySideList" prepend="and">
+			<isNotEqual property="searchFixBuySideListAllYn"
+				compareValue="Y">
+				tot.sender_comp_id
+				<iterate property="searchFixBuySideList" prepend="IN" open="("
+					close=")" conjunction=",">
+					#searchFixBuySideList[]#
+				</iterate>
+			</isNotEqual>
+		</isNotEmpty>
+		<isNotEmpty property="searchMsgTypeCodeId" prepend="and">
+			<isNotEqual property="searchMsgTypeCodeIdAllYn"
+				compareValue="Y">
+				tot.msg_type
+				<iterate property="searchMsgTypeCodeId" prepend="IN" open="("
+					close=")" conjunction=",">
+					#searchMsgTypeCodeId[]#
+				</iterate>
+			</isNotEqual>
+		</isNotEmpty>
+		<isNotEmpty property="searchReject" prepend="and">
+			<isNotEqual property="searchRejectAllYn" compareValue="Y">
+				tot.reject_yn
+				<iterate property="searchReject" prepend="IN" open="("
+					close=")" conjunction=",">
+					#searchReject[]#
+				</iterate>
+			</isNotEqual>
+		</isNotEmpty>
+		GROUP BY tot.dt,
+		tot.msg_type
+		) fixEngine
+		GROUP BY fixEngine.dt, fixEngine.msg_type
+		order by msg_type asc, dt asc
+	</select>
+
+
+	<select id="apt.fix.statsFixEngineResponseSearch" parameterClass="StatsTrafficVO" resultClass="java.util.HashMap" remapResults="true">
+		/* 전체 카운트 */
+		Select
+			A.resultDt as rsDt,
+			A.Date as resultDt,
+			ifnull(B.resultCnt, 0) as resultCnt
+			from
+			(
+			<include refid="searchFixDayStd" />
+			) A
+			left OUTER JOIN
+				(
+				select 
+				  dt as rerultDt,
+				  sum(cnt) as resultCnt
+				from $trafficTable$
+				where 1=1
+	 			and dt between #searchDateTimeFrom# and #searchDateTimeTo#
+				<isNotEmpty property="searchInitiatorList" prepend="and">
+					<isNotEqual property="searchInitiatorListAllYn"
+						compareValue="Y">
+						init_server_id
+						<iterate property="searchInitiatorList" prepend="IN" open="("
+							close=")" conjunction=",">
+							#searchInitiatorList[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+				<isNotEmpty property="searchFixBuySideList" prepend="and">
+					<isNotEqual property="searchFixBuySideListAllYn"
+						compareValue="Y">
+						deliver_comp_id
+						<iterate property="searchFixBuySideList" prepend="IN" open="("
+							close=")" conjunction=",">
+							#searchFixBuySideList[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+				<isNotEmpty property="searchMsgTypeCodeId" prepend="and">
+					<isNotEqual property="searchMsgTypeCodeIdAllYn"
+						compareValue="Y">
+						msg_type
+						<iterate property="searchMsgTypeCodeId" prepend="IN" open="("
+							close=")" conjunction=",">
+							#searchMsgTypeCodeId[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+				group by dt
+			) B on 1=1 and A.resultDt = B.rerultDt
+			GROUP
+			BY rsDt
+			
+	</select>
+
+	<select id="apt.fix.statsFixEngineRequestSearchInitiator" parameterClass="StatsTrafficVO" resultClass="java.util.HashMap" remapResults="true">
+			/* Initiator */
+			Select
+			A.resultDt as resultDt,
+			ifnull(B.codeId, 0) as codeId,
+			ifnull(B.resultCnt, 0) as resultCnt
+			from
+			(
+			<include refid="searchFixDayStd" />
+			) A
+			left OUTER JOIN
+				(
+				select 
+				  dt as rerultDt,
+				  init_server_id as codeId /* init_server_id */,
+				  sum(cnt) as resultCnt
+				from $trafficTable$
+				where 1=1
+	 			and dt between #searchDateTimeFrom# and #searchDateTimeTo#
+				<isNotEmpty property="searchInitiatorList" prepend="and">
+					<isNotEqual property="searchInitiatorListAllYn"
+						compareValue="Y">
+						init_server_id
+						<iterate property="searchInitiatorList" prepend="IN" open="("
+							close=")" conjunction=",">
+							#searchInitiatorList[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+				<isNotEmpty property="searchFixBuySideList" prepend="and">
+					<isNotEqual property="searchFixBuySideListAllYn"
+						compareValue="Y">
+						deliver_comp_id
+						<iterate property="searchFixBuySideList" prepend="IN" open="("
+							close=")" conjunction=",">
+							#searchFixBuySideList[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+				<isNotEmpty property="searchMsgTypeCodeId" prepend="and">
+					<isNotEqual property="searchMsgTypeCodeIdAllYn"
+						compareValue="Y">
+						msg_type
+						<iterate property="searchMsgTypeCodeId" prepend="IN" open="("
+							close=")" conjunction=",">
+							#searchMsgTypeCodeId[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+				group by dt,deliver_comp_id
+				order by dt asc
+			) B on 1=1 and A.resultDt = B.rerultDt
+			GROUP
+			BY resultDt
+			, codeId
+		</select>
+
+	<select id="apt.fix.statsFixEngineReponseSearchBuySide" parameterClass="StatsTrafficVO" resultClass="java.util.HashMap" remapResults="true">
+		/* buy-side */
+			Select
+			A.resultDt as resultDt,
+			ifnull(B.codeId, 0) as codeId,
+			ifnull(B.resultCnt, 0) as resultCnt
+			from
+			(
+			<include refid="searchFixDayStd" />
+			) A
+			left OUTER JOIN
+				(
+				select 
+				  dt as resultDt,
+				  deliver_comp_id as codeId /* buy-side*/,
+				  sum(cnt) as resultCnt
+				from $trafficTable$
+				where 1=1
+	 			and dt between #searchDateTimeFrom# and #searchDateTimeTo#
+				<isNotEmpty property="searchInitiatorList" prepend="and">
+					<isNotEqual property="searchInitiatorListAllYn"
+						compareValue="Y">
+						init_server_id
+						<iterate property="searchInitiatorList" prepend="IN" open="("
+							close=")" conjunction=",">
+							#searchInitiatorList[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+				<isNotEmpty property="searchFixBuySideList" prepend="and">
+					<isNotEqual property="searchFixBuySideListAllYn"
+						compareValue="Y">
+						deliver_comp_id
+						<iterate property="searchFixBuySideList" prepend="IN" open="("
+							close=")" conjunction=",">
+							#searchFixBuySideList[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+				<isNotEmpty property="searchMsgTypeCodeId" prepend="and">
+					<isNotEqual property="searchMsgTypeCodeIdAllYn"
+						compareValue="Y">
+						msg_type
+						<iterate property="searchMsgTypeCodeId" prepend="IN" open="("
+							close=")" conjunction=",">
+							#searchMsgTypeCodeId[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+				group by dt,deliver_comp_id
+				order by dt asc
+			) B on 1=1 and A.resultDt = B.resultDt
+			GROUP
+			BY resultDt
+			, codeId
+		</select>
+	
+		<select id="apt.fix.statsFixEngineResponseSearchMsgType" parameterClass="StatsTrafficVO" resultClass="java.util.HashMap" remapResults="true">
+			/* MsgType */
+			Select
+			A.resultDt as resultDt,
+			ifnull(B.codeId, 0) as codeId,
+			ifnull(B.resultCnt, 0) as resultCnt
+			from
+			(
+			<include refid="searchFixDayStd" />
+			) A
+			left OUTER JOIN
+				(
+				select 
+				  dt as resultDt,
+				  msg_type as codeId /* msg_type */,
+				  sum(cnt) as resultCnt
+				from $trafficTable$
+				where 1=1
+	 			and dt between #searchDateTimeFrom# and #searchDateTimeTo#
+				<isNotEmpty property="searchInitiatorList" prepend="and">
+					<isNotEqual property="searchInitiatorListAllYn"
+						compareValue="Y">
+						init_server_id
+						<iterate property="searchInitiatorList" prepend="IN" open="("
+							close=")" conjunction=",">
+							#searchInitiatorList[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+				<isNotEmpty property="searchFixBuySideList" prepend="and">
+					<isNotEqual property="searchFixBuySideListAllYn"
+						compareValue="Y">
+						deliver_comp_id
+						<iterate property="searchFixBuySideList" prepend="IN" open="("
+							close=")" conjunction=",">
+							#searchFixBuySideList[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+				<isNotEmpty property="searchMsgTypeCodeId" prepend="and">
+					<isNotEqual property="searchMsgTypeCodeIdAllYn"
+						compareValue="Y">
+						msg_type
+						<iterate property="searchMsgTypeCodeId" prepend="IN" open="("
+							close=")" conjunction=",">
+							#searchMsgTypeCodeId[]#
+						</iterate>
+					</isNotEqual>
+				</isNotEmpty>
+				group by dt,msg_type
+				order by dt asc
+			) B on 1=1 and A.resultDt = B.resultDt
+			GROUP
+			BY resultDt
+			, codeId
+	</select>
+
+
+</sqlMap>

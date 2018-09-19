@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="ko">
+<head>
+	<title>koscom OpenAPI Platform 통합관리시스템</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="stylesheet" href="../../css/apt/import.css">
+	<!-- IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	  <script src="../../js/cmm/html5shiv.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="../../js/cmm/jquery-1.11.3.min.js"></script>
+
+	<script type="text/javascript" src="../../js/apt/common_pub.js"></script>
+</head>
+
+<body>	
+	<article class="wrap_popup">
+		
+		<h3>가상 계좌 목록</h3>
+		<div class="tb_detail1">
+			<table>
+				<caption>가상 계좌 정보</caption>
+				<colgroup>
+					<col style="width:34%;">
+					<col style="width:33%;">
+					<col style="width:33%;">
+				</colgroup>
+				<tbody>
+				<tr>
+					<th scope="row">증권사</th>
+					<td scope="col">가상계좌번호</td>
+					<td scope="col">실계좌번호</td>
+				</tr>
+				<tr>
+					<th scope="row">oo투자증권</th>
+					<td>000000-0000000000-000000</td>
+					<td>000000-0000000000-000000</td>
+				</tr>
+				<tr>
+					<th scope="row">oo투자증권</th>
+					<td>000000-0000000000-000000</td>
+					<td>000000-0000000000-000000</td>
+				</tr>
+				<tr>
+					<th scope="row">oo투자증권</th>
+					<td>000000-0000000000-000000</td>
+					<td>000000-0000000000-000000</td>
+				</tr>
+				<tr>
+					<th scope="row">증권사</th>
+					<td scope="col">가상계좌번호</td>
+					<td scope="col">실계좌번호</td>
+				</tr>
+				<tr>
+					<th scope="row">oo투자증권</th>
+					<td>000000-0000000000-000000</td>
+					<td>000000-0000000000-000000</td>
+				</tr>
+				<tr>
+					<th scope="row">oo투자증권</th>
+					<td>000000-0000000000-000000</td>
+					<td>000000-0000000000-000000</td>
+				</tr>
+				<tr>
+					<th scope="row">oo투자증권</th>
+					<td>000000-0000000000-000000</td>
+					<td>000000-0000000000-000000</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+		<!-- // tb_detail1 -->
+		<div class="btn_type3">
+			<span class="btn_gray1"><a href="#none;" onclick="window.close();">닫기</a></span>
+		</div>
+
+	</article>
+	<!-- // wrap_popup -->
+</body>
+</html>

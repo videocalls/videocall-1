@@ -1,0 +1,12 @@
+<ion-modal-view ng-controller="SettingsTermsModal as vm">
+    <ion-header-bar align-title="center">
+        <h1 class="title">{{vm.modalPageTitle}}</h1>
+        <button ng-click="vm.close()">X</button>
+    </ion-header-bar>
+
+    <ion-content class="bg_gray"> <!-- bg color -->
+
+    {{vm.termsContentsText}}
+
+    </ion-content>
+</ion-modal-view>

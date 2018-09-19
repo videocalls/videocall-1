@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.cptUsr.service.impl.CptCompanyManageDAO">
+
+  	<typeAlias alias="CptCompanyManageVO" type="kr.co.koscom.oppf.apt.cptUsr.service.CptCompanyManageVO"/>
+  	
+  	<!-- 목록 조회조건 -->
+    <sql id="fromWhereAnd">
+        <!-- 구분 -->
+        <isNotEmpty property="searchKeyword">
+            <!-- 이름 -->
+            <isEqual property="searchCondition" compareValue="name" prepend="and">
+                (
+                    a.company_name_kor_alias like concat('%', #searchKeyword#, '%') or
+                    a.company_name_eng_alias like concat('%', #searchKeyword#, '%')
+                )
+            </isEqual>
+            <!-- 기업코드 -->
+            <isEqual property="searchCondition" compareValue="id" prepend="and">
+                a.company_code_id like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <!-- 사업자등록번호 -->
+            <isEqual property="searchCondition" compareValue="bizno" prepend="and">
+                a.company_bizreg_no like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <!-- 전체 -->
+            <isEqual property="searchCondition" compareValue="all" prepend="and">
+                (
+                    a.company_name_kor_alias like concat('%', #searchKeyword#, '%') or
+                    a.company_name_eng_alias like concat('%', #searchKeyword#, '%') or
+                    a.company_code_id like concat('%', #searchKeyword#, '%') or
+                    a.company_bizreg_no like concat('%', #searchKeyword#, '%')
+                )
+            </isEqual>
+        </isNotEmpty>
+                
+        <!-- 기업 역할 -->
+        <isNotEmpty property="searchCompanyServiceType" prepend="and">
+            <isNotEqual property="searchCompanyServiceTypeAllYn" compareValue="Y">
+                a.company_service_type
+                <iterate  property="searchCompanyServiceType" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchCompanyServiceType[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+        
+        <!-- 조회일 -->
+        <isNotEmpty property="searchDateType">
+            <!-- 등록일 -->
+            <isEqual property="searchDateType" compareValue="create" prepend="and">
+                ifnull(date_format(a.create_date, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '')
+            </isEqual>
+            <!-- 수정일 -->
+            <isEqual property="searchDateType" compareValue="update" prepend="and">
+                ifnull(date_format(a.update_date, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '')
+            </isEqual>
+            <!-- 삭제일 -->
+            <isEqual property="searchDateType" compareValue="delete" prepend="and">
+                ifnull(date_format(a.delete_date, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '')
+            </isEqual>
+        </isNotEmpty>     
+         
+    </sql>
+  	
+	<!--
+     * @Method Name        : apt.CptCompanyManageDAO.selectCptCompanyManageList
+     * @Method description : 기업정보관리 목록을 조회한다.
+     * @param              : CptCompanyManageVO
+     * @return             : CptCompanyManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.CptCompanyManageDAO.selectCptCompanyManageList" parameterClass="CptCompanyManageVO" resultClass="CptCompanyManageVO">
+		select  a.company_profile_reg_no        as companyProfileRegNo,
+		        a.company_code_id               as companyCodeId,
+		        a.company_service_type          as companyServiceType,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.company_service_type
+		        )                               as companyServiceTypeName,
+                if(a.exposure_yn = 'Y', '활성', '미활성') as exposureYn,
+		        a.company_name_kor_alias        as companyNameKorAlias,
+		        a.company_name_eng_alias        as companyNameEngAlias,
+		        a.company_bizreg_no             as companyBizregNo,
+		        a.issue_vtaccount               as issueVtaccount,
+		        case when ifnull(a.issue_vtaccount, 'N') = 'N' then '코스콤발급'
+		             when ifnull(a.issue_vtaccount, 'N') = 'Y' then '자체발급'
+		             when ifnull(a.issue_vtaccount, 'N') = 'X' then '해당없음'
+                end                                                             as issueVtaccountName,
+                a.issue_accountlist             as issueAccountlist,
+                case when ifnull(a.issue_accountlist, 'N') = 'N' then '미사용'
+                     when ifnull(a.issue_accountlist, 'N') = 'Y' then '사용'
+                     when ifnull(a.issue_accountlist, 'N') = 'X' then '해당없음'
+                end                                                             as issueAccountlistName,
+		        ifnull(date_format(a.create_date, '%Y-%m-%d %H:%i'), '')        as createDate,
+		        ifnull(date_format(a.update_date, '%Y-%m-%d %H:%i'), '')        as updateDate,
+		        ifnull(date_format(a.delete_date, '%Y-%m-%d %H:%i'), '')        as deleteDate
+		from com_company_profile a
+		where 1=1
+		<include refid="fromWhereAnd"/>
+		<include refid="CmmnFuncDAO.CmmnPaging"/>
+    </select>
+    
+    <!--
+     * @Method Name        : apt.CptCompanyManageDAO.selectCptCompanyManageListCnt
+     * @Method description : 기업정보관리 목록의 total cnt를 조회한다.
+     * @param              : CptCompanyManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="apt.CptCompanyManageDAO.selectCptCompanyManageListCnt" parameterClass="CptCompanyManageVO" resultClass="int">
+        select  count(company_profile_reg_no) as totalCount
+        from com_company_profile a
+        where 1=1
+        <include refid="fromWhereAnd"/>
+    </select>
+    
+    <!--
+     * @Method Name        : apt.CptCompanyManageDAO.selectCptCompanyManageListExcel
+     * @Method description : 기업정보관리 excel 목록을 조회한다.
+     * @param              : CptCompanyManageVO
+     * @return             : CptCompanyManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.CptCompanyManageDAO.selectCptCompanyManageListExcel" parameterClass="CptCompanyManageVO" resultClass="CptCompanyManageVO">
+        select  a.company_profile_reg_no        as companyProfileRegNo,
+                a.company_code_id               as companyCodeId,
+                a.company_service_type          as companyServiceType,
+                (
+                    select code_name_kor
+                    from com_system_code
+                    where concat(system_grp_code, system_code) = a.company_service_type
+                )                               as companyServiceTypeName,
+                if(a.exposure_yn = 'Y', '활성', '미활성') as exposureYn,
+                a.company_name_kor_alias        as companyNameKorAlias,
+                a.company_name_eng_alias        as companyNameEngAlias,
+                a.company_bizreg_no             as companyBizregNo,
+                a.issue_vtaccount               as issueVtaccount,
+                case when ifnull(a.issue_vtaccount, 'N') = 'N' then '코스콤발급'
+                     when ifnull(a.issue_vtaccount, 'N') = 'Y' then '자체발급'
+                     when ifnull(a.issue_vtaccount, 'N') = 'X' then '해당없음'
+                end                                                             as issueVtaccountName,
+                a.issue_accountlist             as issueAccountlist,
+                case when ifnull(a.issue_accountlist, 'N') = 'N' then '미사용'
+                     when ifnull(a.issue_accountlist, 'N') = 'Y' then '사용'
+                     when ifnull(a.issue_accountlist, 'N') = 'X' then '해당없음'
+                end                                                             as issueAccountlistName,
+                ifnull(date_format(a.create_date, '%Y-%m-%d %H:%i'), '')        as createDate,
+                ifnull(date_format(a.update_date, '%Y-%m-%d %H:%i'), '')        as updateDate,
+                ifnull(date_format(a.delete_date, '%Y-%m-%d %H:%i'), '')        as deleteDate
+        from com_company_profile a
+        where 1=1
+        <isEqual property="excelType" compareValue="excel">
+            <include refid="fromWhereAnd"/>
+        </isEqual>
+        order by $listOrder$
+    </select>
+    
+    <!-- 기업 코드 팝업 리스트 조회조건 -->
+    <sql id="CompanyCodePopupListFromWhereAnd">
+        <!-- 구분 -->
+        <isNotEmpty property="searchKeyword">
+            <!-- 이름 -->
+            <isEqual property="searchCondition" compareValue="name" prepend="and">
+                (
+                    a.company_name_kor_alias like concat('%', #searchKeyword#, '%') or
+                    a.company_name_eng_alias like concat('%', #searchKeyword#, '%')
+                )
+            </isEqual>
+            <!-- 기업코드 -->
+            <isEqual property="searchCondition" compareValue="id" prepend="and">
+                a.company_code_id like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <!-- 전체 -->
+            <isEqual property="searchCondition" compareValue="all" prepend="and">
+                (
+                    a.company_name_kor_alias like concat('%', #searchKeyword#, '%') or
+                    a.company_name_eng_alias like concat('%', #searchKeyword#, '%') or
+                    a.company_code_id like concat('%', #searchKeyword#, '%')
+                )
+            </isEqual>
+        </isNotEmpty>
+                
+        <!-- 기업코드표 구분 -->
+        <isNotEmpty property="searchCmpanyCodeType" prepend="and">
+            <isNotEqual property="searchCmpanyCodeTypeAllYn" compareValue="Y">
+                a.company_code_type
+                <iterate  property="searchCmpanyCodeType" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchCmpanyCodeType[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+        
+        <!-- 기업 종류 -->
+        <isNotEmpty property="searchCompanyCodeKind" prepend="and">
+            <isNotEqual property="searchCompanyCodeKindAllYn" compareValue="Y">
+                a.company_code_kind
+                <iterate  property="searchCompanyCodeKind" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchCompanyCodeKind[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+        
+        <!-- 기업 분류 -->
+        <isNotEmpty property="searchCompanyDivCode" prepend="and">
+            <isNotEqual property="searchCompanyDivCodeAllYn" compareValue="Y">
+                a.company_div_code
+                <iterate  property="searchCompanyDivCode" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchCompanyDivCode[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+    </sql>
+    
+    <!--
+     * @Method Name        : apt.CptCompanyManageDAO.selectCptCompanyCodePopupList
+     * @Method description : 기업 코드 팝업 리스트 조회
+     * @param              : CptCompanyManageVO
+     * @return             : CptCompanyManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.CptCompanyManageDAO.selectCptCompanyCodePopupList" parameterClass="CptCompanyManageVO" resultClass="CptCompanyManageVO">
+		select  a.company_code_reg_no       as companyCodeRegNo,
+		        b.company_profile_reg_no    as companyProfileRegNo,
+		        a.company_code_type         as companyCodeType,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.company_code_type
+		        )                           as companyCodeTypeName,
+		        a.company_code_kind         as companyCodeKind,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.company_code_kind
+		        )                           as companyCodeKindName,
+		        a.company_div_code          as companyDivCode,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.company_div_code
+		        )                           as companyDivCodeName,
+		        a.company_code_id           as companyCodeId,
+		        a.company_name_kor          as companyNameKor,
+		        a.company_name_eng          as companyNameEng,
+		        a.company_name_kor_alias    as companyNameKorAlias,
+		        a.company_name_eng_alias    as companyNameEngAlias
+		from com_company_code a
+		left join com_company_profile b on a.company_code_id = b.company_code_id and b.delete_date is null
+		where a.delete_date is null
+		<!-- com_company_profile에 등록된 기업 코드 -->
+		<isEqual property="searchCompanyRegYn" compareValue="Y">
+		and a.company_code_id in(
+            select company_code_id
+            from com_company_profile
+            where delete_date is null
+        ) 
+		</isEqual>
+		<!-- com_company_profile에 미 등록된 기업 코드 -->
+        <isEqual property="searchCompanyRegYn" compareValue="N">
+		and a.company_code_id not in(
+		    select company_code_id
+		    from com_company_profile
+		    where delete_date is null
+		) 
+		</isEqual>
+        <include refid="CompanyCodePopupListFromWhereAnd"/>
+        <include refid="CmmnFuncDAO.CmmnPaging"/>
+    </select>
+    
+    <!--
+     * @Method Name        : apt.CptCompanyManageDAO.sselectCptCompanyCodePopupListCnt
+     * @Method description : 기업 코드 팝업 리스트의 total cnt를 조회한다.
+     * @param              : CptCompanyManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="apt.CptCompanyManageDAO.sselectCptCompanyCodePopupListCnt" parameterClass="CptCompanyManageVO" resultClass="int">
+        select  count(company_code_reg_no) as totalCount
+        from com_company_code a
+        where a.delete_date is null
+        <!-- com_company_profile에 등록된 기업 코드 -->
+        <isEqual property="searchCompanyRegYn" compareValue="Y">
+        and a.company_code_id in(
+            select company_code_id
+            from com_company_profile
+            where delete_date is null
+        ) 
+        </isEqual>
+        <!-- com_company_profile에 미 등록된 기업 코드 -->
+        <isEqual property="searchCompanyRegYn" compareValue="N">
+        and a.company_code_id not in(
+            select company_code_id
+            from com_company_profile
+            where delete_date is null
+        )
+        </isEqual>
+        <include refid="CompanyCodePopupListFromWhereAnd"/>
+    </select>
+    
+    <!--
+     * @Method Name        : apt.CptCompanyManageDAO.selectCptCompanyManageDtl
+     * @Method description : 기업정보관리 상세를 조회한다.
+     * @param              : CptCompanyManageVO
+     * @return             : CptCompanyManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.CptCompanyManageDAO.selectCptCompanyManageDtl" parameterClass="CptCompanyManageVO" resultClass="CptCompanyManageVO">
+		select  b.company_profile_reg_no                                    as companyProfileRegNo,
+		        ifnull(b.company_name_kor, a.company_name_kor)              as companyNameKor,
+		        ifnull(b.company_name_eng, a.company_name_eng)              as companyNameEng,
+		        ifnull(b.company_name_kor_alias, a.company_name_kor_alias)  as companyNameKorAlias,
+		        ifnull(b.company_name_eng_alias, a.company_name_eng_alias)  as companyNameEngAlias,
+		        ifnull(b.company_code_id, a.company_code_id)                as companyCodeId,
+		        a.company_code_type                                         as companyCodeType,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.company_code_type
+		        )                                                           as companyCodeTypeName,
+		        a.company_code_kind                                         as companyCodeKind,
+                (
+                    select code_name_kor
+                    from com_system_code
+                    where concat(system_grp_code, system_code) = a.company_code_kind
+                )                                                           as companyCodeKindName,
+                a.company_div_code                                          as companyDivCode,
+                (
+                    select code_name_kor
+                    from com_system_code
+                    where concat(system_grp_code, system_code) = a.company_div_code
+                )                                                           as companyDivCodeName,
+		        b.company_bizreg_no                                         as companyBizregNo,
+		        b.company_post_no                                           as companyPostNo,
+		        b.company_address                                           as companyAddress,
+		        b.company_address_dtl                                       as companyAddressDtl,
+		        b.company_service_type                                      as companyServiceType,
+		        b.company_ci                                                as companyCi,
+		        b.ceo_name                                                  as ceoName,
+                ifnull(b.issue_vtaccount, 'X')                              as issueVtaccount,
+                ifnull(b.issue_accountlist, 'N')                            as issueAccountlist,
+		        b.exposure_yn                                               as exposureYn,
+		        b.exposure_order                                            as exposureOrder,
+		        ifnull(date_format(b.create_date, '%Y-%m-%d %H:%i'), '')    as createDate,
+		        ifnull(date_format(b.update_date, '%Y-%m-%d %H:%i'), '')    as updateDate,
+		        ifnull(date_format(b.delete_date, '%Y-%m-%d %H:%i'), '')    as deleteDate,
+                <!-- 2017.03.07 추가 -->
+                ifnull(b.token_life_time, 0)                                as tokenLifeTime,
+                ifnull(b.token_refrash_yn, 'N')                             as tokenRefreshYn,
+                <!-- 2017.03.14 추가 -->
+                ifnull(b.token_refrash_life_time, 0)                        as tokenRefreshLifeTime,
+                <!-- 2017.03.21 추가 -->
+                ifnull(b.terms_transmit_yn, 'N')                            as termsTransmitYn
+		from com_company_code a
+		left join com_company_profile b on a.company_code_id = b.company_code_id
+		where a.delete_date is null
+		<!-- 등록 -->
+		<isNotEmpty property="companyCodeRegNo" prepend="and">
+            a.company_code_reg_no = #companyCodeRegNo#
+        </isNotEmpty>
+        <!-- 수정 -->
+		<isNotEmpty property="companyProfileRegNo" prepend="and">
+		    b.company_profile_reg_no = #companyProfileRegNo#
+		</isNotEmpty>  
+    </select>
+    
+    <!--
+     * @Method Name        : apt.CptCompanyManageDAO.insertCptCompanyManage
+     * @Method description : 기업정보관리 상세 insert
+     * @param              : CptCompanyManageVO
+     * @return             : string
+     * @throws             : Exception
+     -->
+    <insert id="apt.CptCompanyManageDAO.insertCptCompanyManage" parameterClass="CptCompanyManageVO">
+        <selectKey keyProperty="companyProfileRegNo" resultClass="java.lang.String">
+            select  concat(date_format(sysdate(),'%Y%m%d'), 
+                    lpad((
+                            select ifnull( max(cast(right(company_profile_reg_no,3) as signed)), 0)+1 
+                            from com_company_profile 
+                            where left(company_profile_reg_no,8) = concat(date_format(sysdate(),'%Y%m%d'))
+                        ), 3, '0')
+                    ) as companyProfileRegNo
+        </selectKey>
+        insert into com_company_profile(
+			company_profile_reg_no,
+			company_code_id,
+			company_service_type,
+			issue_vtaccount,
+			issue_accountlist,
+			company_name_kor,
+			company_name_eng,
+			company_name_kor_alias,
+			company_name_eng_alias,
+			company_bizreg_no,
+			company_post_no,
+			company_address,
+			company_address_dtl,
+			<isNotEmpty property="companyCi">
+                company_ci,
+            </isNotEmpty>
+			ceo_name,
+			exposure_yn,
+			exposure_order,
+            token_life_time,
+            token_refrash_yn,
+            token_refrash_life_time,
+            terms_transmit_yn,
+			create_date,
+			create_id,
+			update_date,
+			update_id        
+        )values(
+            #companyProfileRegNo#,
+            #companyCodeId#,
+            #companyServiceType#,
+            #issueVtaccount#,
+            #issueAccountlist#,
+            #companyNameKor#,
+            #companyNameEng#,
+            #companyNameKorAlias#,
+            #companyNameEngAlias#,
+            #companyBizregNo#,
+            #companyPostNo#,
+            #companyAddress#,
+            #companyAddressDtl#,
+            <isNotEmpty property="companyCi">
+                #companyCi:BLOB#,
+            </isNotEmpty>
+            #ceoName#,
+            #exposureYn#,
+            #exposureOrder#,
+            #tokenLifeTime#,
+            #tokenRefreshYn#,
+            #tokenRefreshLifeTime#,
+            #termsTransmitYn#,
+            sysdate(),
+            #createId#,
+            sysdate(),
+            #createId#
+        )
+    </insert>
+    
+    <!--
+     * @Method Name        : apt.CptCompanyManageDAO.updateCptCompanyManage
+     * @Method description : 기업정보관리 상세 update
+     * @param              : CptCompanyManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="apt.CptCompanyManageDAO.updateCptCompanyManage" parameterClass="CptCompanyManageVO">
+        update com_company_profile set
+	        company_service_type = #companyServiceType#,
+			issue_vtaccount = #issueVtaccount#,
+			issue_accountlist = #issueAccountlist#,
+			company_bizreg_no = #companyBizregNo#,
+			company_post_no = #companyPostNo#,
+			company_address = #companyAddress#,
+			company_address_dtl = #companyAddressDtl#,
+			<isNotEmpty property="companyCi">
+                company_ci = #companyCi:BLOB#,
+            </isNotEmpty>
+			ceo_name = #ceoName#,
+			exposure_yn = #exposureYn#,
+			exposure_order = #exposureOrder#,
+            token_life_time = #tokenLifeTime#,
+            token_refrash_yn = #tokenRefreshYn#,
+            token_refrash_life_time = #tokenRefreshLifeTime#,
+            terms_transmit_yn = #termsTransmitYn#,
+			update_date = sysdate(),
+            update_id = #createId#
+        where company_profile_reg_no = #companyProfileRegNo#
+    </update>        
+    
+    <!--
+     * @Method Name        : apt.CptCompanyManageDAO.insertCptCompanyManageHist
+     * @Method description : 기업정보관리 상세 hist insert
+     * @param              : CptCompanyManageVO
+     * @return             : string
+     * @throws             : Exception
+     -->
+    <insert id="apt.CptCompanyManageDAO.insertCptCompanyManageHist" parameterClass="CptCompanyManageVO">
+        insert into com_company_profile_hist(
+			company_profile_reg_no,
+			company_seq,
+			company_code_id,
+			company_service_type,
+			issue_vtaccount,
+			issue_accountlist,
+			company_name_kor,
+			company_name_eng,
+			company_name_kor_alias,
+			company_name_eng_alias,
+			company_bizreg_no,
+			company_post_no,
+			company_address,
+			company_address_dtl,
+			company_ci,
+			ceo_name,
+			exposure_yn,
+			exposure_order,
+			token_life_time,
+            token_refrash_yn,
+            token_refrash_life_time,
+            terms_transmit_yn,
+			delete_date,
+			create_date,
+			create_id
+        )    
+        select  company_profile_reg_no,
+                ifnull((
+                    select ifnull(max(cast(company_seq as SIGNED)), 0) + 1
+                    from com_company_profile_hist
+                    where company_profile_reg_no = a.company_profile_reg_no
+                ), 1),
+                company_code_id,
+	            company_service_type,
+	            issue_vtaccount,
+	            issue_accountlist,
+	            company_name_kor,
+	            company_name_eng,
+	            company_name_kor_alias,
+	            company_name_eng_alias,
+	            company_bizreg_no,
+	            company_post_no,
+	            company_address,
+	            company_address_dtl,
+	            company_ci,
+	            ceo_name,
+	            exposure_yn,
+	            exposure_order,
+	            token_life_time,
+                token_refrash_yn,
+                token_refrash_life_time,
+                terms_transmit_yn,
+	            delete_date,
+	            update_date,
+	            update_id
+        from com_company_profile a
+        where company_profile_reg_no = #companyProfileRegNo#           
+    </insert>
+    
+</sqlMap>

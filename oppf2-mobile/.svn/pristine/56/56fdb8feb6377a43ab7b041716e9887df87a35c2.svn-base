@@ -1,0 +1,161 @@
+<ion-modal-view ng-controller="MobileCheckAuth as vm">
+    <!-- 왼쪽 헤더 버튼 예제 -->
+    <ion-header-bar align-title="center">
+        <h1 class="title">휴대폰 인증</h1>
+        <button type="button" ng-click="vm.close()" class="btn_icon btn_close">닫기</button>
+    </ion-header-bar>
+    <ion-content>
+        <form name="$root.mobileCheckAuth">
+            <div class="container page_membership"> <!-- 회원가입 페이지 -->
+                <div class="inner_cont type2">
+                    <!-- 정보입력 -->
+                    <ul class="entry_area">
+                        <li>
+                            <div class="title_s">이름</div>
+                            <div class="btm_enter">
+                                <div class="input_area">
+                                    <input type="text" name="sname" ng-model="vm.sname"
+                                           required
+                                           ng-change="vm.authCodeBtnNameChange();"
+                                           ng-blur="vm.nameTouch = true"/>
+                                </div>
+                                <ul class="list_radio">
+                                    <li>
+                                        <input type="radio" id="native" name="nationality" value="Y" ng-model="vm.nationality">
+                                        <label for="native"><span>내국인</span></label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="foreigner" name="nationality" value="N" ng-model="vm.nationality">
+                                        <label for="foreigner"><span>외국인</span></label>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!--<div class="txt_error">{{vm.nameErrorMessage}}</div>-->
+                            <div ng-messages="$root.mobileCheckAuth.sname.$error" ng-show="vm.nameTouch">
+                                <div  class="txt_error" ng-message="required">이름을 입력해주세요</div>
+                            </div>
+
+                        </li>
+                        <li>
+                            <div class="title_s">생년월일</div>
+                            <div class="btm_enter">
+                                <div class="input_area">
+                                	<input type="tel" name="birthDay" ng-model="vm.birthDay"
+                                           ng-click="vm.birthDayTouch();" placeholder="예) 19920609"
+                                           ng-change="vm.authCodeBtnNameChange();"
+                                           ng-blur="vm.birthDayTouchBoolean = true;"
+                                           required/>
+                                </div>
+                                <!--<div class="input_area"><input type="text" maxlength="8" name="birthDay" ng-model="vm.birthDay" placeholder="예) 19920609" /></div>-->
+                                <ul class="list_radio">
+                                    <li>
+                                        <input type="radio" id="M" name="customerSex" ng-model="vm.customerSex" value="M">
+                                        <label for="M"><span>남자</span></label>
+                                    </li>
+                                    <li>
+                                        <input type="radio" id="F" name="customerSex" ng-model="vm.customerSex" value="F">
+                                        <label for="F"><span>여자</span></label>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="txt_error" ng-messages="$root.mobileCheckAuth.birthDay.$error" ng-show="vm.birthDayTouchBoolean">
+                                <div ng-message="required">생년월일을 입력해주세요.</div> <!-- add class : hide_set : display:none; 처리  -->
+                            </div>
+                        </li>
+                        <li>
+                            <div class="title_s">통신사</div>
+                            <div class="select_box">
+                                <select ng-change="vm.companySelect();$event.preventDefault();vm.authCodeBtnNameChange();"
+                                        ng-model="vm.smobileCo" required
+                                        name="smobileCo"
+                                        ng-options="data.data as data.name for data in vm.smobileCoList">
+                                </select>
+                            </div>
+                            <div class="txt_error" ng-messages="$root.mobileCheckAuth.smobileCo.$error"
+                                 ng-show="vm.mobileCodeTouch">
+                                <div ng-message="required">통신사를 선택해주세요.</div> <!-- add class : hide_set : display:none; 처리  -->
+                            </div>
+                        </li>
+                        <li>
+                            <div class="title_s">휴대폰번호</div>
+                            <div class="btm_enter">
+                                <div class="input_area">
+                                    <input type="tel" maxlength="12" placeholder="- 없이 입력"
+                                           name="smobileNo" id="smobileNo"
+                                           ng-change="vm.authCodeBtnNameChange();"
+                                           ng-blur="vm.mobileNumberTouch = true"
+                                           ng-model="vm.smobileNo"
+                                           required/>
+                                </div>
+                                <button type="button" class="btn_send" ng-click="vm.authCodeReq();$event.preventDefault();" ng-disabled="vm.codeBtnDisabledYn">{{vm.authCodeReqButtonName}}</button>
+                            </div>
+                            <div class="txt_error" ng-messages="$root.mobileCheckAuth.smobileNo.$error" ng-show="vm.mobileNumberTouch">
+                                <div ng-message="required" >휴대폰번호를 입력하신 후, 인증코드 전송 버튼을 클릭해주세요.</div> <!-- add class : hide_set : display:none; 처리  -->
+                            </div>
+                        </li>
+                        <li ng-show="!vm.authCodeReqBoolean">
+                            <div class="title_s">
+                                <div class="tips" tooltips>
+                                    인증번호 입력
+                                    <span class="icon_tip">i</span>
+                                    <div class="detail_tip">
+                                        1.입력시간 내 인증번호(6자리)를 입력해주세요.<br><br>
+                                        2.인증번호가 도착하지 않을 경우 재전송을 눌러주세요.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pin_num">
+                                <div class="input_area">
+                                    <input type="tel" maxlength="6" name="sauthNo" placeholder="인증번호를 입력하세요." ng-model="vm.sauthNo" required ng-disabled="vm.authCodeReqBoolean"/>
+                                </div>
+                                <div class="time">{{ vm.limitTime | date:'mm:ss' }}</div>
+                            </div>
+                            <div class="txt_error" ng-messages="$root.mobileCheckAuth.sauthNo.$error">
+                                <div ng-message="required">인증번호를 입력해주세요.</div> <!-- add class : hide_set : display:none; 처리  -->
+                            </div>
+                        </li>
+                    </ul>
+                    <!--// 정보입력 -->
+
+                    <div class="title_s">본인확인 서비스 이용약관</div>
+                    <div class="agreement_area"> <!-- 본인확인 서비스 -->
+                        <!-- 전체동의 -->
+                        <div class="all_check">
+                            <div class="form_input">
+                            	<input type="checkbox" id="all_ck" name="all_ck" ng-model="vm.allTerms" ng-click="vm.allCheck();">
+                                <label for="all_ck">전체동의</label>
+                            </div>
+                        </div>
+                        <!--// 전체동의 -->
+                        <!-- 아코디언 메뉴 -->
+                        <div class="accordian-menu" accordion ng-repeat="item in vm.mobileSelectTermsList track by $index">
+                            <!-- loop -->
+                            <div class="accordian-cont cont_wrap">
+                               <a href="#none" class="btn_bar" ng-bind-html="item.mobileTermsSubject"></a>
+                                <div class="detail_cont">
+                                    <ion-content>
+                                        <pre class="scroll_box" ng-bind-html="item.mobileTermsContent | trustedHtml"></pre>
+                                    </ion-content>
+                                </div>
+                            <div class="form_input">
+                                    <input type="checkbox" id="agree1_{{$index}}" name="agree1" ng-model="item.checked" required ng-click="vm.checkValid();"><label for="agree1_{{$index}}"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <!--// 아코디언 메뉴 -->
+                    </div>
+                    <div class="txt_error" ng-messages="$root.mobileCheckAuth.all_ck.$error">
+                        <div class="txt_error" ng-show="!vm.allTerms">전체 약관에 동의해주세요.</div> <!-- add class : hide_set : display:none; 처리  -->
+                    </div>
+                </div>
+            </div>
+        </form>
+    </ion-content>
+    <ion-footer-bar>
+        <!-- 하단 버튼 -->
+        <div class="button_area btn_bottom_area">
+            <button class="btn_middle btn_black_org" ng-click="vm.submit()" ng-disabled="$root.mobileCheckAuth.$invalid">인증하기</button>
+        </div>
+        <!--// 하단 버튼 -->
+    </ion-footer-bar>
+</ion-modal-view>

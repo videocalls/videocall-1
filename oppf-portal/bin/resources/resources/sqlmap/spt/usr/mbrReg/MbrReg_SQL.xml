@@ -1,0 +1,1206 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 자본시장 공동 핀테크 오픈플랫폼 구축
+* @FileName : NotiDAO.java
+* @Comment  : [회원가입]정보관리를 위한 SQL XML
+* @author   : 포털 이환덕
+* @since    : 2016.05.02
+* @version  : 1.0
+* @see
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2016.05.02   이환덕        최초생성
+-->
+
+<sqlMap namespace="kr.co.koscom.oppf.spt.usr.service.impl.MbrRegDAO">
+  	<typeAlias alias="MbrRegVO"
+  	 type="kr.co.koscom.oppf.spt.usr.mbrReg.service.MbrRegVO"/>
+  	 
+  	<typeAlias alias="MbrRegTermsVO"
+  	 type="kr.co.koscom.oppf.spt.usr.mbrReg.service.MbrRegTermsVO"/>
+  	 
+  	<typeAlias alias="MbrRegTermsContentVO"
+  	type="kr.co.koscom.oppf.spt.usr.mbrReg.service.MbrRegTermsContentVO"/>
+  	
+  	<typeAlias alias="AccListAttributeREQVO"
+  	type="kr.co.koscom.oppf.cmm.service.AccListAttributeREQVO"/>
+  	
+  	
+  	
+  	<!--
+     * @Method Name        : selectCheckId
+     * @Method description : [회원가입:ID중복확인]ID정보를 조회한다.
+     * @param              : String
+     * @return             : String
+     * @throws             : Exception
+     -->
+  	<select id="usr.MbrRegDAO.selectCheckId" parameterClass="MbrRegVO" resultClass="java.lang.String" >
+  	    select case when count(customer_id)>0 then 'n' else '' end as ids
+  	    from spt_customer_info_profile
+  	    where 1=1
+  	    and customer_id = #customerId#
+  	    order by customer_reg_no desc /* 최근의 탈퇴회원이나 최근에 가입 및 재가입한 회원 */
+  	    limit 0,1
+  	</select>
+  	
+  	<!--
+     * @Method Name        : selectSptCustomerInfoProfile
+     * @Method description : [회원가입:기본]정보를 조회한다.
+     * @param              : MbrRegVO
+     * @return             : MbrRegVO
+     * @throws             : Exception
+     -->
+  	<select id="usr.MbrRegDAO.selectSptCustomerInfoProfile" parameterClass="MbrRegVO" resultClass="MbrRegVO" >
+  	    select 
+            i.customer_reg_no               as customerRegNo,             /* 일반회원프로파일.회원 OP 등록 번호 */
+            i.customer_id                   as customerId,                /* 일반회원프로파일.회원 아이디  */            
+            if(
+            i.customer_password = 
+            enc_char_ins(#customerPassword#,10,'SHA','spt_customer_info_profile','customer_password',user(),connection_id()),
+            'Y', 'N') as customerPasswordYn,                              /* 회원 패스워드 유효여부 */
+            i.customer_temp_password_yn     as customerTempPasswordYn,    /* 일반회원프로파일.회원 비밀번호 임시여부 */
+            i.customer_chg_password_date    as customerChgPasswordDate,   /* 일반회원프로파일.회원 비밀번호 변경일자 */
+            i.customer_password_fail_cnt    as customerPasswordFailCnt,   /* 일반회원프로파일.비밀번호 실패횟수 */
+            i.customer_reg_status           as customerRegStatus,         /* 일반회원프로파일.회원 가입 상태 */
+            i.customer_step                 as customerStep,              /* 일반회원프로파일.회원 가입 Step */
+            i.customer_name_kor             as customerNameKor,           /* 일반회원프로파일.회원명 한글 */
+            i.customer_name_eng             as customerNameEng,           /* 일반회원프로파일.회원명 영문 */
+            dec_char_sel(i.customer_phone,10,'ARIA','spt_customer_info_profile','customer_phone',user(),connection_id())  as customerPhone,  /* 일반회원프로파일.회원 휴대폰 번호 */
+            dec_char_sel(i.customer_email,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id())  as customerEmail,  /* 일반회원프로파일.회원 이메일 주소 */
+            i.customer_email_auth_yn        as customerEmailAuthYn,       /* 일반회원프로파일.회원 이메일 인증여부 */
+            i.customer_email_reg_date       as customerEmailRegDate,      /* 일반회원프로파일.회원 이메일 인증일시 */
+            i.customer_expire_password_date as customerExpirePasswordDate,/* 일반회원프로파일.비밀번호 변경 예정일 */
+            i.customer_final_password_date  as customerFinalPasswordDate, /* 일반회원프로파일.비밀번호 변경 최종 예정일 */
+            dec_char_sel(i.customer_birth_day,10,'ARIA','spt_customer_info_profile','customer_birth_day',user(),connection_id())  as customerBirthDay,  /* 일반회원프로파일.생년월일 */
+            i.customer_sex                  as customerSex,               /* 일반회원프로파일.성별 */
+            i.customer_email_receive_yn     as customerEmailReceiveYn,    /* 일반회원프로파일.이메일 수신동의여부 */
+            i.customer_email_receive_date   as customerEmailReceiveDate,  /* 일반회원프로파일.이메일 수신동의 여부일시 */
+            i.customer_reg_date             as customerRegDate,           /* 일반회원프로파일.회원가입일시 */
+            i.delete_date                   as deleteDate,                /* 일반회원프로파일.회원탈퇴일시 */
+            i.create_date                   as createDate,                /* 일반회원프로파일.생성일시 */
+            i.create_id                     as createId,                  /* 일반회원프로파일.생성자 ID */
+            i.update_date                   as updateDate,                /* 일반회원프로파일.변경일시 */
+            i.update_id                     as udpateId                   /* 일반회원프로파일.변경자 ID */
+        from spt_customer_info_profile i/* 일반회원프로파일 */
+  	    where 1=1
+ 	    and i.customer_reg_no = #customerRegNo#
+ 	    order by i.customer_reg_no desc /* 최근의 탈퇴회원이나 최근에 가입 및 재가입한 회원 */
+ 	    limit 0,1
+  	</select>
+  	
+  	<!--
+     * @Method Name        : selectSptCustomerVerifyProfile
+     * @Method description : [회원가입:인증]정보를 조회한다.
+     * @param              : MbrRegVO
+     * @return             : MbrRegVO
+     * @throws             : Exception
+     -->
+  	<select id="usr.MbrRegDAO.selectSptCustomerVerifyProfile" parameterClass="MbrRegVO" resultClass="MbrRegVO" >
+  	    select 
+            v.customer_reg_no               as customerRegNo,      /* 일반회원검증.회원OP등록번호 */
+            v.customer_verify_type          as customerVerifyType, /* 일반회원검증.회원검증종류 */
+            v.customer_verify               as customerVerify,     /* 일반회원검증.회원검증값 */
+            v.customer_verify_date          as customerVerifyDate, /* 일반회원검증.회원검증일시 */
+            c.customer_reg_status 			as customerRegStatus,  /* 일반회원검증.회원등록상태 */
+            c.temporary_member_yn 			as temporaryMemberYn,  /* 일반회원검증.임시회원여부 */
+            dec_char_sel(c.customer_email,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id())  as customerEmail,/* 일반회원검증.이메일 */
+            v.delete_date                   as deleteDate,         /* 일반회원검증.회원탈퇴일시 */
+            v.create_date                   as createDate,         /* 일반회원검증.생성일시 */
+            v.create_id                     as createId,           /* 일반회원검증.생성자 ID */
+            v.update_date                   as updateDate,         /* 일반회원검증.변경일시 */
+            v.update_id                     as udpateId            /* 일반회원검증.변경자 ID */
+        from spt_customer_verify_profile v, spt_customer_info_profile c /* 일반회원검증 */
+  	    where 1=1
+        and c.customer_reg_no = v.customer_reg_no
+	    and v.customer_verify = #customerVerify#
+	    order by v.customer_reg_no desc /* 최근의 탈퇴회원이나 최근에 가입 및 재가입한 회원 */
+	    limit 0,1
+  	</select>
+  	
+  	<!--
+     * @Method Name        : selectSptWithDrawCustomerVerifyProfile
+     * @Method description : 탈퇴 회원 인증 정보를 조회한다.
+     * @param              : MbrRegVO
+     * @return             : MbrRegVO
+     * @throws             : Exception
+     -->
+  	<select id="usr.MbrRegDAO.selectSptWithDrawCustomerVerifyProfile" parameterClass="MbrRegVO" resultClass="int" >
+			select 
+				count(a.customer_reg_no) 
+			from leave_customer_info_profile a
+			join leave_customer_verify_profile b
+			on a.customer_reg_no = b.customer_reg_no
+			and b.customer_verify_type = 'G007001'
+			and b.customer_verify = #customerVerify#
+			<![CDATA[
+			AND DATE_ADD(b.create_date, INTERVAL +3 DAY) > NOW()
+			]]>
+  	</select>
+  	
+  	
+  	<!--
+    * @Method Name        : selectSptCustomerCiInfo
+    * @Method description : [회원정보:기본&인증]정보를 조회한다.
+    * @param paramVO
+    * @return
+     -->
+  	<select id="usr.MbrRegDAO.selectSptCustomerCiInfo" parameterClass="AccListAttributeREQVO" resultClass="MbrRegVO" >
+  	    select 
+  	    	a.customer_reg_no as customerRegNo,
+  	    	a.customer_id as customerId,
+  	    	a.customer_name_kor as customerNameKor,
+          	b.customer_verify as userCi,
+          b.delete_date
+  	    from spt_customer_info_profile a
+        join spt_customer_verify_profile b
+        on a.customer_reg_no = b.customer_reg_no
+        and b.customer_verify_type = 'G007001'
+         and b.delete_date is null
+        where a.customer_id = #requestUserId#
+  	</select>
+  	
+  	<!--
+     * @Method Name        : selectSptCustomerVerifyProfileList
+     * @Method description : [회원가입:인증목록]정보를 조회한다.
+     * @param              : MbrRegVO
+     * @return             : MbrRegVO
+     * @throws             : Exception
+     -->
+  	<select id="usr.MbrRegDAO.selectSptCustomerVerifyProfileList" parameterClass="MbrRegVO" resultClass="MbrRegVO" >
+  	    select 
+            v.customer_reg_no               as customerRegNo,      /* 일반회원검증.회원OP등록번호 */
+            v.customer_verify_type          as customerVerifyType, /* 일반회원검증.회원검증종류 */
+            v.customer_verify               as customerVerify,     /* 일반회원검증.회원검증값 */
+            v.customer_verify_date          as customerVerifyDate, /* 일반회원검증.회원검증일시 */
+            v.delete_date                   as deleteDate,         /* 일반회원검증.회원탈퇴일시 */
+            v.create_date                   as createDate,         /* 일반회원검증.생성일시 */
+            v.create_id                     as createId,           /* 일반회원검증.생성자 ID */
+            v.update_date                   as updateDate,         /* 일반회원검증.변경일시 */
+            v.update_id                     as udpateId            /* 일반회원검증.변경자 ID */
+        from spt_customer_verify_profile v /* 일반회원검증 */
+  	    where 1=1
+ 	    and v.customer_reg_no = #customerRegNo#
+ 	    and v.delete_date is null
+ 	    <isNotEmpty property="customerVerifyType">
+ 	        <isNotEqual property="customerVerifyType" compareValue="X" prepend="and">
+ 	            v.customer_verify_type = #customerVerifyType#
+ 	        </isNotEqual>
+ 	    </isNotEmpty>
+ 	    order by v.customer_reg_no desc /* 최근의 탈퇴회원이나 최근에 가입 및 재가입한 회원 */
+  	</select>
+  	
+  	<!--
+     * @Method Name        : selectSptCustomerTermsProfile
+     * @Method description : [회원가입:약관]정보를 조회한다.
+     * @param              : MbrRegTermsVO
+     * @return             : MbrRegTermsVO
+     * @throws Exception 
+     -->
+  	<select id="usr.MbrRegDAO.selectSptCustomerTermsProfile" parameterClass="MbrRegTermsVO" resultClass="MbrRegTermsVO" >
+  	    select 
+            t.customer_reg_no                as customerRegNo,              /* 일반회원약관동의.회원OP등록번호 */
+            t.customer_terms_type            as customerTermsType,          /* 일반회원약관동의.회원동의종류 */
+            t.customer_terms_auth_yn         as customerTermsAuthYn,        /* 일반회원약관동의.회원동의여부 */
+            t.customer_terms_auth_date       as customerTermsAuthDate,      /* 일반회원약관동의.회원동의일시 */
+            t.customer_terms_content_reg_seq as customerTermsContentRegSeq, /* 일반회원약관동의.동의서약관내용등록번호 */
+            t.delete_date                    as deleteDate,                 /* 일반회원약관동의.회원탈퇴일시 */
+            t.create_date                    as createDate,                 /* 일반회원약관동의.생성일시 */
+            t.create_id                      as createId,                   /* 일반회원약관동의.생성자 ID */
+            t.update_date                    as updateDate,                 /* 일반회원약관동의.변경일시 */
+            t.update_id                      as udpateId                    /* 일반회원약관동의.변경자 ID */
+        from spt_customer_terms_profile t /* 일반회원약관동의 */
+  	    where 1=1
+        and t.customer_reg_no     = #customerRegNo#
+        and t.customer_terms_type = #customerTermsType#
+ 	    limit 0,1
+  	</select>
+  	
+  	<!--
+     * @Method Name        : selectSptCustomerTermsProfileList
+     * @Method description : [회원가입:약관목록]정보를 조회한다.
+     * @param              : MbrRegTermsVO
+     * @return             : MbrRegTermsVO
+     * @throws             : Exception
+     -->
+  	<select id="usr.MbrRegDAO.selectSptCustomerTermsProfileList" parameterClass="MbrRegTermsVO" resultClass="MbrRegTermsVO">
+  	    select 
+            t.customer_reg_no                as customerRegNo,              /* 일반회원약관동의.회원OP등록번호 */
+            t.customer_terms_type            as customerTermsType,          /* 일반회원약관동의.회원동의종류 */
+            t.customer_terms_auth_yn         as customerTermsAuthYn,        /* 일반회원약관동의.회원동의여부 */
+            t.customer_terms_auth_date       as customerTermsAuthDate,      /* 일반회원약관동의.회원동의일시 */
+            t.customer_terms_content_reg_seq as customerTermsContentRegSeq, /* 일반회원약관동의.동의서약관내용등록번호 */
+            t.delete_date                    as deleteDate,                 /* 일반회원약관동의.회원탈퇴일시 */
+            t.create_date                    as createDate,                 /* 일반회원약관동의.생성일시 */
+            t.create_id                      as createId,                   /* 일반회원약관동의.생성자 ID */
+            t.update_date                    as updateDate,                 /* 일반회원약관동의.변경일시 */
+            t.update_id                      as udpateId                    /* 일반회원약관동의.변경자 ID */
+        from spt_customer_terms_profile t /* 일반회원약관동의 */
+  	    where 1=1
+ 	    and t.customer_reg_no = #customerRegNo#
+  	</select>
+  	
+    <!--
+     * @Method Name        : selectSptCustomerTermsContentInfo
+     * @Method description : [회원가입:약관내용]정보를 조회한다.
+     * @param              : MbrRegTermsContentVO
+     * @return             : MbrRegTermsContentVO
+     * @throws             : Exception
+     -->
+  	<select id="usr.MbrRegDAO.selectSptCustomerTermsContentInfo" parameterClass="MbrRegTermsContentVO" resultClass="MbrRegTermsContentVO">
+  	    select 
+  	        (select code_name_kor 
+  	         from com_system_code 
+  	         where code_extend1 = 'Y' 
+             and system_grp_code = left(tc.customer_terms_type,4)
+             and system_code = right(tc.customer_terms_type,3)
+            )                                 as customerTermsTypeName,      /* 일반회원약관내용.회원동의종류명 */
+            tc.customer_terms_type            as customerTermsType,          /* 일반회원약관내용.회원동의종류 */
+            tc.customer_terms_content_reg_seq as customerTermsContentRegSeq, /* 일반회원약관내용.동의서약관내용등록번호 */
+            tc.customer_terms_content_ver     as customerTermsContentVer,    /* 일반회원약관내용.동의서약관내용버전 */
+            tc.customer_terms_content         as customerTermsContent,       /* 일반회원약관내용.동의서약관내용 */
+            tc.customer_email_yn              as customerEmailYn,            /* 일반회원약관내용.동의서email고지여부 */
+            tc.customer_email_date            as customerEmailDate,          /* 일반회원약관내용.동의서email고지일자 */
+            tc.create_date                    as createDate,                 /* 일반회원약관내용.생성일시 */
+            tc.create_id                      as createId,                   /* 일반회원약관내용.생성자ID */
+            tc.update_date                    as updateDate,                 /* 일반회원약관내용.변경일시 */
+            tc.update_id                      as updateId                    /* 일반회원약관내용.변경자ID */
+        from spt_customer_terms_content_profile tc /* 일반회원약관내용 */
+  	    where 1=1
+ 	    and tc.customer_terms_type = #customerTermsType#
+  	    <isNotEmpty property="customerTermsContentRegSeq">
+ 	        and tc.customer_terms_content_reg_seq = #customerTermsContentRegSeq#
+  	    </isNotEmpty>
+  	    and tc.customer_terms_system_kind = 'G003002'    /*개인 약관*/
+ 	    order by tc.customer_terms_content_reg_seq desc
+ 	    limit 0,1
+  	</select>
+  	
+    <!--
+     * @Method Name        : selectSptCustomerTermsContentList
+     * @Method description : [회원가입:약관내용목록]정보를 조회한다.
+     * @param              : MbrRegTermsContentVO
+     * @return             : List<MbrRegTermsContentVO>
+     * @throws             : Exception
+     -->
+  	<select id="usr.MbrRegDAO.selectSptCustomerTermsContentList" parameterClass="MbrRegTermsContentVO" resultClass="MbrRegTermsContentVO">
+  	
+            select  
+                  (SELECT code_name_kor
+                    FROM com_system_code
+                   WHERE     code_extend1 = 'Y'
+                         AND system_grp_code = left(tc.customer_terms_type, 4)
+                         AND system_code = right(tc.customer_terms_type, 3))
+                    AS customerTermsTypeName,                     /* 일반회원약관내용.회원동의종류명 */
+                 tc.customer_terms_type AS customerTermsType,      /* 일반회원약관내용.회원동의종류 */
+                 tc.customer_terms_content_reg_seq AS customerTermsContentRegSeq, /* 일반회원약관내용.동의서약관내용등록번호 */
+                 tc.customer_terms_content_ver AS customerTermsContentVer, /* 일반회원약관내용.동의서약관내용버전 */
+                 tc.customer_terms_content AS customerTermsContent, /* 일반회원약관내용.동의서약관내용 */
+                 tc.customer_email_yn AS customerEmailYn,    /* 일반회원약관내용.동의서email고지여부 */
+                 tc.customer_email_date AS customerEmailDate, /* 일반회원약관내용.동의서email고지일자 */
+                 tc.create_date AS createDate,                       /* 일반회원약관내용.생성일시 */
+                 tc.create_id AS createId,                          /* 일반회원약관내용.생성자ID */
+                 tc.update_date AS updateDate,                       /* 일반회원약관내용.변경일시 */
+                 tc.update_id AS updateId                           /* 일반회원약관내용.변경자ID */
+            from(
+                select  a.customer_terms_type,
+                        max(a.customer_terms_content_ver + 0) as customer_terms_content_ver
+                from spt_customer_terms_content_profile a
+                where customer_terms_type in (
+                    select concat(system_grp_code, system_code) as system_code
+                    from com_system_code
+                    where system_grp_code = 'G008'
+                    and use_yn = 'Y'
+                    and delete_date is null
+                    and code_extend2 = 'Y'
+                )
+               AND customer_terms_system_kind = 'G003002'
+		  	     <iterate prepend="and customer_terms_type IN" property="searchCustomerTermsTypeList" open="(" close=")" conjunction=",">
+			         #searchCustomerTermsTypeList[]#
+			     </iterate>
+                group by a.customer_terms_type
+            ) a
+            left join spt_customer_terms_content_profile tc
+            on a.customer_terms_type = tc.customer_terms_type
+            and a.customer_terms_content_ver = tc.customer_terms_content_ver
+            and tc.customer_terms_system_kind = 'G003002'
+            
+  	</select>
+  	
+  	<select id="usr.MbrRegDAO.selectCustomerTermsContentList" parameterClass="MbrRegTermsContentVO" resultClass="MbrRegTermsVO">
+  	
+            select  
+                tc.customer_terms_type AS customerTermsType,      /* 일반회원약관내용.회원동의종류 */
+                tc.customer_terms_content_reg_seq AS customerTermsContentRegSeq /* 일반회원약관내용.동의서약관내용등록번호 */
+            from(
+                select  a.customer_terms_type,
+                        max(a.customer_terms_content_ver + 0) as customer_terms_content_ver
+                from spt_customer_terms_content_profile a
+                where customer_terms_type in (
+                    select concat(system_grp_code, system_code) as system_code
+                    from com_system_code
+                    where system_grp_code = 'G008'
+                    and use_yn = 'Y'
+                    and delete_date is null
+                    and code_extend2 = 'Y'
+                )
+               AND customer_terms_system_kind = 'G003002'
+		  	     <iterate prepend="and customer_terms_type IN" property="searchCustomerTermsTypeList" open="(" close=")" conjunction=",">
+			         #searchCustomerTermsTypeList[]#
+			     </iterate>
+                group by a.customer_terms_type
+            ) a
+            left join spt_customer_terms_content_profile tc
+            on a.customer_terms_type = tc.customer_terms_type
+            and a.customer_terms_content_ver = tc.customer_terms_content_ver
+            and tc.customer_terms_system_kind = 'G003002'
+            
+  	</select>
+  	<!--
+     * @Method Name        : selectSptCustomerProfileInfo
+     * @Method description : [회원가입:기본&인증]정보를 조회한다.
+     * @param              : MbrRegVO
+     * @return             : MbrRegVO
+     * @throws             : Exception
+     -->
+  	<select id="usr.MbrRegDAO.selectSptCustomerProfileInfo" parameterClass="MbrRegVO" resultClass="MbrRegVO" >
+  	    select 
+            i.customer_id                   as customerId,                /* 일반회원프로파일.회원 아이디  */
+            i.customer_password             as customerPassword,          /* 일반회원프로파일.회원 비밀번호 */
+            i.customer_temp_password_yn     as customerTempPasswordYn,    /* 일반회원프로파일.회원 비밀번호 임시여부 */
+            i.customer_chg_password_date    as customerChgPasswordDate,   /* 일반회원프로파일.회원 비밀번호 변경일자 */
+            i.customer_password_fail_cnt    as customerPasswordFailCnt,   /* 일반회원프로파일.비밀번호 실패횟수 */
+            i.customer_reg_status           as customerRegStatus,         /* 일반회원프로파일.회원 가입 상태 */
+            i.customer_step                 as customerStep,              /* 일반회원프로파일.회원 가입 Step */
+            i.customer_name_kor             as customerNameKor,           /* 일반회원프로파일.회원명 한글 */
+            i.customer_name_eng             as customerNameEng,           /* 일반회원프로파일.회원명 영문 */
+            dec_char_sel(i.customer_phone,10,'ARIA','spt_customer_info_profile','customer_phone',user(),connection_id())  as customerPhone,  /* 일반회원프로파일.회원 휴대폰 번호 */
+            dec_char_sel(i.customer_email,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id())  as customerEmail,  /* 일반회원프로파일.회원 이메일 주소 */
+            i.customer_email_auth_yn        as customerEmailAuthYn,       /* 일반회원프로파일.회원 이메일 인증여부 */
+            i.customer_email_reg_date       as customerEmailRegDate,      /* 일반회원프로파일.회원 이메일 인증일시 */
+            i.customer_expire_password_date as customerExpirePasswordDate,/* 일반회원프로파일.비밀번호 변경 예정일 */
+            i.customer_final_password_date  as customerFinalPasswordDate, /* 일반회원프로파일.비밀번호 변경 최종 예정일 */
+            dec_char_sel(i.customer_birth_day,10,'ARIA','spt_customer_info_profile','customer_birth_day',user(),connection_id())  as customerBirthDay,  /* 일반회원프로파일.생년월일 */
+            i.customer_sex                  as customerSex,               /* 일반회원프로파일.성별 */
+            i.customer_email_receive_yn     as customerEmailReceiveYn,    /* 일반회원프로파일.이메일 수신동의여부 */
+            i.customer_email_receive_date   as customerEmailReceiveDate,  /* 일반회원프로파일.이메일 수신동의 여부일시 */
+            i.customer_reg_date             as customerRegDate,           /* 일반회원프로파일.회원가입일시 */
+            v.customer_reg_no               as customerRegNo,      /* 일반회원검증.회원OP등록번호 */
+            v.customer_verify_type          as customerVerifyType, /* 일반회원검증.회원검증종류 */
+            v.customer_verify               as customerVerify,     /* 일반회원검증.회원검증값 */
+            v.customer_verify_date          as customerVerifyDate  /* 일반회원검증.회원검증일시 */
+        from spt_customer_verify_profile v /* 일반회원검증 */
+        left outer join spt_customer_info_profile i/* 일반회원프로파일 */
+        on v.customer_reg_no = i.customer_reg_no
+  	    where 1=1
+	    and v.customer_verify = #customerVerify#
+	    order by v.customer_reg_no desc /* 최근의 탈퇴회원이나 최근에 가입 및 재가입한 회원 */
+ 	    limit 0,1
+  	</select>
+  	
+    <!--
+     * @Method Name        : insertSptCustomerInfoProfile
+     * @Method description : [회원가입:기본]정보등록을 한다.
+     * @param              : MbrRegVO
+     * @return             : String customerRegNo(회원OP등록번호)
+     * @throws             : Exception
+     -->
+    <insert id="usr.MbrRegDAO.insertSptCustomerInfoProfile" parameterClass="MbrRegVO">
+        <selectKey keyProperty="customerRegNo" resultClass="java.lang.String">
+           select concat(#customerRegNoPrefix#, date_format(sysdate(),'%Y%m%d'), lpad( (select ifnull( max(cast(right(customer_reg_no,3) as signed)), 0)+1 from spt_customer_info_profile where left(customer_reg_no,9) = concat(#customerRegNoPrefix#, date_format(sysdate(),'%Y%m%d'))) , 3, '0')) as customerRegNo /* 회원 OP 등록 번호 */
+        </selectKey>
+        insert into spt_customer_info_profile(
+            customer_reg_no               /* 회원 OP 등록 번호 */
+           , customer_join_type
+        <isNotEmpty property="customerId">
+           ,customer_id                   /* 회원 아이디  */
+        </isNotEmpty>
+        <isNotEmpty property="customerPassword">
+           ,customer_password             /* 회원 비밀번호 */
+        </isNotEmpty>
+        <isNotEmpty property="customerTempPasswordYn">
+           ,customer_temp_password_yn     /* 회원 비밀번호 임시여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerChgPasswordDate">
+           ,customer_chg_password_date    /* 회원 비밀번호 변경일자 */
+        </isNotEmpty>
+        <isNotEmpty property="customerPasswordFailCnt">
+           ,customer_password_fail_cnt    /* 비밀번호 실패횟수 */
+        </isNotEmpty>
+        <isNotEmpty property="customerRegStatus">
+           ,customer_reg_status           /* 회원 가입 상태 */
+        </isNotEmpty>
+        <isNotEmpty property="customerStep">
+           ,customer_step                 /* 회원 가입 Step */
+        </isNotEmpty>
+        <isNotEmpty property="customerNameKor">
+           ,customer_name_kor             /* 회원명 한글 */
+        </isNotEmpty>
+        <isNotEmpty property="customerNameEng">
+           ,customer_name_eng             /* 회원명 영문 */
+        </isNotEmpty>
+        <isNotEmpty property="customerPhone">
+           ,customer_phone                /* 회원 휴대폰 번호 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmail">
+           ,customer_email                /* 회원 이메일 주소 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailAuthYn">
+           ,customer_email_auth_yn        /* 회원 이메일 인증여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailRegDate">
+           ,customer_email_reg_date       /* 회원 이메일 인증일시 */
+        </isNotEmpty>
+        <isNotEmpty property="customerExpirePasswordDate">
+           ,customer_expire_password_date /* 비밀번호 변경 예정일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerFinalPasswordDate">
+           ,customer_final_password_date  /* 비밀번호 변경 최종 예정일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerBirthDay">
+           ,customer_birth_day            /* 생년월일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerSex">
+           ,customer_sex                  /* 성별 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailReceiveYn">
+           ,customer_email_receive_yn     /* 이메일 수신동의여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailReceiveDate">
+           ,customer_email_receive_date   /* 이메일 수신동의 여부일시 */
+        </isNotEmpty>
+           ,customer_reg_date             /* 회원가입일시 */
+        <isNotEmpty property="deleteDate">
+           ,delete_date                   /* 회원탈퇴일시 */
+        </isNotEmpty>
+           ,create_date                   /* 생성일시 */
+           ,create_id                     /* 생성자 ID */
+           ,update_date                   /* 변경일시 */
+           ,update_id                     /* 변경자 ID */
+        )values(
+            #customerRegNo#
+           , 'G039001'
+        <isNotEmpty property="customerId">
+           ,#customerId#                 /* 회원 아이디  */
+        </isNotEmpty>
+        <isNotEmpty property="customerPassword">
+           ,enc_char_ins(#customerPassword#,10,'SHA','spt_customer_info_profile','customer_password',user(),connection_id())  /* 회원 비밀번호 */
+        </isNotEmpty>
+        <isNotEmpty property="customerTempPasswordYn">
+           ,#customerTempPasswordYn#     /* 회원 비밀번호 임시여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerChgPasswordDate">
+           ,sysdate()    /* 회원 비밀번호 변경일자 */
+        </isNotEmpty>
+        <isNotEmpty property="customerPasswordFailCnt">
+           ,#customerPasswordFailCnt#    /* 비밀번호 실패횟수 */
+        </isNotEmpty>
+        <isNotEmpty property="customerRegStatus">
+           ,#customerRegStatus#          /* 회원 가입 상태 */
+        </isNotEmpty>
+        <isNotEmpty property="customerStep">
+           ,#customerStep#               /* 회원 가입 Step */
+        </isNotEmpty>
+        <isNotEmpty property="customerNameKor">
+           ,#customerNameKor#            /* 회원명 한글 */
+        </isNotEmpty>
+        <isNotEmpty property="customerNameEng">
+           ,#customerNameEng#            /* 회원명 영문 */
+        </isNotEmpty>
+        <isNotEmpty property="customerPhone">
+           ,enc_char_ins(#customerPhone#,10,'ARIA','spt_customer_info_profile','customer_phone',user(),connection_id())  /* 회원 휴대폰 번호 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmail">
+           ,enc_char_ins(#customerEmail#,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id())  /* 회원 이메일 주소 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailAuthYn">
+           ,#customerEmailAuthYn#        /* 회원 이메일 인증여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailRegDate">
+           ,#customerEmailRegDate#       /* 회원 이메일 인증일시 */
+        </isNotEmpty>
+        <isNotEmpty property="customerExpirePasswordDate">
+           ,#customerExpirePasswordDate# /* 비밀번호 변경 예정일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerFinalPasswordDate">
+           ,#customerFinalPasswordDate#  /* 비밀번호 변경 최종 예정일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerBirthDay">
+           ,enc_char_ins(#customerBirthDay#,10,'ARIA','spt_customer_info_profile','customer_birth_day',user(),connection_id())  /* 생년월일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerSex">
+           ,#customerSex#                /* 성별 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailReceiveYn">
+           ,#customerEmailReceiveYn#     /* 이메일 수신동의여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailReceiveDate">
+           ,#customerEmailReceiveDate#   /* 이메일 수신동의 여부일시 */
+        </isNotEmpty>
+           ,sysdate()            /* 회원가입일시 */
+        <isNotEmpty property="deleteDate">
+           ,#deleteDate#                 /* 회원탈퇴일시 */
+        </isNotEmpty>
+           ,sysdate()                    /* 생성일시 */
+           ,#customerRegNo#              /* 생성자 ID */
+           ,sysdate()                    /* 변경일시 */
+           ,#customerRegNo#              /* 변경자 ID */
+        )
+    </insert>
+    
+    <!--
+     * @Method Name        : insertSptCustomerInfoProfileHist
+     * @Method description : [회원가입:기본hist]정보등록을 한다.
+     * @param              : MbrRegVO
+     * @return             : void
+     * @throws             : Exception
+     -->
+    <insert id="usr.MbrRegDAO.insertSptCustomerInfoProfileHist" parameterClass="MbrRegVO">
+        insert into spt_customer_info_profile_hist(
+            customer_seq                  /* 순번 */
+            ,customer_reg_no               /* 회원 OP 등록 번호 */
+			,customer_id
+			,customer_password
+			,customer_temp_password_yn
+			,customer_chg_password_date
+			,customer_expire_password_date
+			,customer_final_password_date
+			,customer_otp_fail_cnt
+			,customer_password_fail_cnt
+			,customer_reg_status
+			,customer_step
+			,customer_name_kor
+			,customer_name_eng
+			,customer_phone
+			,customer_email
+			,customer_email_auth_yn
+			,customer_email_reg_date
+			,customer_birth_day
+			,customer_sex
+			,customer_email_receive_yn
+			,customer_email_receive_date
+			,customer_mobile_push_yn
+			,customer_dataset_lock_yn
+			,customer_reg_date
+			,delete_date
+			,customer_withdrawal_proc_yn
+			,customer_join_type
+			,temporary_member_yn
+			,integration_account_yn
+			,create_date
+			,create_id
+        )
+        select 
+		    ifnull((
+		        select ifnull(max(cast(customer_seq as SIGNED)), 0) + 1
+		        from spt_customer_info_profile_hist
+		        where customer_reg_no = a.customer_reg_no
+		    ), 1),                         /* 순번 */
+            customer_reg_no                /* 회원 OP 등록 번호 */
+			,customer_id
+			,customer_password
+			,customer_temp_password_yn
+			,customer_chg_password_date
+			,customer_expire_password_date
+			,customer_final_password_date
+			,customer_otp_fail_cnt
+			,customer_password_fail_cnt
+			,customer_reg_status
+			,customer_step
+			,customer_name_kor
+			,customer_name_eng
+			,customer_phone
+			,customer_email
+			,customer_email_auth_yn
+			,customer_email_reg_date
+			,customer_birth_day
+			,customer_sex
+			,customer_email_receive_yn
+			,customer_email_receive_date
+			,customer_mobile_push_yn
+			,customer_dataset_lock_yn
+			,customer_reg_date
+			,delete_date
+			,customer_withdrawal_proc_yn
+			,customer_join_type
+			,temporary_member_yn
+			,integration_account_yn
+			,create_date
+			,create_id
+        from spt_customer_info_profile a
+        where 1=1
+        and customer_reg_no = #customerRegNo#
+    </insert>
+   
+    <!--
+     * @Method Name        : insertSptCustomerVerifyProfile
+     * @Method description : [회원가입:인증]정보등록을 한다.
+     * @param              : MbrRegVO
+     * @return             : void
+     * @throws             : Exception
+     -->
+    <insert id="usr.MbrRegDAO.insertSptCustomerVerifyProfile" parameterClass="MbrRegVO">
+        insert into spt_customer_verify_profile(
+            customer_reg_no      /* 회원OP등록번호 */
+           ,customer_verify_type /* 회원검증종류  */
+        <isNotEmpty property="customerVerify">
+           ,customer_verify      /* 회원검증값 */
+           ,customer_verify_date /* 회원검증일시 */
+        </isNotEmpty>
+        <isNotEmpty property="deleteDate">
+           ,delete_date          /* 삭제일시 */
+        </isNotEmpty>
+           ,create_date          /* 생성일시 */
+           ,create_id            /* 생성자 ID */
+           ,update_date          /* 변경일시 */
+           ,update_id            /* 변경자 ID */
+        )values(
+            #customerRegNo#      /* 회원OP등록번호 */
+           ,#customerVerifyType# /* 회원검증종류  */
+        <isNotEmpty property="customerVerify">
+           ,#customerVerify#     /* 회원검증값 */
+           ,sysdate()            /* 회원검증일시 */
+        </isNotEmpty>
+        <isNotEmpty property="deleteDate">
+           ,sysdate()            /* 삭제일시 */
+        </isNotEmpty>
+           ,sysdate()            /* 생성일시 */
+           ,#customerRegNo#      /* 생성자 ID */
+           ,sysdate()            /* 변경일시 */
+           ,#customerRegNo#      /* 변경자 ID */
+        )
+    </insert>
+    
+    <!--
+     * @Method Name        : insertSptCustomerVerifyProfileHist
+     * @Method description : [회원가입:인증hist]정보등록을 한다.
+     * @param              : MbrRegVO
+     * @return             : void
+     * @throws             : Exception
+     -->
+    <insert id="usr.MbrRegDAO.insertSptCustomerVerifyProfileHist" parameterClass="MbrRegVO">
+        insert into spt_customer_verify_profile_hist(
+            customer_verify_seq,  /* 순번 */
+            customer_reg_no,      /* 회원OP등록번호 */
+            customer_verify_type, /* 회원검증종류  */
+            customer_verify,      /* 회원검증값 */
+            customer_verify_date, /* 회원검증일시 */
+            delete_date,          /* 삭제일시 */
+            create_date,          /* 생성일시 */
+            create_id             /* 생성자 ID */
+        )
+        select
+		    ifnull((
+		        select ifnull(max(cast(customer_verify_seq as SIGNED)), 0) + 1
+		        from spt_customer_verify_profile_hist
+		        where customer_reg_no = a.customer_reg_no
+		    ), 1),                /* 순번 */
+            customer_reg_no,      /* 회원OP등록번호 */
+            customer_verify_type, /* 회원검증종류  */
+            customer_verify,      /* 회원검증값 */
+            customer_verify_date, /* 회원검증일시 */
+            delete_date,          /* 삭제일시 */
+            create_date,          /* 생성일시 */
+            create_id             /* 생성자 ID */
+        from spt_customer_verify_profile a
+        where 1=1
+        and customer_reg_no = #customerRegNo# /* 회원OP등록번호 */
+        and customer_verify_type = #customerVerifyType# /* 회원검증종류  */
+    </insert>
+    
+    <!--
+     * @Method Name        : insertSptCustomerTermsProfile
+     * @Method description : [회원가입:약관]정보등록을 한다.
+     * @param              : MbrRegTermsVO
+     * @return             : void
+     * @throws             : Exception
+     -->
+    <insert id="usr.MbrRegDAO.insertSptCustomerTermsProfile" parameterClass="MbrRegTermsVO">
+        insert into spt_customer_terms_profile(
+            customer_reg_no      /* 회원OP등록번호 */
+           ,customer_terms_type  /* 회원동의종류  */
+        <isNotEmpty property="customerTermsContentRegSeq">
+           ,customer_terms_content_reg_seq /* 동의서약관내용등록번호 */
+        </isNotEmpty>
+        <isNotEmpty property="customerTermsAuthYn">
+           ,customer_terms_auth_yn /* 회원동의여부 */
+        </isNotEmpty>
+        <isEqual property="customerTermsAuthYn" compareValue="Y">
+           ,customer_terms_auth_date /* 회원동의일시 */
+        </isEqual>
+        <isNotEmpty property="deleteDate">
+           ,delete_date          /* 삭제일시 */
+        </isNotEmpty>
+           ,create_date          /* 생성일시 */
+           ,create_id            /* 생성자 ID */
+           ,update_date          /* 변경일시 */
+           ,update_id            /* 변경자 ID */
+        )
+        select
+            #customerRegNo#      /* 회원OP등록번호 */
+           ,#customerTermsType#  /* 회원동의종류  */
+        <isNotEmpty property="customerTermsContentRegSeq">
+           ,#customerTermsContentRegSeq# /* 동의서약관내용등록번호 */
+        </isNotEmpty>
+        <isNotEmpty property="customerTermsAuthYn">
+           ,#customerTermsAuthYn#     /* 회원동의여부 */
+        </isNotEmpty>
+        <isEqual property="customerTermsAuthYn" compareValue="Y">
+           ,sysdate()  /* 회원동의일시 */
+        </isEqual>
+        <isNotEmpty property="deleteDate">
+           ,#deleteDate#         /* 삭제일시 */
+        </isNotEmpty>
+           ,sysdate()            /* 생성일시 */
+           ,#customerRegNo#      /* 생성자 ID */
+           ,sysdate()            /* 변경일시 */
+           ,#customerRegNo#      /* 변경자 ID */
+        from dual
+    </insert>
+    
+    <!--
+     * @Method Name        : insertSptCustomerTermsProfileHist
+     * @Method description : [회원가입:약관hist]정보등록을 한다.
+     * @param              : MbrRegTermsVO
+     * @return             : void
+     * @throws             : Exception
+     -->
+    <insert id="usr.MbrRegDAO.insertSptCustomerTermsProfileHist" parameterClass="MbrRegTermsVO">
+        insert into spt_customer_terms_profile_hist(
+            customer_terms_seq,             /* 순번 */
+            customer_reg_no,                /* 회원OP등록번호 */
+            customer_terms_type,            /* 회원동의종류  */
+            customer_terms_content_reg_seq, /* 동의서약관내용등록번호 */
+            customer_terms_auth_yn,         /* 회원동의여부 */
+            customer_terms_auth_date,       /* 회원동의일시 */
+            delete_date,                    /* 삭제일시 */
+            create_date,                    /* 생성일시 */
+            create_id                       /* 생성자 ID */
+        )
+        select
+		    ifnull((
+		        select ifnull(max(cast(customer_terms_seq as SIGNED)), 0) + 1
+		        from spt_customer_terms_profile_hist aa
+		        where a.customer_reg_no = aa.customer_reg_no
+		    ), 1),                            /* 순번 */
+            a.customer_reg_no,                /* 회원OP등록번호 */
+            a.customer_terms_type,            /* 회원동의종류  */
+            a.customer_terms_content_reg_seq, /* 동의서약관내용등록번호 */
+            a.customer_terms_auth_yn,         /* 회원동의여부 */
+            a.customer_terms_auth_date,       /* 회원동의일시 */
+            a.delete_date,                    /* 삭제일시 */
+            a.create_date,                    /* 생성일시 */
+            a.create_id                       /* 생성자 ID */
+        from spt_customer_terms_profile a
+        where 1=1
+        and customer_reg_no = #customerRegNo# /* 회원OP등록번호 */
+        and customer_terms_type = #customerTermsType# /* 회원OP등록번호 */
+    </insert>
+   
+    <!--
+     * @Method Name        : updateSptCustomerInfoProfile
+     * @Method description : [회원가입:기본]정보수정을 한다.
+     * @param              : MbrRegVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="usr.MbrRegDAO.updateSptCustomerInfoProfile" parameterClass="MbrRegVO">
+        update spt_customer_info_profile set
+            update_date = sysdate()
+           ,update_id = #customerRegNo#
+        <isNotEmpty property="customerId">
+           ,customer_id = #customerId# /* 회원아이디 */
+        </isNotEmpty>
+        <isNotEmpty property="customerPassword">
+           ,customer_password = enc_char_ins(#customerPassword#,10,'SHA','spt_customer_info_profile','customer_password',user(),connection_id())  /* 회원 비밀번호 */
+        </isNotEmpty>
+        <isNotEmpty property="customerTempPasswordYn">
+           ,customer_temp_password_yn = #customerTempPasswordYn# /* 회원 비밀번호 임시여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerChgPasswordDate">
+           ,customer_chg_password_date = sysdate() /* 회원 비밀번호 변경일자 */
+        </isNotEmpty>
+        <isNotEmpty property="customerExpirePasswordDate">
+           ,customer_expire_password_date = date_format(date_add(sysdate(), interval #customerExpirePasswordDate# month), '%Y%m%d') /* 비밀번호 변경 예정일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerFinalPasswordDate">
+           ,customer_final_password_date = date_format(date_add(sysdate(), interval #customerFinalPasswordDate# month), '%Y%m%d') /* 비밀번호 변경 최종 예정일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerPasswordFailCnt">
+           ,customer_password_fail_cnt = #customerPasswordFailCnt# /* 비밀번호 실패횟수 */
+           <isEqual property="customerPasswordFailCnt" compareValue="0">
+           ,customer_otp_fail_cnt = 0 /* OTP 인증 실패횟수 */
+           </isEqual>
+        </isNotEmpty>
+        <isNotEmpty property="customerRegStatus">
+           ,customer_reg_status = #customerRegStatus# /* 회원 가입 상태 */
+        </isNotEmpty>
+        <isNotEmpty property="customerStep">
+           ,customer_step = #customerStep# /* 회원 가입 Step */
+        </isNotEmpty>
+        <isNotEmpty property="customerNameKor">
+           ,customer_name_kor = #customerNameKor# /* 회원명 한글 */
+        </isNotEmpty>
+        <isNotEmpty property="customerNameEng">
+           ,customer_name_eng = #customerNameEng# /* 회원명 영문 */
+        </isNotEmpty>
+        <isNotEmpty property="customerPhone">
+           ,customer_phone = enc_char_ins(#customerPhone#,10,'ARIA','spt_customer_info_profile','customer_phone',user(),connection_id())  /* 회원 휴대폰 번호 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmail">
+           ,customer_email = enc_char_ins(#customerEmail#,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id())  /* 회원 이메일 주소 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailAuthYn">
+           ,customer_email_auth_yn = #customerEmailAuthYn# /* 회원 이메일 인증여부 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailRegDate">
+           ,customer_email_reg_date = sysdate() /* 회원 이메일 인증일시 */
+        </isNotEmpty>
+        <isNotEmpty property="customerBirthDay">
+           ,customer_birth_day = enc_char_ins(#customerBirthDay#,10,'ARIA','spt_customer_info_profile','customer_birth_day',user(),connection_id())  /* 생년월일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerSex">
+           ,customer_sex = #customerSex# /* 성별 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmailReceiveYn">
+           ,customer_email_receive_yn = #customerEmailReceiveYn# /* 이메일 수신동의여부 */
+        </isNotEmpty>
+        <isEqual property="customerEmailReceiveYn" compareValue="Y">
+           ,customer_email_receive_date = sysdate() /* 이메일 수신동의 여부일시 */
+        </isEqual>
+        <isNotEmpty property="customerRegDate">
+           ,customer_reg_date = sysdate() /* 회원가입일시 */
+        </isNotEmpty>
+        <isNotEmpty property="deleteDate">
+           ,delete_date = #deleteDate# /* 회원탈퇴일시 */
+        </isNotEmpty>
+        where 1=1
+        and customer_reg_no = #customerRegNo#
+    </update>
+    
+    <!--
+     * @Method Name        : updateSptCustomerVerifyProfile
+     * @Method description : [회원가입:인증]정보수정을 한다.
+     * @param              : MbrRegVO
+     * @return             : void
+     * @throws             : Exception
+     -->
+    <update id="usr.MbrRegDAO.updateSptCustomerVerifyProfile" parameterClass="MbrRegVO">
+        update spt_customer_verify_profile set
+            update_date = sysdate()
+           ,update_id = #customerRegNo#
+        <isNotEmpty property="customerVerify">
+           ,customer_verify = #customerVerify# /* 회원검증값 */
+           ,customer_verify_date = sysdate()   /* 회원검증일시 */
+        </isNotEmpty>
+        <isNotEmpty property="deleteDate">
+           ,delete_date = sysdate() /* 삭제일시 */
+        </isNotEmpty>
+        where 1=1
+        and customer_reg_no = #customerRegNo# /* 회원OP등록번호 */
+        and customer_verify_type = #customerVerifyType# /* 회원검증종류  */
+    </update>
+    
+    <!--
+     * @Method Name        : updateSptCustomerTermsProfile
+     * @Method description : [회원가입:약관]정보수정을 한다.
+     * @param              : MbrRegTermsVO
+     * @return             : void
+     * @throws             : Exception
+     -->
+    <update id="usr.MbrRegDAO.updateSptCustomerTermsProfile" parameterClass="MbrRegTermsVO">
+        update spt_customer_terms_profile set
+            update_date = sysdate()
+           ,update_id = #customerRegNo#
+        <isNotEmpty property="customerTermsContentRegSeq">
+           ,customer_terms_content_reg_seq = #customerTermsContentRegSeq# /* 동의서약관내용등록번호 */
+        </isNotEmpty>
+        <isNotEmpty property="customerTermsAuthYn">
+           ,customer_terms_auth_yn = #customerTermsAuthYn# /* 회원동의여부 */
+        </isNotEmpty>
+        <isEqual property="customerTermsAuthYn" compareValue="Y">
+           ,customer_terms_auth_date = sysdate() /* 회원동의일시 */
+        </isEqual>
+        <isNotEmpty property="deleteDate">
+           ,delete_date = sysdate() /* 삭제일시 */
+        </isNotEmpty>
+        where 1=1
+        and customer_reg_no = #customerRegNo# /* 회원OP등록번호 */
+        and customer_terms_type = #customerTermsType# /* 회원동의종류  */
+    </update>
+    
+    <!--
+     * @Method Name        : usr.MbrRegDAO.selectMainSptCustomerTermsList
+     * @Method description : [메인]메인 접속 시 해당사용자의 약관동의 정보를 조회한다.
+     * @param              : String
+     * @return             : String
+     * @throws             : Exception
+     -->
+    <select id="usr.MbrRegDAO.selectMainSptCustomerTermsList" parameterClass="MbrRegVO" resultClass="MbrRegTermsContentVO" >
+		select  a.customer_terms_type               as customerTermsType,
+		        c.code_name_kor                     as customerTermsTypeName,
+		        a.customer_terms_content_reg_seq    as customerTermsContentRegSeq,
+		        a.customer_terms_content            as customerTermsContent
+		from(
+		    /* 약관정보 */
+		    select  a.customer_terms_type,
+		            b.customer_terms_content_reg_seq,
+		            b.customer_terms_content
+		    from(        
+		        select  a.customer_terms_type,
+		                max(a.customer_terms_content_ver + 0) as customer_terms_content_ver
+		        from spt_customer_terms_content_profile a
+		        where customer_terms_type in (
+		            select concat(system_grp_code, system_code) as system_code
+		            from com_system_code
+		            where system_grp_code = 'G008'
+		            and use_yn = 'Y'
+		            and delete_date is null
+		            and code_extend2 = 'Y'
+		        )
+		        and customer_terms_system_kind = 'G003002'
+		        group by a.customer_terms_type
+		    ) a
+		    left join spt_customer_terms_content_profile b 
+		    on a.customer_terms_type = b.customer_terms_type
+		    and a.customer_terms_content_ver = b.customer_terms_content_ver
+		    and b.customer_terms_system_kind = 'G003002'
+		) a
+		left join (
+		    /* 사용자 약관동의 정보 */
+		    select *    
+		    from spt_customer_terms_profile
+		    where customer_reg_no = #customerRegNo#
+		    and delete_date is null
+		    and customer_terms_auth_yn = 'Y'
+		) b
+		on a.customer_terms_type = b.customer_terms_type
+		and a.customer_terms_content_reg_seq = b.customer_terms_content_reg_seq
+		left join (
+		    select *
+		    from com_system_code
+		    where system_grp_code = 'G008'
+		) c on concat(c.system_grp_code, c.system_code) = a.customer_terms_type
+		where b.customer_reg_no is null
+		order by c.code_seq asc    
+    </select>
+    
+    <!--
+     * @Method Name        : usr.MbrRegDAO.checkMainSptCustomerTerms
+     * @Method description : [메인]메인 접속 시 해당사용자의 약관동의 정보 저장 전 데이터 체크
+     * @param              : MbrRegTermsVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="usr.MbrRegDAO.checkMainSptCustomerTerms" parameterClass="MbrRegTermsVO" resultClass="int" >
+        select count(*) as cnt
+        from spt_customer_terms_profile
+        where customer_reg_no = #customerRegNo#
+        and customer_terms_type = #customerTermsType#
+    </select>
+
+    <!--
+     * @Method Name        : selectSptCustomerProfileInfo
+     * @Method description : [회원정보:기본&인증]정보를 조회한다.
+     * @param              : MbrRegVO
+     * @return             : MbrRegVO
+     * @throws             : Exception
+     -->
+    <select id="usr.MbrRegDAO.selectSptCustomerVerifyProfileInfo" parameterClass="MbrRegVO" resultClass="MbrRegVO" >
+        select
+            v.customer_reg_no               as customerRegNo,      /* 일반회원검증.회원OP등록번호 */
+            v.customer_verify_type          as customerVerifyType, /* 일반회원검증.회원검증종류 */
+            v.customer_verify               as customerVerify,     /* 일반회원검증.회원검증값 */
+            v.customer_verify_date          as customerVerifyDate, /* 일반회원검증.회원검증일시 */
+            v.delete_date                   as deleteDate,         /* 일반회원검증.회원탈퇴일시 */
+            v.create_date                   as createDate,         /* 일반회원검증.생성일시 */
+            v.create_id                     as createId,           /* 일반회원검증.생성자 ID */
+            v.update_date                   as updateDate,         /* 일반회원검증.변경일시 */
+            v.update_id                     as udpateId,           /* 일반회원검증.변경자 ID */
+            c.customer_name_kor             as customerNameKor     /* 일반회원.회원명 한글 */
+        from spt_customer_verify_profile v, spt_customer_info_profile c /* 일반회원검증 */
+        where 1=1
+        and c.customer_reg_status != 'G005004'
+  	    and c.delete_date is null
+        and c.customer_reg_no = v.customer_reg_no
+        and c.customer_id = #customerId#
+        and v.customer_verify_type = 'G007001'
+    </select>
+        
+        
+    <select id="usr.MbrRegDAO.selectCountDnVerifyInfo" parameterClass="MbrRegVO" resultClass="int" >
+	    select count(customer_reg_no)
+	    from spt_customer_verify_profile 
+	        where 1=1
+	        and customer_reg_no = #customerRegNo# /* 회원OP등록번호 */
+	        and customer_verify_type = #customerVerifyType# /* 회원검증종류  */
+	        and delete_date is null
+    </select>
+    
+    
+    <update id="usr.MbrRegDAO.updateUserInfo"  parameterClass="MbrRegVO">
+	    update spt_customer_info_profile set
+			update_date = sysdate()
+	        <isNotEmpty property="customerId">
+	        ,customer_id = #customerId#
+	        </isNotEmpty>
+	        <isNotEmpty property="customerPassword">
+			    ,customer_password = enc_char_ins(#customerPassword#,10,'SHA','spt_customer_info_profile','customer_password',user(),connection_id())
+			    ,customer_temp_password_yn = 'N'
+			    ,customer_chg_password_date = sysdate()
+				,customer_expire_password_date = date_format(date_add(sysdate(), interval #customerExpirePasswordDate# month), '%Y%m%d')
+				,customer_final_password_date = date_format(date_add(sysdate(), interval #customerFinalPasswordDate# month), '%Y%m%d')
+		        ,customer_password_fail_cnt = 0
+		        ,customer_otp_fail_cnt = 0
+	        </isNotEmpty>
+	        <isNotEmpty property="customerEmail">
+		    	,customer_email = enc_char_ins(#customerEmail#,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id())
+	        </isNotEmpty>
+	        <isNotEmpty property="customerEmailReceiveYn">
+				,customer_email_receive_yn = #customerEmailReceiveYn#
+	        </isNotEmpty>
+	        <isNotEmpty property="customerPhone">
+		    	,customer_phone = enc_char_ins(#customerPhone#,10,'ARIA','spt_customer_info_profile','customer_phone',user(),connection_id())
+		    </isNotEmpty>
+	        <isNotEmpty property="temporaryMemberYn">
+				,temporary_member_yn = #temporaryMemberYn#
+			</isNotEmpty>
+		    ,update_id = #customerRegNo#
+	    where 1=1
+	    and customer_reg_no = #customerRegNo#
+	   </update>
+        
+        
+
+    
+    <!--
+     * @Method Name        : usr.MbrRegDAO.selectMainCompanyTermsList
+     * @Method description : [메인]메인 접속 시 기업 약관동의 정보를 조회한다.
+     * @param              : MbrRegVO
+     * @return             : MbrRegTermsContentVO
+     * @throws             : Exception
+     -->
+    <select id="usr.MbrRegDAO.selectMainCompanyTermsList" parameterClass="MbrRegVO" resultClass="MbrRegTermsContentVO" >
+      select  a.company_code_id                 as companyCodeId,
+              c.company_name_kor_alias          as companyName,
+              a.company_terms_type              as companyTermsType,
+              a.company_terms_content_reg_seq   as companyTermsContentRegSeq,
+              a.company_terms_content           as companyTermsContent
+      from(
+          /* 기업약관 */
+          select  company_code_id,
+                  company_terms_type,
+                  company_terms_content_reg_seq,
+                  company_terms_content_ver,
+                  company_terms_content
+          from spt_customer_company_terms_content_profile
+          where company_terms_type = 'G031001'
+          and (company_code_id, company_terms_content_ver) in (
+              select  company_code_id,
+                      max(company_terms_content_ver+0) as company_terms_content_ver
+              from spt_customer_company_terms_content_profile
+              where company_terms_type = 'G031001'
+            group by company_code_id
+          )
+      ) a
+      join (
+          select *
+          from spt_customer_company_terms_profile
+          where customer_reg_no = #customerRegNo#
+          and company_terms_type = 'G031001'
+          and delete_date is null
+      ) b
+      on b.company_code_id = a.company_code_id
+      and b.company_terms_type = a.company_terms_type
+      and b.company_terms_content_reg_seq != a.company_terms_content_reg_seq
+      join com_company_profile c on a.company_code_id = c.company_code_id
+      order by c.exposure_order asc, c.company_name_kor_alias asc
+    </select>
+    
+    
+    
+    <select id="usr.MbrRegDAO.checkCompanyTermsProfile" parameterClass="MbrRegTermsVO" resultClass="int" >
+		select count(*) as cnt
+		from spt_customer_company_terms_profile
+		where customer_reg_no = #customerRegNo#
+		and company_code_id = #companyCodeId#
+		and company_terms_type = #companyTermsType#
+	</select>
+
+	
+    <update id="usr.MbrRegDAO.updateCompanyTermsProfile" parameterClass="MbrRegTermsVO">
+		update spt_customer_company_terms_profile set
+			company_terms_content_reg_seq = #companyTermsContentRegSeq#,
+			company_terms_auth_yn = #companyTermsAuthYn#,
+			company_terms_auth_date = sysdate(),
+			update_date = sysdate(),
+			update_id = #createId#
+		where customer_reg_no = #customerRegNo#
+		and company_code_id = #companyCodeId#
+		and company_terms_type = #companyTermsType#
+	</update>
+	
+
+	
+    <insert id="usr.MbrRegDAO.iinsertCompanyTermsProfile" parameterClass="MbrRegTermsVO">
+		insert into spt_customer_company_terms_profile(
+			customer_reg_no,
+			company_code_id,
+			company_terms_type,
+			company_terms_content_reg_seq,
+			company_terms_auth_yn,
+			company_terms_auth_date,
+			create_date,
+			create_id,
+			update_date,
+			update_id
+		)values(
+			#customerRegNo#,
+			#companyCodeId#,
+			#companyTermsType#,
+			#companyTermsContentRegSeq#,
+			#companyTermsAuthYn#,
+			sysdate(),
+			sysdate(),
+			#createId#,
+			sysdate(),
+			#createId#
+		)
+	</insert>
+
+    <insert id="usr.MbrRegDAO.insertCompanyTermsProfileHist" parameterClass="MbrRegTermsVO">
+		insert into spt_customer_company_terms_profile_hist(
+			customer_reg_no,
+			company_code_id,
+			company_terms_type,
+			company_terms_seq,
+			company_terms_content_reg_seq,
+			company_terms_auth_yn,
+			company_terms_auth_date,
+			create_date,
+			create_id
+		)
+		select  customer_reg_no,
+				company_code_id,
+				company_terms_type,
+				ifnull((
+					select ifnull(max(cast(company_terms_seq as SIGNED)), 0) + 1
+					from spt_customer_company_terms_profile_hist
+					where customer_reg_no = a.customer_reg_no
+					and company_code_id = a.company_code_id
+					and company_terms_type = a.company_terms_type
+				), 1),
+				company_terms_content_reg_seq,
+				company_terms_auth_yn,
+				company_terms_auth_date,
+				update_date,
+				update_id
+		from spt_customer_company_terms_profile a
+		where customer_reg_no = #customerRegNo#
+		and company_code_id = #companyCodeId#
+		and company_terms_type = #companyTermsType#
+	</insert>
+	
+    
+</sqlMap>

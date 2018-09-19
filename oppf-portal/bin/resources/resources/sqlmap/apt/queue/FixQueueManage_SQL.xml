@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.queue.service.impl.FixQueueManageDAO">
+
+  	<typeAlias alias="FixQueueManageVO" type="kr.co.koscom.oppf.apt.queue.service.FixQueueManageVO"/>
+
+
+	<sql id="fromWhereAnd">
+		<isNotEmpty property="searchKeyword">
+			<!-- 이름 -->
+			<isEqual property="searchCondition" compareValue="fixQueueId" prepend="and">
+				a.fix_queue_id like concat('%', #searchKeyword#, '%')
+			</isEqual>
+			<!-- uri -->
+			<isEqual property="searchCondition" compareValue="initiatorServer" prepend="and">
+				b.init_server_ip like concat('%', #searchKeyword#, '%')
+			</isEqual>
+			<isEqual property="searchCondition" compareValue="all" prepend="and">
+				(
+                a.fix_queue_id like concat('%', #searchKeyword#, '%') or
+                b.init_server_ip like concat('%', #searchKeyword#, '%')
+				)
+			</isEqual>
+		</isNotEmpty>
+		<!-- 조회일 -->
+		<isNotEmpty property="searchDateFrom" prepend="and">
+				ifnull(date_format(a.last_timestamp, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '')
+		</isNotEmpty>
+	</sql>
+    <!--QueueList-->
+    <select id="apt.FixQueueManageDAO.selectFixQueueManageList" parameterClass="FixQueueManageVO" resultClass="FixQueueManageVO">
+        select
+            a.fix_queue_id as fixQueueId,
+            a.init_server_id as initServerId,
+            b.init_server_ip as initServerIp,
+            date_format(a.last_timestamp, '%Y-%m-%d %H:%i') as lastTimestamp
+        from fx_comp_queue_tb a
+        left join fx_comp_tb b
+        on a.init_server_id = b.init_server_id
+        where 1=1
+        <include refid="fromWhereAnd"/>
+        <isEqual property="excelYn" compareValue="N">
+            limit
+            <isNotEmpty property="pageStart">#pageStart#</isNotEmpty>
+            <isEmpty property="pageStart">0</isEmpty>
+            <isNotEmpty property="pageRowsize">,#pageRowsize#</isNotEmpty>
+            <isEmpty property="pageRowsize">,10</isEmpty>
+        </isEqual>
+    </select>
+
+    <select id="apt.FixQueueManageDAO.selectFixQueueManageListCnt" parameterClass="FixQueueManageVO" resultClass="int">
+        select count(*)
+        from fx_comp_queue_tb a
+        left join fx_comp_tb b
+        on a.init_server_id = b.init_server_id
+        where 1=1
+        <include refid="fromWhereAnd"/>
+    </select>
+    <!--selectBox-->
+    <select id="apt.FixQueueManageDAO.selectInitiatorServerIdList" parameterClass="FixQueueManageVO" resultClass="FixQueueManageVO">
+        select
+            init_server_id as initServerId,
+            init_server_ip as initServerIp
+        from  fx_comp_tb
+    </select>
+    <!--popup-->
+    <select id="apt.FixQueueManageDAO.selectQueueCompanyList" parameterClass="FixQueueManageVO" resultClass="FixQueueManageVO">
+        select sender_comp_id as senderCompId,
+            company_id as companyId,
+            sender_comp_name as senderCompName,
+            fix_queue_id as fixQueueId
+        from rs_comp_tb
+        where fix_queue_id = #fixQueueId#;
+    </select>
+    <select id="apt.FixQueueManageDAO.selectQueueCompanyListCnt" parameterClass="FixQueueManageVO" resultClass="int">
+        select count(*)
+        from rs_comp_tb
+        where fix_queue_id = #fixQueueId#;
+    </select>
+
+
+
+    <!--Excel-->
+    <select id="apt.FixQueueManageDAO.selectFixQueueManageListExcel" parameterClass="FixQueueManageVO" resultClass="FixQueueManageVO">
+        select
+            a.fix_queue_id as fixQueueId,
+            a.init_server_id as initServerId,
+            b.init_server_ip as initServerIpName,
+            date_format(a.last_timestamp, '%Y-%m-%d %H:%i') as lastTimestamp
+        from fx_comp_queue_tb a
+        left join fx_comp_tb b
+        on a.init_server_id = b.init_server_id
+        where 1=1
+        <isEqual property="excelType" compareValue="excel">
+            <include refid="fromWhereAnd"/>
+        </isEqual>
+    </select>
+
+</sqlMap>

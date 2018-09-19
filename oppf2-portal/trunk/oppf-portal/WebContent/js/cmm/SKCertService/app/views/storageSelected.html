@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+<head>
+    <!-- 임시로 지움. -->
+    <!--<meta charset="UTF-8">-->
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <title>인증서 리스트</title>
+    <link type="text/css" rel="stylesheet" href="../styles/css/common.css"/>
+    <!--[if IE 7]>
+    <link rel="stylesheet" type="text/css" href="../styles/css/ie7Debug.css"/>
+    <![endif]-->
+    <link rel="stylesheet" href="../styles/css/jquery-ui.css">
+    
+    <script>
+        (function (){
+            try{
+                //console.log("page documnet.domain: " + document.domain);
+                parent.document.location;
+            }catch(e) {
+                if (document.domain.indexOf(".co.kr") != -1) {
+                    //co.kr
+                    var domainArr = document.domain.split(".");
+                    //console.log("arr:" + domainArr);
+                    document.domain = domainArr[domainArr.length - 3] + ".co.kr";
+                }
+                else if (document.domain.indexOf(".com") != -1) {
+                    //com
+                    var domainArr = document.domain.split(".");
+                    //console.log("arr:" + domainArr);
+                    document.domain = domainArr[domainArr.length - 2] + ".com";
+                }
+            }
+        })();
+    </script>
+    
+    <script type="text/javascript" src="../styles/js/jquery-1.11.0.min.js"></script>
+    <script src="../styles/js/jquery-ui.js"></script>
+    
+    <script type="text/javascript" src="../library/json3.min.js"></script>
+    <script type="text/javascript" src="../library/iecompatibility.js"></script>
+    <script type="text/javascript" src="../library/webAccess.js"></script>
+    
+    <script src="../language/storageSelected.js"></script>
+    <script type="text/javascript">
+        function tab(num) {
+            if ($("#menu_btn li:eq(" + num + ") a").hasClass("on")) return;
+
+
+            for (var i = 0; i < $("#menu_btn li").length; i++) {
+                if ($("#menu_btn li:eq(" + i + ") a").attr('class') != undefined)
+                    $("#menu_btn li:eq(" + i + ") a").attr('class', $("#menu_btn li:eq(" + i + ") a").attr('class').replace("_on on", ""));
+            }
+
+            if ($("#menu_btn li:eq(" + num + ") a").attr('class') != undefined) $("#menu_btn li:eq(" + num + ") a").attr('class', $("#menu_btn li:eq(" + num + ") a").attr('class') + "_on on");
+        }
+        
+        function dragCheck(){
+            if(window.navigator.userAgent.toLowerCase().indexOf('firefox') !== -1)
+                return;
+            addHandle(document.getElementById('titleText'), window);
+        }
+    </script>
+</head>
+<body onload="dragCheck()">
+<div class="Wrapper">
+    <div class="CERT_titlebar_common" style="width:430px;">
+        <!--<h1 id="titleText" tabindex="1"><script>document.write(storageSelectedLang(0))</script></h1>-->
+        <h1><ul><li id="titleText" tabindex="1"><script>document.write(storageSelectedLang(0))</script></li></ul></h1>
+        <div class="CERT_util_btnClose" id="certAgree_xBtn"><a href="#" tabindex="2" alt="닫힘" title="닫힘"></a></div>
+    </div>
+    <div class="CERT_certWrapper">
+        <h2><script>document.write(storageSelectedLang(1))</script></h2>
+        <dl class="tab1">
+            <dt class="cert01_01 clfix">
+            <div id="button_slide_wrap" class="clfix">
+                <button class="prev" tabindex="-1"></button>
+                <div>
+                    <ul class="icos" id="menu_btn" style="left:2px;"/>
+                </div>
+                <button class="next" tabindex="-1"></button>
+            </div>
+            </dt>
+            <dd>
+                <p class="CERT_txt11"><script>document.write(storageSelectedLang(2))</script></p>
+
+                <div class="CERT_contWrap11">
+                    <p class="CERT_em" id="menu_notice">
+
+                    </p>
+                </div>
+            </dd>
+        </dl>
+        <div class="CERT_btns_common">
+            <p class="CERT_btnBg_mbtn" id="certAgree_confirmBtn"><a href="#" tabindex="9998"><script>document.write(storageSelectedLang(3))</script></a></p>
+
+            <p class="CERT_btnBg_mbtn" id="certAgree_cancelBtn"><a href="#" tabindex="9999"><script>document.write(storageSelectedLang(4))</script></a></p>
+        </div>
+    </div>
+    <!--//CERT_certWrapper-->
+</div>
+<!--//Wrapper-->
+
+<div class="Wrapper" id="dialog" style="display:none">
+    <div class="CERT_titlebar_common" style="width:324px;">
+        <!--<h1 id="subTitleText" tabindex="50"><script>document.write(storageSelectedLang(5))</script></h1>-->
+        <h1><ul><li id="subTitleText" tabindex="50"><script>document.write(storageSelectedLang(5))</script></li></ul></h1>
+        <div class="CERT_util_btnClose" id="dialog_clostBtn"><a href="#" tabindex="51" alt="닫힘" title="닫힘"></a></div>
+    </div>
+    <div class="CERT_certWrapper2">
+        <ul class="CERT_usb_select" id="dialog_list"/>
+    </div>
+    <!--//CERT_certWrapper-->
+</div>
+<!--//Wrapper-->
+</body>
+
+<script type="text/javascript" src="../scripts/storageSelected.js"></script>
+
+<script type="text/javascript" src="../library/dragiframe.js"></script>
+</html>

@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+<head>
+    <!-- 임시로 지움. -->
+    <!--<meta charset="UTF-8">-->
+    <title>인증서 내보내기</title>
+    <link type="text/css" rel="stylesheet" href="../styles/css/common.css"/>
+    <!--[if IE 7]>
+    <link rel="stylesheet" type="text/css" href="../styles/css/ie7Debug.css"/>
+    <![endif]-->
+    
+    <script>
+        (function (){
+            try{
+                //console.log("page documnet.domain: " + document.domain);
+                parent.document.location;
+            }catch(e) {
+                if (document.domain.indexOf(".co.kr") != -1) {
+                    //co.kr
+                    var domainArr = document.domain.split(".");
+                    //console.log("arr:" + domainArr);
+                    document.domain = domainArr[domainArr.length - 3] + ".co.kr";
+                }
+                else if (document.domain.indexOf(".com") != -1) {
+                    //com
+                    var domainArr = document.domain.split(".");
+                    //console.log("arr:" + domainArr);
+                    document.domain = domainArr[domainArr.length - 2] + ".com";
+                }
+            }
+        })();
+    </script>
+    <script type="text/javascript" src="../styles/js/jquery-1.11.0.min.js"></script>
+
+    <script type="text/javascript" src="../library/json3.min.js"></script>
+    <script type="text/javascript" src="../library/iecompatibility.js"></script>
+    <script type="text/javascript" src="../library/webAccess.js"></script>
+
+    <script src="../language/relayExport.js"></script>
+    <script language="javascript">
+        <!--
+        function onlyNumber(event){
+            var key = window.event ? event.keyCode : event.which;
+            if((event.shiftKey == false) && ((key > 47 && key <58) || (key > 95 && key < 106)
+                    || key == 35 || key == 36 || key == 37 || key == 39	//좌우방향키,home,end
+                    || key == 8 || key == 46 || key == 9) //del,backSpace,tab
+            ){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        $(document).on("keyup", "#code1,#code2,#code3", function(){
+
+            var mch = $(this).val().match(/[0-9]/g);
+            if( mch != null && mch.length == 4 )
+            {
+                if($(this).attr("id") == "code1") $("#code2").focus();
+                else if($(this).attr("id") == "code2") $("#code3").focus();
+                else if($(this).attr("id") == "code3") $("#btn_confirm").focus();
+            }
+        });
+        -->
+    </script>
+</head>
+<script>
+    function dragCheck(){
+        if(window.navigator.userAgent.toLowerCase().indexOf('firefox') !== -1)
+            return;
+        addHandle(document.getElementById('titleText'), window);
+    }
+</script>
+<body onload="dragCheck()">
+<div class="CERT_titlebar">
+    <!--타이틀바-->
+    <!--<h1 id="titleText"><script>document.write(relayExportLang(3))</script></h1>-->
+    <h1><ul><li id="titleText" tabindex="1"><script>document.write(relayExportLang(3))</script></li></ul></h1>
+    <!--닫기버튼-->
+    <div class="CERT_util_btnClose" id="x_btn"><a href="#" tabindex="2" alt="닫힘" title="닫힘"></a></div>
+</div>
+<div class="certWrap">
+    <div class="cert_topimg"><img src="../styles/images/list2_03.jpg" alt="코스콤 공인인증센터"></div>
+    <div class="CERT_17">
+        <div class="CERT_17_1">
+            <table class="CERT17_1_wrap">
+                <tr>
+                    <td class="num">1.</td>
+                    <td tabindex="3"><script>document.write(relayExportLang(4)); webAccess.setTitle(3, relayExportLang(4))</script></td>
+                </tr>
+                <tr>
+                    <td class="num">2.</td>
+                    <td tabindex="4"><script>document.write(relayExportLang(5)); webAccess.setTitle(4, relayExportLang(5))</script></td>
+                </tr>
+                <tr>
+                    <td class="num">3.</td>
+                    <td tabindex="5"><script>document.write(relayExportLang(6)); webAccess.setTitle(5, relayExportLang(6))</script></td>
+                </tr>
+            </table>
+        </div>
+        <h2 tabindex="6"><script>document.write(relayExportLang(7))</script></h2>
+        <form id="codeForm" name="codeForm" method="post" onsubmit="return false;">
+        <p class="CERT_17_2">
+            <input type="text" class="CERT_inputStyle" id="code1" name="code1" style="width:90px; height:26px; ime-mode:disabled;" maxlength="4" onkeydown="return onlyNumber(event)" tabindex="7" title="1~4"> -
+            <input type="text" class="CERT_inputStyle" id="code2" name="code2" style="width:90px; height:26px; ime-mode:disabled;" maxlength="4" onkeydown="return onlyNumber(event)" tabindex="8" title="5~8"> -
+            <input type="text" class="CERT_inputStyle" id="code3" name="code3" style="width:90px; height:26px; ime-mode:disabled;" maxlength="4" onkeydown="return onlyNumber(event)" tabindex="9" title="9~12">
+        </p>
+        </form>
+    </div>
+    <div class="CERT_btns_common">
+        <p class="CERT_btnBg_mbtn" id="certAgree_confirmBtn"><a href="#" tabindex="9998"><script>document.write(relayExportLang(0))</script></a></p>
+        <p class="CERT_btnBg_mbtn" id="certAgree_cancelBtn"><a href="#" tabindex="9999"><script>document.write(relayExportLang(1))</script></a></p>
+    </div>
+</div><!--//certWrap-->
+</body>
+<script type="text/javascript" src="../library/keySafer.js"></script>
+<script type="text/javascript" src="../scripts/relayExport.js"></script>
+<script type="text/javascript" src="../library/dragiframe.js"></script>
+</html>
+

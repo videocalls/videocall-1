@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>기업 | koscom OpenAPI Platform </title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="stylesheet" href="../../../css/cpt/import.css">
+	<!-- IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	  <script src="../../../js/cmm/html5shiv.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="../../../js/cmm/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../../../js/cmm/jquery-ui.js"></script>
+	<script type="text/javascript" src="../../../js/cpt/common_pub.js"></script>
+	<script>
+	$(function() {
+		// 달력
+	    $("#datepicker1, #datepicker2").datepicker({
+	      showOn: "button",
+	      buttonImage: "../../../images/cpt/common/calendar.png",
+	      buttonImageOnly: true,
+	      buttonText: "달력보기"
+	    });
+	});
+	</script>
+</head>
+
+<body>
+
+<div class="wrap">
+
+	<!-- header -->
+	<header class="header">
+		<div class="header_area">
+			<div class="skip_navi">
+				<a href="#gnb">메뉴 바로가기</a>
+				<a href="#content">본문 바로가기</a>		
+			</div>
+
+			<ol class="util">
+				<li class="menu"><a href="#none">로그인</a></li>
+				<li class="menu"><a href="#none">마이페이지</a></li>
+				<li class="site"><a href="#none">개인</a></li>
+				<li class="site on"><a href="#none">기업/금투사</a></li>
+				<li class="site"><a href="#none">핀테크 테스트베드</a></li>
+			</ol>
+
+			<nav id="gnb">
+				<h1 class="logo"><a href="#none"><img src="../../../images/cpt/common/logo.png" alt="Koscom OpenAPI Platform"></a></h1>
+
+				<div class="gnb_menu">					
+					<ul>
+						<li><a href="#none">오픈플랫폼 </a></li>
+						<li><a href="#none">핀테크 서비스</a></li>
+						<li><a href="#none">서비스 소개</a></li>
+						<li><a href="#none">서비스 지원</a></li>
+					</ul>					
+				</div>
+			</nav>
+		</div>
+	</header>
+	<!-- // header -->
+
+	<!-- section -->
+	<section>
+		<!-- location -->
+		<div class="location">
+			<ul>
+				<li class="home"><a href="#none">홈</a></li>
+				<li><a href="#none">마이 페이지</a></li>
+				<li class="on">API 관리</li>
+			</ul>
+		</div>
+		<!-- // location -->
+
+		<div class="container">
+			<!-- lnb -->
+			<article class="lnb">				
+				<h2>마이 페이지</h2>
+				<ul>
+					<li><a href="#none" class="on">API 관리</a></li>
+					<li><a href="#none">통계 조회</a></li>
+					<li><a href="#none">동의서 조회</a></li>
+					<li><a href="#none">회원정보</a></li>
+				</ul>
+			</article>
+			<!-- // lnb -->
+
+			<!-- content -->
+			<article id="content">
+
+				<div class="sub_title">
+					<h3>API 관리</h3>					
+				</div>
+
+				<!-- con -->
+				<div class="con">
+					
+					<!-- tbtype_serch -->
+					<table class="tbtype_serch">
+						<caption>구분, API종류, App. 상태, 등록일 입력</caption>
+						<colgroup>
+							<col style="width:18%;">
+							<col style="width:*;">
+						</colgroup>
+						<tbody>
+						<tr>
+							<th scope="row"><label for="chk1">구분</label></th>
+							<td> 
+								<span class="sel_box1">
+									<select title="구분 입력" id="chk1">
+										<option>전체</option>
+										<option>API ID</option>
+										<option>API 이름</option>
+									</select>
+								</span>
+								<input type="text" style="width:350px">
+							</td>		
+						</tr>
+						<tr>
+							<th scope="row">API 종류</th>
+							<td>
+								<div class="radio_img">
+									<input type="radio" name="aa" id="a1" checked="checked"><label for="a1" class="">전체</label>
+									<input type="radio" name="aa" id="a2"><label for="a2">시세</label>
+									<input type="radio" name="aa" id="a3"><label for="a3">뉴스</label>
+									<input type="radio" name="aa" id="a4"><label for="a4">계좌</label>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">App. 상태</th>
+							<td>
+								<div class="radio_img">
+									<input type="radio" name="bb" id="b1" checked="checked"><label for="b1" class="">전체</label>
+									<input type="radio" name="bb" id="b2"><label for="b2">등록</label>
+									<input type="radio" name="bb" id="b3"><label for="b3">승인</label>
+									<input type="radio" name="bb" id="b4"><label for="b4">정지</label>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">등록일</th>
+							<td class="txt_l"> 
+								<input type="text" id="datepicker1" readonly="readonly" style="width:150px;"><span class="dot">~</span><input type="text" id="datepicker2" readonly="readonly" style="width:150px;">
+							</td>	
+						</tr>
+						</tbody>
+					</table>
+					<!-- // tbtype_serch -->
+
+					<div class="btn_area type2">
+						<div class="right">
+							<a href="#none" class="btn_type2 type2">초기화</a>
+							<a href="#none" class="btn_type1 type2">검색</a>
+						</div>
+					</div>
+					
+					<div class="total_num">총 <span class="point01">1,234</span>건</div>
+					<!-- tbtype_list2 type3 -->
+					<table class="tbtype_list2 type3">
+						<caption>번호, API 이름, API ID, 버전, 상태, 등록자 ID, 등록일시 정보리스트</caption>
+						<colgroup>
+							<col style="width:5%;">
+							<col style="width:15%;">
+							<col style="">
+							<col style="width:5%;">
+							<col style="width:7%;">
+							<col style="width:12%;">
+							<col style="width:18%;">
+						</colgroup>
+						<thead>
+							<tr>
+								<th scope="col">번호</th>
+								<th scope="col">API 이름</th>
+								<th scope="col">API ID</th>
+								<th scope="col">버전</th>
+								<th scope="col">상태</th>
+								<th scope="col">등록자 ID</th>
+								<th scope="col">등록일시</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>10</td>
+								<td><a href="#none">삼성증권 - 계좌</a></td>
+								<td>19095fe3-b8c7-416b-a159-ab9f0669d56</td>
+								<td>1</td>
+								<td>승인</td>
+								<td>ganada</td>
+								<td>2016-05-24 17:07</td>
+							</tr>
+							<tr>
+								<td>9</td>
+								<td><a href="#none">삼성증권 - 계좌</a></td>
+								<td>19095fe3-b8c7-416b-a159-ab9f0669d56</td>
+								<td>1</td>
+								<td>승인</td>
+								<td>ganada</td>
+								<td>2016-05-24 17:07</td>
+							</tr>
+							<tr>
+								<td>8</td>
+								<td><a href="#none">삼성증권 - 계좌</a></td>
+								<td>19095fe3-b8c7-416b-a159-ab9f0669d56</td>
+								<td>1</td>
+								<td>승인</td>
+								<td>ganada</td>
+								<td>2016-05-24 17:07</td>
+							</tr>
+							<tr>
+								<td>7</td>
+								<td><a href="#none">삼성증권 - 계좌</a></td>
+								<td>19095fe3-b8c7-416b-a159-ab9f0669d56</td>
+								<td>1</td>
+								<td>승인</td>
+								<td>ganada</td>
+								<td>2016-05-24 17:07</td>
+							</tr>
+							<tr>
+								<td>6</td>
+								<td><a href="#none">삼성증권 - 계좌</a></td>
+								<td>19095fe3-b8c7-416b-a159-ab9f0669d56</td>
+								<td>1</td>
+								<td>승인</td>
+								<td>ganada</td>
+								<td>2016-05-24 17:07</td>
+							</tr>
+							<tr>
+								<td>5</td>
+								<td><a href="#none">삼성증권 - 계좌</a></td>
+								<td>19095fe3-b8c7-416b-a159-ab9f0669d56</td>
+								<td>1</td>
+								<td>승인</td>
+								<td>ganada</td>
+								<td>2016-05-24 17:07</td>
+							</tr>
+							<tr>
+								<td>4</td>
+								<td><a href="#none">삼성증권 - 계좌</a></td>
+								<td>19095fe3-b8c7-416b-a159-ab9f0669d56</td>
+								<td>1</td>
+								<td>승인</td>
+								<td>ganada</td>
+								<td>2016-05-24 17:07</td>
+							</tr>
+							<tr>
+								<td>3</td>
+								<td><a href="#none">삼성증권 - 계좌</a></td>
+								<td>19095fe3-b8c7-416b-a159-ab9f0669d56</td>
+								<td>1</td>
+								<td>승인</td>
+								<td>ganada</td>
+								<td>2016-05-24 17:07</td>
+							</tr>
+							<tr>
+								<td>2</td>
+								<td><a href="#none">삼성증권 - 계좌</a></td>
+								<td>19095fe3-b8c7-416b-a159-ab9f0669d56</td>
+								<td>1</td>
+								<td>승인</td>
+								<td>ganada</td>
+								<td>2016-05-24 17:07</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td><a href="#none">삼성증권 - 계좌</a></td>
+								<td>19095fe3-b8c7-416b-a159-ab9f0669d56</td>
+								<td>1</td>
+								<td>승인</td>
+								<td>ganada</td>
+								<td>2016-05-24 17:07</td>
+							</tr>
+						</tbody>
+					</table>
+					<!-- // tbtype_list2 type3 -->
+					
+					<div class="btn_area type2">
+						<div class="left">
+							<a href="#none" class="btn_type9 excel">엑셀</a>
+							<a href="#none" class="btn_type9">다운로드</a>
+						</div>
+					</div>
+
+					<!-- pagination -->
+					<div class="pagination">
+						<a href="#" class="page first"></a>
+						<a href="#" class="page prev"></a>
+						<a href="#" class="on">1</a>
+						<a href="#">2</a>
+						<a href="#">3</a>
+						<a href="#">4</a>
+						<a href="#">5</a>
+						<a href="#">6</a>
+						<a href="#">7</a>
+						<a href="#">8</a>
+						<a href="#">9</a>
+						<a href="#">10</a>
+						<a href="#" class="page next"></a>
+						<a href="#" class="page last"></a>
+					</div>
+					<!-- // pagination -->
+
+				</div>
+				<!-- // con -->
+
+			</article>
+			<!-- // content -->
+		</div>
+	</section>
+	<!-- section -->
+
+	<!-- footer -->
+	<footer class="footer">
+		<div class="footer_area">
+			<ul class="link">
+				<li><a href="#none">서비스이용약관</a></li>
+				<li class="point"><a href="#none">개인정보취급방침</a></li>
+			</ul>
+			<address>
+				서울시 영등포구 여의나루로 76 ㈜코스콤  대표전화 : 02-767-7114  이메일 : master@koscom.openplatform.com
+				<span class="copy">COPYRIGHT 2016. KOSCOM CORP. ALL RIGHTS RESERVED.</span>
+			</address>
+
+			<div class="family_site">
+				<!-- selBox2 -->
+				<span class="sel_box2">
+					<select style="min-width:150px">
+						<option>코스콤 사이트</option>
+					</select>
+				</span>
+				<!-- selBox2 -->
+				<span class="sel_box2">
+					<select style="min-width:170px">
+						<option>관련 사이트</option>
+					</select>
+				</span>				
+			</div>
+
+		</div>
+	</footer>
+	<!-- // footer -->
+
+</div>
+
+</body>
+</html>

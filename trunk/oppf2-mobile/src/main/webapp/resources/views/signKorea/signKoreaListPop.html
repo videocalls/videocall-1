@@ -1,0 +1,71 @@
+<ion-modal-view ng-controller="SignKoreaListPop as vm">
+    <ion-header-bar align-title="center">
+        <h1 class="title">공인인증서 선택</h1>
+        <button ng-click="vm.close()">X</button>
+    </ion-header-bar>
+
+    <ion-content class="bg_gray"> <!-- bg color -->
+        <div class="container authentication_admin">
+            <div class="tab-wrap" tabs>
+                <ul class="btn_head tab-head">
+                    <li class="active"><a href="#none">인증서 목록</a></li>
+                    <li><a href="#none" ng-click="vm.importPage()">인증서 가져오기</a></li>
+                </ul>
+                <div class="tab-body">
+                
+                
+                
+                    <!-- 인증서 목록 -->
+                    <div class="cont inner_cont">
+
+<!--                         <div ng-repeat="certData in vm.skCertList" class="authentication_view"  > -->
+<!--                         <div ng-repeat="certData in vm.skCertList" ng-class="certData.expiredType > 0 ? 'signature_box' : 'authentication_view disabled'"  > -->
+                        <div ng-repeat="certData in vm.skCertList" ng-class="certData.expiredClass"  >
+                            <a href="#go" class="signature_box" 
+                                ng-click="vm.signKoreakeypadOpen(certData.subjectName.split(',')[0].substring(3), certData.subjectName, certData.expiredType );">
+                                <div class="auth_name"><strong>{{certData.subjectName.split(",")[0].substring(3)}}</strong></div>
+                                <div class="auth_place">{{certData.policy.split(":")[1]}} / {{certData.issuerName.split(":")[1]}}</div>
+                                <div class="auth_date">만료일 <span>{{certData.expiredTime.split(":")[1]}}</span></div>
+                            </a>
+                        </div>
+
+<!--                         <div class="cont authentication_view mt11 red_alarm"> -->
+<!--                             <a href="#go" class="signature_box"> -->
+<!--                                 <div class="auth_name"><strong>안지원</strong> 6832099</div> -->
+<!--                                 <div class="auth_place">증권 / 보험용 / SignKorea CA2</div> -->
+<!--                                 <div class="auth_date">만료일 <span>2018.02.28</span></div> -->
+<!--                             </a> -->
+<!--                         </div> -->
+
+                        <!-- 결과 없을때 -->
+                        <div ng-hide="vm.skCertList[0]" class="not_result">스마트 기기에 저장된 <br><span class="ft_org">공인인증서가 없습니다. </span><br><br>인증서 가져오기 후 다시 시도해주세요.</div>
+                        <!--// 결과 없을때 -->
+                    </div>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    <!-- 인증서 가져오기 -->
+                    <div class="inner_cont">
+                        인증서 가져오기
+                        <br/><br/><br/><br/>
+                        <input type="text"   name="cert_import_code1" ng-model="vm.certImportCode.certImportCode1"/>
+                        -<input type="text"  name="cert_import_code2" ng-model="vm.certImportCode.certImportCode2"/>
+                        -<input type="text"  name="cert_import_code3" ng-model="vm.certImportCode.certImportCode3"/>
+                        <br><br>
+                        
+                        <button ng-click="vm.importCertMobile()">가져오기</button>
+                        
+                    </div>
+                    
+                    
+                    
+                </div>
+            </div>
+        </div>
+
+    </ion-content>
+</ion-modal-view>

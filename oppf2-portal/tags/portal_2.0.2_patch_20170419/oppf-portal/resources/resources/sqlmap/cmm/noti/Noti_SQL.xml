@@ -1,0 +1,339 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 자본시장 공동 핀테크 오픈플랫폼 구축
+* @FileName : NotiDAO.java
+* @Comment  : [공지사항]정보관리를 위한 SQL XML
+* @author   : 포털 이환덕
+* @since    : 2016.05.02
+* @version  : 1.0
+* @see
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2016.05.02   이환덕        최초생성
+-->
+
+<sqlMap namespace="kr.co.koscom.oppf.cmm.noti.service.impl.NotiDAO">
+  	<typeAlias alias="NotiVO" type="kr.co.koscom.oppf.cmm.noti.service.NotiVO"/>
+  	
+  	<!-- 공지사항목록조회조건 -->
+  	<sql id="fromWhereAnd">
+  	  from com_notice_info a /* 공지사항 a */
+  	  where 1=1
+  	  and a.delete_date is null
+  	  and a.use_yn = 'Y'
+  	  and ifnull(date_format(now(), '%Y%m%d'), '') between a.notice_start_date and a.notice_expire_date
+      <isNotEmpty property="searchKind">
+          <isEqual property="searchKind" compareValue="spt" prepend="and">
+              a.notice_kind in ('G003001','G003002')
+          </isEqual>
+          <isEqual property="searchKind" compareValue="cpt" prepend="and">
+              a.notice_kind in ('G003001','G003003')
+          </isEqual>
+      </isNotEmpty>
+      <isEmpty property="searchKind" prepend="and">
+          a.notice_kind = 'G003001'
+      </isEmpty>
+  	  <isNotEmpty property="searchKeyword">
+  	    <isEqual property="searchCondition" compareValue="sj" prepend="and">
+	      a.notice_title like concat('%',#searchKeyword#,'%')
+	    </isEqual>
+  	    <isEqual property="searchCondition" compareValue="cn" prepend="and">
+	      a.notice_content like concat('%',#searchKeyword#,'%')
+	    </isEqual>
+  	    <isEqual property="searchCondition" compareValue="sjcn" prepend="and">
+          (
+              a.notice_title like concat('%',#searchKeyword#,'%') or
+              a.notice_content like concat('%',#searchKeyword#,'%')
+          )
+	    </isEqual>
+      </isNotEmpty>
+      <isNotEmpty property="noticePopYn">
+          and a.notice_pop_yn = #noticePopYn#
+      </isNotEmpty>      
+      <isNotEmpty property="noticeFixYn">
+          and a.notice_fix_yn = #noticeFixYn#
+      </isNotEmpty>
+  	</sql>
+
+    <!--
+     * @Method Name        : selectNotiListTotalCount
+     * @Method description : [공지사항목록:총갯수]정보를 조회한다.
+     * @param              : NotiVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="NotiDAO.selectNotiListTotalCount" parameterClass="NotiVO" resultClass="int">
+      select count(a.notice_seq) as totalcount
+      <include refid="fromWhereAnd"/>
+    </select>
+    
+    <!--
+    * @Method Name         : selectNotiListFix
+     * @Method description : [공지사항목록:fix갯수]정보를 조회한다.
+     * @param              : NotiVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="NotiDAO.selectNotiListFix" parameterClass="NotiVO" resultClass="NotiVO">
+        select
+	         a.notice_seq           as noticeSeq              /* 공지사항.순번 */
+	        ,a.notice_fix_yn        as noticeFixYn            /* 공지사항.고정여부 */
+	        ,a.notice_kind          as noticeKind             /* 공지사항.노출 */
+	        ,a.notice_title         as noticeTitle            /* 공지사항.제목 */
+	        ,a.notice_content       as noticeContent          /* 공지사항.내용 */
+	        ,ifnull(a.read_count,0) as readCount              /* 공지사항.조회수 */
+	        ,a.file_id              as fileId                 /* 공지사항.파일ID */
+	        ,ifnull(date_format(a.create_date,'%Y/%m/%d'),'') as createDate /* 공지사항.생성일 */
+	        ,ifnull(date_format(a.update_date,'%Y-%m-%d'),'') as updateDate /* 공지사항.수정일 */
+	        ,a.create_id as createId /* 공지사항.생성자ID */
+	        ,a.update_id as updateId /* 공지사항.수정자ID */
+	        ,ifnull(date_format(delete_date,'%Y/%m/%d'),'')            as deleteDate /* 공지사항.삭제일 */
+	    <include refid="fromWhereAnd"/>
+	    order by a.create_date desc
+    </select>
+    
+    <!--
+     * @Method Name        : selectNotiList
+     * @Method description : [공지사항목록:목록]정보를 조회한다.
+     * @param              : NotiVO
+     * @return             : List<NotiVO>
+     * @throws             : Exception
+     -->
+    <select id="NotiDAO.selectNotiList" parameterClass="NotiVO" resultClass="NotiVO">
+      select
+        a.notice_seq           as noticeSeq              /* 공지사항.순번 */
+       ,a.notice_fix_yn        as noticeFixYn            /* 공지사항.고정여부 */
+       ,a.notice_kind          as noticeKind             /* 공지사항.노출 */
+       ,a.notice_title         as noticeTitle            /* 공지사항.제목 */
+       ,a.notice_content       as noticeContent          /* 공지사항.내용 */
+       ,ifnull(a.read_count,0) as readCount              /* 공지사항.조회수 */
+       ,a.file_id              as fileId                 /* 공지사항.파일ID */
+       ,ifnull(date_format(a.create_date,'%Y/%m/%d'),'') as createDate /* 공지사항.생성일 */
+       ,ifnull(date_format(a.update_date,'%Y-%m-%d'),'') as updateDate /* 공지사항.수정일 */
+       ,a.create_id as createId /* 공지사항.생성자ID */
+       ,a.update_id as updateId /* 공지사항.수정자ID */
+       ,ifnull(date_format(delete_date,'%Y/%m/%d'),'')            as deleteDate /* 공지사항.삭제일 */
+       ,case when a.delete_date is not null then 'y' else 'n' end as useYn      /* 공지사항.삭제여부 */
+      <include refid="fromWhereAnd"/>
+      <include refid="CmmnFuncDAO.CmmnPaging"/>
+    </select>
+    
+    <!--
+     * @Method Name        : cmm.NotiDAO.selectAdminNotiList
+     * @Method description : [공지사항목록:목록]정보를 조회한다.
+     * @param              : NotiVO
+     * @return             : List<NotiVO>
+     * @throws             : Exception
+     -->
+    <select id="cmm.NotiDAO.selectAdminNotiList" parameterClass="NotiVO" resultClass="NotiVO">
+      select 
+        a.notice_seq           as noticeSeq              /* 공지사항.순번 */
+       ,a.notice_kind          as noticeKind             /* 공지사항.노출 */
+       ,a.notice_title         as noticeTitle            /* 공지사항.제목 */
+       ,a.notice_content       as noticeContent          /* 공지사항.내용 */
+       ,ifnull(a.read_count,0) as readCount              /* 공지사항.조회수 */
+       ,a.file_id              as fileId                 /* 공지사항.파일ID */
+       ,ifnull(date_format(a.create_date,'%Y/%m/%d'),'') as createDate /* 공지사항.생성일 */
+       ,ifnull(date_format(a.update_date,'%Y/%m/%d'),'') as updateDate /* 공지사항.수정일 */
+       ,a.create_id as createid /* 공지사항.생성자ID */
+       ,a.update_id as updateid /* 공지사항.수정자ID */
+       ,ifnull(date_format(delete_date,'%Y/%m/%d'),'')            as deleteDate /* 공지사항.삭제일 */
+       ,case when a.delete_date is not null then 'y' else 'n' end as useyn      /* 공지사항.삭제여부 */
+      <include refid="fromWhereAnd"/>
+      <include refid="CmmnFuncDAO.CmmnPaging"/>
+    </select>
+    
+    <!--
+     * @Method Name        : selectNotiDetail
+     * @Method description : [공지사항상세:상세]정보를 조회한다.
+     * @param              : NotiVO
+     * @return             : NotiVO
+     * @throws             : Exception
+     -->
+    <select id="NotiDAO.selectNotiDetail" parameterClass="NotiVO" resultClass="NotiVO">
+      select 
+        a.notice_seq           as noticeSeq              /* 공지사항.순번 */
+       ,a.notice_kind          as noticeKind             /* 공지사항.노출 */
+       ,a.notice_title         as noticeTitle            /* 공지사항.제목 */
+       ,a.notice_content       as noticeContent          /* 공지사항.내용 */
+       ,ifnull(a.read_count,0) as readCount              /* 공지사항.조회수 */
+       ,a.file_id              as fileId                 /* 공지사항.파일ID */
+       ,ifnull(date_format(a.create_date,'%Y-%m-%d'),'') as createDate /* 공지사항.생성일 */
+       ,ifnull(date_format(a.update_date,'%Y/%m/%d'),'') as updateDate /* 공지사항.수정일 */
+       ,a.create_id as createId /* 공지사항.생성자ID */
+       ,a.update_id as updateId /* 공지사항.수정자ID */
+       ,ifnull(date_format(delete_date,'%Y/%m/%d'),'')            as deleteDate /* 공지사항.삭제일 */
+       ,case when a.delete_date is not null then 'y' else 'n' end as useYn      /* 공지사항.삭제여부 */
+      from com_notice_info a /* 공지사항 a */
+      where 1=1
+      and a.notice_seq = #noticeSeq#
+    </select>
+    
+    <!--
+     * @Method Name        : selectNotiBeforeAfterInfo
+     * @Method description : [공지사항상세:이전글다음글]정보를 조회한다.
+     * @param              : NotiVO
+     * @return             : NotiVO
+     * @throws             : Exception
+     -->
+    <select id="NotiDAO.selectNotiBeforeAfterInfo" parameterClass="NotiVO" resultClass="NotiVO">
+      select 
+       (select a.notice_seq   <include refid="fromWhereAnd"/> and a.notice_seq <![CDATA[>]]> #noticeSeq# order by a.notice_seq asc limit 1)  as afterId
+      ,(select a.notice_title <include refid="fromWhereAnd"/> and a.notice_seq <![CDATA[>]]> #noticeSeq# order by a.notice_seq asc limit 1)  as afterSj
+      ,(select a.notice_seq   <include refid="fromWhereAnd"/> and a.notice_seq <![CDATA[<]]> #noticeSeq# order by a.notice_seq desc limit 1) as beforeId
+      ,(select a.notice_title <include refid="fromWhereAnd"/> and a.notice_seq <![CDATA[<]]> #noticeSeq# order by a.notice_seq desc limit 1) as beforeSj
+      from dual
+    </select>
+    
+    <!--
+     * @Method Name        : updateNotiReadCount
+     * @Method description : [공지사항목록:해당건]을 클릭 시 조회수 증가
+     * @param              : NotiVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="NotiDAO.updateNotiReadCount" parameterClass="NotiVO">
+      update com_notice_info set
+        read_count = ifnull(read_count,0)+1
+      where 1=1
+      and notice_seq = #noticeSeq#
+    </update>
+    
+    <!--
+     * @Method Name        : selectReadCount
+     * @Method description : [공지사항목록:해당건]조회수 증가 후 조회수 취득
+     * @param              : NotiVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="NotiDAO.selectNotiReadCount" parameterClass="NotiVO" resultClass="int">
+      select ifnull(read_count,0) as readCount 
+      from com_notice_info 
+      where 1=1
+      and notice_seq = #noticeSeq#
+    </select>
+    
+    <!--
+     * @Method Name        : insertNoti
+     * @Method description : [공지사항목록:등록]을 한다.
+     * @param              : NotiVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="NotiDAO.insertNoti" parameterClass="NotiVO">
+      insert into com_notice_info(
+        notice_seq
+       <isNotEmpty property="noticeKind">
+       ,notice_kind
+       </isNotEmpty>
+       <isNotEmpty property="noticeTitle">
+       ,notice_title
+       </isNotEmpty>
+       <isNotEmpty property="noticeContent">
+       ,notice_content
+       </isNotEmpty>
+       <isNotEmpty property="fileId">
+       ,file_id
+       </isNotEmpty>
+       ,read_count
+       ,create_id
+       ,update_id
+       ,delete_date
+       ,create_date
+       ,update_date
+      )
+       select 
+       (select ifnull( max(cast(notice_seq as signed)), 0)+1 from com_notice_info)
+       <isNotEmpty property="noticeKind">
+       ,#noticeKind#
+       </isNotEmpty>
+       <isNotEmpty property="noticeTitle">
+       ,#noticeTitle#
+       </isNotEmpty>
+       <isNotEmpty property="noticeContent">
+       ,#noticeContent#
+       </isNotEmpty>
+       <isNotEmpty property="fileId">
+       ,#fileId#
+       </isNotEmpty>
+       ,0
+       ,#userId#
+       ,#userId#
+       ,null
+       ,sysdate()
+       ,sysdate()
+       from dual
+    </insert>
+    
+    <!--
+     * @Method Name        : updateNoti
+     * @Method description : [공지사항상세:수정]을 한다.
+     * @param              : NotiVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="NotiDAO.updateNoti" parameterClass="NotiVO">
+      update com_notice_info set
+          update_date = sysdate()
+         ,update_id = #userId#
+        <isNotEmpty property="noticeKind">
+         ,notice_kind = #noticeKind#
+        </isNotEmpty>
+        <isNotEmpty property="noticeTitle">
+         ,notice_title = #noticeTitle#
+        </isNotEmpty>
+        <isNotEmpty property="noticeContent">
+         ,notice_content = #noticeContent#
+        </isNotEmpty>
+        <isNotEmpty property="fileId">
+         ,file_id = #fileId#
+        </isNotEmpty>
+      where 1=1
+      and notice_seq = #noticeSeq#
+    </update>
+    
+    <!--
+     * @Method Name        : deleteNoti
+     * @Method description : [공지사항상세:삭제]를 한다.
+     * @param              : NotiVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="NotiDAO.deleteNoti" parameterClass="NotiVO">
+      update com_notice_info set
+          delete_date = sysdate()
+         ,update_date = sysdate()
+         ,update_id   = #userId#
+      where 1=1
+      and notice_seq = #noticeSeq#
+    </update>
+    
+    <!--
+     * @Method Name        : selectNotiListPop
+     * @Method description : [공지사항목록:팝업]정보를 조회한다.
+     * @param              : NotiVO,ModelMap
+     * @return             : jsonView
+     * @throws             : Exception
+     -->
+    <select id="NotiDAO.selectNotiListPop" parameterClass="NotiVO" resultClass="NotiVO">
+      select
+        a.notice_seq           as noticeSeq              /* 공지사항.순번 */
+       ,a.notice_fix_yn        as noticeFixYn            /* 공지사항.고정여부 */
+       ,a.notice_kind          as noticeKind             /* 공지사항.노출 */
+       ,a.notice_title         as noticeTitle            /* 공지사항.제목 */
+       ,a.notice_content       as noticeContent          /* 공지사항.내용 */
+       ,a.notice_pop_width     as noticePopWidth         /* 공지사항.팝업넓이 */
+       ,a.notice_pop_height    as noticePopHeight        /* 공지사항.팝업높이 */
+       ,ifnull(a.read_count,0) as readCount              /* 공지사항.조회수 */
+       ,a.file_id              as fileId                 /* 공지사항.파일ID */
+       ,ifnull(date_format(a.create_date,'%Y/%m/%d'),'') as createDate /* 공지사항.생성일 */
+       ,ifnull(date_format(a.update_date,'%Y-%m-%d'),'') as updateDate /* 공지사항.수정일 */
+       ,a.create_id as createId /* 공지사항.생성자ID */
+       ,a.update_id as updateId /* 공지사항.수정자ID */
+       ,ifnull(date_format(delete_date,'%Y/%m/%d'),'')            as deleteDate /* 공지사항.삭제일 */       
+      <include refid="fromWhereAnd"/>      
+    </select>
+    
+</sqlMap>

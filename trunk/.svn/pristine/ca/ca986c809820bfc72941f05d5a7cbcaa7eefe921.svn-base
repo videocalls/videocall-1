@@ -1,0 +1,39 @@
+ <ion-view title="dddddd">
+  	<ion-content scroll="false">
+  		<style>
+  			.slide-box-header ul li{
+	  			float: left;
+	  		}
+	  		
+	  		.slide-box-header ul li.active{
+	  			float: red;
+	  			font-weight: bold;
+	  		}
+  		</style>
+	 	<ion-header-bar class="slide-box-header" style="background: red !important;">
+	 		<ul>
+	 			<li class="active">page 1</li>
+	 			<li>page 2</li>
+	 			<li>page 3</li>
+	 		</ul>
+	 	</ion-header-bar>
+	    <ion-slide-box show-pager="false" does-continue="true">
+	        <ion-slide>
+	            <ion-content>
+	                Page 1
+	            </ion-content>
+	        </ion-slide>
+	        <ion-slide>
+	            <ion-content>
+	                Page 2
+	            </ion-content>
+	        </ion-slide>
+	        
+	        <ion-slide>
+	            <ion-content>
+	                Page 3
+	            </ion-content>
+	        </ion-slide>
+	    </ion-slide-box>
+	</ion-content>
+</ion-view>

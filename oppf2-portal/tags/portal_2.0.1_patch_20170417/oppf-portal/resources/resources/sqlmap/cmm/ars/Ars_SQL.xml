@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 핀테크 오픈플랫폼 구축 2차
+* @FileName : Ars_SQL.xml
+* @Comment  : 공통 일반회원서비스약관프로파일 기능을 제공하는 SQL XML
+* @author   : 이희태
+* @since    : 2017.03.04
+* @version  : 1.0
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2017.03.04   이희태        최초생성
+-->
+<sqlMap namespace="kr.co.koscom.oppf.cmm.ars.service.impl.CmmArsDAO">
+
+    <typeAlias alias="CmmArsVO"
+    type="kr.co.koscom.oppf.cmm.ars.service.CmmArsVO"/>
+
+  	<!--
+     * @Method Name        : cmm.tsa.CmmTsaDAO.selectTermsFileRegNo
+     * @Method description : [일반회원서비스약관파일프로파일]정보를 조회한다.
+     * @param              : SptCustomerServiceTermsFileProfileVO
+     * @return             : List<SptCustomerServiceTermsFileProfileVO>
+     * @throws             : Exception
+     -->
+    <select id="cmm.ars.CmmArsDAO.selectTermsArsRegNo" parameterClass="CmmArsVO" resultClass="java.lang.String" >
+        select
+            concat(date_format(sysdate(),'%Y%m%d'), 
+                   lpad( (select ifnull( max(cast(right(terms_ars_reg_no,4) as signed)), 0)+1
+                          from spt_customer_service_ars_profile where left(terms_ars_reg_no,8) = date_format(sysdate(),'%Y%m%d')
+                          and customer_reg_no = #customerRegNo#
+                          )
+                          ,4,'0')
+                   ) as termsArsRegNo /* 동의서ARS등록번호 */
+    </select>
+
+    <!--
+     * @Method Name        : insertSptCustomerServiceArsProfile
+      * @Method description : [일반회원서비스약관프로파일]정보를 등록한다.
+      * @param              : CmmArsVO
+      * @return             : String termsArsRegNo(동의서파일등록번호)
+      * @throws             : Exception
+     -->
+    <insert id="cmm.ars.CmmArsDAO.insertSptCustomerServiceArsProfile" parameterClass="CmmArsVO">
+        insert into spt_customer_service_ars_profile(
+         customer_reg_no   /* 회원OP가입번호 */
+        ,terms_reg_no      /* 약관 등록 번호 */
+        ,terms_ars_reg_no   /* 약관 ARS 등록 번호 */
+        ,customer_phone   /* 회원 휴대폰 번호 */
+        <isNotEmpty property="arsRecordData">
+            ,ars_record_data /* ARS 녹취 데이터 */
+        </isNotEmpty>
+        ,ars_txt_no     /* ARS 전문고유번호 */
+        ,ars_tr_cd      /* ARS 거래코드 */
+        ,ars_rslt_msg   /* ARS 결과 메세지 */
+        ,ars_rslt_cd    /* ARS 처리 결과코드 */
+        ,create_date    /* 생성일시 */
+        ,create_id      /* 생성자ID */
+        ,update_date    /* 변경일시 */
+        ,update_id      /* 변경자 ID */
+        )
+        VALUES (
+         #customerRegNo#  /* 회원OP가입번호 */
+        ,#termsRegNo#     /* 약관 등록 번호 */
+        ,#termsArsRegNo#  /* 약관 ARS 등록 번호 */
+        ,enc_char_ins(#customerPhone#,10,'ARIA','spt_customer_service_ars_profile','customer_phone',user(),connection_id())  /* 회원 휴대폰 번호 */
+        <isNotEmpty property="arsRecordData">
+            ,#arsRecordData# /* ARS 녹취 데이터 */
+        </isNotEmpty>
+        ,#arsTxtNo#       /* ARS 전문고유번호 */
+        ,#arsTrCd#        /* ARS 거래코드 */
+        ,#arsRsltMsg#     /* ARS 결과 메세지 */
+        ,#arsRsltCd#      /* ARS 처리 결과코드 */
+        ,sysdate()        /* 생성일시 */
+        ,#customerRegNo#  /* 생성자 ID */
+        ,sysdate()        /* 변경일시 */
+        ,#customerRegNo#  /* 변경자 ID */
+        )
+    </insert>
+
+    <!--
+     * @Method Name        : insertSptCustomerServiceArsProfileHist
+     * @Method description : [일반회원서비스약관ARS프로파일Hist]정보를 등록한다.
+     * @param              : CmmArsVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="cmm.ars.CmmArsDAO.insertSptCustomerServiceArsProfileHist" parameterClass="CmmArsVO">
+        insert into spt_customer_service_ars_profile_hist(
+            terms_ars_seq,   /* 순번 */
+            customer_reg_no,   /* 회원OP등록번호 */
+            terms_reg_no,   /* 약관 등록 번호 */
+            terms_ars_reg_no,   /* 약관 ARS 등록 번호 */
+            customer_phone,   /* 회원 휴대폰 번호 */
+            ars_record_data,   /* ARS 녹취 데이터 */
+            ars_txt_no, /* ARS 전문고유번호 */
+            ars_tr_cd,   /* ARS 거래코드 */
+            ars_rslt_msg,         /* ARS 결과 메세지 */
+            ars_rslt_cd,         /* ARS 처리 결과코드 */
+            create_date,       /* 생성일시 */
+            create_id,          /* 생성자ID */
+            update_date,       /* 변경일시 */
+            update_id       /* 변경자 ID */
+        )
+        select
+		    ifnull((
+		        select ifnull(max(cast(terms_ars_seq as SIGNED)), 0) + 1
+		        from spt_customer_service_ars_profile_hist aa
+		        where a.customer_reg_no = aa.customer_reg_no
+                  and a.terms_reg_no = aa.terms_reg_no
+                  and a.terms_ars_reg_no = aa.terms_ars_reg_no
+		    ), 1),               /* 순번 */
+            a.customer_reg_no,   /* 회원OP등록번호 */
+            a.terms_reg_no,   /* 약관 등록 번호 */
+            a.terms_ars_reg_no,   /* 약관 ARS 등록 번호 */
+            a.customer_phone,   /* 회원 휴대폰 번호 */
+            a.ars_record_data,   /* ARS 녹취 데이터 */
+            a.ars_txt_no, /* ARS 전문고유번호 */
+            a.ars_tr_cd,   /* ARS 거래코드 */
+            a.ars_rslt_msg,         /* ARS 결과 메세지 */
+            a.ars_rslt_cd,         /* ARS 처리 결과코드 */
+            a.create_date,       /* 생성일시 */
+            a.create_id,          /* 생성자ID */
+            a.update_date,       /* 변경일시 */
+            a.update_id       /* 변경자 ID */
+        from spt_customer_service_ars_profile a
+        where 1=1
+        and a.customer_reg_no    = #customerRegNo#  /* 회원OP등록번호 */
+        and a.terms_reg_no       = #termsRegNo#  /* 약관등록번호 */
+        and a.terms_ars_reg_no   = #termsArsRegNo# /* ARS 등록 번호 */
+    </insert>
+    
+    <!--
+     * @Method Name        : insertSptCustomerServiceTermsProfileHist
+     * @Method description : [일반회원서비스약관프로파일Hist]정보를 등록한다.
+     * @param              : SptCustomerServiceTermsFileProfileVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="cmm.ars.CmmArsDAO.insertSptCustomerServiceTermsProfileHist" parameterClass="SptCustomerServiceTermsProfileVO">
+        insert into spt_customer_service_terms_profile_hist(
+            terms_seq,          /* 순번 */
+            customer_reg_no,    /* 회원OP등록번호 */
+            terms_reg_no,       /* 약관등록번호 */
+            subcompany_code_id, /* 핀테크기업코드 */
+            subcompany_name,    /* 약관표기핀테크기업명 */
+            customer_name,      /* 약관표기동의자성명 */
+            customer_email,     /* 약관표기동의자이메일 */
+            customer_birth_day, /* 약관표기동의자생년월일 */
+            terms_policy,       /* 약관표기동의최총기간(개월) */
+            terms_auth_type,    /* 약관 동의 방법 */
+            terms_chg_date,     /* 약관동의일시 */
+            terms_start_date,   /* 약관동의시작일시 */
+            terms_expire_date,  /* 약관동의종료예정일 */
+            terms_auth_yn,      /* 동의서동의필요여부 */
+            terms_file_reg_no,  /* 동의서파일등록번호 */
+            terms_file_status,  /* 동의서파일처리상태 */
+            customer_sign_dn,   /* 약관 동의 공인인증서 */
+			customer_sign_data, /* 약관 동의 전자서명키 */
+			customer_tsa_data,	/* 약관 동의 시점확인키 */
+            admin_create_yn,	/* 관리자 생성 여부 */
+            delete_date,        /* 삭제일시 */
+            create_date,        /* 생성일시 */
+            create_id           /* 생성자ID */
+        )
+        select
+		    ifnull((
+		        select ifnull(max(cast(terms_seq as SIGNED)), 0) + 1
+		        from spt_customer_service_terms_profile_hist aa
+		        where a.customer_reg_no = aa.customer_reg_no
+		    ), 1),                /* 순번 */
+            a.customer_reg_no,    /* 회원OP등록번호 */
+            a.terms_reg_no,       /* 약관등록번호 */
+            a.subcompany_code_id, /* 핀테크기업코드 */
+            a.subcompany_name,    /* 약관표기핀테크기업명 */
+            a.customer_name,      /* 약관표기동의자성명 */
+            a.customer_email,     /* 약관표기동의자이메일 */
+            a.customer_birth_day, /* 약관표기동의자생년월일 */
+            a.terms_policy,       /* 약관표기동의최총기간(개월) */
+            a.terms_auth_type,    /* 약관 동의 방법 */
+            a.terms_chg_date,     /* 약관동의일시 */
+            a.terms_start_date,   /* 약관동의시작일시 */
+            a.terms_expire_date,  /* 약관동의종료예정일 */
+            a.terms_auth_yn,      /* 동의서동의필요여부 */
+            a.terms_file_reg_no,  /* 동의서파일등록번호 */
+            a.terms_file_status,  /* 동의서파일처리상태 */
+            a.customer_sign_dn,   /* 약관 동의 공인인증서 */
+            a.customer_sign_data, /* 약관 동의 전자서명키 */
+            a.customer_tsa_data,  /* 약관 동의 시점확인키 */
+            a.admin_create_yn,	/* 관리자 생성 여부 */
+            a.delete_date,        /* 삭제일시 */
+            a.create_date,        /* 생성일시 */
+            a.create_id           /* 생성자ID */
+        from spt_customer_service_terms_profile a
+        where 1=1
+        and a.customer_reg_no = #customerRegNo# /* 회원OP등록번호 */
+        and a.terms_reg_no = #termsRegNo# /* 약관등록번호 */
+    </insert>
+  	
+    <!--
+     * @Method Name        : updateSptCustomerServiceTermsProfile
+     * @Method description : [일반회원서비스약관프로파일]정보를 수정한다.
+     * @param              : SptCustomerServiceTermsFileProfileVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="cmm.ars.CmmArsDAO.updateSptCustomerServiceTermsProfile" parameterClass="SptCustomerServiceTermsProfileVO">
+        update spt_customer_service_terms_profile set
+            terms_auth_type = 'G032002'     /* 약관 동의 방법 */
+           ,update_date = sysdate()
+           ,update_id = #customerRegNo# /* 회원OP가입번호 */
+        <isNotEmpty property="termsStartDate">
+           ,terms_chg_date    = sysdate() /* 약관동의일시 */
+           ,terms_start_date  = #termsStartDate# /* 약관동의시작일시 */
+           ,terms_expire_date = date_format(DATE_ADD(#termsStartDate#,INTERVAL +#termsPolicy# month) - INTERVAL 1 day,'%Y%m%d') /* 약관동의종료예정일 */
+        </isNotEmpty>
+        <isNotEmpty property="termsAuthYn">
+           ,terms_auth_yn     = #termsAuthYn#      /* 동의서동의필요여부 */
+        </isNotEmpty>
+        <isNotEmpty property="subcompanyCodeId">
+           ,subcompany_code_id = #subcompanyCodeId# /* 핀테크기업코드 */
+        </isNotEmpty>
+        <isNotEmpty property="subcompanyName">
+           ,subcompany_name    = #subcompanyName#   /* 핀테크기업코드명 */
+        </isNotEmpty>
+        <isNotEmpty property="customerName">
+           ,customer_name      = #customerName#     /* 약관표기동의자성명 */
+        </isNotEmpty>
+        <isNotEmpty property="customerEmail">
+           ,customer_email     = #customerEmail#    /* 약관표기동의자이메일 */
+        </isNotEmpty>
+        <isNotEmpty property="customerBirthDay">
+           ,customer_birth_day = #customerBirthDay# /* 약관표기동의자생년월일 */
+        </isNotEmpty>
+        where 1=1
+        and customer_reg_no = #customerRegNo# /* 회원OP등록번호 */
+        and terms_reg_no    = #termsRegNo#    /* 약관등록번호 */
+    </update>
+
+    <!--
+     * @Method Name        : cmm.tsa.CmmTsaDAO.selectTermsArsRecordData
+     * @Method description : [일반회원서비스약관파일프로파일]ARS 녹취 데이더 조회
+     * @param              : String
+     * @return             : String
+     * @throws             : Exception
+     -->
+    <select id="cmm.ars.CmmArsDAO.selectTermsArsRecordData" parameterClass="java.lang.String" resultClass="java.lang.String" >
+        select ars_record_data
+        from spt_customer_service_ars_profile
+        where terms_reg_no = #termsRegNo#    /* 약관등록번호 */
+        limit 1
+    </select>
+  	
+</sqlMap>

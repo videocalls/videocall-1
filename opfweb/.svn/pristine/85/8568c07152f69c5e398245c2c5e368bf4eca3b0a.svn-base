@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 자본시장 공동 핀테크 오픈플랫폼 구축
+* @FileName : FaqManageDAO.java
+* @Comment  : 관리자의 FAQ 관리를 위한 SQL XML
+* @author   : 신동진
+* @since    : 2016.05.19
+* @version  : 1.0
+* @see
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2016.05.19   신동진        최초생성
+-->
+
+<sqlMap namespace="kr.co.koscom.oppf.cmm.faq.service.impl.FaqManageDAO">
+    <typeAlias alias="FaqManageVO" type="kr.co.koscom.oppf.cmm.faq.service.FaqManageVO"/>
+  	
+    <!-- 공지사항목록조회조건 -->
+    <sql id="fromWhereAnd">
+        <!-- 제목/내용 -->
+        <isNotEmpty property="searchKeyword">
+            <!-- 제목 -->
+            <isEqual property="searchCondition" compareValue="sj" prepend="and">
+                faq_title like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <!-- 내용 -->
+            <isEqual property="searchCondition" compareValue="cn" prepend="and">
+                faq_content like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <!-- 전체 -->
+            <isEqual property="searchCondition" compareValue="sjcn" prepend="and">
+                (
+                    faq_title like concat('%', #searchKeyword#, '%') or
+                    faq_content like concat('%', #searchKeyword#, '%')
+                )
+            </isEqual>
+        </isNotEmpty>
+        
+        <!-- 노출종류 -->
+        <isNotEmpty property="searchFaqKind" prepend="and">
+            faq_kind
+            <iterate  property="searchFaqKind" prepend="IN" open="(" close=")" conjunction=",">
+                #searchFaqKind[]#
+            </iterate> 
+        </isNotEmpty>
+        
+        <!-- 노출서버종류 -->
+        <isNotEmpty property="searchDisplayServerType" prepend="and">
+        	<isEqual property="searchDisplayServerType" compareValue="G045001">
+                ifnull(a.display_server_type,'') &lt;&gt; 'G045002'
+            </isEqual>
+         	<isEqual property="searchDisplayServerType" compareValue="G045002">
+                ifnull(a.display_server_type,'') &lt;&gt; 'G045001'
+            </isEqual>           
+        </isNotEmpty>        
+        
+        <!-- 조회일 -->
+        <isNotEmpty property="schDateFrom" prepend="and">
+            date_format(ifnull(update_date, create_date), '%Y%m%d') between replace(#schDateFrom#, '-', '') and replace(#schDateTo#, '-', '')
+        </isNotEmpty>
+  	</sql>
+
+    <!--
+     * @Method Name        : com.FaqManageDAO.selectFaqManageListTotalCount
+     * @Method description : FAQ 목록의 총개수를 조회한다.
+     * @param              : FaqManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="com.FaqManageDAO.selectFaqManageListTotalCount" parameterClass="FaqManageVO" resultClass="int">
+	    select count(a.faq_seq) as totalcount
+	    from com_faq_info a
+	    where delete_date is null
+	    <include refid="fromWhereAnd"/>
+    </select>
+    
+    <!--
+     * @Method Name        : com.FaqManageDAO.selectFaqManageList
+     * @Method description : FAQ 목록을 조회한다.
+     * @param              : FaqManageVO
+     * @return             : FaqManageVO
+     * @throws             : Exception
+     -->
+    <select id="com.FaqManageDAO.selectFaqManageList" parameterClass="FaqManageVO" resultClass="FaqManageVO">
+        select  faq_seq                   as faqSeq,
+                (
+                    select code_name_kor
+                    from com_system_code
+                    where concat(system_grp_code, system_code) = faq_kind
+                ) as faqKind,
+                ifnull ((
+	                    select code_name_eng
+	                    from com_system_code
+	                    where concat(system_grp_code, system_code) =  display_server_type
+              			 ),'전체')  AS displayServerType,
+                faq_title                 as faqTitle,
+                faq_order                 as faqOrder,
+                use_yn                    as useYn,
+                faq_start_date            as faqStartDate,
+                faq_expire_date           as faqExpireDate,
+                create_date               as createDate
+        from(                
+		   
+		    select  faq_seq,
+		            faq_kind,
+		            display_server_type,
+		            faq_title,
+		            faq_order,
+		            use_yn,
+		            date_format(faq_start_date, '%Y-%m-%d') as faq_start_date,
+		            date_format(faq_expire_date, '%Y-%m-%d') as faq_expire_date,
+		            date_format(create_date, '%Y-%m-%d') as create_date
+		    from com_faq_info a
+		    where delete_date is null
+		    <include refid="fromWhereAnd"/>
+        ) a			    
+		<include refid="CmmnFuncDAO.CmmnPaging"/>
+    </select>
+    
+    <!--
+     * @Method Name        : com.FaqManageDAO.selectFaqManageDetail
+     * @Method description : FAQ 상세정보를 조회한다.
+     * @param              : FaqManageVO
+     * @return             : FaqManageVO
+     * @throws             : Exception
+     -->
+    <select id="com.FaqManageDAO.selectFaqManageDetail" parameterClass="FaqManageVO" resultClass="FaqManageVO">
+		select  faq_seq                   as faqSeq,
+                faq_kind                  as faqKind,
+                display_server_type  as displayServerType,
+                faq_title                 as faqTitle,
+                faq_content               as faqContent,
+                faq_order                 as faqOrder,
+                file_id                   as fileId,
+                use_yn                    as useYn,
+                date_format(ifnull(faq_start_date, ''), '%Y-%m-%d')       as faqStartDate,
+                date_format(ifnull(faq_expire_date, ''), '%Y-%m-%d')      as faqExpireDate,
+                date_format(ifnull(create_date, ''), '%Y-%m-%d %H:%i')    as createDate,
+		        date_format(ifnull(update_date, ''), '%Y-%m-%d %H:%i')    as updateDate        
+		from com_faq_info a
+		where faq_seq = #faqSeq#  
+    </select>
+    
+    <!--
+     * @Method Name        : com.FaqManageDAO.insertFaq
+     * @Method description : FAQ를 등록한다.
+     * @param              : FaqManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="com.FaqManageDAO.insertFaq" parameterClass="FaqManageVO">
+		insert into com_faq_info(
+		    faq_seq,
+			faq_kind,
+			display_server_type,
+			faq_title,
+			faq_content,
+			faq_order,
+			faq_start_date,
+			faq_expire_date,
+			file_id,
+			use_yn,
+			create_date,
+			create_id,
+			update_date,
+			update_id
+		)
+		select  concat(date_format(sysdate(),'%Y%m%d'), 
+		        lpad((
+		            select ifnull( max(cast(right(faq_seq,2) as signed)), 0)+1 
+		            from com_faq_info 
+		            where left(faq_seq,8) = date_format(sysdate(),'%Y%m%d')
+		            ), 2, '0')
+		        ) as faq_seq,
+		        #faqKind#,
+		        #displayServerType#,
+		        #faqTitle#,
+		        #faqContent#,
+		        #faqOrder#,
+		        #faqStartDate#,
+		        #faqExpireDate#,
+		        #fileId#,
+		        #useYn#,
+		        sysdate(),
+		        #createId#,
+		        sysdate(),
+		        #createId#
+		from dual            
+    </insert>
+    
+    <!--
+     * @Method Name        : com.FaqManageDAO.updateFaq
+     * @Method description : FAQ를 수정한다.
+     * @param              : FaqManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="com.FaqManageDAO.updateFaq" parameterClass="FaqManageVO">
+        update com_faq_info set
+            faq_kind = #faqKind#,
+            display_server_type=#displayServerType#,
+            faq_title = #faqTitle#,
+            faq_content = #faqContent#,
+            faq_order = #faqOrder#,
+            faq_start_date = #faqStartDate#,
+            faq_expire_date = #faqExpireDate#,
+            file_id = #fileId#,
+            use_yn = #useYn#,
+            update_date = sysdate(),
+            update_id = #createId#
+        where faq_seq = #faqSeq#
+    </update>
+    
+    <!--
+     * @Method Name        : com.FaqManageDAO.deleteFaq
+     * @Method description : FAQ를 삭제한다.
+     * @param              : FaqManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="com.FaqManageDAO.deleteFaq" parameterClass="FaqManageVO">
+        update com_faq_info set
+            delete_date = sysdate(),
+            update_date = sysdate(),
+            update_id = #createId#
+        where faq_seq = #faqSeq#
+    </update>
+    
+</sqlMap>

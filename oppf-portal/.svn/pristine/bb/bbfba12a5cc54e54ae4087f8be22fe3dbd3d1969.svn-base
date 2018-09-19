@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>기업 | koscom OpenAPI Platform </title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="stylesheet" href="../../../css/cpt/import.css">
+	<!-- IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	  <script src="../../../js/cmm/html5shiv.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="../../../js/cmm/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../../../js/cpt/common_pub.js"></script>
+</head>
+
+<body>
+
+<div class="wrap">
+
+	<!-- header -->
+	<header class="header">
+		<div class="header_area">
+			<div class="skip_navi">
+				<a href="#gnb">메뉴 바로가기</a>
+				<a href="#content">본문 바로가기</a>		
+			</div>
+
+			<!-- 2016-06-01 수정 -->
+			<div class="util_wrap">
+				<ul class="site">
+					<li><a href="#none">개인</a></li>
+					<li class="on"><a href="#none">기업/금투사</a></li>
+					<li class="fin"><a href="#none">핀테크 테스트베드</a></li>
+				</ul>
+				<div class="menu">
+					<!-- <p><span>키움증권</span>님 안녕하세요!</p> -->
+					<ul>
+						<li class="log"><a href="#none">로그인</a></li>
+					</ul>
+				</div>
+			</div>
+			<!-- // 2016-06-01 수정 -->
+			
+			<nav id="gnb">
+				<h1 class="logo"><a href="#none"><img src="../../../images/cpt/common/logo.png" alt="Koscom OpenAPI Platform"></a></h1>
+
+				<!-- 2016-06-01 수정 -->
+				<div class="gnb_menu">
+					<ul>
+						<li><a href="#none">오픈플랫폼 </a>
+							<ul class="sub_menu">
+								<li><a href="#none">오픈플랫폼 소개</a></li>
+								<li><a href="#none">오픈플랫폼 이용안내</a></li>
+                                <li><a href="#none">시세정보 지원</a></li>  								
+								<li><a href="#none">참여사</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">핀테크 서비스</a>
+							<ul class="sub_menu">
+								<li><a href="#none">App. 소개</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">서비스 소개</a>
+							<ul class="sub_menu">
+								<li><a href="#none">API 소개</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">서비스 지원</a>
+							<ul class="sub_menu">
+								<li><a href="#none">FAQ</a></li>
+								<li><a href="#none">공지사항</a></li>
+							</ul>
+						</li>
+					</ul>	
+				</div>
+				<!-- // 2016-06-01 수정 -->
+			</nav>
+		</div>
+	</header>
+	<!-- // header -->
+
+	<!-- section -->
+	<section>
+		<!-- location -->
+		<div class="location">
+			<ul>
+				<li class="home"><a href="#none">홈</a></li>
+				<li><a href="#none">오픈플랫폼</a></li>
+				<li class="on">오픈플랫폼 소개</li>
+			</ul>
+		</div>
+		<!-- // location -->
+
+		<div class="container">
+			<!-- lnb -->
+			<article class="lnb">				
+				<h2>오픈플랫폼</h2>
+				<ul>
+					<li><a href="#none">오픈플랫폼 소개</a></li>
+					<li><a href="#none" class="on">이용안내</a></li>
+                    <li><a href="#none">시세정보 지원</a></li>					
+					<li><a href="#none">참여사</a></li>
+				</ul>
+			</article>
+			<!-- // lnb -->
+
+			<!-- content -->
+			<article id="content">				
+
+				<div class="sub_title">
+					<h3>이용안내</h3>
+				</div>
+
+				<!-- con -->
+				<div class="con">
+					<div class="info_wrap">
+
+						<p class="info_tit">OpenAPI 이용절차</p>
+						<ul class="info_step1">
+							<li class="step1"><div><strong>1단계</strong><p>핀테크서비스 검증</p></div></li>
+							<li class="step2"><div><strong>2단계</strong><p>이용기관 등록</p></div></li>
+							<li class="step3"><div><strong>핀테크서비스 이용</strong></div></li>
+						</ul>
+
+						<p class="info_tit">핀테크 서비스 검증</p>
+						<p class="info_tit2">사전검증 절차</p>
+						<ul class="info_step2">
+							<li class="step1"><div><strong>서비스 계획서 작성</strong><p>(핀테크 기업)</p></div></li>
+							<li class="step2"><div><strong>사업성 검토 및 자문</strong><p>(핀테크 지원센터)</p></div></li>
+							<li class="step3"><div><strong>서비스 테스트</strong><p>(테스트베드 센터)</p></div></li>
+							<li class="step4"><div><strong>적합성 확인 및 보안성 진단</strong><p>(테스트베드 센터, 금투사)</p></div></li>
+							<li class="step5"><div><strong>검증완료</strong></div></li>
+						</ul>
+
+						<p class="info_tit2">사전검증 목록</p>
+						<ul class="list_type01 type2">
+							 <li>핀테크 기업이 제공하고자 하는 서비스 적합성 확인</li>
+							 <li>연동 테스트를 통해 서비스 안정성 확보</li>
+						</ul>
+
+						<p class="info_tit2">단계별 내용</p>
+						<ul class="info_step3">
+							<li class="step1"><div><strong>서비스 사업성 검토</strong><p><span>판교 핀테크 지원센터(선택사항)</span></p></div></li>
+							<li class="step2"><div><strong>서비스 테스트 및 기술 검증</strong><p><span>코스콤 핀테크 테스트베드 센터<br>개발을 위한 Sanbox 플랫폼<br>계정 발급</span></p></div></li>
+							<li class="step3"><div><strong>적합성 확인 및 보안 컨설팅 신청</strong><p><span>금융망 정상작동 여부 확인<br>보안 컨설팅 및 결과 확인</span></p></div></li>
+						</ul>
+						
+                        <p class="info_tit2">문의처</p>
+                        <ul class="list_type01 type2">
+                             <li>코스콤 핀테크 테스트베드 센터 : (02) 767-8573</li>
+                             <li>핀테크 지원센터 - 판교 : (031) 8016-1169 (코스콤 담당자)</li>
+                        </ul>
+					
+		
+		                <p class="info_tit">개발자 센터(sandbox 플랫폼) 계정발급</p>
+                        <p class="info_tit2">신청 서류</p>
+                        <ul class="list_type01 type2">
+                             <li><a href="https://developers.koscom.co.kr/resources/documentation/OpenAPI_Platform_Reg.docx"><FONT COLOR=“#0000FF”>OpenAPI 플랫폼 사용 신청서 1 부</FONT></a></li>
+                             <li> 법인등기부 등본 1부</li>
+                             <li> 사업자 등록증 1부</li>
+                             <li> 사업계획서 (자유 양식) 1부. 끝</li>
+                        </ul>                             
+                        <p class="info_tit2">계정발급 신청</p>
+                        <ul class="list_type01 type2">
+                             <li> 계정 발급 서류 제출 (이메일 : <FONT COLOR=“#0000FF”>open@koscom.co.kr)</FONT></li>
+                             <li> <a href="https://developers.koscom.co.kr/"><FONT COLOR=“#0000FF”>개발자 센터</FONT></a> > 회원 가입</li>                             
+                             <li> 서류 검토 후 온라인 가입 승인</li>                             
+                        </ul>
+
+                        <p class="info_tit2">오픈API플랫폼 기반 FinTech 서비스 공모전</p>
+                        <ul class="list_type01 type2">
+                             <li> 공모전 참가자는 공모전 기간 (8/10~9/19) 중 계정발급 신청 서류를 공모서류로 대체 가능</li>
+<!--                        <li><a href="https://fintech.koscom.co.kr/portal/bbs/B0000002/view.do?nttId=408&menuNo=200006"><FONT COLOR=“#0000FF”>핀테크 테스트 베드 센터 참조</FONT></a></li>   -->
+                             <li><a href="https://fintech.koscom.co.kr/portal/event/master/view.do?eventNo=86&eventSe=01&searchCnd=&searchWrd=&menuNo=200005&sdate=&edate=&prgrStatus=&tab=&section=&siteNm=&pageIndex=1"><FONT COLOR=“#0000FF”>[공모전] Koscom 오픈API플랫폼 기반 FinTech 서비스 공모전</FONT></a></li>
+                        </ul>
+						<p class="info_tit">이용기관 등록</p>
+						<p class="info_tit2">이용기관 등록 절차</p>
+						<ul class="info_step2">
+							<li class="step1"><div><strong>API서비스 사전 검증 통과</strong></div></li>
+							<li class="step2"><div><strong>관련서류 제출</strong></div></li>
+							<li class="step3"><div><strong>플랫폼 이용 적격여부 검토</strong></div></li>
+							<li class="step4"><div><strong>최종 승인 및 회원사 공지</strong></div></li>
+							<li class="step5"><div><strong>이용기관 등록</strong></div></li>
+						</ul>
+
+						<p class="info_tit2">사전검증 목록</p>
+						<ul class="list_type01 type2">
+							<li>신청 대상 : 사전검증 절차 통과 업체</li>
+							<li>방법 : 서류검토 및 필요시 실사</li>
+							<li>심사 내용 : 이용하는 API 유형(금융거래, 비금융거래 등)에 따라 심사내용이 다름</li>
+						</ul>
+
+						<p class="info_tit2">이용기관 등록</p>
+						<ul class="list_type01 type2">
+							<li>핀테크 포털 사이트 이용 (플랫폼 운영기관이 등록 담당)</li>
+						</ul>
+						
+					</div>					
+				</div>
+				<!-- // con -->
+
+			</article>
+			<!-- // content -->
+		</div>
+	</section>
+	<!-- section -->
+
+	<!-- footer -->
+	<footer class="footer">
+		<div class="footer_area">
+			<ul class="link">
+				<li><a href="#none">서비스이용약관</a></li>
+				<li class="point"><a href="#none">개인정보취급방침</a></li>
+			</ul>
+			<address>
+				서울시 영등포구 여의나루로 76 ㈜코스콤  대표전화 : 02-767-7114 <span>이메일 : master@koscom.openplatform.com</span>
+				<span class="copy">COPYRIGHT 2016. KOSCOM CORP. ALL RIGHTS RESERVED.</span>
+			</address>
+
+			<div class="family_site">
+				<!-- selBox2 -->
+				<span class="sel_box2">
+					<select style="min-width:150px">
+						<option>코스콤 사이트</option>
+					</select>
+				</span>
+				<!-- selBox2 -->
+				<span class="sel_box2">
+					<select style="min-width:170px">
+						<option>관련 사이트</option>
+					</select>
+				</span>				
+			</div>
+
+		</div>
+	</footer>
+	<!-- // footer -->
+
+</div>
+
+</body>
+</html>

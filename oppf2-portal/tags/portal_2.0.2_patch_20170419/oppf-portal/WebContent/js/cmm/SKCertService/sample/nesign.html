@@ -1,0 +1,84 @@
+<!-- saved from url=(0014)about:internet -->
+
+<OBJECT classid=CLSID:EC5D5118-9FDE-4A3E-84F3-C2B711740E70
+codeBase="http://www.signkorea.com/SKCommAX.cab#version=9,9,0,5"
+id=CertManX width=1 height=1>
+</OBJECT>
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+<script type="text/javascript" src="../app/library/json3.min.js"></script>
+<script type="text/javascript" src="../app/library/iecompatibility.js"></script>
+<script type="text/javascript" src="../app/vestsign.js"></script>
+<script type="text/javascript" src="../app/js/koscom.js"></script>
+<script type="text/javascript" src="../app/activexAdp.js"></script>
+
+<SCRIPT language=javascript>
+var i = 0;
+function nesign()
+{
+	var CertManX;
+
+	var plaintext = document.getElementById('t_signdata1').value; // 원문
+
+    if(getCookieForActiveX() === "true"){
+        CertManX = loadActiveObject();
+    }else{
+        CertManX = ytMain;
+    }
+    
+    if(CertManX.doubleClickBlock(arguments.callee)) return;
+    
+    CertManX.SetKeySaferMode(3);
+	CertManX.SetMatchedContextExt("","","", 256+0+1, function(dn){
+	        if(dn == "")
+	        {
+	            if(CertManX.GetLastErrorCode == 2417)
+	            {
+	                i++;
+	                alert("비밀번호 오류 ["+i+"회]");
+	                sign();
+	            }
+	            else
+	            {
+	                alert("SetMatchedContextExt 실패 : ["+CertManX.GetLastErrorCode() +"]"+CertManX.GetLastErrorMsg());
+	                i=0;
+	                return;
+	            }
+	        }
+
+        CertManX.SignData_ne_B64("", plaintext, 1, function(nesigndata) {
+	            form.t_signdata2.value = nesigndata;
+	        });
+	    });
+}
+	
+</SCRIPT>
+	<BR><BR>
+		<HR align="left" size="5" width="100%" noshade >
+		<FONT size="7"> <center> 축약서명(주문) </center> </FONT>
+		<HR align="left" size="5" width="100%" noshade >
+	<BR>
+
+<form name="form" method="post">
+	<table width="50%" border="1" align="center">
+				<tr>
+					<td>
+					<BR>
+					<center><b>&nbsp원　문&nbsp</b>
+					<input type="text" id="t_signdata1" name="t_plain" value="TESTPLAIN" style="width:200">
+					<BR>
+					<BR>
+					<BR><input type=button onclick=nesign() value=축약서명(주문) style="width:200px;height:30">
+					<BR>
+					<BR>
+					<BR>
+					<b>축약서명데이터</b>
+					<BR>
+					<TEXTAREA name = "t_signdata2" style="height:100; width:400"></TEXTAREA><br>
+					<BR>
+					</center>
+					</td>
+				</tr>
+	</table>
+</form>

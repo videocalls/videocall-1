@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.sptUsr.service.impl.SptUserServiceDAO">
+
+  	<typeAlias alias="SptUserServiceVO" type="kr.co.koscom.oppf.apt.sptUsr.service.SptUserServiceVO"/>
+  	
+  	<typeAlias alias="SptSvcApplVO" type="kr.co.koscom.oppf.apt.sptUsr.service.SptSvcApplVO"/>
+  	
+    <!-- 서비스신청 -->
+    <typeAlias alias="SvcApplVO" type="kr.co.koscom.oppf.spt.usr.svcAppl.service.SvcApplVO"/>
+  	
+  	<!--
+     * @Method Name        : apt.SptUserServiceDAO.selectSptUserServiceAppList
+     * @Method description : 앱이름 목록 조회
+     * @param              : SptUserManageVO
+     * @return             : SptUserManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.SptUserServiceDAO.selectSptUserServiceAppList" parameterClass="SptUserServiceVO" resultClass="SptUserServiceVO">
+		select  a.app_id    as appId,
+		        a.app_name  as appName
+		from com_app_view a
+		join com_app_info b on a.app_id = b.app_id
+		where a.company_code_id is not null
+		<!-- 앱 개발자  -->
+		<isNotEmpty property="searchSubcompanyCodeId" prepend="and">
+			<isNotEqual property="searchSubcompanyCodeIdAllYn" compareValue="Y">
+				a.company_code_id
+				<iterate  property="searchSubcompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+					#searchSubcompanyCodeId[]#
+				</iterate>
+			</isNotEqual>
+		</isNotEmpty>
+		order by b.exposure_order asc, a.app_name asc
+    </select>
+  	
+  	<!-- 목록 조회조건 -->
+    <sql id="fromWhereAnd">
+		from(
+		    select  a.*,
+		            b.customer_id,
+		            b.customer_name_kor,
+		            b.customer_name_eng,
+		            b.customer_email,
+		            b.customer_reg_status,
+		            app.app_name,
+		            app.subcompany_code_id,
+		            app.subcompany_exposure_order,
+		            api.api_name,
+		            api.pubcompany_code_id,
+		            api.pubcompany_exposure_order
+		    from(
+		        select  a.*,
+		                if(ifnull(a.delete_date, 'Y') = 'Y', 'Y', 'N') as svc_available_yn, 
+		                b.api_id,
+		                b.customer_realaccount_no,
+		                b.account_reg_no
+		        from spt_customer_service_profile a   
+		        join spt_customer_service_account_profile b 
+		        on a.customer_reg_no = b.customer_reg_no
+		        and a.service_reg_no = b.service_reg_no
+		    ) a
+		    join spt_customer_info_profile b on a.customer_reg_no = b.customer_reg_no
+		    left join (
+		        select  b.app_id, 
+		                a.app_name,
+		                a.company_code_id   as subcompany_code_id,
+		                b.exposure_order    as subcompany_exposure_order
+		        from com_app_view a
+		        join com_app_info b on a.app_id = b.app_id
+		    ) app on a.app_id = app.app_id
+		    left join (
+		        select  b.api_id,
+		                a.api_name,
+		                b.company_code_id   as pubcompany_code_id,
+		                b.exposure_order    as pubcompany_exposure_order
+		        from com_api_view a
+		        join com_api_info b on a.api_id = b.api_id    
+		    ) api on a.api_id = api.api_id
+		) a
+		join com_company_profile as pub on a.pubcompany_code_id = pub.company_code_id and pub.delete_date is null
+		join com_company_profile as sub on a.subcompany_code_id = sub.company_code_id and sub.delete_date is null
+		join spt_customer_account_profile b 
+		on a.customer_reg_no = b.customer_reg_no 
+		and a.pubcompany_code_id = b.company_code_id 
+		and a.customer_realaccount_no = b.customer_realaccount_no
+		where 1=1
+		<isNotEqual property="excelType" compareValue="down">
+		
+		<!-- 구분 -->
+        <isNotEmpty property="searchKeyword">
+            <!-- 이름 -->
+            <isEqual property="searchCondition" compareValue="name" prepend="and">
+                (
+                    a.customer_name_kor like concat('%', #searchKeyword#, '%') or
+                    a.customer_name_eng like concat('%', #searchKeyword#, '%')
+                )
+            </isEqual>
+            <!-- id -->
+            <isEqual property="searchCondition" compareValue="id" prepend="and">
+                a.customer_id like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <!-- 이메일 -->
+            <isEqual property="searchCondition" compareValue="email" prepend="and">
+                dec_char_sel(a.customer_email,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id()) like concat('%', #searchKeyword#, '%')
+            </isEqual>
+            <!-- 전체 -->
+            <isEqual property="searchCondition" compareValue="all" prepend="and">
+                (
+                    a.customer_name_kor like concat('%', #searchKeyword#, '%') or
+                    a.customer_name_eng like concat('%', #searchKeyword#, '%') or
+                    a.customer_id like concat('%', #searchKeyword#, '%') or
+                    dec_char_sel(a.customer_email,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id()) like concat('%', #searchKeyword#, '%')
+                )
+            </isEqual>
+        </isNotEmpty>
+        
+        <!-- 계정상태 -->
+        <isNotEmpty property="searchCustomerRegStatus" prepend="and">
+            <isNotEqual property="searchCustomerRegStatusAllYn" compareValue="Y">
+                a.customer_reg_status
+                <iterate  property="searchCustomerRegStatus" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchCustomerRegStatus[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+		
+		<!-- 앱 개발자 -->
+        <isNotEmpty property="searchSubcompanyCodeId" prepend="and">
+            <isNotEqual property="searchSubcompanyCodeIdAllYn" compareValue="Y">
+                a.subcompany_code_id
+                <iterate  property="searchSubcompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchSubcompanyCodeId[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+        
+        <!-- 앱 이름 -->
+        <isNotEmpty property="searchAppId" prepend="and">
+            <isNotEqual property="searchAppIdAllYn" compareValue="Y">
+                a.app_id
+                <iterate  property="searchAppId" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchAppId[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+        
+        <!-- 서비스 제공자 -->
+        <isNotEmpty property="searchPubcompanyCodeId" prepend="and">
+            <isNotEqual property="searchPubcompanyCodeIdAllYn" compareValue="Y">
+                a.pubcompany_code_id
+                <iterate  property="searchPubcompanyCodeId" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchPubcompanyCodeId[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+        
+        <!-- 유효구분 -->
+        <isNotEmpty property="searchSvcAvailableYn" prepend="and">
+            <isNotEqual property="searchSvcAvailableYnAllYn" compareValue="Y">
+                a.svc_available_yn
+                <iterate  property="searchSvcAvailableYn" prepend="IN" open="(" close=")" conjunction=",">
+                    #searchSvcAvailableYn[]#
+                </iterate> 
+            </isNotEqual>
+        </isNotEmpty>
+                                    
+        <!-- 조회일 -->
+        <isNotEmpty property="searchDateType">
+            <!-- 등록일 -->
+            <isEqual property="searchDateType" compareValue="create" prepend="and">
+                ifnull(date_format(a.create_date, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '')
+            </isEqual>
+            <!-- 수정일 -->
+            <isEqual property="searchDateType" compareValue="update" prepend="and">
+                ifnull(date_format(a.update_date, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '')
+            </isEqual>
+            <!-- 삭제일 -->
+            <isEqual property="searchDateType" compareValue="delete" prepend="and">
+                ifnull(date_format(a.delete_date, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '')
+            </isEqual>
+        </isNotEmpty>
+        
+        </isNotEqual>
+    </sql>
+  	
+	<!--
+     * @Method Name        : apt.SptUserServiceDAO.selectSptUserServiceList
+     * @Method description : 서비스 연결 현황 목록 조회
+     * @param              : SptUserManageVO
+     * @return             : SptUserManageVO
+     * @throws             : Exception
+     -->
+    <select id="apt.SptUserServiceDAO.selectSptUserServiceList" parameterClass="SptUserServiceVO" resultClass="SptUserServiceVO">
+		select  a.customer_reg_no                                           as customerRegNo,
+		        a.service_reg_no                                            as serviceRegNo,
+		        a.account_reg_no                                            as accountRegNo,
+		        a.terms_reg_no                                              as termsRegNo,
+		        a.customer_id                                               as customerId,
+		        a.customer_name_kor                                         as customerNameKor,
+		        a.customer_name_eng                                         as customerNameEng,
+		        dec_char_sel(
+		            a.customer_email,
+		            10,
+		            'ARIA',
+		            'spt_customer_info_profile',
+		            'customer_email',
+		            user(),
+		            connection_id()
+		        )                                                           as customerEmail,
+		        a.customer_reg_status                                       as customerRegStatus,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.customer_reg_status           
+		        )                                                           as customerRegStatusName,
+		        a.app_id                                                    as appId,
+		        a.app_name                                                  as appName,
+		        a.subcompany_code_id                                        as subcompanyCodeId,
+		        sub.company_name_kor_alias                                  as subcompanyCodeName,
+		        a.api_id                                                    as apiId,
+		        a.api_name                                                  as apiName,
+		        a.pubcompany_code_id                                        as pubcompanyCodeId,
+		        pub.company_name_kor_alias                                  as pubcompanyCodeName,
+		        dec_char_sel(
+                    a.customer_realaccount_no,
+                    10,
+                    'ARIA',
+                    'spt_customer_service_account_profile',
+                    'customer_realaccount_no',
+                    user(),
+                    connection_id()
+                )                                                           as customerRealaccountNo,
+		        b.customer_vtaccount_no                                     as customerVtaccountNo,
+		        if(a.svc_available_yn = 'Y', '유효', '삭제')                   as svcAvailableYnName,
+		        ifnull(date_format(a.create_date, '%Y-%m-%d %H:%i'), '')    as createDate,
+		        ifnull(date_format(a.update_date, '%Y-%m-%d %H:%i'), '')    as updateDate,
+		        ifnull(date_format(a.delete_date, '%Y-%m-%d %H:%i'), '')    as deleteDate
+		<include refid="fromWhereAnd"/>
+		<include refid="CmmnFuncDAO.CmmnPaging"/>
+    </select>
+    
+    <!--
+     * @Method Name        : apt.SptUserServiceDAO.selectSptUserServiceListCnt
+     * @Method description : 서비스 연결 현황목록의 total cnt를 조회한다.
+     * @param              : SptUserServiceVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="apt.SptUserServiceDAO.selectSptUserServiceListCnt" parameterClass="SptUserServiceVO" resultClass="int">
+        select  count(*) as totalCount
+        <include refid="fromWhereAnd"/>
+    </select>
+    
+    <!--
+     * @Method Name        : apt.SptUserServiceDAO.selectSptUserServiceListExcel
+     * @Method description : 서비스 연결 현황 Excel 목록 조회
+     * @param              : SptUserServiceVO
+     * @return             : SptUserServiceVO
+     * @throws             : Exception
+     -->
+    <select id="apt.SptUserServiceDAO.selectSptUserServiceListExcel" parameterClass="SptUserServiceVO" resultClass="SptUserServiceVO">
+		select  a.customer_reg_no                                           as customerRegNo,
+		        a.service_reg_no                                            as serviceRegNo,
+		        a.terms_reg_no                                              as termsRegNo,
+		        a.customer_id                                               as customerId,
+		        a.customer_name_kor                                         as customerNameKor,
+		        a.customer_name_eng                                         as customerNameEng,
+		        dec_char_sel(
+		            a.customer_email,
+		            10,
+		            'ARIA',
+		            'spt_customer_info_profile',
+		            'customer_email',
+		            user(),
+		            connection_id()
+		        )                                                           as customerEmail,
+		        a.customer_reg_status                                       as customerRegStatus,
+		        (
+		            select code_name_kor
+		            from com_system_code
+		            where concat(system_grp_code, system_code) = a.customer_reg_status           
+		        )                                                           as customerRegStatusName,
+		        a.app_id                                                    as appId,
+		        a.app_name                                                  as appName,
+		        a.subcompany_code_id                                        as subcompanyCodeId,
+		        sub.company_name_kor_alias                                  as subcompanyCodeName,
+		        a.api_id                                                    as apiId,
+		        a.api_name                                                  as apiName,
+		        a.pubcompany_code_id                                        as pubcompanyCodeId,
+		        pub.company_name_kor_alias                                  as pubcompanyCodeName,
+		        dec_char_sel(
+                    a.customer_realaccount_no,
+                    10,
+                    'ARIA',
+                    'spt_customer_service_account_profile',
+                    'customer_realaccount_no',
+                    user(),
+                    connection_id()
+                )                                                           as customerRealaccountNo,
+		        b.customer_vtaccount_no                                     as customerVtaccountNo,
+		        if(a.svc_available_yn = 'Y', '유효', '삭제')                   as svcAvailableYnName,
+		        ifnull(date_format(a.create_date, '%Y-%m-%d %H:%i'), '')    as createDate,
+		        ifnull(date_format(a.update_date, '%Y-%m-%d %H:%i'), '')    as updateDate,
+		        ifnull(date_format(a.delete_date, '%Y-%m-%d %H:%i'), '')    as deleteDate
+        <include refid="fromWhereAnd"/>
+        order by $listOrder$
+    </select>
+
+
+    
+
+	<select id="spt.SptSvcApplDAO.selectCntSptCustomerServiceAccountProfile" parameterClass="SptSvcApplVO" resultClass="int">
+		
+		select count(customer_reg_no) as cnt from spt_customer_service_account_profile
+		where customer_reg_no = #customerRegNo#
+		and service_reg_no = #serviceRegNo#
+		and app_id = #appId#
+		and delete_date is null
+
+	</select>
+
+
+
+	<!-- * @Method Name : deleteSptCustomerServiceAccountProfile * @Method description 
+		: 가상계좌 서비스 연동 삭제 * @param : SptSvcApplVO * @return : int * @throws : Exception -->
+	<delete id="spt.SptSvcApplDAO.deleteSptCustomerServiceAccountProfile" parameterClass="SptSvcApplVO">
+		delete from spt_customer_service_account_profile
+		where
+		customer_reg_no = #customerRegNo#
+		and service_reg_no = #serviceRegNo#
+		and account_reg_no = #accountRegNo#
+	</delete>
+
+
+
+	<!-- * @Method Name : deleteSptCustomerServiceAccountProfileHist * @Method 
+		description : 가상계좌 서비스 연동 삭제 * @param : SptSvcApplVO * @return : int * @throws 
+		: Exception -->
+	<delete id="spt.SptSvcApplDAO.deleteSptCustomerServiceAccountProfileHist" parameterClass="SptSvcApplVO">
+
+		delete from spt_customer_service_account_profile_hist
+		where 
+		customer_reg_no = #customerRegNo#
+		and service_reg_no = #serviceRegNo#
+		and account_reg_no = #accountRegNo#
+
+	</delete>
+
+	<!-- * @Method Name : deleteSptCustomerServiceTermsProfile * @Method description 
+		: 가상계좌 서비스 연동 삭제 * @param : SptSvcApplVO * @return : int * @throws : Exception -->
+	<delete id="spt.SptSvcApplDAO.deleteSptCustomerServiceTermsProfile" parameterClass="SptSvcApplVO">
+
+		delete from spt_customer_service_terms_profile
+		where customer_reg_no = #customerRegNo#
+		and terms_reg_no = #termsRegNo#
+
+	</delete>
+
+	<!-- * @Method Name : deleteSptCustomerServiceTermsProfileHist * @Method 
+		description : 가상계좌 서비스 연동 삭제 * @param : SptSvcApplVO * @return : int * @throws 
+		: Exception -->
+	<delete id="spt.SptSvcApplDAO.deleteSptCustomerServiceTermsProfileHist" parameterClass="SptSvcApplVO">
+		delete from spt_customer_service_terms_profile_hist
+		where customer_reg_no = #customerRegNo#
+		and terms_reg_no = #termsRegNo#
+
+	</delete>
+
+	<!-- * @Method Name : deleteSptCustomerServiceTermsPubcompanyProfile * @Method 
+		description : 가상계좌 서비스 연동 삭제 * @param : SptSvcApplVO * @return : int * @throws 
+		: Exception -->
+	<delete id="spt.SptSvcApplDAO.deleteSptCustomerServiceTermsPubcompanyProfile" parameterClass="SptSvcApplVO">
+		delete from spt_customer_service_terms_pubcompany_profile
+		where customer_reg_no = #customerRegNo#
+		and terms_reg_no = #termsRegNo#
+	</delete>
+
+	<!-- * @Method Name : deleteSptCustomerServiceTermsPubcompanyProfileHist 
+		* @Method description : 가상계좌 서비스 연동 삭제 * @param : SptSvcApplVO * @return 
+		: int * @throws : Exception -->
+	<delete id="spt.SptSvcApplDAO.deleteSptCustomerServiceTermsPubcompanyProfileHist" parameterClass="SptSvcApplVO">
+		delete from spt_customer_service_terms_pubcompany_profile_hist
+		where customer_reg_no = #customerRegNo#
+		and terms_reg_no = #termsRegNo#
+	</delete>
+
+	<!-- * @Method Name : updateSptCustomerServiceProfile * @Method description 
+		: 가상계좌 서비스 연동 삭제 * @param : SptSvcApplVO * @return : int * @throws : Exception -->
+	<update id="spt.SptSvcApplDAO.deleteSptCustomerServiceProfile" parameterClass="SptSvcApplVO">
+
+		update spt_customer_service_profile set
+		terms_reg_no = '',
+		delete_date = sysdate()
+		where customer_reg_no = #customerRegNo#
+		and service_reg_no = #serviceRegNo#
+		
+	</update>
+	
+    
+    
+    
+</sqlMap>

@@ -1,0 +1,142 @@
+<!-- 
+ * (C) Copyright AhnLab, Inc.
+ *
+ * Any part of this source code can not be copied with
+ * any method without prior written permission from
+ * the author or authorized person.
+ *
+ * @version		$Revision: 15612 $
+ *
+ -->
+ 
+<!DOCTYPE HTML> <!-- HTML5 -->
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="expires" content="-1" /> 
+<meta http-equiv="pragma" content="no-cache" /> 
+<meta http-equiv="cache-control" content="no-cache" /> 
+<title>astx2 SDK</title>
+
+<script src="include.js"></script>
+
+<style>
+#content .filed { }
+#content .input { text-align:right; }
+
+#cmd li { height: 1.8em; }
+</style>
+
+</head>
+<body>
+
+<!-- overlay -->
+<div class="bgOverlay">&nbsp;</div>
+
+<p>AhnLab Safe Transaction SDK</p>
+
+<div>
+
+	<div id="content">
+	<form name="login" action="#">
+	<table>
+	<tr>	
+		<td class="filed">userid:</td> 
+		<td class="input"><input name="userid" id="userid" type="text" e2e_type="11" /></td>
+	</tr>
+	<tr>
+		<td class="filed">passwd:</td> 
+		<td class="input"><input name="passwd" id="passwd" type="password" autocomplete="off" e2e_type="11" /></td>
+	</tr>
+	</table>
+	</form>
+	</div>
+	
+</div>
+
+<div id="cmd">
+<ul>
+	<li><a href="#" onclick="getPageID(); return false;">[getPageID]</a></li>
+	<li><a href="#" onclick="getInputID(); return false;">[getInputID]</a></li>	
+	<li><a href="#" onclick="clearText(); return false;">[clearText]</a></li>	
+	<li>&nbsp;</li>		
+	<li><a href="#" onclick="doAddE2EObject(); return false;">[doAddE2EObject]</a></li>	
+	<li><a href="#" onclick="doSubE2EObject(); return false;">[doSubE2EObject]</a></li>
+</ul>
+</div>
+
+<script>
+window.onload = function() 
+{
+	checkInstallASTX2(
+		function onSuccess() {
+				
+			$ASTX2.initE2E(1856); // E2E init with customer code
+				
+		}
+	);
+}
+
+function getPageID()
+{
+	$_astxu.log('ASTX2.getE2EPageID(): pageid='+$ASTX2.getE2EPageID());
+}
+
+function getInputID()
+{
+	$_astxu.log('ASTX2.getE2EInputID(): userid='+$ASTX2.getE2EInputID( document.getElementById('userid') ));
+	$_astxu.log('ASTX2.getE2EInputID(): passwd='+$ASTX2.getE2EInputID( document.getElementById('passwd') ));
+}
+
+function clearText()
+{
+	$ASTX2.clearE2EText( document.getElementById('userid') );
+	$ASTX2.clearE2EText( document.getElementById('passwd') );
+}
+
+function doAddE2EObject()
+{
+	$_astxu.log('[doAddE2EObject]');
+	//$ASTX2.addE2EObject(document.getElementById('userid'));
+
+	var lists = document.getElementsByTagName("input");
+	for(var i=0; i<lists.length; i++) {
+		var obj = lists[i];
+		if(obj == null) continue;
+		
+		if(obj.form.name == 'login') {
+			
+			$ASTX2.addE2EObject(obj, 11);
+			
+		}
+	} // end of for
+	
+	$ASTX2.resetE2E();
+}
+
+function doSubE2EObject()
+{
+	$_astxu.log('[doSubE2EObject]');
+	//$ASTX2.subE2EObject(document.getElementById('userid'));
+	
+	var lists = document.getElementsByTagName("input");
+	for(var i=0; i<lists.length; i++) {
+		var obj = lists[i];
+		if(obj == null) continue;
+
+		if(obj.form.name == 'login') 
+		{
+				$ASTX2.subE2EObject(obj);
+		}
+	} // end of for
+	
+	$ASTX2.resetE2E();
+}
+
+var debuger = new myDebuger();
+debuger.write_output(document, true);
+
+</script>
+
+</body>
+</html>

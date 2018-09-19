@@ -1,0 +1,36 @@
+<ion-view  view-title="계좌 관리">
+	<ion-content class="bg_gray"> <!-- bg color -->
+		<div class="container">
+			<div class="top_info">
+				금융투자회사 <span>{{vm.compCnt}}</span> / 등록계좌 <span>{{vm.vtAccountCnt}}</span>
+				<a class="btn_plus" ng-click="vm.AccInfoAdd()" >가상계좌추가</a>
+			</div>
+			<div class="inner_cont">
+				<div class="acc_list">
+					<!-- 아코디언 메뉴 -->
+					<div class="accordian-menu" accordion>
+						<!-- loop -->
+						<div class="accordian-cont cont_wrap" ng-repeat="item in vm.resultAccountList" ng-if="vm.resultAccountList">
+							<a href="#none" class="btn_bar">{{item.companyNameKorAlias}}</a>
+							<div class="detail_cont">
+								<ul>
+									<li ng-repeat="item2 in item.accountResList" ng-click="vm.accoutDeatil(item2.customerVtaccountNo, item2.companyProfileRegNo)" >
+										<span class="lefat_area">{{item2.customerVtaccountAlias}}</span>
+										<div class="num_right">{{item2.customerVtaccountNo}}</div>
+										<input type="hidden" id="{{item2.customerVtaccountNo}}" name="{{item2.customerVtaccountNo}}">
+									</li>
+								</ul>
+							</div>
+						</div>
+						
+						<div class="inner_cont" ng-show="!vm.resultAccountList.length">
+							<div class="not_result">등록된 계좌가 없습니다.<br>가상계좌추가발급 버튼을 클릭하여 등록해주세요.</div> <!-- 결과없을때 -->
+						</div>
+						
+					</div>
+				</div>
+			</div>
+		</div>
+	</ion-content>
+
+</ion-view>

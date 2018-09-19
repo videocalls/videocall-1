@@ -1,0 +1,264 @@
+/* fonts */
+@font-face {
+	font-family:'NanumBarunGothic';
+		src:url('../../font/NanumBarunGothic.eot');
+		src:url('../../font/NanumBarunGothic.eot?#iefix') format('embedded-opentype'),
+			url('../../font/NanumBarunGothic.woff') format('woff'),
+			url('../../font/NanumBarunGothic.ttf') format('truetype'),
+			url('../../font/NanumBarunGothic.svg#NanumBarunGothic') format('svg');
+	font-weight:normal;
+	font-style:normal;
+}
+@font-face {
+	font-family:'NanumBarunGothicBold';
+		src:url('../../font/NanumBarunGothicBold.eot');
+		src:url('../../font/NanumBarunGothicBold.eot?#iefix') format('embedded-opentype'),
+			url('../../font/NanumBarunGothicBold.woff') format('woff'),
+			url('../../font/NanumBarunGothicBold.ttf') format('truetype'),
+			url('../../font/NanumBarunGothicBold.svg#NanumBarunGothicBold') format('svg');
+	font-weight:normal;
+	font-style:normal;
+}
+
+body {
+	background-color:#191919;
+}
+
+div.body {
+	width:500px;
+	margin:0 auto;
+	background-color:#fff;
+	overflow:hidden;
+}
+
+#HeaderWrap {
+	width:100%;
+	position:relative;
+}
+
+#HeaderWrap .Header {
+	height:48px;
+	background-color:#ef3733;
+	margin-right:20px;
+}
+
+#HeaderWrap .Header h2 {
+	position:absolute;
+	left:20px;
+	top:14px;
+	font-family:'NanumBarunGothic';
+	font-size:20px;
+	color:#fff;
+	font-weight:100;
+}
+
+#HeaderWrap h1 {
+	width:176px;
+	height:48px;
+	position:absolute;
+	right:0;
+	top:0;
+	background:url() no-repeat 0 0;
+	font-size:0px;
+	text-indent:-9999px;
+}
+
+#ConentsWrap  {
+	padding-bottom:40px;
+}
+
+#ConentsWrap .InfoBoxWrap {
+	margin:20px 20px 0;
+	background-color:#f7f7f7;
+	border:1px solid #dfdfdf;
+	padding:18px 20px 18px;
+}
+
+#ConentsWrap .InfoBoxWrap h3 {
+	font-size:12px;
+	font-weight:bold;
+	color:#202020;
+}
+
+#ConentsWrap .InfoBoxWrap h3 strong {
+	color:#ef3733;
+}
+
+#ConentsWrap .InfoList {
+	padding-top:12px;
+}
+
+#ConentsWrap .InfoText {
+	padding-top:12px;
+	color:#707070;
+	font-size:12px;
+	line-height:18px;
+	color:#707070;
+}
+
+#ConentsWrap .InfoList li:first-child {
+	margin-top:0;
+}
+
+#ConentsWrap .InfoList li {
+	margin-top:5px;
+	padding-left:12px;
+	background:url(../../_img/img_02/dot.gif) no-repeat left 5px;
+	font-size:12px;
+	line-height:18px;
+	color:#707070;
+}
+
+#ConentsWrap .InfoNewBroswerTab {
+	margin-top:14px;
+	height:17px;
+	padding-left:25px;
+	background:url(../../_img/img_02/browser_new_tab.gif) no-repeat left 0;
+	cursor:pointer;
+}
+
+#ConentsWrap .InfoNewBroswerTab a {
+	font-size:12px;
+	color:#ef3733;
+	text-decoration:underline;
+	display:block;
+}
+
+div#StepWrap .Step {
+	
+}
+
+div#StepWrap .Step li {
+	padding-top:60px;
+}
+
+div#StepWrap .Step li:first-child {
+	padding-top:40px;
+}
+
+div#StepWrap .Step li h5 {
+	padding:0 20px 9px;
+	font-size:14px;
+	font-family: 'Open Sans',sans-serif;
+	font-weight:600;
+	color:#ef3733;
+}
+
+div#StepWrap .Step li .Text {
+	padding:0 20px;
+	line-height:16px;
+}
+
+div#StepWrap .Step li .Text strong {
+	font-weight:bold;
+	color:#ef3733;
+}
+
+div#StepWrap .Step li .InfoGraphic {
+	padding-top:40px;
+	text-align:center;
+	margin:0 -30px;
+}
+
+div.InfoListHeader {
+	padding:0 30px;
+	margin-top:40px;
+	min-height:127px;
+	height:auto;
+	position:relative;
+}
+
+div.InfoListHeader.New 		{background:url(../../_img/img_02/img_header_finder.png) no-repeat center 0;}
+div.InfoListHeader.Setting 	{background:url(../../_img/img_02/img_header_setting.png) no-repeat center 0;}
+
+div.InfoListHeader h4 {
+	padding-top:18px;
+	font-size:22px;
+	color:#202020;
+    font-family:'NanumBarunGothicBold';
+    font-weight:normal;
+}
+
+div.InfoListHeader h4 strong {
+	font-size:22px;
+    font-family:'NanumBarunGothicBold';
+	color:#ef3733;
+    font-weight:normal;
+}
+
+div.InfoListHeader .UnderBar {
+	position:absolute;
+	bottom:-2px;
+	left:20px;
+	right:20px;
+	height:2px;
+	background:#aaa;
+	display:block;
+	font-size:0;
+	text-indent:-9999px;
+}
+
+div.InfoListHeader .InfoListHeaderText {
+	padding-top:14px;
+	font-size:12px;
+	color:#707070;
+	line-height:16px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

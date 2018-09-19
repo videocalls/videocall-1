@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 핀테크 오픈플랫폼 구축
+* @FileName : CmmnFunc_SQL.xml
+* @Comment  : 공통 기능을 제공하는 SQL XML
+* @author   : 신동진
+* @since    : 2016.05.04
+* @version  : 1.0
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2016.05.04   신동진        최초생성
+-->
+<sqlMap namespace="kr.co.koscom.oppf.cmm.service.impl.CmmFuncDAO">
+    
+    <typeAlias  alias="CmmFuncVO"  type="kr.co.koscom.oppf.cmm.service.CmmFuncVO"/>
+
+    <sql id="CmmnFuncDAO.CmmnPaging">
+		<isEmpty property="listOrder">
+		order by a.create_date desc
+		</isEmpty>
+		<isNotEmpty property="listOrder">
+		order by $listOrder$
+		</isNotEmpty>
+		
+		<isEqual property="excelYn" compareValue="N">
+			limit 
+			<isNotEmpty property="pageStart">#pageStart#</isNotEmpty>
+			<isEmpty property="pageStart">0</isEmpty>
+			<isNotEmpty property="pageRowsize">,#pageRowsize#</isNotEmpty>
+			<isEmpty property="pageRowsize">,10</isEmpty>
+		</isEqual>
+	</sql>    
+	
+    <sql id="CmmnFuncDAO.CmmnFixPaging">
+		<isEmpty property="listFixOrder">
+		order by create_time desc
+		</isEmpty>
+		<isNotEmpty property="listFixOrder">
+		order by $listFixOrder$
+		</isNotEmpty>
+		
+		<isEqual property="excelYn" compareValue="N">
+			limit 
+			<isNotEmpty property="pageStart">#pageStart#</isNotEmpty>
+			<isEmpty property="pageStart">0</isEmpty>
+			<isNotEmpty property="pageRowsize">,#pageRowsize#</isNotEmpty>
+			<isEmpty property="pageRowsize">,10</isEmpty>
+		</isEqual>
+	</sql>    
+	
+	<!--
+     * @Method Name        : CmmnFuncDAO.selectCmmnFuncCode
+     * @Method description : 공통코드 조회
+     * @param              : CmmFuncVO
+     * @return             : CmmFuncVO
+     * @throws             : Exception
+     -->
+    <select id="CmmnFuncDAO.selectCmmnFuncCode" parameterClass="CmmFuncVO" resultClass="CmmFuncVO">
+		select  system_grp_code,
+		        concat(system_grp_code, system_code) as system_code,
+		        code_name_kor,
+		        code_name_eng,
+		        vld_start_date,
+		        vld_expire_date,
+		        use_yn,
+		        code_seq,
+		        code_extend1 as codeExtend1,
+		        code_extend2 as codeExtend2,
+		        code_extend3 as codeExtend3,
+		        code_extend4 as codeExtend4,
+		        code_extend5 as codeExtend5,
+		        delete_date
+		from com_system_code
+		where use_yn = 'Y'
+		and DATE_FORMAT(now(), '%Y%m%d') between vld_start_date and vld_expire_date
+		and system_grp_code = #system_grp_code#
+		
+		<isNotEmpty property="code_name" prepend="AND">
+            (
+                code_name_kor = #code_name# or
+                code_name_eng = #code_name#
+            )
+        </isNotEmpty>
+        <isNotEmpty property="system_code" prepend="AND">
+            system_code = #system_code#
+        </isNotEmpty>
+        <isNotEmpty property="codeExtend1" prepend="AND">
+            code_extend1 = #codeExtend1#
+        </isNotEmpty>
+        <isNotEmpty property="codeExtend2" prepend="AND">
+            code_extend2 = #codeExtend2#
+        </isNotEmpty>
+        <isNotEmpty property="codeExtend3" prepend="AND">
+            code_extend3 = #codeExtend3#
+        </isNotEmpty>
+        <isNotEmpty property="codeExtend4" prepend="AND">
+            code_extend4 = #codeExtend4#
+        </isNotEmpty>
+        <isNotEmpty property="codeExtend5" prepend="AND">
+            code_extend5 = #codeExtend5#
+        </isNotEmpty>
+		
+		order by code_seq    
+    </select>
+    
+    <!--
+     * @Method Name        : CmmnFuncDAO.selectCompanyCodeList
+     * @Method description : 기업코드를 조회한다(com_company_profile)
+     * @param              : CmmFuncVO
+     * @return             : CmmFuncVO
+     * @throws             : Exception
+     -->
+    <select id="CmmnFuncDAO.selectCompanyCodeList" parameterClass="CmmFuncVO" resultClass="CmmFuncVO">
+		select  company_profile_reg_no  as companyProfileRegNo,
+		        company_service_type    as companyServiceType,
+		        company_code_id         as companyCodeId,
+		        company_name_kor        as companyNameKor,
+		        company_name_eng        as companyNameEng,
+		        company_name_kor_alias  as companyNameKorAlias,
+		        company_name_eng_alias  as companyNameEngAlias
+		from com_company_profile
+		where delete_date is null
+		and exposure_yn = 'Y'
+		<isNotEmpty property="searchCompanyServiceType">
+			and company_service_type in ( 'G002001' 
+			<isNotEmpty property="searchCompanyServiceType" prepend=",">
+			    #searchCompanyServiceType#
+			</isNotEmpty>
+			)
+		</isNotEmpty>
+		order by exposure_order, company_name_kor_alias asc    
+    </select>
+</sqlMap>

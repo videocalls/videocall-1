@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.spt.cmm.service.impl.SptLoginDAO">
+
+    <typeAlias alias="SptLoginVO" type="kr.co.koscom.oppf.spt.cmm.service.SptLoginVO"/>
+    <typeAlias alias="SptOauthLoginVO" type="kr.co.koscom.oppf.spt.cmm.service.SptOauthLoginVO"/>
+
+    <!--
+     * @Method Name        : spt.LoginDAO.selectLoginProfile
+     * @Method description : 로그인 정보를 조회한다.
+     * @param              : SptLoginVO
+     * @return             : SptLoginVO
+     * @throws             : Exception
+     -->
+    <select id="spt.LoginDAO.selectLoginProfile" parameterClass="SptLoginVO" resultClass="SptLoginVO">
+        select  customer_reg_no,                                                                    /* 회원 OP 등록 번호 */
+        customer_id,                                                                        /* 회원 ID */
+        customer_name_kor,                                                                  /* 회원명 한글 */
+        customer_name_eng,                                                                  /* 회원명 영문 */
+        if(
+        customer_password =
+        enc_char_ins(#customer_password#,10,'SHA','spt_customer_info_profile','customer_password',user(),connection_id()),
+        'Y', 'N') as customer_password_yn,                                                  /* 회원 패스워드 유효여부 */
+        customer_temp_password_yn,                                                          /* 임시비밀번호여부 */
+        customer_password_fail_cnt,                                                         /* 비밀번호 실패 카운트 */
+        /* 비밀번호 변경 예정일 이내 여부 */
+        if(DATE_FORMAT(now(), '%Y%m%d') >= customer_expire_password_date, 'Y', 'N') as customer_expire_password_yn,
+        /* 비밀번호 변경 최종 예정일 이내 여부 */
+        if(DATE_FORMAT(now(), '%Y%m%d') >= customer_final_password_date, 'Y', 'N') as customer_final_password_yn,
+        customer_email_auth_yn,                                                             /* 이메일 인증여부 */
+        customer_reg_status,                                                                /* 회원가입 상태 */
+        if(ifnull(delete_date, 'N') = 'N', 'N', 'Y') as delete_yn,                          /* 탈퇴여부 */
+        customer_step,                                                                      /* 회원가입스텝 */
+        customer_join_type as customerJoinType,                                             /* 회원 가입 경로 */
+        integration_account_yn                                                              /* 통합계좌메뉴 사용여부 */
+        from spt_customer_info_profile
+        where customer_id = #customer_id#
+        order by customer_reg_no desc /* 최근의 탈퇴회원이나 최근에 가입 및 재가입한 회원 */
+        limit 0,1;
+    </select>
+
+    <!--
+     * @Method Name        : spt.LoginDAO.updateLoginFailCnt
+     * @Method description : 로그인 실패 카운트를 update한다.
+     * @param              : SptLoginVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="spt.LoginDAO.updateLoginFailCnt" parameterClass="SptLoginVO">
+        update spt_customer_info_profile set
+        customer_password_fail_cnt = if(#customer_password_fail_type# = 'Y', customer_password_fail_cnt + 1, 0),
+        <isNotEqual property="customer_password_fail_type" compareValue="Y">
+            customer_otp_fail_cnt = 0, /* OTP 인증 실패횟수 */
+        </isNotEqual>
+        update_date = now(),
+        update_id = #customer_reg_no#
+        where customer_reg_no = #customer_reg_no#
+    </update>
+
+    <!--
+     * @Method Name        : spt.LoginDAO.insertLoginHist
+     * @Method description : 로그인 hist를 insert한다.
+     * @param              : SptLoginVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="spt.LoginDAO.insertLoginHist" parameterClass="SptLoginVO">
+        insert into spt_customer_info_profile_hist(
+			customer_reg_no,
+			customer_seq,
+			customer_id,
+			customer_password,
+			customer_temp_password_yn,
+			customer_chg_password_date,
+			customer_expire_password_date,
+			customer_final_password_date,
+			customer_password_fail_cnt,
+			customer_otp_fail_cnt,
+			customer_reg_status,
+			customer_step,
+			customer_name_kor,
+			customer_name_eng,
+			customer_phone,
+			customer_email,
+			customer_email_auth_yn,
+			customer_email_reg_date,
+			customer_birth_day,
+			customer_sex,
+			customer_email_receive_yn,
+			customer_email_receive_date,
+			customer_reg_date,
+			delete_date,
+			create_date,
+			create_id
+        )
+        select  customer_reg_no,
+                ifnull((
+                    select ifnull(max(cast(customer_seq as SIGNED)), 0) + 1
+                    from spt_customer_info_profile_hist
+                    where customer_reg_no = a.customer_reg_no
+                ), 1),
+	            customer_id,
+	            customer_password,
+	            customer_temp_password_yn,
+	            customer_chg_password_date,
+	            customer_expire_password_date,
+	            customer_final_password_date,
+	            customer_password_fail_cnt,
+	            customer_otp_fail_cnt,
+	            customer_reg_status,
+	            customer_step,
+	            customer_name_kor,
+	            customer_name_eng,
+	            customer_phone,
+	            customer_email,
+	            customer_email_auth_yn,
+	            customer_email_reg_date,
+	            customer_birth_day,
+	            customer_sex,
+	            customer_email_receive_yn,
+	            customer_email_receive_date,
+	            customer_reg_date,
+	            delete_date,
+                update_date,
+                update_id
+        from spt_customer_info_profile a        
+        where customer_reg_no = #customer_reg_no#
+    </insert>
+    
+    <!--
+     * @Method Name        : spt.LoginDAO.selectIdFind
+     * @Method description : 아이디 찾기
+     * @param              : SptLoginVO
+     * @return             : SptLoginVO
+     * @throws             : Exception
+     -->
+    <select id="spt.LoginDAO.selectIdFind" parameterClass="SptLoginVO" resultClass="SptLoginVO">
+		select concat(substr(customer_id, 1, length(customer_id)-3), '***') as customer_id
+		from spt_customer_info_profile
+		where (
+		    customer_name_kor = #searchName# or
+		    customer_name_eng = #searchName#
+		)
+		and customer_email = enc_char_ins(#searchEmail#,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id())
+		order by customer_reg_no desc /* 최근의 탈퇴회원이나 최근에 가입 및 재가입한 회원 */
+		limit 0,1
+    </select>
+    
+    <!--
+     * @Method Name        : spt.LoginDAO.selectPwFind
+     * @Method description : 비밀번호 찾기
+     * @param              : SptLoginVO
+     * @return             : SptLoginVO
+     * @throws             : Exception
+     -->
+    <select id="spt.LoginDAO.selectPwFind" parameterClass="SptLoginVO" resultClass="SptLoginVO">
+        select  customer_reg_no,
+                dec_char_sel(customer_email,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id()) as customer_email
+        from spt_customer_info_profile
+        where (
+            customer_name_kor = #searchName# or
+            customer_name_eng = #searchName#
+        )
+        and customer_id = #searchId#
+        and customer_email = enc_char_ins(#searchEmail#,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id())
+        order by customer_reg_no desc /* 최근의 탈퇴회원이나 최근에 가입 및 재가입한 회원 */
+        limit 0,1
+    </select>
+    
+    <!--
+     * @Method Name        : spt.LoginDAO.updateTmpPassword
+     * @Method description : 임시비밀번호 발급
+     * @param              : SptLoginVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="spt.LoginDAO.updateTmpPassword" parameterClass="SptLoginVO">
+		update spt_customer_info_profile set
+		    customer_password = enc_char_ins(#customer_password#,10,'SHA','spt_customer_info_profile','customer_password',user(),connection_id()),
+		    customer_temp_password_yn = 'Y',
+		    customer_chg_password_date = sysdate(),
+		    customer_expire_password_date = date_format(date_add(sysdate(), interval #customer_expire_password_date# month), '%Y%m%d'),
+		    customer_final_password_date = date_format(date_add(sysdate(), interval #customer_final_password_date# month), '%Y%m%d'),
+		    customer_password_fail_cnt = 0,
+		    customer_otp_fail_cnt = 0,
+		    customer_reg_status = 'G005002',
+		    update_date = sysdate(),
+		    update_id = #customer_reg_no#
+		where customer_reg_no = #customer_reg_no#
+    </update>
+    
+    <!--
+     * @Method Name        : spt.LoginDAO.updateLoginFailCntHalt
+     * @Method description : 로그인 실패 카운트를 update하고 회원상태를 활성에서 정지상태로 update합니다.
+     * @param              : SptLoginVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="spt.LoginDAO.updateLoginFailCntHalt" parameterClass="SptLoginVO">
+        update spt_customer_info_profile set
+        customer_password_fail_cnt = if(#customer_password_fail_type# = 'Y', customer_password_fail_cnt + 1, 0),
+        <isNotEqual property="customer_password_fail_type" compareValue="Y">
+            customer_otp_fail_cnt = 0, /* OTP 인증 실패횟수 */
+        </isNotEqual>
+        customer_reg_status = #customer_reg_status#,
+        update_date = now(),
+        update_id = #customer_reg_no#
+        where customer_reg_no = #customer_reg_no#
+    </update>
+
+    <!--
+     * @Method Name        : spt.LoginDAO.selectOtpCheck
+     * @Method description : OTP 사용여부 확인
+     * @param              : SptLoginVO
+     * @return             : SptLoginVO
+     * @throws             : Exception
+     -->
+    <select id="spt.LoginDAO.selectOtpCheck" parameterClass="SptLoginVO" resultClass="SptLoginVO">
+        select  a.customer_reg_no                                                          as customerRegNo,
+			     a.customer_id                                                              as customer_id,
+			     if(ifnull(otp.customer_otp_id, 'N') = 'N', 'N', 'Y')                       as customerOtpYn
+        from spt_customer_info_profile a
+	    left join (
+            select  sub_a.customer_reg_no,
+                    sub_a.customer_otp_id
+            from spt_customer_otp_profile sub_a ,
+                 spt_customer_info_profile sub_b
+            where customer_otp_status not in('G019003') /*폐기 아님*/
+             and sub_b.customer_id = #customer_id#
+             and sub_a.customer_reg_no = sub_b.customer_reg_no
+        ) as otp on a.customer_reg_no = otp.customer_reg_no
+	    where 1=1
+	    and a.customer_id = #customer_id#
+        limit 0,1
+    </select>
+
+    <!--
+     * @Method Name        : spt.LoginDAO.insertOauthTermsProfile
+     * @Method description : Oauth 로그인 등록 이력.
+     * @param              : SptOauthLoginVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="spt.LoginDAO.insertOauthTermsProfile" parameterClass="SptOauthLoginVO">
+        <selectKey keyProperty="provider_seq" resultClass="java.lang.String">
+            select  concat(date_format(sysdate(),'%Y%m%d'),
+            lpad((
+            select ifnull( max(cast(right(provider_seq,4) as signed)), 0)+1
+            from spt_customer_provider_terms_profile
+            where left(provider_seq, 8) = date_format(sysdate(),'%Y%m%d')
+            and customer_reg_no =  #customer_reg_no#
+            and client_id =  #clientId#
+            ), 4, '0')) as provider_seq
+        </selectKey>
+
+        insert into spt_customer_provider_terms_profile(
+        customer_reg_no,
+        client_id,
+        provider_seq,
+        session_id,
+        customer_terms_auth_yn,
+        customer_terms_auth_date,
+        create_date,
+        create_id,
+        update_date,
+        update_id
+        )
+        VALUES
+        (
+        #customer_reg_no#,
+        #clientId#,
+        #provider_seq#,
+        #sessionID#,
+        'Y',
+        sysdate(),
+        sysdate(),
+        #customer_reg_no#,
+        sysdate(),
+        #customer_reg_no#
+        )
+    </insert>
+
+    <!--
+     * @Method Name        : spt.LoginDAO.insertOauthScopeProfile
+     * @Method description : Oauth 로그인 등록 스코프 이력.
+     * @param              : SptOauthLoginVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="spt.LoginDAO.insertOauthScopeProfile" parameterClass="SptOauthLoginVO">
+        insert into spt_customer_provider_scope_profile(
+        customer_reg_no,
+        client_id,
+        provider_seq,
+        scope_code,
+        scope_use_yn,
+        create_date,
+        create_id,
+        update_date,
+        update_id
+        )
+        VALUES
+        (
+        #customer_reg_no#,
+        #clientId#,
+        #provider_seq#,
+        #scope#,
+        'Y',
+        sysdate(),
+        #customer_reg_no#,
+        sysdate(),
+        #customer_reg_no#
+        )
+    </insert>
+
+    <!--
+     * @Method Name        : spt.LoginDAO.updateCustomerJoinType
+     * @Method description : 가입경로 update한다.
+     * @param              : SptLoginVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="spt.LoginDAO.updateCustomerJoinType" parameterClass="SptLoginVO">
+        update spt_customer_info_profile set
+        customer_join_type = #customerJoinType#,
+        update_date = now(),
+        update_id = #customer_reg_no#
+        where customer_reg_no = #customer_reg_no#
+    </update>
+</sqlMap>

@@ -1,0 +1,36 @@
+<ion-view view-title="">
+	<ion-content>
+		<div class="container">
+			<div class="vi_area acc_stage">
+				<ul>
+					<li class="stage_01 active">금융투자회사 선택</li>
+					<li class="stage_02 ">계좌정보 입력</li>
+				</ul>
+			</div>
+			<div class="inner_cont type2">
+				<h2 class="title_h2">금융투자회사 선택</h2>
+				<ul class="biz_cho"> <!-- 금융투자회사 선택 3쌍씩 맞춰주세요 -->
+					<!-- loop -->
+					<li class="active"><div><a href="no">NH투자</a></div></li> <!-- add class : active 선택시 -->
+					<li><div><a href="no">NH투자</a></div></li>
+					<li><div><a href="no">NH투자</a></div></li>
+					<!-- loop -->
+					<li><div><a href="no">SK</a></div></li>
+					<li><div><a href="no">메리츠투자증권</a></div></li>
+					<li><div><a href="no">신한투자증권</a></div></li>
+
+					<li><div><a href="no">SK</a></div></li>
+					<li><div></div></li>
+					<li><div></div></li>
+				</ul>
+			</div>
+		</div>
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<div class="button_area btn_bottom_area">
+			<a href="#go" class="btn_middle btn_black_org">취소</a>
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+</ion-view>

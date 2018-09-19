@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>개인 | koscom OpenAPI Platform </title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="stylesheet" href="../../../css/spt/import.css">
+	<!-- IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	  <script src="../../../js/cmm/html5shiv.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="../../../js/cmm/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../../../js/spt/common_pub.js"></script>
+
+</head>
+
+<body>
+
+<div class="wrap">
+
+	<!-- header -->
+	<header class="header">
+		<div class="header_area">
+			<div class="skip_navi">
+				<a href="#gnb">메뉴 바로가기</a>
+				<a href="#content">본문 바로가기</a>		
+			</div>
+
+			<ol class="util">
+				<li class="menu"><a href="#none">로그인</a></li>
+				<li class="menu"><a href="#none">회원가입</a></li>
+				<li class="site on"><a href="#none">개인</a></li>
+				<li class="site"><a href="#none">기업/금투사</a></li>
+			</ol>
+
+			<nav id="gnb">
+				<h1 class="logo"><a href="#none"><img src="../../../images/spt/common/logo.png" alt="Koscom OpenAPI Platform"></a></h1>
+
+				<div class="gnb_menu">
+					<ul>
+						<li><a href="#none">금융투자 핀테크 포털</a></li>
+						<li><a href="#none">핀테크 서비스</a></li>
+						<li><a href="#none">서비스 신청</a></li>
+						<li><a href="#none">서비스지원</a></li>
+					</ul>
+				</div>
+			</nav>
+		</div>
+	</header>
+	<!-- // header -->
+
+	<!-- section -->
+	<section>
+		<!-- location -->
+		<div class="location">
+			<ul>
+				<li class="home"><a href="#none">홈</a></li>
+				<li class="on">로그인</li>
+			</ul>
+		</div>
+		<!-- // location -->
+
+		<div class="container">
+			<!-- lnb -->
+			<article class="lnb">				
+				<h2>레이어팝업</h2>
+				<ul>
+					<li><a href="#none" class="on">레이어팝업 가이드</a></li>
+				</ul>
+			</article>
+			<!-- // lnb -->
+
+			<!-- content -->
+			<article id="content">
+
+				<div class="sub_title">
+					<h3>레이어팝업 가이드</h3>									
+				</div>
+
+				<!-- con -->
+				<div class="con">
+					
+					<a href="#layer02" class="btn_type1" id="layer_open">레이어팝업 열기 (비밀번호 변경)</a>
+					<a href="#layer01" class="btn_type1" id="layer_open">레이어팝업 열기 (3개월 이후 비밀번호 변경)</a>
+					
+				</div>
+				<!-- // con -->
+
+			</article>
+			<!-- // content -->
+		</div>
+	</section>
+	<!-- section -->
+
+	<!-- layer_popup -->
+	<div class="layer_popup">	
+
+		<div class="dimm"></div>
+
+		<!-- #layer01 -->
+		<div class="layer_box" id="layer01" style="width:620px;">
+			<div class="layer_tit">비밀번호 변경</div>
+
+			<div class="layer_con">
+
+				<div class="pass_change_area">
+					<div class="tit_info">
+						고객님께서는 <span class="point01">3개월</span> 동안 비밀번호를 변경하지 않으셨습니다.
+					</div>
+					<p class="txt_info">고객님의 소중한 개인정보 보호를 위해서 주기적으로 비밀번호를 변경하는 것을 권장합니다.<br>새로운 비밀번호를 입력하시고 [<strong>비밀번호 변경</strong>] 버튼을 클릭해 주세요.</p>
+					
+					<div class="password_box">
+						<ul>
+							<li><label for="old_pw">현재 비밀번호</label><input type="password" id="old_pw" class="input_txt01" maxlength="12"></li>
+							<li>
+								<label for="new_pw01">새 비밀번호</label><input type="password" id="new_pw01" class="input_txt01 type2" maxlength="12">
+								<div class="info_msg">
+									<ul class="list_style_01">
+										<li>8~15자의 영문 대/소문자, 숫자,<br>특수문자 중 2개 이상의 조합</li>
+									</ul>
+								</div>
+							</li>
+							<li><label for="new_pw02">새 비밀번호 확인</label><input type="password" id="new_pw02" class="input_txt01 type2" maxlength="12"></li>
+						</ul>
+					</div>
+
+					<div class="btn_area">
+						<a href="#none" class="btn_type5 type2">다음에 변경</a>
+						<a href="#none" class="btn_type5">비밀번호 변경</a>
+					</div>	
+					
+					<div class="info_box type2">
+						<div class="tit">
+							<p class="icon_tip">안전한 비밀번호 변경</p>
+						</div>
+						<div class="txt">
+							<ul class="list_type01">
+								<li>영문/숫자/기호 등의 조합으로 비밀번호를 구성해 주세요.</li>
+								<li>연속숫자, 연속문자, 동일숫자 또는 이름은 비밀번호로 사용할 수 없습니다.</li>
+								<li>쉽게 유추해 낼 수 있는 아이디/생일/핸드폰번호 등 개인정보와 관련된 문자, 숫자는 사용하지 않는 것이 좋습니다.</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+
+			<a href="#none" class="layer_close">레이어팝업 닫기</a>
+		</div>
+
+		<!-- #layer02 -->
+		<div class="layer_box" id="layer02" style="width:620px;">
+			<div class="layer_tit">비밀번호 변경</div>
+
+			<div class="layer_con">
+
+				<div class="pass_change_area">
+					
+					<div class="password_box">
+						<ul>
+							<li><label for="old_pw">현재 비밀번호</label><input type="password" id="old_pw" class="input_txt01" maxlength="12"></li>
+							<li>
+								<label for="new_pw01">새 비밀번호</label><input type="password" id="new_pw01" class="input_txt01 type2" maxlength="12">
+								<div class="info_msg">
+									<ul class="list_style_01">
+										<li>8~15자의 영문 대/소문자, 숫자,<br>특수문자 중 2개 이상의 조합</li>
+									</ul>
+								</div>
+							</li>
+							<li><label for="new_pw02">새 비밀번호 확인</label><input type="password" id="new_pw02" class="input_txt01 type2" maxlength="12"></li>
+						</ul>
+					</div>
+
+					<div class="btn_area">
+						<a href="#none" class="btn_type5 type2">다음에 변경</a>
+						<a href="#none" class="btn_type5">비밀번호 변경</a>
+					</div>	
+					
+					<div class="info_box type2">
+						<div class="tit">
+							<p class="icon_tip">안전한 비밀번호 변경</p>
+						</div>
+						<div class="txt">
+							<ul class="list_type01">
+								<li>영문/숫자/기호 등의 조합으로 비밀번호를 구성해 주세요.</li>
+								<li>연속숫자, 연속문자, 동일숫자 또는 이름은 비밀번호로 사용할 수 없습니다.</li>
+								<li>쉽게 유추해 낼 수 있는 아이디/생일/핸드폰번호 등 개인정보와 관련된 문자, 숫자는 사용하지 않는 것이 좋습니다.</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+
+			<a href="#none" class="layer_close">레이어팝업 닫기</a>
+		</div>
+	</div>
+	<!-- // layer_popup -->
+
+	<!-- footer -->
+	<footer class="footer">
+		<div class="footer_area">
+			<ul class="link">
+				<li><a href="#none">서비스이용약관</a></li>
+				<li class="point"><a href="#none">개인정보취급방침</a></li>
+			</ul>
+			<address>
+				서울시 영등포구 여의나루로 76 ㈜코스콤  대표전화 : 02-767-7114 <span>이메일 : master@koscom.openplatform.com</span>
+				<span class="copy">COPYRIGHT 2016. KOSCOM CORP. ALL RIGHTS RESERVED.</span>
+			</address>
+
+			<div class="family_site">
+				<!-- selBox2 -->
+				<span class="sel_box2">
+					<select style="min-width:150px">
+						<option>코스콤 사이트</option>
+					</select>
+				</span>
+				<!-- selBox2 -->
+				<span class="sel_box2">
+					<select style="min-width:170px">
+						<option>관련 사이트</option>
+					</select>
+				</span>				
+			</div>
+
+		</div>
+	</footer>
+	<!-- // footer -->
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>기업 | koscom OpenAPI Platform </title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="stylesheet" href="../../../css/cpt/import.css">
+	<!-- IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	  <script src="../../../js/cmm/html5shiv.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="../../../js/cmm/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../../../js/cmm/jquery-ui.js"></script>
+	<script type="text/javascript" src="../../../js/cpt/common_pub.js"></script>
+	<script>
+	$(function() {
+		// 달력
+	    $("#datepicker1, #datepicker2").datepicker({
+	      showOn: "button",
+	      buttonImage: "../../../images/cpt/common/calendar.png",
+	      buttonImageOnly: true,
+	      buttonText: "달력보기"
+	    });
+	});
+	</script>
+</head>
+
+<body>
+
+<div class="wrap">
+
+	<!-- header -->
+	<header class="header">
+		<div class="header_area">
+			<div class="skip_navi">
+				<a href="#gnb">메뉴 바로가기</a>
+				<a href="#content">본문 바로가기</a>		
+			</div>
+
+			<ol class="util">
+				<li class="menu"><a href="#none">로그인</a></li>
+				<li class="menu"><a href="#none">마이페이지</a></li>
+				<li class="site"><a href="#none">개인</a></li>
+				<li class="site on"><a href="#none">기업/금투사</a></li>
+				<li class="site"><a href="#none">핀테크 테스트베드</a></li>
+			</ol>
+
+			<nav id="gnb">
+				<h1 class="logo"><a href="#none"><img src="../../../images/cpt/common/logo.png" alt="Koscom OpenAPI Platform"></a></h1>
+
+				<div class="gnb_menu">					
+					<ul>
+						<li><a href="#none">오픈플랫폼 </a></li>
+						<li><a href="#none">핀테크 서비스</a></li>
+						<li><a href="#none">서비스 소개</a></li>
+						<li><a href="#none">서비스 지원</a></li>
+					</ul>					
+				</div>
+			</nav>
+		</div>
+	</header>
+	<!-- // header -->
+
+	<!-- section -->
+	<section>
+		<!-- location -->
+		<div class="location">
+			<ul>
+				<li class="home"><a href="#none">홈</a></li>
+				<li><a href="#none">마이 페이지</a></li>
+				<li class="on">동의서 조회</li>
+			</ul>
+		</div>
+		<!-- // location -->
+
+		<div class="container">
+			<!-- lnb -->
+			<article class="lnb">				
+				<h2>마이 페이지</h2>
+				<ul>
+					<li><a href="#none">API 관리</a></li>
+					<li><a href="#none">통계 조회</a></li>
+					<li><a href="#none" class="on">동의서 조회</a></li>
+					<li><a href="#none">회원정보</a></li>
+				</ul>
+			</article>
+			<!-- // lnb -->
+
+			<!-- content -->
+			<article id="content">
+
+				<div class="sub_title">
+					<h3>동의서 조회</h3>					
+				</div>
+
+				<!-- con -->
+				<div class="con">
+
+					<div class="search_area">						
+						<div class="search_box right">
+							<span class="sel_box1">
+								<select style="min-width:;" title="검색조건 선택">
+									<option>전체</option>
+									<option>API명</option>
+									<option>내용</option>
+								</select>
+							</span>
+							<input type="text" style="min-width:170px;" title="검색어 입력">
+							<a href="#" class="btn_search">검색</a>
+						</div>
+					</div>
+
+					<!-- tbtype_list2 type3 -->
+					<table class="tbtype_list2 type3">
+						<caption>번호, 핀테크 기업, App.명, 회원명, 동의서명, 동의일, 유효일 정보리스트</caption>
+						<colgroup>
+							<col style="width:5%;">
+							<col style="width:13%;">							
+							<col style="width:14%;">
+							<col style="width:9%;">
+							<col style="">							
+							<col style="width:13%;">
+							<col style="width:14%;">
+						</colgroup>
+						<thead>
+							<tr>
+								<th scope="col">번호</th>
+								<th scope="col">핀테크 기업</th>
+								<th scope="col">App. 명</th>
+								<th scope="col">회원명</th>
+								<th scope="col">동의서명</th>
+								<th scope="col">동의일</th>
+								<th scope="col">유효일</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>10</td>
+								<td>네이버</td>
+								<td>네이버 증권<br>증권스토리</td>
+								<td>홍길동</td>
+								<td><a href="#layer01" id="layer_open">네이버_홍길동_동의서_20160705</a></td>
+								<td>2016.05.25</td>
+								<td>2016.05.24 ~ 2017.05.25</td>
+							</tr>
+							<tr>
+								<td>9</td>
+								<td>다음 카카오</td>
+								<td>증권스토리<br>증권통<br>주식차트</td>
+								<td>홍길동</td>
+								<td><a href="#layer01" id="layer_open">다음카카오_홍길동_동의서_20160705</a></td>
+								<td>2016.05.25</td>
+								<td>2016.05.24 ~ 2017.05.25</td>
+							</tr>
+							<tr>
+								<td>8</td>
+								<td>아이디어빈스</td>
+								<td>카카오 증권</td>
+								<td>홍길동</td>
+								<td><a href="#layer01" id="layer_open">다음카카오_홍길동_동의서_20160705</a></td>
+								<td>2016.05.25</td>
+								<td>2016.05.24 ~ 2017.05.25</td>
+							</tr>
+							<tr>
+								<td>7</td>
+								<td>아이디어빈스</td>
+								<td>카카오 증권</td>
+								<td>홍길동</td>
+								<td><a href="#layer01" id="layer_open">다음카카오_홍길동_동의서_20160705</a></td>
+								<td>2016.05.25</td>
+								<td>2016.05.24 ~ 2017.05.25</td>
+							</tr>
+							<tr>
+								<td>6</td>
+								<td>아이디어빈스</td>
+								<td>카카오 증권</td>
+								<td>홍길동</td>
+								<td><a href="#layer01" id="layer_open">다음카카오_홍길동_동의서_20160705</a></td>
+								<td>2016.05.25</td>
+								<td>2016.05.24 ~ 2017.05.25</td>
+							</tr>
+							<tr>
+								<td>5</td>
+								<td>아이디어빈스</td>
+								<td>카카오 증권</td>
+								<td>홍길동</td>
+								<td><a href="#layer01" id="layer_open">다음카카오_홍길동_동의서_20160705</a></td>
+								<td>2016.05.25</td>
+								<td>2016.05.24 ~ 2017.05.25</td>
+							</tr>
+							<tr>
+								<td>4</td>
+								<td>아이디어빈스</td>
+								<td>카카오 증권</td>
+								<td>홍길동</td>
+								<td><a href="#layer01" id="layer_open">다음카카오_홍길동_동의서_20160705</a></td>
+								<td>2016.05.25</td>
+								<td>2016.05.24 ~ 2017.05.25</td>
+							</tr>
+							<tr>
+								<td>3</td>
+								<td>아이디어빈스</td>
+								<td>카카오 증권</td>
+								<td>홍길동</td>
+								<td><a href="#layer01" id="layer_open">다음카카오_홍길동_동의서_20160705</a></td>
+								<td>2016.05.25</td>
+								<td>2016.05.24 ~ 2017.05.25</td>
+							</tr>
+							<tr>
+								<td>2</td>
+								<td>아이디어빈스</td>
+								<td>카카오 증권</td>
+								<td>홍길동</td>
+								<td><a href="#layer01" id="layer_open">다음카카오_홍길동_동의서_20160705</a></td>
+								<td>2016.05.25</td>
+								<td>2016.05.24 ~ 2017.05.25</td>
+							</tr>
+							<tr>
+								<td>1</td>
+								<td>아이디어빈스</td>
+								<td>카카오 증권</td>
+								<td>홍길동</td>
+								<td><a href="#layer01" id="layer_open">다음카카오_홍길동_동의서_20160705</a></td>
+								<td>2016.05.25</td>
+								<td>2016.05.24 ~ 2017.05.25</td>
+							</tr>
+						</tbody>
+					</table>
+					<!-- // tbtype_list2 type3 -->
+
+					<!-- pagination -->
+					<div class="pagination">
+						<a href="#" class="page first"></a>
+						<a href="#" class="page prev"></a>
+						<a href="#" class="on">1</a>
+						<a href="#">2</a>
+						<a href="#">3</a>
+						<a href="#">4</a>
+						<a href="#">5</a>
+						<a href="#">6</a>
+						<a href="#">7</a>
+						<a href="#">8</a>
+						<a href="#">9</a>
+						<a href="#">10</a>
+						<a href="#" class="page next"></a>
+						<a href="#" class="page last"></a>
+					</div>
+					<!-- // pagination -->
+
+				</div>
+				<!-- // con -->
+
+			</article>
+			<!-- // content -->
+		</div>
+	</section>
+	<!-- section -->
+
+	<!-- layer_popup -->
+	<div class="layer_popup">	
+
+		<div class="dimm"></div>
+
+		<!-- #layer01 -->
+		<div class="layer_box" id="layer01" style="width:600px;">
+			<div class="layer_tit">약관동의</div>
+
+			<div class="layer_con">
+				
+				<!-- banking_agree_area -->
+				<div class="banking_agree_area">
+					<p class="title_pop">금융거래 정보 제공동의서</p>
+					
+					<div class="agree_box">
+						<ol>
+							<li>1. 정보를 제공받을 기관명 : <span class="point04">위버플 (F7028)</span></li>
+							<li>2. 정보제공의 범위와 사용목적
+								<p>○ 정보제공 범위 : <span class="point04">증권거래내역에 관한 자료</span></p>
+								<p>○ 사용목적</p>
+								<ul class="list_type02">
+									<li>금융실명거래 및 비밀보장에 관한 법률시행령 제8조 제1항에 의거 정보제공 동의자의 <span class="point04">자본시장 핀테크 서비스에 필요한 증권거래내역 제공</span></li>
+								</ul>
+							</li>
+							<li>3. 유효기간 : <span class="point04">2016</span>년 <span class="point04">5</span>월 <span class="point04">3</span>일 ~ <span class="point04">2021</span>년 <span class="point04">5</span>월 <span class="point04">2</span>일 <span class="point04">(5년간)</span></li>
+							<li>4. 금융거래 정보 제공 동의자 인적 사항
+								<table class="table">
+									<caption>성명, 이메일, 생년월일 정보</caption>
+									<colgroup>
+										<col style="width:15%;">
+										<col style="width:35%;">
+										<col style="width:15%;">
+										<col style="width:35%;">
+									</colgroup>
+									<tbody>
+									<tr>
+										<th scope="row">성명</th>
+										<td>홍길동</td>
+										<th scope="row">이메일</th>
+										<td>hong@gildong.com</td>
+									</tr>
+									<tr>
+										<th scope="row">생년월일</th>
+										<td colspan="3">1985년 8월 25일</td>
+									</tr>
+									</tbody>
+								</table>
+							</li>
+							<li>5. 정보제공 금융기관명
+								<p>○ <span class="point04">삼성증권</span></p>
+								<p>○ <span class="point04">대신증권</span></p>
+								<p>○ <span class="point04">키움증권</span></p>
+							</li>
+						</ol>
+						<div class="bottom">
+							「금융실명거래 및 비밀보장에 관한 법률 시행령」 제8조에 따라 본인의 금융거래에 대한 정보를 제공해주실 것을 요청하며, 그에 따른 금융거래 정보 등의 제공사실에 대한 명의인 통보를 받지 않는 데 동의합니다.
+							<div class="date">
+								<span class="point04">2016</span>년
+								<span class="point04">5</span>월
+								<span class="point04">3</span>일
+							</div>
+							<div class="for"><span class="point04">위버플 귀하</span></div>
+						</div>
+					</div>
+					
+					<!-- 삭제
+					<div class="mt10">
+						<input type="checkbox" id="chk1"><label for="chk1" class="chk_box">금융거래정보제공에 동의합니다. (필수)</label>                                               
+					</div>
+
+					<table class="tbtype_form mt20">
+						<caption>공인인증서 인증 정보(이름, 주민번호) 입력</caption>
+						<colgroup>
+							<col style="width:25%;">
+							<col style="">
+						</colgroup>
+						<tbody>
+						<tr>
+							<th scope="row"><label for="user_name">공인인증서 인증</label></th>
+							<td>
+								<input type="text" id="user_name" title="이름 입력" placeholder="이름" style="width:150px;">
+								<input type="text" title="주민번호 입력" placeholder="주민번호('-'없이 입력)" style="width:220px;">
+							</td>
+						</tr>
+						</tbody>
+					</table>
+					-->
+
+					<ul class="list_style_01">
+						<li>
+							<span>참고사항 :</span>
+							<ul>
+								<li>- 본 동의서는 동의서 폐기 전까지 유효합니다.</li>
+								<li>- 동의 확인 : 본인 공인인증서의 전자서명 및 TSA</li>
+							</ul>
+						</li>
+					</ul>
+
+					<div class="btn_area">
+						<a href="#none" class="btn_type5 type2">취소</a>
+						<a href="#none" class="btn_type5">공인인증서 인증</a>
+					</div>	
+				</div>
+				<!-- // banking_agree_area -->
+
+			</div>
+
+			<a href="#none" class="layer_close">레이어팝업 닫기</a>
+		</div>
+	</div>
+	<!-- // layer_popup -->
+
+	<!-- footer -->
+	<footer class="footer">
+		<div class="footer_area">
+			<ul class="link">
+				<li><a href="#none">서비스이용약관</a></li>
+				<li class="point"><a href="#none">개인정보취급방침</a></li>
+			</ul>
+			<address>
+				서울시 영등포구 여의나루로 76 ㈜코스콤  대표전화 : 02-767-7114  이메일 : master@koscom.openplatform.com
+				<span class="copy">COPYRIGHT 2016. KOSCOM CORP. ALL RIGHTS RESERVED.</span>
+			</address>
+
+			<div class="family_site">
+				<!-- selBox2 -->
+				<span class="sel_box2">
+					<select style="min-width:150px">
+						<option>코스콤 사이트</option>
+					</select>
+				</span>
+				<!-- selBox2 -->
+				<span class="sel_box2">
+					<select style="min-width:170px">
+						<option>관련 사이트</option>
+					</select>
+				</span>				
+			</div>
+
+		</div>
+	</footer>
+	<!-- // footer -->
+
+</div>
+
+</body>
+</html>

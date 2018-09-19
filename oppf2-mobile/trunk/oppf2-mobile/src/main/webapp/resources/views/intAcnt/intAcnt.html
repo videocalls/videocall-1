@@ -1,0 +1,558 @@
+<ion-view view-title="통합계좌조회">
+    <ion-content  scroll="false" class="bg_gray"> <!-- bg color -->
+        <div class="container"> <!-- 통합계좌 조회 -->
+            <div class="combine_page">
+                <!-- tabs -->
+                <div class="tab-wrap">
+                    <!-- 상단 -->
+                    <ion-header-bar>
+                        <div class="top_info">
+                            금융투자회사 <span>{{vm.acctList.length}}</span> / 등록계좌 <span>{{vm.linkInfo.accountCnt}}</span>
+                            <a href="" class="btn_plus" ng-show="vm.linkInfo.noLinkAccountCnt > 0" ng-click="vm.linkApp();">미등록계좌{{vm.linkInfo.noLinkAccountCnt}}</a>
+                        </div>
+                        <ul class="btn_head tab-head">
+                            <li ng-class="{active: vm.currentSlideIndex === 0}"><a href="#none" ng-click="vm.slideChange(0);$event.preventDefault();">자산현황</a></li>
+                            <li ng-class="{active: vm.currentSlideIndex === 1}"><a href="#none" ng-click="vm.slideChange(1);$event.preventDefault();">거래내역</a></li>
+                            <li ng-class="{active: vm.currentSlideIndex === 2}"><a href="#none" ng-click="vm.slideChange(2);$event.preventDefault();">포트폴리오</a></li>
+                            <li ng-class="{active: vm.currentSlideIndex === 3}"><a href="#none" ng-click="vm.slideChange(3);$event.preventDefault();">관심종목</a></li>
+                        </ul>
+                        <div class="sel_cho_wrap" ng-class="{trade_select: vm.searchType === 'transaction'}">
+                            <div class="select_box">
+                                <select name="companyCodeId" ng-model="vm.searchForm.companyCodeId" ng-change="vm.searchAccountList();">
+                                    <option value="0">금융투자회사전체</option>
+                                    <option value="{{data.companyCodeId}}" ng-repeat="data in vm.acctList">{{data.companyNameEng}}</option>
+                                </select>
+                            </div>
+                            <div class="select_box">
+                                <select name="vtAccountNo" ng-model="vm.searchForm.vtAccountNo">
+                                    <option value="0">가상계좌전체</option>
+                                    <option value="{{data.customerVtaccountNo}}" ng-repeat="data in vm.searchAcctList">{{data.customerVtaccountAlias}}</option>
+                                </select>
+                            </div>
+                            <button type="button" class="btn_search" ng-click="vm.search();">검색</button>
+                        </div>
+                    </ion-header-bar>
+                    <!--// 상단 -->
+                    <ion-slide-box on-slide-changed="vm.rollingSlideChange();" show-pager="false" does-continue="true" class="tab-body">
+                        <!-- 자산현황 -->
+                        <ion-slide tabs2>
+                            <!-- 상단 -->
+                            <ion-header-bar>
+                                <ul class="btn_head tab-head">
+                                    <li class="active"><a href="#none">전체</a></li>
+                                    <li><a href="#none">주식</a></li>
+                                    <li><a href="#none">펀드</a></li>
+                                    <li><a href="#none">기타</a></li>
+                                </ul>
+                            </ion-header-bar>
+                            <!--// 상단 -->
+                            <ion-content class="inner_cont_01">
+                                <div class="cont">
+                                    <!-- tabs -->
+                                    <div class="tab-wrap">
+                                        <!-- 검색결과 없을때 -->
+                                        <div class="not_result" ng-show="!vm.balanceShow && !vm.balanceSearchShow">검색 결과가 없습니다.</div>
+                                        <div class="not_result" ng-show="vm.balanceSearchShow">검색 버튼을 눌러 주세요.</div>
+                                        <!--// 검색결과 없을때  -->
+                                        <div class="tab-body" ng-show="vm.balanceShow">
+                                            <!-- 전체 -->
+                                            <div class="cont">
+                                                <div class="all_price">
+                                                    <div class="price_view">
+                                                        <div class="all_head">
+                                                            <span class="left_area">총평가금액</span>
+                                                            <div class="num_right"><span>{{vm.balance.summary.totalAccVal | currency: '':0 }}</span> 원</div>
+                                                        </div>
+                                                        <ul>
+                                                            <li>
+                                                                <span class="leaft_area">출금가능금액</span>
+                                                                <div class="num_right"><span>{{vm.balance.summary.cashAvWithdraw | currency: '':0 }}</span> 원</div>
+                                                            </li>
+                                                            <li>
+                                                                <span class="leaft_area">현금잔고</span>
+                                                                <div class="num_right"><span>{{vm.balance.summary.cashBalance | currency: '':0 }}</span> 원</div>
+                                                            </li>
+                                                            <li>
+                                                                <span class="leaft_area">평가금액</span>
+                                                                <div class="num_right"><span>{{vm.balance.summary.valueAtCur | currency: '':0 }}</span> 원</div>
+                                                            </li>
+                                                            <li>
+                                                                <span class="leaft_area">매수금액</span>
+                                                                <div class="num_right"><span>{{vm.balance.summary.valAtTrade | currency: '':0 }}</span> 원</div>
+                                                            </li>
+                                                            <li>
+                                                                <span class="leaft_area">평가손익</span>
+                                                                <div class="num_right"><span>{{vm.balance.summary.proLoss | currency: '':0 }}</span> 원</div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--// 전체 -->
+                                            <!-- 주식 -->
+                                            <div class="cont">
+                                                <div class="card_tb">
+                                                    <!-- loop -->
+                                                    <div class="card_tb_cont" ng-repeat="data in vm.balanceEquityList">
+                                                        <div class="card_head">
+															<span class="left_area">
+																<span class="biz">{{data.isinName}}</span>
+																<span class="txt_s">{{data.assetType}}</span>
+															</span>
+                                                            <span class="right_area">{{data.comName}}</span>
+                                                        </div>
+                                                        <ul class="card_body">
+                                                            <li>
+                                                                <div class="half">
+                                                                    <span class="left_area">수량</span>
+                                                                    <span class="right_area"><em class="ft_black">{{data.qty | currency: '':0 }}</em>주</span>
+                                                                </div>
+                                                                <div class="half">
+                                                                    <span class="left_area">매수금액</span>
+                                                                    <span class="right_area"><em class="ft_black">{{data.valAtTrade | currency: '':0 }}</em>원</span>
+                                                                </div>
+                                                            </li>
+                                                            <li>
+                                                                <div class="half">
+                                                                    <span class="left_area">평가손익</span>
+                                                                    <span class="right_area"><em ng-class="data.proLoss > -1 ? 'ft_red' : 'ft_blue'">{{data.proLoss | currency: '':0 }}</em>원</span>
+                                                                </div>
+                                                                <div class="half">
+                                                                    <span class="left_area">평가금액</span>
+                                                                    <span class="right_area"><em ng-class="data.valAtCur > -1 ? 'ft_red' : 'ft_blue'">{{data.valAtCur | currency: '':0 }}</em>원</span>
+                                                                </div>
+                                                            </li>
+                                                            <li class="wide">
+                                                                <span class="left_area">수익률</span>
+                                                                <span class="right_area"><em ng-class="data.earningRate > -1 ? 'ft_red' : 'ft_blue'">{{data.earningRate | number: 2 }}</em>%</span>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <!--// loop -->
+                                                </div>
+                                            </div>
+                                            <!--// 주식 -->
+                                            <!-- 펀드 -->
+                                            <div class="cont">
+                                                <div class="card_tb">
+                                                    <!-- loop -->
+                                                    <div class="card_tb_cont" ng-repeat="data in vm.balanceFundList">
+                                                        <div class="card_head">
+															<span class="left_area">
+																<span class="biz">{{data.fundName}}</span>
+															</span>
+                                                            <span class="right_area">{{data.comName}}</span>
+                                                        </div>
+                                                        <ul class="card_body">
+                                                            <li>
+                                                                <div class="half">
+                                                                    <span class="left_area">수량</span>
+                                                                    <span class="right_area"><em class="ft_black">{{data.qty | currency: '':0 }}</em>주</span>
+                                                                </div>
+                                                                <div class="half">
+                                                                    <span class="left_area">매수금액</span>
+                                                                    <span class="right_area"><em class="ft_black">{{data.valAtTrade | currency: '':0 }}</em>원</span>
+                                                                </div>
+                                                            </li>
+                                                            <li>
+                                                                <div class="half">
+                                                                    <span class="left_area">평가손익</span>
+                                                                    <span class="right_area"><em ng-class="data.proLoss > -1 ? 'ft_red' : 'ft_blue'">{{data.proLoss | currency: '':0 }}</em>원</span>
+                                                                </div>
+                                                                <div class="half">
+                                                                    <span class="left_area">평가금액</span>
+                                                                    <span class="right_area"><em ng-class="data.valAtCur > -1 ? 'ft_red' : 'ft_blue'">{{data.valAtCur | currency: '':0 }}</em>원</span>
+                                                                </div>
+                                                            </li>
+                                                            <li class="wide">
+                                                                <span class="left_area">수익률</span>
+                                                                <span class="right_area"><em ng-class="data.earningRate > -1 ? 'ft_red' : 'ft_blue'">{{data.earningRate | number: 2 }}</em>%</span>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <!--// loop -->
+                                                </div>
+                                            </div>
+                                            <!--// 펀드 -->
+                                            <!-- 기타 -->
+                                            <div class="cont">
+                                                <div class="card_tb">
+                                                    <!-- loop -->
+                                                    <div class="card_tb_cont" ng-repeat="data in vm.balanceEtcList">
+                                                        <div class="card_head">
+															<span class="left_area">
+																<span class="biz">{{data.assetName}}</span>
+                                                                <span class="txt_s">{{data.assetType}}</span>
+															</span>
+                                                            <span class="right_area">{{data.comName}}</span>
+                                                        </div>
+                                                        <ul class="card_body">
+                                                            <li>
+                                                                <div class="half">
+                                                                    <span class="left_area">수량</span>
+                                                                    <span class="right_area"><em class="ft_black">{{data.qty | currency: '':0 }}</em>주</span>
+                                                                </div>
+                                                                <div class="half">
+                                                                    <span class="left_area">매수금액</span>
+                                                                    <span class="right_area"><em class="ft_black">{{data.valAtTrade | currency: '':0 }}</em>원</span>
+                                                                </div>
+                                                            </li>
+                                                            <li>
+                                                                <div class="half">
+                                                                    <span class="left_area">평가금액</span>
+                                                                    <span class="right_area"><em ng-class="data.valueAtCur > -1 ? 'ft_red' : 'ft_blue'">{{data.valueAtCur | currency: '':0 }}</em>원</span>
+                                                                </div>
+                                                                <div class="half">
+                                                                    <span class="left_area">수익률</span>
+                                                                    <span class="right_area"><em ng-class="data.earningRate > -1 ? 'ft_red' : 'ft_blue'">{{data.earningRate | number: 2 }}</em>%</span>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <!--// loop -->
+                                                </div>
+                                            </div>
+                                            <!--// 기타 -->
+                                        </div>
+                                    </div>
+                                    <!--// tabs  -->
+                                    <!-- 계좌 조회 실패 -->
+                                    <div class="count_error" ng-show="vm.balanceFailShow">
+                                        <!-- 아코디언 메뉴 -->
+                                        <div class="accordian-menu" accordion>
+                                            <!-- loop -->
+                                            <div class="accordian-cont cont_wrap">
+                                                <a href="#none" class="btn_bar"><span class="title_i">{{vm.balance.failCount}}건의 계좌 조회에 실패하였습니다.</span></a>
+                                                <div class="detail_cont">
+                                                    <ul>
+                                                        <li ng-repeat="data in vm.balance.failList" ng-init="message=vm.parseJson(data.detailMessage)">{{data.comName}} / {{data.vtAccNo}} / {{message.category}} / {{message.code}} / {{message.message}}</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <!--// loop -->
+                                        </div>
+                                        <!--// 아코디언 메뉴 -->
+                                    </div>
+                                    <!--// 계좌 조회 실패 -->
+
+                                    <!-- 계좌 조회 개수 제한 -->
+                                    <div class="count_error">
+                                        <div class="accordian-menu" accordion>
+                                            <!-- loop -->
+                                            <div class="accordian-cont cont_wrap">
+                                                <a href="#none" class="btn_bar"><span class="title_ii">계좌 조회 개수 제한 안내</span></a>
+                                                <div class="detail_cont">
+                                                    <ul>
+                                                        <li>통합계좌조회 시, 출력 가능한 개수는 <span class="ft_org">계좌별 최대 100개</span>입니다.</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <!--// loop -->
+                                        </div>
+                                    </div>
+                                    <!--// 계좌 조회 개수 제한 -->
+                                </div>
+                            </ion-content>
+                        </ion-slide>
+                        <!--// 자산현황 -->
+                        <!-- 거래내역 -->
+                        <ion-slide>
+                            <!-- 상단 -->
+                            <ion-header-bar>
+                                <div class="date_bar">
+                                    <span class="date_box"><span class="input_area"><input type="date" ng-model="vm.searchDateFrom"></span></span>
+                                    <span class="date_box"><span class="input_area"><input type="date" ng-model="vm.searchDateTo"></span></span>
+                                    <button type="button" class="btn_search" ng-click="vm.search();">검색</button>
+                                </div>
+                            </ion-header-bar>
+                            <!--// 상단 -->
+                            <ion-content class="inner_cont_02">
+                                <div class="cont">
+                                    <div class="trade_area">
+                                        <!-- 카드뷰 -->
+                                        <div class="card_tb">
+                                            <!-- 검색결과 없을때 -->
+                                            <div class="not_result" ng-show="vm.transactionList.length < 1 && !vm.transactionSearchShow">검색 결과가 없습니다.</div>
+                                            <div class="not_result" ng-show="vm.transactionSearchShow">검색 버튼을 눌러 주세요.</div>
+                                            <!--// 검색결과 없을때  -->
+                                            <!-- loop -->
+                                            <div class="card_tb_cont" ng-repeat="data in vm.transactionList" ng-show="vm.transactionList.length > 0">
+                                                <div class="card_head">
+													<span class="left_area">
+														<span class="biz">{{data.transDate | date:'yyyy-MM-dd'}}</span>
+														<span ng-class="data.transType != '매수' ? 'ft_red' : 'ft_blue'">{{data.transType}}</span>
+													</span>
+                                                    <span class="right_area">{{data.comName}}</span>
+                                                </div>
+                                                <ul class="card_body">
+                                                    <li>
+                                                        <div class="half">
+                                                            <span class="left_area">종목</span>
+                                                            <span class="right_area ft_black">{{data.isinName}}</span>
+                                                        </div>
+                                                        <div class="half">
+                                                            <span class="left_area">거래금액</span>
+                                                            <span class="right_area"><em class="ft_black">{{data.changeAmt | currency: '':0 }}</em>원</span>
+                                                        </div>
+                                                    </li>
+                                                    <li>
+                                                        <div class="half">
+                                                            <span class="left_area">거래수량</span>
+                                                            <span class="right_area"><em class="ft_black">{{data.changeQty | currency: '':0 }}</em>주</span>
+                                                        </div>
+                                                        <div class="half">
+                                                            <span class="left_area">잔고수량</span>
+                                                            <span class="right_area"><em class="ft_black">{{data.qty | currency: '':0 }}</em>주</span>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <!--// loop -->
+                                            <!-- 계좌 조회 실패 -->
+                                            <div class="count_error" ng-show="vm.transactionFailShow">
+                                                <!-- 아코디언 메뉴 -->
+                                                <div class="accordian-menu" accordion>
+                                                    <!-- loop -->
+                                                    <div class="accordian-cont cont_wrap">
+                                                        <a href="#none" class="btn_bar"><span class="title_i">{{vm.transactionData.failCount}}건의 계좌 조회에 실패하였습니다.</span></a>
+                                                        <div class="detail_cont">
+                                                            <ul>
+                                                                <li ng-repeat="data in vm.transactionData.failList" ng-init="message=vm.parseJson(data.detailMessage)">{{data.comName}} / {{data.vtAccNo}} / {{message.category}} / {{message.code}} / {{message.message}}</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <!--// loop -->
+                                                </div>
+                                                <!--// 아코디언 메뉴 -->
+                                            </div>
+                                            <!--// 계좌 조회 실패 -->
+                                            <!-- 계좌 조회 개수 제한 -->
+                                            <div class="count_error">
+                                                <div class="accordian-menu" accordion>
+                                                    <!-- loop -->
+                                                    <div class="accordian-cont cont_wrap">
+                                                        <a href="#none" class="btn_bar"><span class="title_ii">계좌 조회 개수 제한 안내</span></a>
+                                                        <div class="detail_cont">
+                                                            <ul>
+                                                                <li>통합계좌조회 시, 출력 가능한 개수는 <span class="ft_org">계좌별 최대 100개</span>입니다.</li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                    <!--// loop -->
+                                                </div>
+                                            </div>
+                                            <!--// 계좌 조회 개수 제한 -->
+                                        </div>
+                                        <!--// 카드뷰 -->
+                                    </div>
+                                </div>
+                            </ion-content>
+                        </ion-slide>
+                        <!--// 거래내역 -->
+                        <!-- 포트폴리오 -->
+                        <ion-slide tabs2>
+                            <ion-header-bar>
+                                <!-- 상단 -->
+                                <ul class="btn_head tab-head tab_03">
+                                    <li class="active"><a href="#none">주식</a></li>
+                                    <li><a href="#none">펀드</a></li>
+                                    <li><a href="#none">기타</a></li>
+                                </ul>
+                                <!--// 상단 -->
+                            </ion-header-bar>
+                            <ion-content class="inner_cont_03">
+                                <div class="cont">
+                                    <!-- tabs -->
+                                    <div class="tab-wrap">
+                                        <!-- 검색결과 없을때 -->
+                                        <div class="not_result" ng-show="!vm.portfolioShow && !vm.portfolioSearchShow">검색 결과가 없습니다.</div>
+                                        <div class="not_result" ng-show="vm.portfolioSearchShow">검색 버튼을 눌러 주세요.</div>
+                                        <!--// 검색결과 없을때  -->
+                                        <div class="tab-body" ng-show="vm.portfolioShow">
+                                            <!-- 주식 -->
+                                            <div class="cont">
+                                                <!-- 카드뷰 -->
+                                                <div class="card_tb">
+                                                    <!-- loop -->
+                                                    <div class="card_tb_cont" ng-repeat="data in vm.portfolioEquityList">
+                                                        <div class="card_head">
+															<span class="left_area">
+																<span class="biz">{{data.isinName}}</span>
+																<span class="txt_s">{{data.assetType}}</span>
+															</span>
+                                                            <span class="right_area">{{data.comName}}</span>
+                                                        </div>
+                                                        <ul class="card_body">
+                                                            <li>
+                                                                <div class="half">
+                                                                    <span class="left_area">수량</span>
+                                                                    <span class="right_area"><em class="ft_black">{{data.qty | currency: '':0 }}</em>주</span>
+                                                                </div>
+                                                                <div class="half">
+                                                                    <span class="left_area">수익률</span>
+                                                                    <span class="right_area"><em ng-class="data.earningRate > -1 ? 'ft_red' : 'ft_blue'">{{data.earningRate | number: 2 }}</em>%</span>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <!--// loop -->
+                                                </div>
+                                                <!--// 카드뷰 -->
+                                            </div>
+                                            <!--// 주식 -->
+                                            <!-- 펀드 -->
+                                            <div class="cont">
+                                                <div class="card_tb">
+                                                    <!-- loop -->
+                                                    <div class="card_tb_cont" ng-repeat="data in vm.portfolioFundList">
+                                                        <div class="card_head">
+															<span class="left_area">
+																<span class="biz">{{data.fundName}}</span>
+															</span>
+                                                            <span class="right_area">{{data.comName}}</span>
+                                                        </div>
+                                                        <ul class="card_body">
+                                                            <li>
+                                                                <div class="half">
+                                                                    <span class="left_area">수량</span>
+                                                                    <span class="right_area"><em class="ft_black">{{data.qty | currency: '':0 }}</em>주</span>
+                                                                </div>
+                                                                <div class="half">
+                                                                    <span class="left_area">수익률</span>
+                                                                    <span class="right_area"><em ng-class="data.earningRate > -1 ? 'ft_red' : 'ft_blue'">{{data.earningRate | number: 2 }}</em>%</span>
+                                                                </div>
+                                                            </li>
+                                                            <li class="wide">
+                                                                <span class="left_area">만기일</span>
+                                                                <span class="right_area"><em class="ft_black">{{data.maturity | date:'yyyy-MM-dd'}}</em></span>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <!--// loop -->
+                                                </div>
+                                            </div>
+                                            <!--// 펀드 -->
+                                            <!-- 기타 -->
+                                            <div class="cont">
+                                                <div class="card_tb">
+                                                    <!-- loop -->
+                                                    <div class="card_tb_cont" ng-repeat="data in vm.portfolioEtcList">
+                                                        <div class="card_head">
+															<span class="left_area">
+																<span class="biz">{{data.assetName}}</span>
+																<span class="txt_s">{{data.assetType}}</span>
+															</span>
+                                                            <span class="right_area">{{data.comName}}</span>
+                                                        </div>
+                                                        <ul class="card_body">
+                                                            <li>
+                                                                <div class="half">
+                                                                    <span class="left_area">수량</span>
+                                                                    <span class="right_area"><em class="ft_black">{{data.qty | currency: '':0 }}</em>주</span>
+                                                                </div>
+                                                                <div class="half">
+                                                                    <span class="left_area">수익률</span>
+                                                                    <span class="right_area"><em ng-class="data.earningRate > -1 ? 'ft_red' : 'ft_blue'">{{data.earningRate | number: 2 }}</em>%</span>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    <!--// loop -->
+                                                </div>
+                                            </div>
+                                            <!--// 기타 -->
+                                        </div>
+                                    </div>
+                                    <!--// tabs  -->
+                                    <!-- 계좌 조회 실패 -->
+                                    <div class="count_error" ng-show="vm.portfolioFailShow">
+                                        <!-- 아코디언 메뉴 -->
+                                        <div class="accordian-menu" accordion>
+                                            <!-- loop -->
+                                            <div class="accordian-cont cont_wrap">
+                                                <a href="#none" class="btn_bar"><span class="title_i">{{vm.portfolioData.failCount}}건의 계좌 조회에 실패하였습니다.</span></a>
+                                                <div class="detail_cont">
+                                                    <ul>
+                                                        <li ng-repeat="data in vm.portfolioData.failList" ng-init="message=vm.parseJson(data.detailMessage)">{{data.comName}} / {{data.vtAccNo}} / {{message.category}} / {{message.code}} / {{message.message}}</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <!--// loop -->
+                                        </div>
+                                        <!--// 아코디언 메뉴 -->
+                                    </div>
+                                    <!--// 계좌 조회 실패 -->
+                                    <!-- 계좌 조회 개수 제한 -->
+                                    <div class="count_error">
+                                        <div class="accordian-menu" accordion>
+                                            <!-- loop -->
+                                            <div class="accordian-cont cont_wrap">
+                                                <a href="#none" class="btn_bar"><span class="title_ii">계좌 조회 개수 제한 안내</span></a>
+                                                <div class="detail_cont">
+                                                    <ul>
+                                                        <li>통합계좌조회 시, 출력 가능한 개수는 <span class="ft_org">계좌별 최대 100개</span>입니다.</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <!--// loop -->
+                                        </div>
+                                    </div>
+                                    <!--// 계좌 조회 개수 제한 -->
+                                </div>
+                            </ion-content>
+                        </ion-slide>
+                        <!--// 포트폴리오 -->
+                        <!-- 관심종목 -->
+                        <ion-slide>
+                            <ion-content  class="inner_cont_04">
+                                <div class="cont">
+                                    <!-- 검색결과 없을때 -->
+                                    <div class="not_result" ng-show="!vm.interestShow && !vm.interestSearchShow">검색 결과가 없습니다.</div>
+                                    <div class="not_result" ng-show="vm.interestSearchShow">검색 버튼을 눌러 주세요.</div>
+                                    <!--// 검색결과 없을때  -->
+                                    <dl class="interest_item" ng-show="vm.interestShow">
+                                        <dt>
+                                        <div class="left_area">총 <span class="ft_org">{{vm.interestGroupCount}}</span>건</div>
+                                        <div class="select_box">
+                                            <select ng-model="vm.interestGroupOption"
+                                                    ng-options="data as data.groupName for data in vm.interestGroupList track by data.groupName"
+                                                    ng-change="vm.searchInterestGroup();">
+                                            </select>
+                                        </div>
+                                        </dt>
+                                        <dd> <!--  2쌍식 -->
+                                            <ul>
+                                                <!-- loop -->
+                                                <li ng-repeat="data in vm.interestGroup track by $index">{{data}}</li>
+                                            </ul>
+                                        </dd>
+                                    </dl>
+                                    <!-- 계좌 조회 실패 -->
+                                    <div class="count_error" ng-show="vm.interestFailShow">
+                                        <!-- 아코디언 메뉴 -->
+                                        <div class="accordian-menu" accordion>
+                                            <!-- loop -->
+                                            <div class="accordian-cont cont_wrap">
+                                                <a href="#none" class="btn_bar"><span class="title_i">{{vm.interestData.failCount}}건의 계좌 조회에 실패하였습니다.</span></a>
+                                                <div class="detail_cont">
+                                                    <ul>
+                                                        <li ng-repeat="data in vm.interestData.failList" ng-init="message=vm.parseJson(data.detailMessage)">{{data.comName}} / {{data.vtAccNo}} / {{message.category}} / {{message.code}} / {{message.message}}</li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                            <!--// loop -->
+                                        </div>
+                                        <!--// 아코디언 메뉴 -->
+                                    </div>
+                                    <!--// 계좌 조회 실패 -->
+                                </div>
+                            </ion-content>
+                        </ion-slide>
+                        <!--// 관심종목 -->
+                    </ion-slide-box>
+                </div>
+                <!--// tabs  -->
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

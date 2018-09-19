@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 자본시장 공동 핀테크 오픈플랫폼 구축
+* @FileName : QnaDAO.java
+* @Comment  : [Q&A]정보관리를 위한 SQL XML
+* @author   : 포털 이환덕
+* @since    : 2016.05.02
+* @version  : 1.0
+* @see
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2016.05.02   이환덕        최초생성
+-->
+
+<sqlMap namespace="kr.co.koscom.oppf.cmm.qna.service.impl.QnaDAO">
+  	<typeAlias alias="QnaVO" type="kr.co.koscom.oppf.cmm.qna.service.QnaVO"/>
+  	
+  	<!-- Q&A목록조회조건 -->
+  	<sql id="fromWhereAnd">
+  	  FROM test
+  	  WHERE 1=1
+  	  AND use_yn = 'Y'
+      <isNotEmpty property="searchName">
+         AND UPPER(name) LIKE UPPER(concat('%',#searchName#,'%'))
+      </isNotEmpty>
+      <isNotEmpty property="searchState">
+         AND UPPER(state) LIKE UPPER(concat('%',#searchState#,'%'))
+      </isNotEmpty>
+      <isNotEmpty property="searchCountry">
+         AND UPPER(country) LIKE UPPER(concat('%',#searchCountry#,'%'))
+      </isNotEmpty>
+      <isNotEmpty property="searchName">
+         AND UPPER(name) LIKE UPPER(concat('%',#searchName#,'%'))
+      </isNotEmpty>
+      <isNotEmpty property="searchState">
+         AND UPPER(state) LIKE UPPER(concat('%',#searchState#,'%'))
+      </isNotEmpty>
+      <isNotEmpty property="searchCountry">
+         AND UPPER(country) LIKE UPPER(concat('%',#searchCountry#,'%'))
+      </isNotEmpty>
+  	</sql>
+
+    <!--
+     * @Method Name        : selectQnaListTotalCount
+     * @Method description : [Q&A목록:총갯수]정보를 조회한다.
+     * @param              : QnaVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="QnaDAO.selectQnaListTotalCount" parameterClass="QnaVO" resultClass="int">
+      SELECT COUNT(id) AS totalcount
+      <include refid="fromWhereAnd"/>
+    </select>
+    
+    <!--
+     * @Method Name        : selectQnaList
+     * @Method description : [Q&A목록:목록]정보를 조회한다.
+     * @param              : QnaVO
+     * @return             : List<QnaVO>
+     * @throws             : Exception
+     -->
+    <select id="QnaDAO.selectQnaList" parameterClass="QnaVO" resultClass="QnaVO">
+      SELECT 
+       id
+      ,name
+      ,state
+      ,country
+      ,use_yn AS useYn
+      ,IFNULL(read_count,0) AS readCount
+      ,IFNULL(date_format(create_date,'%Y/%m/%d'),'') AS createDate
+      ,IFNULL(create_id,'') AS createId
+      ,IFNULL(date_format(update_date,'%Y/%m/%d'),'') AS updateDate
+      ,IFNULL(update_id,'') AS updateId
+      <include refid="fromWhereAnd"/>
+      <include refid="CmmnFuncDAO.CmmnPaging"/>
+    </select>
+    
+    <!--
+     * @Method Name        : selectQnaDetail
+     * @Method description : [Q&A상세:상세]정보를 조회한다.
+     * @param              : QnaVO
+     * @return             : QnaVO
+     * @throws             : Exception
+     -->
+    <select id="QnaDAO.selectQnaDetail" parameterClass="QnaVO" resultClass="QnaVO">
+      <![CDATA[
+      SELECT 
+       id
+      ,name
+      ,state
+      ,country
+      ,use_yn AS useYn
+      ,IFNULL(read_count,0) AS readCount
+      ,IFNULL(date_format(create_date,'%Y/%m/%d%r'),'') AS createDate
+      ,IFNULL(create_id,'') AS createId
+      ,IFNULL(date_format(update_date,'%Y/%m/%d%r'),'') AS updateDate
+      ,IFNULL(update_id,'') AS updateId
+      FROM test
+      WHERE 1=1
+      ]]>
+      AND id = #detailId#
+    </select>
+    
+    <!--
+     * @Method Name        : selectQnaBeforeAfterInfo
+     * @Method description : [Q&A상세:이전글다음글]정보를 조회한다.
+     * @param              : QnaVO
+     * @return             : QnaVO
+     * @throws             : Exception
+     -->
+    <select id="QnaDAO.selectQnaBeforeAfterInfo" parameterClass="QnaVO" resultClass="QnaVO">
+      SELECT 
+       (SELECT id   <include refid="fromWhereAnd"/> AND id <![CDATA[>]]> #detailId# ORDER BY id ASC LIMIT 1) AS beforeId
+      ,(SELECT name <include refid="fromWhereAnd"/> AND id <![CDATA[>]]> #detailId# ORDER BY id ASC LIMIT 1) AS beforeSj
+      ,(SELECT id   <include refid="fromWhereAnd"/> AND id <![CDATA[<]]> #detailId# ORDER BY id DESC LIMIT 1) AS afterId
+      ,(SELECT name <include refid="fromWhereAnd"/> AND id <![CDATA[<]]> #detailId# ORDER BY id DESC LIMIT 1) AS afterSj
+      FROM dual
+    </select>
+    
+    <!--
+     * @Method Name        : updateQnaReadCount
+     * @Method description : [Q&A목록:해당건]을 클릭 시 조회수 증가
+     * @param              : QnaVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="QnaDAO.updateQnaReadCount" parameterClass="QnaVO">
+      UPDATE test SET
+        read_count = IFNULL(read_count,0)+1
+      WHERE 1=1
+      AND id = #detailId#
+    </update>
+    
+    <!--
+     * @Method Name        : selectReadCount
+     * @Method description : [Q&A목록:해당건]조회수 증가 후 조회수 취득
+     * @param              : QnaVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="QnaDAO.selectQnaReadCount" parameterClass="QnaVO" resultClass="int">
+      SELECT IFNULL(read_count,0) AS read_count 
+      FROM test 
+      WHERE 1=1
+      AND id = #detailId#
+    </select>
+    
+    <!--
+     * @Method Name        : insertQna
+     * @Method description : [Q&A목록:등록]을 한다.
+     * @param              : QnaVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="QnaDAO.insertQna" parameterClass="QnaVO">
+      INSERT INTO test(
+        name
+       ,state
+       ,country
+       ,use_yn
+       ,read_count
+       ,create_date
+       ,create_id
+       ,update_date
+       ,update_id
+      )VALUES(
+        #insertName#
+       ,#insertState#
+       ,#insertCountry#
+       ,'Y'
+       ,0
+       ,SYSDATE()
+       ,'tester'
+       ,SYSDATE()
+       ,'tester'
+      )
+    </insert>
+    
+    <!--
+     * @Method Name        : updateQna
+     * @Method description : [Q&A상세:수정]을 한다.
+     * @param              : QnaVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="QnaDAO.updateQna" parameterClass="QnaVO">
+      UPDATE test SET
+          update_date = SYSDATE()
+         ,update_id = 'tester'
+        <isNotNull property="updateName">
+         ,name = #updateName#
+        </isNotNull>
+        <isNotNull property="updateState">
+         ,state = #updateState#
+        </isNotNull>
+        <isNotNull property="updateCountry">
+         ,country = #updateCountry#
+        </isNotNull>
+      WHERE 1=1
+      AND id = #updateId#
+    </update>
+    
+    <!--
+     * @Method Name        : deleteQna
+     * @Method description : [Q&A상세:삭제]를 한다.
+     * @param              : QnaVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <update id="QnaDAO.deleteQna" parameterClass="QnaVO">
+      UPDATE test SET
+          use_yn = 'N'
+      WHERE 1=1
+      AND id = #deleteId#
+    </update>
+    
+</sqlMap>

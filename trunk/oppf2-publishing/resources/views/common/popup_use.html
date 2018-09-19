@@ -1,0 +1,107 @@
+<ion-modal-view>
+	<ion-header-bar>
+		<h1 class="title">금융거래 정보 제공동의서</h1>
+		<button type="button" class="btn_icon btn_close">닫기</button>
+	</ion-header-bar>
+	<ion-content> <!-- bg color -->
+		<p style="color:1b1b1e;font-size:18px;margin:18px 0 18px 0;padding:0 25px;font-family:'Noto Sans Korean','Malgun Gothic',Dotum,'droid sans fallback','AppleGothic',sans-serif;">금융거래 정보 제공동의서</p>
+		<div style="padding:0 25px;font-size: 12px;color: #1b1b1e;font-family:'Noto Sans Korean','Malgun Gothic',Dotum,'droid sans fallback','AppleGothic',sans-serif;">
+			<ol style="font-size:12px; list-style:none; margin:0; padding:0;">
+				<li style="margin-top:12px;line-height:18px;">1. 정보를 제공받을 기업명 :
+				<span style="color:#ed6d1f;">
+					${subCompanyName}
+				</span></li>
+				<li style="margin-top:12px;line-height:18px;">2. 정보제공의 범위와 사용목적
+					<p style="margin:0; padding:0;">정보제공 범위 : <span style="color:#ed6d1f;">동의자 명의의 금융거래정보</span></p>
+					<p style="margin:0; padding:0;">- 금융 상품 잔고 및 거래 정보 자산 구성 정보와 관심 금융상품 정보</p>
+					<p style="margin:0; padding:0;">사용목적 : 코스콤 자본시장 공동 핀테크 오픈플랫폼을 통한 금융거래정보 전달 및 핀테크 서비스를 통한 금융서비스 제공</p>
+				</li>
+				<li style="margin-top:12px;line-height:18px;">3. 유효기간 :
+					<span style="color:#ed6d1f;">++[$termsStartDateY]++</span>년
+					<span style="color:#ed6d1f;">++[$termsStartDateM]++</span>월
+					<span style="color:#ed6d1f;">++[$termsStartDateD]++</span>일 ~
+					<span style="color:#ed6d1f;">++[$termsEndDateY]++</span>년
+					<span style="color:#ed6d1f;">++[$termsEndDateM]++</span>월
+					<span style="color:#ed6d1f;">++[$termsEndDateD]++</span>일
+					<span style="color:#ed6d1f;">(++[$termsPolicyYear]++년간)</span>
+				</li>
+				<li  style="margin-top:12px;line-height:18px;">4. 금융거래 정보 제공 동의자 인적 사항
+					<table cellspacing="0" cellpadding="0" border="0" style="width:100%; margin:5px 0; border-top:1px solid #dddfdf; border-right:1px solid #dddfdf;">
+						<caption style="display:none;">성명, 이메일, 생년월일 정보</caption>
+						<colgroup>
+							<col style="width:85px;">
+							<col style="width:auto">
+						</colgroup>
+						<tbody>
+						<tr>
+							<th scope="row" style="padding:9px 7px; font-size:12px; border-right:1px solid #dddfdf; border-left:1px solid #dddfdf; border-bottom:1px solid #dddfdf;">
+								성 명
+							</th>
+							<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+								++[$customerName]++
+							</td>
+						</tr>
+						<tr>
+							<th scope="row" style="padding:9px 7px; font-size:12px; border-right:1px solid #dddfdf; border-left:1px solid #dddfdf; border-bottom:1px solid #dddfdf;">
+								생년월일
+							</th>
+							<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+								++[$customerBirthDay]++
+							</td>
+						</tr>
+						<tr>
+							<th scope="row" style="padding:9px 7px; font-size:12px; border-right:1px solid #dddfdf; border-left:1px solid #dddfdf; border-bottom:1px solid #dddfdf;">
+								휴대폰
+							</th>
+							<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+								++[$customerPhone]++
+							</td>
+						</tr>
+						<tr>
+							<th scope="row" style="padding:9px 7px; font-size:12px; border-right:1px solid #dddfdf; border-left:1px solid #dddfdf; border-bottom:1px solid #dddfdf;">
+								이메일
+							</th>
+							<td style="padding:9px 7px; font-size:12px; font-weight:bold; color:#001a30; border-bottom:1px solid #dddfdf;">
+								++[$customerEmail]++
+							</td>
+						</tr>
+						</tbody>
+					</table>
+				</li>
+				<li style="margin-top:12px;line-height:18px;">5. 정보제공 금융투자회사
+					<div style="height: 82px;overflow-x: hidden;overflow-y: auto;padding: 10px;border: 1px solid #dddfdf;margin: 7px 0;word-break:all-break;">
+						++[$termsPubCompanyList]++
+
+						<!--        <span>O <c:out value='${pcList.pubcompanyName}'/>  </span>-->
+
+					</div>
+				</li>
+				<li style="margin-top:12px;line-height:18px;">6. 제공받은 정보의 보유 및 이용기간
+					<p style="margin:0; padding:0;">금융거래정보는 제공된 날로부터 동의 철회 시 또는 제공된 목적을 달성할 때까지 보유·이용됩니다.<br>
+						동의 철회 또는 제공된 목적 달성 후에는 위 기재된 사용목적과 관련된 금융사고 조사, 분쟁해결, 민원처리, 법령상 의무이행을 위하여 필요한 범위 내에서만 보유·이용 됩니다.</p>
+				</li>
+			</ol>
+			<div style="font-size:12px; color:#1b1b1b; margin:10px 0; padding:10px 20px; background:#f8f8f8;">
+				O 금융거래정보를 제공하는 것에 대한 동의를 거부하실 수 있으나, 금융거래내역의 제공을 위해서는 반드시 동의가 필요하므로 거부하실 경우 금융거래 제공 요청을 신청할 수 없습니다<br>
+				O 「금융실명거래 및 비밀보장에 관한 법률」 제4조의2 제1항 규정의 거래정보 등의 제공사실 통보를 1년 단위로 포괄하여 통보하는 것에 대하여 동의합니다.<br>
+				<div style="font-size:13px; font-weight:bold; text-align:center;margin: 14px 0;padding:0;">
+					<span style="color:#ed6d1f;">++[$termsStartDateY]++</span>년
+					<span style="color:#ed6d1f;">++[$termsStartDateM]++</span>월
+					<span style="color:#ed6d1f;">++[$termsStartDateD]++</span>일
+				</div>
+				<div style="font-size:13px; font-weight:bold; text-align:right;">
+					금융투자회사 대표이사 귀하
+				</div>
+			</div>
+			<div style="font-size:12px;color:#ed6d1f;">참고사항 : 동의 확인의 증명은 공인인증서를 이용한 전자서명과 공인인증센터의 시점확인을 통해 이루어집니다</div>
+		</div>
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<div class="button_area btn_both btn_bottom_area"> <!-- btn_both : 2개일때 / btn_three : 3개일때 -->
+			<a href="#go" class="btn_middle btn_black">거부</a>
+			<a href="#go" class="btn_middle btn_black_org">인증서 등록 및 전자서명</a>
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+</ion-modal-view>

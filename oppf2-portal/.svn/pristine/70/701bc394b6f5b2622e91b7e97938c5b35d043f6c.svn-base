@@ -1,0 +1,271 @@
+#-----------------------------------------------------------------------
+#
+#   globals.properties : \uc2dc\uc2a4\ud15c -> sandbox
+#
+#-----------------------------------------------------------------------
+#   1.  key = value \uad6c\uc870\uc785\ub2c8\ub2e4.
+#   2.  key\uac12\uc740 \uacf5\ubc31\ubb38\uc790\ub97c \ud3ec\ud568\ubd88\uac00, value\uac12\uc740 \uacf5\ubc31\ubb38\uc790\ub97c \uac00\ub2a5
+#   3.  key\uac12\uc73c\ub85c \ud55c\uae00\uc744 \uc0ac\uc6a9\ubd88\uac00,   value\uac12\uc740 \ud55c\uae00\uc0ac\uc6a9\uc774 \uac00\ub2a5  
+#   4.  \uc904\uc744 \ubc14\uafc0 \ud544\uc694\uac00 \uc788\uc73c\uba74 '\'\ub97c \ub77c\uc778\uc758 \ub05d\uc5d0 \ucd94\uac00(\ub9cc\uc57d  '\'\ubb38\uc790\ub97c \uc0ac\uc6a9\ud574\uc57c \ud558\ub294 \uacbd\uc6b0\ub294 '\\'\ub97c \uc0ac\uc6a9)
+#   5.  Windows\uc5d0\uc11c\uc758 \ub514\ub809\ud1a0\ub9ac \ud45c\uc2dc : '\\' or '/'  ('\' \uc0ac\uc6a9\ud558\uba74 \uc548\ub428)
+#   6.  Unix\uc5d0\uc11c\uc758 \ub514\ub809\ud1a0\ub9ac \ud45c\uc2dc : '/'
+#   7.  \uc8fc\uc11d\ubb38 \ucc98\ub9ac\ub294  #\uc0ac\uc6a9
+#   8.  value\uac12 \ub4a4\uc5d0 \uc2a4\ud398\uc774\uc2a4\uac00 \uc874\uc7ac\ud558\ub294 \uacbd\uc6b0 \uc11c\ube14\ub9bf\uc5d0\uc11c \ucc38\uc870\ud560\ub54c\ub294 \uc5d0\ub7ec\ubc1c\uc0dd\ud560 \uc218 \uc788\uc73c\ubbc0\ub85c trim()\ud558\uac70\ub098 \ub9c8\uc9c0\ub9c9 \uacf5\ubc31\uc5c6\uc774 properties \uac12\uc744 \uc124\uc815\ud560\uac83
+#-----------------------------------------------------------------------
+
+# \ub2f4\ub2f9\uc790 \uc815\ubcf4
+# \ub2f4\ub2f9\uc790 email
+# \uc11c\ube44\uc2a4 \ud3ec\ud138
+Globals.manager.email.spt = open@koscom.co.kr
+# \uae30\uc5c5 \ud3ec\ud138
+Globals.manager.email.cpt = open@koscom.co.kr
+# admin \ud3ec\ud138
+Globals.manager.email.apt = open@koscom.co.kr
+
+# email \ubc1c\uc1a1\uc2dc \uc2dc\uc2a4\ud15c\uc5d0\uc11c \ubc1c\uc1a1(\uc774\uba54\uc77c \uc778\uc99d, \ud68c\uc6d0\uac00\uc785 \uc644\ub8cc, \uc784\uc2dc\ube44\ubc00\ubc88\ud638 \ubc1c\uae09 \uc548\ub0b4)\ud558\ub294 ID(com_email_send_info \ud14c\uc774\ube14\uc5d0 \ubc1c\uc2e0\uc790 ID, \ucd5c\ucd08 \ubc1c\uc2e0\uc790 ID, \uc0dd\uc131\uc790ID, \uc218\uc815\uc790ID\uc5d0 \uc14b\ud305\ub429\ub2c8\ub2e4.)
+# \uc11c\ube44\uc2a4 \ud3ec\ud138
+Globals.system.emailSendId.spt = A20160601001
+# \uae30\uc5c5 \ud3ec\ud138
+Globals.system.emailSendId.cpt = A20160601001
+# admin \ud3ec\ud138
+Globals.system.emailSendId.apt = A20160601001
+
+
+# Domain set
+Globals.domain.arr = spt|cpt|apt
+
+# Domain & IP - \uc11c\ube44\uc2a4 \ud3ec\ud138
+# \uc11c\ube44\uc2a4 \ud3ec\ud138 domain
+Globals.domain.spt = sandbox-open.koscom.co.kr
+# Port : SPT
+Globals.port.spt=8090
+# SSL Port : SPT
+Globals.sslPort.spt=8440
+# \uc11c\ube44\uc2a4 \ud3ec\ud138 domain \uba85\uce6d
+Globals.domain.spt.name = \uae08\uc735\ud22c\uc790 \ud540\ud14c\ud06c \ud3ec\ud138
+# \uc11c\ube44\uc2a4 \ud3ec\ud138 domain \uad6c\ubd84\uc790
+Globals.domain.sep.spt = sandbox-open.koscom.co.kr|:8090|:8440
+# \uc5f0\uacb0 \ud398\uc774\uc9c0(\ub85c\uadf8\uc778 | \ubbf8\ub85c\uadf8\uc778) - \uc11c\ube44\uc2a4 \ud3ec\ud138
+Globals.domain.spt.main = /spt/cmm/mainView.do|/spt/cmm/mainView.do
+
+
+# Domain & IP - \uae30\uc5c5 \ud3ec\ud138(\uae08\ud22c\uc0ac/ \ud540\ud14c\ud06c \uae30\uc5c5)
+# \uae30\uc5c5 \ud3ec\ud138 domain
+Globals.domain.cpt = sandbox-biz.koscom.co.kr
+# Port : CPT
+Globals.port.cpt=8091
+# SSL Port : CPT
+Globals.sslPort.cpt=8441
+# \uae30\uc5c5 \ud3ec\ud138 domain \uba85\uce6d
+Globals.domain.cpt.name = \uc624\ud508\ud50c\ub7ab\ud3fc
+# \uae30\uc5c5 \ud3ec\ud138 domain \uad6c\ubd84\uc790
+Globals.domain.sep.cpt = sandbox-biz.koscom.co.kr|:8091|:8441
+# \uc5f0\uacb0 \ud398\uc774\uc9c0(\ub85c\uadf8\uc778 | \ubbf8\ub85c\uadf8\uc778) - \uae30\uc5c5 \ud3ec\ud138(\uae08\ud22c\uc0ac/ \ud540\ud14c\ud06c \uae30\uc5c5)
+Globals.domain.cpt.main = /cpt/cmm/mainView.do|/cpt/cmm/mainView.do
+
+# Domain & IP - admin \ud3ec\ud138
+# admin domain
+Globals.domain.apt = sandbox-apiadmin.koscom.co.kr
+# Port : APT
+Globals.port.apt=8096
+# SSL Port : APT
+Globals.sslPort.apt=8446
+# admin domain \uba85\uce6d
+Globals.domain.apt.name = \uc624\ud508\ud50c\ub7ab\ud3fc
+# admin domain \uad6c\ubd84\uc790
+Globals.domain.sep.apt = sandbox-apiadmin.koscom.co.kr|:8096|:8446
+# \uc5f0\uacb0 \ud398\uc774\uc9c0(\ub85c\uadf8\uc778 | \ubbf8\ub85c\uadf8\uc778) - admin \ud3ec\ud138
+Globals.domain.apt.main = /apt/cmm/mainView.do|/apt/cmm/loginView.do
+
+# Domain & IP - \uac1c\ubc1c\uc790 \ud3ec\ud138
+# \uac1c\ubc1c\uc790 \ud3ec\ud138 domain
+Globals.domain.dev = 114.31.115.196
+
+# user policy
+#super \ube44\ubc00\ubc88\ud638
+Globals.user.policy.password.super = koscom
+#\uc784\uc2dc\ube44\ubc00\ubc88\ud638 \uae38\uc774
+Globals.user.policy.password.tmpLength = 10
+# \ube44\ubc00\ubc88\ud638 \uc2eb\ud328 \ud69f\uc218
+Globals.user.policy.password.failCnt = 10
+# \ube44\ubc00\ubc88\ud638 \ubcc0\uacbd \uc608\uc815 \uac1c\uc6d4 \uc218
+Globals.user.policy.password.expire = 3
+# \ube44\ubc00\ubc88\ud638 \ubcc0\uacbd \ucd5c\uc885 \uac1c\uc6d4 \uc218
+Globals.user.policy.password.final = 5
+
+# \uc57d\uad00\ub3d9\uc758 \ubcc0\uacbd \ubc30\uce58 \uac1c\uc6d4 \uc218 1\ub144 = 12
+Globals.user.policy.terms.expire = 12
+# \uc57d\uad00\ub3d9\uc758 \ubcc0\uacbd \ucd5c\uc885 \uac1c\uc6d4 \uc218 5\ub144 -> 1\ub144 \ubcc0\uacbd = 60 = 12 * 5
+Globals.user.policy.terms.final = 12
+
+#Globals.fileStorePath =  C:/oppf/upload/
+#Globals.fileStorePath =  D:/oppf/upload/
+Globals.fileStorePath =  /run/portal-www/apache-tomcat-7.0.68/webapps_portal/ROOT
+
+#\uc804\ubb38\uc694\uccad
+Globals.domain.exconn=https://10.0.1.106
+
+#TSA\uc11c\ubc84
+Globals.domain.tsaconn=http://127.0.0.1:9001/admin/tsa/request/fileTobeHashed
+
+
+# \uae30\uac04 \uc804\uccb4 \uc2dc\uc791, \uc885\ub8cc\uc77c
+Globals.format.dateFrom=20000101
+Globals.format.dateTo=99991231
+
+# \uc5d4\ud53d_\uc36c\ub354\uba54\uc77c(\uc774\uba54\uc77c\ubc1c\uc1a1)
+#Globals.automailAPI.apiURL = http://mail.enpick.com/tm6/app/api/automail/send
+Globals.automailAPI.apiURL = http://14.63.223.107:80/tm6/app/api/automail/send
+# \uc5d4\ud53d\uc5d0\uc11c \ucf54\uc2a4\ucf64\uc73c\ub85c \ubd80\uc5ec\ud55c \uc0ac\uc6a9\uc790\ucf54\ub4dc(\uc554\ud638\ud654\uac12)
+Globals.automailAPI.userCodeEncrypt = 732398506bb5ed46fcde8878077509a2
+# \uc5d4\ud53d\uc5d0 \ub4f1\ub85d\ud55c \uc790\ub3d9\uba54\uc77c \ud15c\ud50c\ub9bf\uc758 '\uc554\ud638\ud654\ub41c \uc790\ub3d9\uba54\uc77cID'\uac12(\uae30\ubcf8\ud15c\ud50c\ub9bf) 
+Globals.automailAPI.automailIDEncrypt.G016001 = 3c01b11f3640cba9ff01b1fe61a988ee
+
+# \uc5d4\ud53d\uc5d0 \ub4f1\ub85d\ud55c \uc790\ub3d9\uba54\uc77c \ud15c\ud50c\ub9bf\uc758 '\uc554\ud638\ud654\ub41c \uc790\ub3d9\uba54\uc77cID'\uac12(\ud68c\uc6d0 - \uc774\uba54\uc77c \uc778\uc99d) 
+Globals.automailAPI.automailIDEncrypt.G016002 = 559f90ec49c61d725970994ef132217c
+# \uc5d4\ud53d\uc5d0 \ub4f1\ub85d\ud55c \uc790\ub3d9\uba54\uc77c \ud15c\ud50c\ub9bf\uc758 '\uc554\ud638\ud654\ub41c \uc790\ub3d9\uba54\uc77cID'\uac12(\ud68c\uc6d0 - \ud68c\uc6d0\uac00\uc785 \uc644\ub8cc) 
+Globals.automailAPI.automailIDEncrypt.G016003 = 4d126d33ca2f38c5dd499b8ae957df6f
+# \uc5d4\ud53d\uc5d0 \ub4f1\ub85d\ud55c \uc790\ub3d9\uba54\uc77c \ud15c\ud50c\ub9bf\uc758 '\uc554\ud638\ud654\ub41c \uc790\ub3d9\uba54\uc77cID'\uac12(\ud68c\uc6d0 - \uc784\uc2dc\ube44\ubc00\ubc88\ud638 \ubc1c\uae09 \uc548\ub0b4) 
+Globals.automailAPI.automailIDEncrypt.G016004 = dec0ffd7ae7cb9702efc453ca5dead6f
+# \uc5d4\ud53d\uc5d0 \ub4f1\ub85d\ud55c \uc790\ub3d9\uba54\uc77c \ud15c\ud50c\ub9bf\uc758 '\uc554\ud638\ud654\ub41c \uc790\ub3d9\uba54\uc77cID'\uac12(\ud68c\uc6d0 - \ud68c\uc6d0\ud0c8\ud1f4 \ud655\uc778 \uba54\uc77c) 
+Globals.automailAPI.automailIDEncrypt.G016005 = 71f3d83e2ba4ce404ba0ee5573e37a6c
+
+# \uc5d4\ud53d\uc5d0 \ub4f1\ub85d\ud55c \uc790\ub3d9\uba54\uc77c \ud15c\ud50c\ub9bf\uc758 '\uc554\ud638\ud654\ub41c \uc790\ub3d9\uba54\uc77cID'\uac12(\uc815\ubcf4\uc81c\uacf5\ub3d9\uc758 - \uc815\ubcf4\uc81c\uacf5 \ub3d9\uc758 \ubc0f \ub0b4\uc6a9\ubcc0\uacbd) 
+Globals.automailAPI.automailIDEncrypt.G016006 = a8977a9d88ac6a6687200b9f99031c9f
+# \uc5d4\ud53d\uc5d0 \ub4f1\ub85d\ud55c \uc790\ub3d9\uba54\uc77c \ud15c\ud50c\ub9bf\uc758 '\uc554\ud638\ud654\ub41c \uc790\ub3d9\uba54\uc77cID'\uac12(\uc815\ubcf4\uc81c\uacf5\ub3d9\uc758 - \uc815\ubcf4\uc81c\uacf5 \ub3d9\uc758 \ud655\uc778(1\ub144\uc8fc\uae30)) 
+Globals.automailAPI.automailIDEncrypt.G016007 = 3947bcc0d4660efc2432bf314901317e
+# \uc5d4\ud53d\uc5d0 \ub4f1\ub85d\ud55c \uc790\ub3d9\uba54\uc77c \ud15c\ud50c\ub9bf\uc758 '\uc554\ud638\ud654\ub41c \uc790\ub3d9\uba54\uc77cID'\uac12(\uc815\ubcf4\uc81c\uacf5\ub3d9\uc758 - \uc815\ubcf4\uc81c\uacf5 \ub3d9\uc758 \uc7ac\ub3d9\uc758(5\ub144\uc8fc\uae30)) 
+Globals.automailAPI.automailIDEncrypt.G016008 = 045c7afdd499b56069e371921db7544f
+# \uc5d4\ud53d\uc5d0 \ub4f1\ub85d\ud55c \uc790\ub3d9\uba54\uc77c \ud15c\ud50c\ub9bf\uc758 '\uc554\ud638\ud654\ub41c \uc790\ub3d9\uba54\uc77cID'\uac12(\ube44\ud68c\uc6d0 \uc778\uc99d \uc720\ud6a8\uae30\uac04 \ub9cc\ub8cc\uc548\ub0b4 \uba54\uc77c)
+Globals.automailAPI.automailIDEncrypt.G016009 = 08ee9976ce86a0ea0a5d47002e9aef8f
+# \uc5d4\ud53d\uc5d0 \ub4f1\ub85d\ud55c \uc790\ub3d9\uba54\uc77c \ud15c\ud50c\ub9bf\uc758 '\uc554\ud638\ud654\ub41c \uc790\ub3d9\uba54\uc77cID'\uac12(\uac00\ub3d9\uc758\uc11c \uc720\ud6a8\uae30\uac04 \ub9cc\ub8cc \ubc0f \uc7ac\ub3d9\uc758 \uc548\ub0b4 \uba54\uc77c)
+Globals.automailAPI.automailIDEncrypt.G016010 = 9df1d64d24c7f2ed482944ddbcfb0f0a
+
+
+# \uc544\uc774\ud540\uc778\uc99d \uc11c\ube44\uc2a4\uc758 \uac1c\ubc1c \uc815\ubcf4(NICE\uc2e0\uc6a9\ud3c9\uac00\uc815\ubcf4)
+# \uc0ac\uc774\ud2b8 \ucf54\ub4dc
+Globals.nice.ipin.siteCode = AC16
+# \uc0ac\uc774\ud2b8 \ud328\uc2a4\uc6cc\ub4dc
+Globals.nice.ipin.sitePw = 78965124
+# \uc548\uc2ec\ubcf8\uc778\uc778\uc99d(\ud734\ub300\ud3f0\uc778\uc99d) \uc11c\ube44\uc2a4\uc758 \uac1c\ubc1c \uc815\ubcf4(NICE\uc2e0\uc6a9\ud3c9\uac00\uc815\ubcf4)
+# \uc0ac\uc774\ud2b8 \ucf54\ub4dc
+Globals.nice.checkplus.siteCode = AB357
+# \uc0ac\uc774\ud2b8 \ud328\uc2a4\uc6cc\ub4dc
+Globals.nice.checkplus.sitePw = jCcFS5XMsU1p
+
+#WebContent \uacbd\ub85c(TSA-PDF\ud3f0\ud2b8\uacbd\ub85c \uc4f0\uc784)
+#Globals.spt.webcontent.path = D:\\DEV\\eclipses\\eclipse-jee-mars-2-win32\\workspace\\oppf-portal\\WebContent
+Globals.spt.webcontent.path = /run/portal-www/apache-tomcat-7.0.68/webapps_portal/ROOT
+
+#oauth token info
+Globals.oauth.token.circumventYn = Y
+Globals.oauth.token.url = https://10.0.1.106/auth/oauth/v3/token
+#Globals.oauth.token.url = https://114.31.115.230:443/auth/oauth/v2/token
+Globals.oauth.token.clientId = l7xxd00767dbc3d04323bc3712f89a36f1d8
+Globals.oauth.token.secretId = dc2a67fd43044207bc0486cfc7ba5187
+Globals.oauth.token.scope = common.account
+Globals.oauth.token.grantType = client_credentials
+
+# OTP request info
+# OTP \uc811\uc18d url
+Globals.otp.url = https://api.dev.eversafe.co.kr:4445
+# OTP \ub4f1\ub85d uri
+Globals.otp.uri.register = /smartpass/register
+# header - X\u00adApikey
+Globals.otp.header.xApikey = 0aff33cf-f292-4589-8983-1aef14d795a1
+# header - SECRET KEY
+Globals.otp.header.secretKey = d32f2c88-a48e-462a-a736-089309da379f
+
+#\uacf5\uc778\uc778\uc99d\uc11c \uc11c\ubc84 ipURL
+Globals.skverifyd.ip = 127.0.0.1
+
+# \ucee4\ub125\uc158 \ud480 \uad00\ub9ac\uc5d0\uc11c \uc0ac\uc6a9\ud558\ub294 SFI\uc11c\ubc84\uc815\ubcf4
+Globals.sifmanageapi.ipport=10.0.12.23:8443
+# \uc5f0\uacc4\uc11c\ubc84 \uc815\ubcf4
+Globals.sifmanageapi = https://10.0.12.23:8443
+
+# \ud604\uc7ac \uc811\uc18d \uc11c\ubc84 \uc815\ubcf4
+Globals.server.type=send
+
+# \ud1b5\ud569 \uacc4\uc88c \uc11c\ube44\uc2a4 API KEY
+Globals.integrated.account.clientId = l7xxdd6ff2ba74944dfdb6c69643d12256a6
+Globals.integrated.account.secretId = e36e20b20a704e84b77616dff640577c
+Globals.integrated.account.apiKey = l7xxdd6ff2ba74944dfdb6c69643d12256a6
+Globals.integrated.account.callBackUrl = https://sandbox-open.koscom.co.kr/spt/myp/intAcnt/callback
+Globals.integrated.account.grantType = authorization_code
+Globals.integrated.account.scope = account
+Globals.integrated.account.comId = F0995
+Globals.integrated.account.srvId = 297
+Globals.integrated.account.mode = snd
+Globals.integrated.account.allCompany = 00991,00992,00993,00995,00002,00004,00012,00025
+
+#jdbc portal info
+jdbc.portal.url=jdbc:log4jdbc:mysql://10.0.9.23:3306/oppf
+jdbc.portal.name=oppf_devel
+jdbc.portal.password=zhtmzha123!
+#jdbc fix info
+jdbc.fix.url=jdbc:log4jdbc:mysql://10.0.9.23:3306/oppf_fix
+jdbc.fix.name=fix_dev
+jdbc.fix.password=zhtmzha123!
+
+# \uc778\uc99d\uc11c\ubc84 info
+Globals.authentication.url = http://10.0.1.108:8095/authenticate
+Globals.authentication.requestId = 7d5dcdbf-602a-4559-93a0-280fa635449e
+Globals.oauth.authorize.url = https://sandbox-apigw.koscom.co.kr/auth/oauth/v3/authorize
+Globals.oauth.authorize.ip = https://10.0.1.106/auth/oauth/v3/authorize
+
+# ARS Info
+Globals.ars.url = http://211.217.152.250/sol/gateway/ars_wapi.jsp
+Globals.ars.secretKey = YKVi4RZaTbCGkS0tY91M
+Globals.ars.trcd = 2300
+Globals.ars.orgcd = 20047
+
+# \ubaa8\ub2c8\ud130\ub9c1 URL
+Globals.kibana.url = http://sandbox-apiadmin.koscom.co.kr/kibana/app/logtrail#/?_g=()
+
+# FIX
+# CompID \uc2e0\uaddc\ub4f1\ub85d POST, CompID \uc0ad\uc81c DEKETE
+Globals.fix.restAcceptor.comps = /restAcceptor/admin/comps
+# CompID \ubcc0\uacbd PUT
+Globals.fix.restAcceptor.comp = /restAcceptor/admin/comp
+# Fix Initiator \uc815\ubcf4 \uc2e0\uaddc\ub4f1\ub85d POST, \uc218\uc815 PUT, \uc0ad\uc81c DELETE
+Globals.fix.fixInitiator.comps = /fixInitiator/admin/comps
+#Fix Queue\uc815\ubcf4 \uc218\uc815 PUT
+Globals.fix.fixInitiator.fixQueue = /fixInitiator/admin/fixQueue
+# Fix initiator \ud504\ub85c\uc138\uc2a4 \uac00\ub3d9 POST
+Globals.fix.startAdmin = /fixInitiator/manager/session/startAdmin
+# Fix initiator \ud504\ub85c\uc138\uc2a4 \uc911\uc9c0 POST
+Globals.fix.stopAdmin = /fixInitiator/manager/session/stopAdmin
+#Fix initiator Session SeqNum \uc124\uc815 PUT
+Globals.fix.setSessionSeqAdmin = /fixInitiator/manager/setSessionSeqAdmin
+#SellSide Config \uc815\ubcf4 \ub4f1\ub85d POST, \uc218\uc815  PUT, \uc0ad\uc81c DELETE
+Globals.fix.conf = /sellside/admin/conf
+#Fix Session \uc815\ubcf4 \ub4f1\ub85d POST, \uc218\uc815  PUT, \uc0ad\uc81c DELETE
+Globals.fix.fixInitiator.session = /fixInitiator/admin/session
+# Fix Queue \uc0c1\ud0dc \ubaa8\ub2c8\ud130\ub9c1
+Globals.fix.restAcceptor.queue = /restAcceptor/admin/queue
+
+# FIX CODE 
+Globals.fix.msgTypeReq = msg_type_req
+Globals.fix.msgTypeRes = msg_type_res
+
+# FIX INITIATOR PORT
+Globals.fix.initiator.port = :8080
+
+
+
+# \uc8fc\uc2dd \uc885\ubaa9 \ub9ac\uc2a4\ud2b8 API URL
+Globals.stock.list = https://10.0.1.106/v2/market/stocks/kospi/lists?apikey=l7xxd00767dbc3d04323bc3712f89a36f1d8;kospi|https://10.0.1.106/v2/market/stocks/kosdaq/lists?apikey=l7xxd00767dbc3d04323bc3712f89a36f1d8;kosdaq
+
+# \ud1b5\ud569 \uacc4\uc88c \uc0ac\uc6a9 \uc5ec\ubd80 Y or N
+Globals.integration.account.yn = Y
+
+# \uae30\uc5c5 \ud68c\uc6d0 \ud1a0\ud070 \ub77c\uc774\ud504 \ud0c0\uc784 \ub514\ud3f4\ud2b8 \uc124\uc815
+Globals.cpt.tokenLifeTime = 15552000
+
+# ARS \uc778\uc99d \ubc84\ud2bc \uc81c\uc5b4
+Globals.terms.ars.use.yn = Y
+Globals.terms.ars.use.count = 10
+
+# create new member default pwd
+common.create.member.default.pwd=Fintech123@

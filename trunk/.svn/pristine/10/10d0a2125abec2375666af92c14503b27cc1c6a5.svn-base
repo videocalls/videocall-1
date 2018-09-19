@@ -1,0 +1,70 @@
+<ion-modal-view ng-controller="MemberTermsPopup as vm">
+    <!-- 왼쪽 헤더 버튼 예제 -->
+    <ion-header-bar align-title="center">
+        <h1 class="title">약관 동의</h1>
+        <button type="button" ng-click="vm.close()" class="btn_icon btn_close">닫기</button>
+    </ion-header-bar>
+    <ion-content>
+        <div class="container">
+        <form name="$root.memberTermsRe">
+            <div class="inner_cont type2">
+                <div class="biz_agree_area">
+                    <h2 class="title_h2" ng-hide="vm.termsList == null">코스콤</h2>
+                    <div class="agreement_area" ng-hide="vm.termsList == null"> <!-- 약관동의 -->
+                        <!--// 전체동의 -->
+                        <!-- 약관동의 List -->
+                        <div class="accordian-menu" accordion ng-repeat="item in vm.termsList">
+                            <!-- loop -->
+                            <div class="accordian-cont cont_wrap">
+                                <a href="#none" class="btn_bar">{{item.customerTermsTypeName}}에 동의합니다.</a>
+                                <div class="detail_cont">
+                                    <ion-content>
+                                        <pre class="scroll_box">{{item.customerTermsContent}}</pre>
+                                    </ion-content>
+                                </div>
+                                <div class="form_input">
+                                    <input type="checkbox" id="agree1_{{item.customerTermsTypeName}}" name="agree1" ng-model="item.checked" ng-click="vm.checkValid();"><label for="agree1_{{item.customerTermsTypeName}}"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <!--// 약관동의 List -->
+                    </div>
+                </div>
+                <div class="biz_agree_area">
+                    <h2 class="title_h2" ng-hide="vm.companyTermsList == null">금융투자회사</h2>
+                    <div class="agreement_area" ng-hide="vm.companyTermsList == null"> <!-- 약관동의 -->
+                        <!--// 전체동의 -->
+                        <!-- 약관동의 List -->
+                        <div class="accordian-menu" accordion ng-repeat="item in vm.companyTermsList">
+                            <!-- loop -->
+                            <div class="accordian-cont cont_wrap">
+                                <a href="#none" class="btn_bar">{{item.companyName}}에 동의합니다.</a>
+                                <div class="detail_cont">
+                                    <ion-content>
+                                        <pre class="scroll_box">{{item.companyTermsContent}}</pre>
+                                    </ion-content>
+                                </div>
+                                <div class="form_input">
+                                    <input type="checkbox" id="agree2_{{item.companyName}}" name="agree2" ng-model="item.checked" ng-click="vm.checkValid();"><label for="agree2_{{item.companyName}}"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <!--// 약관동의 List -->
+                    </div>
+                    <div class="txt_error" ng-messages="$root.memberTermsRe.all_ck.$error">
+                        <div class="txt_error" ng-show="!vm.allTerms">약관에 모두 동의하셔야 합니다.</div> <!-- add class : hide_set : display:none; 처리  -->
+                    </div>
+                </div>
+            </div>
+        </form>
+        </div>
+    </ion-content>
+    <ion-footer-bar>
+        <!-- 하단 버튼 -->
+        <div class="button_area btn_bottom_area">
+            <button ng-click="vm.termsListAgree();"
+                    ng-class="vm.customerVerifyStep ? 'btn_middle btn_black_org' : 'btn_middle btn_black_org disabled'">확인</button><!-- disabled event 넣어야 함 -->
+        </div>
+        <!--// 하단 버튼 -->
+    </ion-footer-bar>
+</ion-modal-view>

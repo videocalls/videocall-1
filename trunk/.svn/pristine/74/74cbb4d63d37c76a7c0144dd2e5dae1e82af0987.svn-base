@@ -1,0 +1,49 @@
+<ion-view view-title="앱 사용 신청">
+	<ion-content scroll="false">
+		<div class="container">
+			<div class="bg_slider_wrap">
+				<div class="slide_img bg_slide1" id="appsreq-background-image"></div>
+				<script type="text/javascript">
+					document.getElementById("appsreq-background-image").className = "slide_img bg_slide" + Math.floor( (Math.random() * (3 - 1 + 1)) + 1 );
+				</script>
+				<div class="btm_logo"><img src="/resources/images/logo_ohfin_main.png"></div>
+			</div>  
+			<ion-header-bar class="main_header">
+				<div class="top_main"> 
+					<div class="select_box">
+						<select ng-model="vm.searchAppCategory" ng-change="vm.search();">
+						<option ng-repeat="x in vm.commonCodeList" value= "{{x.searchResCode}}">{{x.codeNameKor}}</option> 
+						</select>
+					</div>
+					<div class="search_box">
+						<div class="input_area">
+							<input type="text" placeholder="검색어를 입력하세요."  ng-model="vm.searchKeyword" ng-keydown="vm.inputKeyDown($event)" ng-blur="vm.search();" >
+							<button type="button" class="btn_del" ng-show="vm.searchKeyword" ng-click="vm.searchClear()"></button>
+						</div>
+					</div>
+				</div>
+			</ion-header-bar>
+			<ion-content class="main-has-header">
+				<ion-refresher pulling-text="" on-refresh="vm.doRefresh()" pulling-icon="ion-ios-refresh"></ion-refresher>
+				<div class="inner_cont">
+					<div class="main_app" ng-show="vm.appList">
+						<ul>
+							<li ng-repeat="app in vm.appList" ng-click="vm.checkCommonTerms(app.appId, app.appName, app.companyName, app.companyCodeId);"> <!-- add : apply_app -->
+								<a href="#go">
+									<span class="logo_area"><img ng-src="{{app.appImageUrl}}"></span>
+									<div class="txt_app">
+										<span>{{vm.cutByteLength(app.appName, 40)}}</span>
+										<span class="biz">{{app.appCategoryName}} / {{app.companyName}}</span>
+									</div>
+								</a>
+							</li>
+						</ul>												
+					</div>
+					<div class="not_apply_app" ng-show="vm.appList.length<1">
+							<p>검색 결과가 없습니다.</p>
+					</div>					
+				</div>				
+			</ion-content>
+		</div>
+	</ion-content>
+</ion-view>

@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>개인 | koscom OpenAPI Platform </title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="stylesheet" href="../../../css/spt/import.css">
+	<!-- IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	  <script src="../../../js/cmm/html5shiv.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="../../../js/cmm/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../../../js/cmm/jquery-ui.js"></script>
+	<script type="text/javascript" src="../../../js/spt/common_pub.js"></script>
+	<script>
+	$(function() {
+		// 달력
+	    $("#datepicker1, #datepicker2").datepicker({
+	      showOn: "button",
+	      buttonImage: "../../../images/cpt/common/calendar.png",
+	      buttonImageOnly: true,
+	      buttonText: "달력보기"
+	    });
+	});
+	
+	$(function(){
+		$('.service').on('click', function(){
+		   if($(this).hasClass('on')){
+			  $(this).removeClass('on');
+			  $(this).children().text('열림');
+		   }else{
+			  $(this).addClass('on');
+			  $(this).children().text('닫힘');
+		   }
+		   return false;
+		});
+		
+
+		var $accMenu = $( '.chk_fail .service' );
+		   $accMenu.on( 'click', function () {
+			  //var index = $( this ).index();
+		   if ( $( this ).closest( '.chk_fail' ).hasClass( 'active' )) {
+			  $( this ).closest( '.chk_fail' ).removeClass( 'active' );
+		   } else {
+			  $( this ).closest( '.chk_fail' ).removeClass( 'active' );
+			  $( this ).closest( '.chk_fail' ).addClass( 'active' );
+		   }
+		   return false;
+		});
+	});
+	</script>
+</head>
+
+<body>
+
+<div class="wrap">
+
+	<!-- header -->
+	<header class="header">
+		<div class="header_area">
+			<div class="skip_navi">
+				<a href="#gnb">메뉴 바로가기</a>
+				<a href="#content">본문 바로가기</a>		
+			</div>
+
+			<ol class="util">
+				<li class="menu"><a href="#none">로그인</a></li>
+				<li class="menu"><a href="#none">회원가입</a></li>
+				<li class="site on"><a href="#none">개인</a></li>
+				<li class="site"><a href="#none">기업/금투사</a></li>
+			</ol>
+
+			<nav id="gnb">
+				<h1 class="logo"><a href="#none"><img src="../../../images/spt/common/logo.png" alt="Koscom OpenAPI Platform"></a></h1>
+
+				<div class="gnb_menu">
+					<ul>
+						<li><a href="#none">금융투자 핀테크 포털</a></li>
+						<li><a href="#none">핀테크 서비스</a></li>
+						<li><a href="#none">서비스 신청</a></li>
+						<li><a href="#none">서비스지원</a></li>
+					</ul>
+				</div>
+			</nav>
+		</div>
+	</header>
+	<!-- // header -->
+
+	<!-- section -->
+	<section>
+		<!-- location -->
+		<div class="location">
+			<ul>
+				<li class="home"><a href="#none">홈</a></li>
+				<li><a href="#none">마이페이지</a></li>
+				<li class="on">통합 계좌 조회</li>
+			</ul>
+		</div>
+		<!-- // location -->
+
+		<div class="container">
+			<!-- lnb -->
+			<article class="lnb">				
+				<h2>마이페이지</h2>
+				<ul>
+					<li><a href="#none" class="on">통합 계좌 조회</a></li>
+				</ul>
+			</article>
+			<!-- // lnb -->
+
+			<!-- content -->
+			<article id="content">
+
+				<div class="sub_title">
+					<h3>통합 계좌 조회</h3>
+				</div>
+
+				<!-- con -->
+				<div class="con">
+
+					<!-- tab_menu -->
+					<div class="tab_menu">
+						<ul>
+							<li class="on"><a href="#tab01">자산현황</a></li>
+							<li><a href="#tab02">거래내역</a></li>
+							<li><a href="#tab03">포트폴리오</a></li>
+							<li><a href="#tab04">관심종목</a></li>
+						</ul>
+					</div>
+					<!-- // tab_menu -->
+					
+					<!-- tab_cont -->
+					<!-- 자산현황 -->
+					<div class="tab_cont" id="tab01">
+						<div class="asset">
+							<p class="count">증권사 : 3 / 등록계좌 : 6</p>
+							<div class="right">
+								<p class="being">※ 미등록 계좌가 2건 존재합니다.</p>
+								<a href="#none" class="btn_type3">추가 신청하기</a>
+							</div>
+						</div>
+
+						<table class="tbtype_form mt20">
+							<caption>증권사, 가상계좌 선택</caption>
+							<colgroup>
+								<col style="width:20%;">
+								<col style="width:30%;">
+								<col style="width:20%;">
+								<col style="width:30%;">
+							</colgroup>
+							<tbody>
+							<tr>
+								<th scope="row"><label for="sel">이름</label></th>
+								<td>
+									<span class="sel_box1">
+										<select id="sel" style="width:150px;">
+											<option>전체</option>
+										</select>
+									</span>
+								</td>
+								<th scope="row"><label for="sel2">가상계좌</label></th>
+								<td>
+									<span class="sel_box1">
+										<select id="se2" style="width:150px;">
+											<option>전체</option>
+										</select>
+									</span>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+
+						<div class="btn_area search">
+							<a href="#none" class="btn_type1">검색</a>
+							<a href="#none" class="btn_type2">초기화</a>
+						</div>
+
+						<div class="property">
+							<!-- <p class="title_01">홍길동님의 자산현황</p> -->
+							<table class="tbtype_form align">
+								<caption>자산현황</caption>
+								<colgroup>
+									<col style="width:20%;">
+									<col style="width:30%;">
+									<col style="width:20%;">
+									<col style="width:30%;">
+								</colgroup>
+								<tbody>
+								<tr>
+									<th scope="row">총평가금액</th>
+									<td>66,182,947</td>
+									<th scope="row">출금가능액</th>
+									<td>36,846,241</td>
+								</tr>
+								<tr>
+									<th scope="row">현금잔고</th>
+									<td>4986264</td>
+									<th scope="row">평가금액</th>
+									<td>61,196,683</td>
+								</tr>
+								<tr>
+									<th scope="row">매수금액</th>
+									<td>59,283,678</td>
+									<th scope="row">평가손익</th>
+									<td>1,913,005</td>
+								</tr>
+								</tbody>
+							</table>
+						</div>
+
+						<!-- tab_menu -->
+						<div class="tab_menu2">
+							<ul>
+								<li class="on"><a href="#tab05">주식</a></li>
+								<li><a href="#tab06">펀드</a></li>
+								<li><a href="#tab07">기타</a></li>
+							</ul>
+						</div>
+						<!-- // tab_menu -->
+
+						<!-- 주식 -->
+						<div class="tab_cont2" id="tab05">
+							<!-- tbtype_list2 type3 -->
+							<table class="tbtype_list2 type3">
+								<caption>증권사, 가상계좌, 종목, 상품 구분, 수량, 매수금액, 평가금액, 평가손액, 수익률 정보리스트</caption>
+								<colgroup>
+									<col style="width:*;">
+									<col style="width:15%;">
+									<col style="width:15%">
+									<col style="width:10%;">
+									<col style="width:7%;">
+									<col style="width:10%;">
+									<col style="width:10%;">
+									<col style="width:12%;">
+									<col style="width:10%;">
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">증권사</th>
+										<th scope="col">가상계좌</th>
+										<th scope="col">종목</th>
+										<th scope="col">상품 구분</th>
+										<th scope="col">수량</th>
+										<th scope="col">매수금액</th>
+										<th scope="col">평가금액</th>
+										<th scope="col">평가손익</th>
+										<th scope="col">수익률</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>교보증권</td>
+										<td><a href="#none">23532523564</a></td>
+										<td>현대중공업</td>
+										<td></td>
+										<td>20</td>
+										<td>2700000</td>
+										<td>2890000</td>
+										<td>+190000</td>
+										<td>+7.04%</td>
+									</tr>
+									<tr>
+										<td>교보증권</td>
+										<td><a href="#none">23532523564</a></td>
+										<td>현대중공업</td>
+										<td></td>
+										<td>20</td>
+										<td>2700000</td>
+										<td>2890000</td>
+										<td>+190000</td>
+										<td>+7.04%</td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- // tbtype_list2 type3 -->
+
+							<!-- pagination -->
+							<div class="pagination">
+								<a href="#" class="page first"></a>
+								<a href="#" class="page prev"></a>
+								<a href="#" class="on">1</a>
+								<a href="#">2</a>
+								<a href="#">3</a>
+								<a href="#">4</a>
+								<a href="#">5</a>
+								<a href="#">6</a>
+								<a href="#">7</a>
+								<a href="#">8</a>
+								<a href="#">9</a>
+								<a href="#">10</a>
+								<a href="#" class="page next"></a>
+								<a href="#" class="page last"></a>
+							</div>
+							<!-- // pagination -->
+							
+							<!-- 계좌 조회 실패 -->
+							<div class="chk_fail">
+								<div class="title_step">
+									<p class="fail"><span>!</span> 3건의 계좌 조회에 실패하였습니다.</p>
+									<div class="toggle">
+										<span class="service">
+											<a href="javascript:void(0);">펼침</a>
+										</span>
+									</div>
+								</div>
+								<ul>
+									<li>- 메리츠종합금융증권 / 35355233563</li>
+									<li>- 교보증권 / 12353554233563</li>
+									<li>- 교보증권 / 35355245233563</li>
+								</ul>
+							</div>
+							<!--// 계좌 조회 실패 -->
+							
+							<!-- 계좌 조회 개수 제한 -->
+							<div class="chk_fail mt10">
+								<div class="title_step">
+									<p class="fail type_black"><span>!</span> 계좌 조회 개수 제한 안내</p>
+									<div class="toggle">
+										<span class="service">
+											<a href="javascript:void(0);">펼침</a>
+										</span>
+									</div>
+								</div>
+								<ul>
+									<li>- 통합계좌조회 시, 출력 가능한 개수는 <span class="ft_red">계좌별 최대 100개</span>입니다. </li>
+								</ul>
+							</div>
+							<!--// 계좌 조회 개수 제한 -->
+						</div>
+
+						<!--// 주식 -->
+
+						<!-- 펀드 -->
+						<div class="tab_cont2" id="tab06">
+							<!-- tbtype_list2 type3 -->
+							<table class="tbtype_list2 type3">
+								<caption>증권사, 가상계좌, 종목, 상품 구분, 수량, 매수금액, 평가금액, 평가손액, 수익률 정보리스트</caption>
+								<colgroup>
+									<col style="width:*;">
+									<col style="width:15%;">
+									<col style="width:15%">
+									<col style="width:10%;">
+									<col style="width:7%;">
+									<col style="width:10%;">
+									<col style="width:10%;">
+									<col style="width:12%;">
+									<col style="width:10%;">
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">증권사</th>
+										<th scope="col">가상계좌</th>
+										<th scope="col">종목</th>
+										<th scope="col">상품 구분</th>
+										<th scope="col">수량</th>
+										<th scope="col">매수금액</th>
+										<th scope="col">평가금액</th>
+										<th scope="col">평가손익</th>
+										<th scope="col">수익률</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>교보증권</td>
+										<td><a href="#none">23532523564</a></td>
+										<td>현대중공업</td>
+										<td></td>
+										<td>20</td>
+										<td>2700000</td>
+										<td>2890000</td>
+										<td>+190000</td>
+										<td>+7.04%</td>
+									</tr>
+									<tr>
+										<td>교보증권</td>
+										<td><a href="#none">23532523564</a></td>
+										<td>현대중공업</td>
+										<td></td>
+										<td>20</td>
+										<td>2700000</td>
+										<td>2890000</td>
+										<td>+190000</td>
+										<td>+7.04%</td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- // tbtype_list2 type3 -->
+
+							<!-- pagination -->
+							<div class="pagination">
+								<a href="#" class="page first"></a>
+								<a href="#" class="page prev"></a>
+								<a href="#" class="on">1</a>
+								<a href="#">2</a>
+								<a href="#">3</a>
+								<a href="#">4</a>
+								<a href="#">5</a>
+								<a href="#">6</a>
+								<a href="#">7</a>
+								<a href="#">8</a>
+								<a href="#">9</a>
+								<a href="#">10</a>
+								<a href="#" class="page next"></a>
+								<a href="#" class="page last"></a>
+							</div>
+							<!-- // pagination -->
+
+							<div class="chk_fail">
+								<div class="title_step">
+									<p class="fail"><span>!</span> 3건의 계좌 조회에 실패하였습니다.</p>
+									<div class="toggle">
+										<span class="service">
+											<a href="javascript:void(0);">펼침</a>
+										</span>
+									</div>
+									<ul>
+										<li>- 메리츠종합금융증권 / 35355233563</li>
+										<li>- 교보증권 / 12353554233563</li>
+										<li>- 교보증권 / 35355245233563</li>
+								</div>
+							</div>
+						</div>
+						<!--// 펀드 -->
+
+						<!-- 기타 -->
+						<div class="tab_cont2" id="tab07">
+							<!-- tbtype_list2 type3 -->
+							<table class="tbtype_list2 type3">
+								<caption>증권사, 가상계좌, 종목, 상품 구분, 수량, 매수금액, 평가금액, 평가손액, 수익률 정보리스트</caption>
+								<colgroup>
+									<col style="width:*;">
+									<col style="width:15%;">
+									<col style="width:15%">
+									<col style="width:10%;">
+									<col style="width:7%;">
+									<col style="width:10%;">
+									<col style="width:10%;">
+									<col style="width:12%;">
+									<col style="width:10%;">
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">증권사</th>
+										<th scope="col">가상계좌</th>
+										<th scope="col">종목</th>
+										<th scope="col">상품 구분</th>
+										<th scope="col">수량</th>
+										<th scope="col">매수금액</th>
+										<th scope="col">평가금액</th>
+										<th scope="col">평가손익</th>
+										<th scope="col">수익률</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>교보증권</td>
+										<td><a href="#none">23532523564</a></td>
+										<td>현대중공업</td>
+										<td></td>
+										<td>20</td>
+										<td>2700000</td>
+										<td>2890000</td>
+										<td>+190000</td>
+										<td>+7.04%</td>
+									</tr>
+									<tr>
+										<td>교보증권</td>
+										<td><a href="#none">23532523564</a></td>
+										<td>현대중공업</td>
+										<td></td>
+										<td>20</td>
+										<td>2700000</td>
+										<td>2890000</td>
+										<td>+190000</td>
+										<td>+7.04%</td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- // tbtype_list2 type3 -->
+
+							<!-- pagination -->
+							<div class="pagination">
+								<a href="#" class="page first"></a>
+								<a href="#" class="page prev"></a>
+								<a href="#" class="on">1</a>
+								<a href="#">2</a>
+								<a href="#">3</a>
+								<a href="#">4</a>
+								<a href="#">5</a>
+								<a href="#">6</a>
+								<a href="#">7</a>
+								<a href="#">8</a>
+								<a href="#">9</a>
+								<a href="#">10</a>
+								<a href="#" class="page next"></a>
+								<a href="#" class="page last"></a>
+							</div>
+							<!-- // pagination -->
+
+							<div class="chk_fail">
+								<div class="title_step">
+									<p class="fail"><span>!</span> 3건의 계좌 조회에 실패하였습니다.</p>
+									<div class="toggle">
+										<span class="service">
+											<a href="javascript:void(0);">펼침</a>
+										</span>
+									</div>
+									<ul>
+										<li>- 메리츠종합금융증권 / 35355233563</li>
+										<li>- 교보증권 / 12353554233563</li>
+										<li>- 교보증권 / 35355245233563</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<!--// 기타 -->
+
+					</div>	
+					<!--// 자선현황 -->
+
+					<!-- 거래내역 -->
+					<div class="tab_cont" id="tab02">
+						<div class="asset">
+							<p class="count">증권사 : 3 / 등록계좌 : 6</p>
+							<div class="right">
+								<p class="being">※ 미등록 계좌가 2건 존재합니다.</p>
+								<a href="#none" class="btn_type3">추가 신청하기</a>
+							</div>
+						</div>
+
+						<!-- tbtype_serch -->
+						<table class="tbtype_form mt20">
+							<caption>증권사, 가상계좌, 구분, 기간 입력</caption>
+							<colgroup>
+								<col style="width:15%;">
+								<col style="width:35%;">
+								<col style="width:15%;">
+								<col style="width:35%;">
+							</colgroup>
+							<tbody>
+							<tr>
+								<th scope="row"><label for="sel1">증권사</label></th>
+								<td> 
+									<span class="sel_box1">
+										<select title="구분 입력" id="sel1" style="width:150px;">
+											<option>전체</option>
+										</select>
+									</span>
+								</td>
+								<th scope="row"><label for="sel2">가상계좌</label></th>
+								<td> 
+									<span class="sel_box1">
+										<select title="구분 입력" id="sel2" style="width:150px;">
+											<option>전체</option>
+										</select>
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row"><label for="chk1">구분</label></th>
+								<td colspan="3"> 
+									<span class="sel_box1">
+										<select title="구분 입력" id="chk1">
+											<option>전체</option>
+											<option>종목코드</option>
+											<option>종목명</option>
+										</select>
+									</span>
+									<input type="text" style="width:350px">
+								</td>		
+							</tr>
+							<tr>
+								<th scope="row">등록일</th>
+								<td class="txt_l" colspan="3"> 
+									<input type="text" id="datepicker1" readonly="readonly" style="width:120px;"><span class="dot">~</span><input type="text" id="datepicker2" readonly="readonly" style="width:120px;">
+									<div class="btn_area2 left">
+										<a href="#none" class="btn_type3">어제</a>
+										<a href="#none" class="btn_type3">오늘</a>
+										<a href="#none" class="btn_type3">7일</a>
+										<a href="#none" class="btn_type3">1개월</a>
+										<a href="#none" class="btn_type3">3개월</a>
+									</div>
+								</td>	
+							</tr>
+							</tbody>
+						</table>
+
+						<div class="btn_area search">
+							<a href="#none" class="btn_type1">검색</a>
+							<a href="#none" class="btn_type2">초기화</a>
+						</div>
+						<!-- // tbtype_serch -->
+
+						<div class="total_num">총 <span class="point01">1,234</span>건</div>
+						<!-- tbtype_list2 type3 -->
+						<table class="tbtype_list2 type3">
+							<caption>증권사, 가상계좌번호, 거래일자, 종목코드, 품목명, 잔고, 거래구분, 금액, 수량 정보리스트</caption>
+							<colgroup>
+								<col style="width:*;">
+								<col style="width:13%;">
+								<col style="width:12%;">
+								<col style="width:12%;">
+								<col style="width:12%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+								<col style="width:10%;">
+								<col style="width:7%;">
+							</colgroup>
+							<thead>
+								<tr>
+									<th scope="col">증권사</th>
+									<th scope="col">가상계좌번호</th>
+									<th scope="col">거래일자</th>
+									<th scope="col">품목코드</th>
+									<th scope="col">품목명</th>
+									<th scope="col">잔고</th>
+									<th scope="col">거래구분</th>
+									<th scope="col">금액</th>
+									<th scope="col">수량</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>교보증권</td>
+									<td><a href="#none">212124545</a></td>
+									<td>17-02-08</td>
+									<td>A035720</td>
+									<td>현대중공업</td>
+									<td>60,000</td>
+									<td>매수</td>
+									<td>54,000</td>
+									<td>10</td>
+								</tr>
+							</tbody>
+						</table>
+						<!-- // tbtype_list2 type3 -->
+
+						<div class="btn_area type2">
+							<div class="left">
+								<a href="#none" class="btn_type9 excel">엑셀</a>
+							</div>
+						</div>
+
+						<!-- pagination -->
+						<div class="pagination">
+							<a href="#" class="page first"></a>
+							<a href="#" class="page prev"></a>
+							<a href="#" class="on">1</a>
+							<a href="#">2</a>
+							<a href="#">3</a>
+							<a href="#">4</a>
+							<a href="#">5</a>
+							<a href="#">6</a>
+							<a href="#">7</a>
+							<a href="#">8</a>
+							<a href="#">9</a>
+							<a href="#">10</a>
+							<a href="#" class="page next"></a>
+							<a href="#" class="page last"></a>
+						</div>
+						<!-- // pagination -->
+
+						<div class="chk_fail">
+							<div class="title_step">
+								<p class="fail"><span>!</span> 3건의 계좌 조회에 실패하였습니다.</p>
+								<div class="toggle">
+									<span class="service">
+										<a href="javascript:void(0);">펼침</a>
+									</span>
+								</div>
+								<ul>
+									<li>- 메리츠종합금융증권 / 35355233563</li>
+									<li>- 교보증권 / 12353554233563</li>
+									<li>- 교보증권 / 35355245233563</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+					<!--// 거래내역 -->
+
+					<!-- 포트폴리오 -->
+					<div class="tab_cont" id="tab03">
+						<div class="asset">
+							<p class="count">증권사 : 3 / 등록계좌 : 6</p>
+							<div class="right">
+								<p class="being">※ 미등록 계좌가 2건 존재합니다.</p>
+								<a href="#none" class="btn_type3">추가 신청하기</a>
+							</div>
+						</div>
+
+						<table class="tbtype_form mt20">
+							<caption>증권사, 가상계좌 선택</caption>
+							<colgroup>
+								<col style="width:20%;">
+								<col style="width:30%;">
+								<col style="width:20%;">
+								<col style="width:30%;">
+							</colgroup>
+							<tbody>
+							<tr>
+								<th scope="row"><label for="sel">이름</label></th>
+								<td>
+									<span class="sel_box1">
+										<select id="sel" style="width:150px;">
+											<option>전체</option>
+										</select>
+									</span>
+								</td>
+								<th scope="row"><label for="sel2">가상계좌</label></th>
+								<td>
+									<span class="sel_box1">
+										<select id="se2" style="width:150px;">
+											<option>전체</option>
+										</select>
+									</span>
+								</td>
+							</tr>
+							</tbody>
+						</table>
+
+						<div class="btn_area search">
+							<a href="#none" class="btn_type1">검색</a>
+							<a href="#none" class="btn_type2">초기화</a>
+						</div>
+
+						<!-- tab_menu -->
+						<div class="tab_menu3">
+							<ul>
+								<li class="on"><a href="#tab08">주식</a></li>
+								<li><a href="#tab09">펀드</a></li>
+								<li><a href="#tab10">기타</a></li>
+							</ul>
+						</div>
+						<!-- // tab_menu -->
+
+						<!-- 주식 -->
+						<div class="tab_cont3" id="tab08">
+							<!-- tbtype_list2 type3 -->
+							<table class="tbtype_list2 type3">
+								<caption>증권사, 종목, 상품 구분, 수량, 수익률 정보리스트</caption>
+								<colgroup>
+									<col style="width:*;">
+									<col style="width:20%;">
+									<col style="width:20%;">
+									<col style="width:20%;">
+									<col style="width:20%;">
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">증권사</th>
+										<th scope="col">종목</th>
+										<th scope="col">상품 구분</th>
+										<th scope="col">수량</th>
+										<th scope="col">수익률</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>교보증권</td>
+										<td>현대중공업</td>
+										<td>KSP</td>
+										<td>20</td>
+										<td>+7.04%</td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- // tbtype_list2 type3 -->
+
+							<!-- pagination -->
+							<div class="pagination">
+								<a href="#" class="page first"></a>
+								<a href="#" class="page prev"></a>
+								<a href="#" class="on">1</a>
+								<a href="#">2</a>
+								<a href="#">3</a>
+								<a href="#">4</a>
+								<a href="#">5</a>
+								<a href="#">6</a>
+								<a href="#">7</a>
+								<a href="#">8</a>
+								<a href="#">9</a>
+								<a href="#">10</a>
+								<a href="#" class="page next"></a>
+								<a href="#" class="page last"></a>
+							</div>
+							<!-- // pagination -->
+								
+							<div class="chk_fail">
+								<div class="title_step">
+									<p class="fail"><span>!</span> 2건의 계좌 조회에 실패하였습니다.</p>
+									<div class="toggle">
+										<span class="service">
+											<a href="javascript:void(0);">펼침</a>
+										</span>
+									</div>
+									<ul>
+										<li>- 메리츠종합금융증권 / 35355233563</li>
+										<li>- 교보증권 / 12353554233563</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+
+						<!--// 주식 -->
+
+						<!-- 펀드 -->
+						<div class="tab_cont3" id="tab09">
+							<!-- tbtype_list2 type3 -->
+							<table class="tbtype_list2 type3">
+								<caption>증권사, 종목, 상품 구분, 수량, 수익률 정보리스트</caption>
+								<colgroup>
+									<col style="width:*;">
+									<col style="width:20%;">
+									<col style="width:20%;">
+									<col style="width:20%;">
+									<col style="width:20%;">
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">증권사</th>
+										<th scope="col">종목</th>
+										<th scope="col">상품 구분</th>
+										<th scope="col">수량</th>
+										<th scope="col">수익률</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>교보증권</td>
+										<td>현대중공업</td>
+										<td>KSP</td>
+										<td>20</td>
+										<td>+7.04%</td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- // tbtype_list2 type3 -->
+
+							<!-- pagination -->
+							<div class="pagination">
+								<a href="#" class="page first"></a>
+								<a href="#" class="page prev"></a>
+								<a href="#" class="on">1</a>
+								<a href="#">2</a>
+								<a href="#">3</a>
+								<a href="#">4</a>
+								<a href="#">5</a>
+								<a href="#">6</a>
+								<a href="#">7</a>
+								<a href="#">8</a>
+								<a href="#">9</a>
+								<a href="#">10</a>
+								<a href="#" class="page next"></a>
+								<a href="#" class="page last"></a>
+							</div>
+							<!-- // pagination -->
+								
+							<div class="chk_fail">
+								<div class="title_step">
+									<p class="fail"><span>!</span> 2건의 계좌 조회에 실패하였습니다.</p>
+									<div class="toggle">
+										<span class="service">
+											<a href="javascript:void(0);">펼침</a>
+										</span>
+									</div>
+									<ul>
+										<li>- 메리츠종합금융증권 / 35355233563</li>
+										<li>- 교보증권 / 12353554233563</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<!--// 펀드 -->
+
+						<!-- 기타 -->
+						<div class="tab_cont3" id="tab10">
+							<!-- tbtype_list2 type3 -->
+							<table class="tbtype_list2 type3">
+								<caption>증권사, 종목, 상품 구분, 수량, 수익률 정보리스트</caption>
+								<colgroup>
+									<col style="width:*;">
+									<col style="width:20%;">
+									<col style="width:20%;">
+									<col style="width:20%;">
+									<col style="width:20%;">
+								</colgroup>
+								<thead>
+									<tr>
+										<th scope="col">증권사</th>
+										<th scope="col">종목</th>
+										<th scope="col">상품 구분</th>
+										<th scope="col">수량</th>
+										<th scope="col">수익률</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>교보증권</td>
+										<td>현대중공업</td>
+										<td>KSP</td>
+										<td>20</td>
+										<td>+7.04%</td>
+									</tr>
+								</tbody>
+							</table>
+							<!-- // tbtype_list2 type3 -->
+
+							<!-- pagination -->
+							<div class="pagination">
+								<a href="#" class="page first"></a>
+								<a href="#" class="page prev"></a>
+								<a href="#" class="on">1</a>
+								<a href="#">2</a>
+								<a href="#">3</a>
+								<a href="#">4</a>
+								<a href="#">5</a>
+								<a href="#">6</a>
+								<a href="#">7</a>
+								<a href="#">8</a>
+								<a href="#">9</a>
+								<a href="#">10</a>
+								<a href="#" class="page next"></a>
+								<a href="#" class="page last"></a>
+							</div>
+							<!-- // pagination -->
+								
+							<div class="chk_fail">
+								<div class="title_step">
+									<p class="fail"><span>!</span> 2건의 계좌 조회에 실패하였습니다.</p>
+									<div class="toggle">
+										<span class="service">
+											<a href="javascript:void(0);">펼침</a>
+										</span>
+									</div>
+									<ul>
+										<li>- 메리츠종합금융증권 / 35355233563</li>
+										<li>- 교보증권 / 12353554233563</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<!--// 기타 -->
+
+					</div>
+					<!--// 포트폴리오 -->
+
+					<!-- 관심종목 -->
+					<div class="tab_cont" id="tab04">
+						<div class="asset">
+							<p class="count">증권사 : 3 / 등록계좌 : 6</p>
+							<div class="right">
+								<p class="being">※ 미등록 계좌가 2건 존재합니다.</p>
+								<a href="#none" class="btn_type3">추가 신청하기</a>
+							</div>
+						</div>
+
+						<!-- tbtype_serch -->
+						<table class="tbtype_form mt20">
+							<caption>증권사, 가상계좌, 구분, 기간 입력</caption>
+							<colgroup>
+								<col style="width:15%;">
+								<col style="width:35%;">
+								<col style="width:15%;">
+								<col style="width:35%;">
+							</colgroup>
+							<tbody>
+							<tr>
+								<th scope="row"><label for="sel1">증권사</label></th>
+								<td> 
+									<span class="sel_box1">
+										<select title="구분 입력" id="sel1" style="width:150px;">
+											<option>전체</option>
+										</select>
+									</span>
+								</td>
+								<th scope="row"><label for="sel2">가상계좌</label></th>
+								<td> 
+									<span class="sel_box1">
+										<select title="구분 입력" id="sel2" style="width:150px;">
+											<option>전체</option>
+										</select>
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<th scope="row"><label for="chk1">구분</label></th>
+								<td colspan="3"> 
+									<span class="sel_box1">
+										<select title="구분 입력" id="chk1">
+											<option>전체</option>
+											<option>종목코드</option>
+											<option>종목명</option>
+										</select>
+									</span>
+									<input type="text" style="width:350px">
+								</td>		
+							</tr>
+							</tbody>
+						</table>
+
+						<div class="btn_area search">
+							<a href="#none" class="btn_type1">검색</a>
+							<a href="#none" class="btn_type2">초기화</a>
+						</div>
+						<!-- // tbtype_serch -->
+
+						<div class="total_num">총 <span class="point01">1,234</span>건</div>
+						<!-- tbtype_list2 type3 -->
+						<table class="tbtype_list2 type3">
+							<caption>증권사, 그룹명, 종목명, 종목코드, 현재가 정보리스트</caption>
+							<colgroup>
+								<col style="width:*;">
+								<col style="width:20%;">
+								<col style="width:20%;">
+								<col style="width:20%;">
+								<col style="width:20%;">
+							</colgroup>
+							<thead>
+								<tr>
+									<th scope="col">증권사</th>
+									<th scope="col">그룹명</th>
+									<th scope="col">종목명</th>
+									<th scope="col">종목코드</th>
+									<th scope="col">현재가</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>교보증권</td>
+									<td>그룹명1</td>
+									<td>종목명</td>
+									<td>종목코드</td>
+									<td>현재가</td>
+								</tr>
+								<tr>
+									<td>대신증권</td>
+									<td></td>
+									<td>SK텔레콤</td>
+									<td></td>
+									<td>SK텔레콤</td>
+								</tr>
+							</tbody>
+						</table>
+						<!-- // tbtype_list2 type3 -->
+
+						<!-- pagination -->
+						<div class="pagination">
+							<a href="#" class="page first"></a>
+							<a href="#" class="page prev"></a>
+							<a href="#" class="on">1</a>
+							<a href="#">2</a>
+							<a href="#">3</a>
+							<a href="#">4</a>
+							<a href="#">5</a>
+							<a href="#">6</a>
+							<a href="#">7</a>
+							<a href="#">8</a>
+							<a href="#">9</a>
+							<a href="#">10</a>
+							<a href="#" class="page next"></a>
+							<a href="#" class="page last"></a>
+						</div>
+						<!-- // pagination -->
+
+					</div>
+					<!--// 관심종목 -->
+					
+				</div>
+				<!-- // con -->
+
+			</article>
+			<!-- // content -->
+		</div>
+	</section>
+	<!-- section -->
+
+	<!-- footer -->
+	<footer class="footer">
+		<div class="footer_area">
+			<ul class="link">
+				<li><a href="#none">서비스이용약관</a></li>
+				<li class="point"><a href="#none">개인정보취급방침</a></li>
+			</ul>
+			<address>
+				서울시 영등포구 여의나루로 76 ㈜코스콤  대표전화 : 02-767-7114 <span>이메일 : master@koscom.openplatform.com</span>
+				<span class="copy">COPYRIGHT 2016. KOSCOM CORP. ALL RIGHTS RESERVED.</span>
+			</address>
+
+			<div class="family_site">
+				<!-- selBox2 -->
+				<span class="sel_box2">
+					<select style="min-width:150px">
+						<option>코스콤 사이트</option>
+					</select>
+				</span>
+				<!-- selBox2 -->
+				<span class="sel_box2">
+					<select style="min-width:170px">
+						<option>관련 사이트</option>
+					</select>
+				</span>				
+			</div>
+
+		</div>
+	</footer>
+	<!-- // footer -->
+
+</div>
+
+</body>
+</html>

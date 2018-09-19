@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 자본시장 공동 핀테크 오픈플랫폼 구축 2차
+* @FileName : IntAcntDAO.java
+* @Comment  : [마이페이지:통합계좌]정보관리를 위한 SQL XML
+* @author   : 포털 이희태
+* @since    : 2017.02.15
+* @version  : 1.0
+* @see
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2017.02.15   이희태        최초생성
+-->
+
+<sqlMap namespace="kr.co.koscom.oppf.spt.myp.intAcnt.service.impl.IntAcntOauthDAO">
+
+    <typeAlias alias="SptCustomerAcntOauthTokenVO"
+               type="kr.co.koscom.oppf.spt.myp.intAcnt.service.SptCustomerAcntOauthTokenVO"/>
+
+    <!--
+     * @Method Name        : cmm.tsa.CmmTsaDAO.selectCustomerAcntOauthToken
+     * @Method description : [일반회원서비스통합계좌]Token 정보를 조회한다.
+     * @param              : SptCustomerAcntOauthTokenVO
+     * @return             : SptCustomerAcntOauthTokenVO
+     * @throws             : Exception
+     -->
+    <select id="spt.myp.intAcnt.IntAcntOauthDAO.selectCustomerAcntOauthToken" parameterClass="SptCustomerAcntOauthTokenVO" resultClass="SptCustomerAcntOauthTokenVO" >
+        select customer_reg_no as customerRegNo
+             , oauth_seq as oauthSeq
+             , access_token as accessToken
+             , refresh_token as refreshToken
+             , scope as scope
+             , token_type as tokenType
+             , expires_in as expiresIn
+             , use_yn as useYn
+             , delete_date as deleteDate
+          from spt_customer_account_oauth_token_info
+         where 1=1
+           and customer_reg_no = #customerRegNo#
+           and use_yn = 'Y'
+           and delete_date is null
+           limit 1
+    </select>
+
+    <!--
+     * @Method Name        : insertCustomerAcntOauthToken
+      * @Method description : [일반회원서비스통합계좌]정보를 등록한다.
+      * @param              : SptCustomerAcntOauthTokenVO
+      * @throws             : Exception
+     -->
+    <insert id="spt.myp.intAcnt.IntAcntOauthDAO.insertCustomerAcntOauthToken" parameterClass="SptCustomerAcntOauthTokenVO">
+        <selectKey keyProperty="oauthSeq" resultClass="java.lang.String">
+            select  concat(date_format(sysdate(),'%Y%m%d'),
+            lpad((
+            select ifnull( max(cast(right(oauth_seq,4) as signed)), 0)+1
+            from spt_customer_account_oauth_token_info
+            where customer_reg_no = #customerRegNo#
+            and left(oauth_seq,8) = concat(date_format(sysdate(),'%Y%m%d'))
+            ), 4, '0')
+            ) as oauthSeq
+        </selectKey>
+        insert into spt_customer_account_oauth_token_info(
+        customer_reg_no
+        , oauth_seq
+        , access_token
+        , refresh_token
+        , scope
+        , token_type
+        , expires_in
+        , use_yn
+        , update_date
+        , update_id
+        , create_date
+        , create_id
+        )
+        values (
+        #customerRegNo#
+        ,#oauthSeq#
+        ,#accessToken#
+        ,#refreshToken#
+        ,#scope#
+        ,#tokenType#
+        ,#expiresIn#
+        ,'Y'
+        ,sysdate()        /* 생성일시 */
+        ,#customerRegNo#  /* 생성자 ID */
+        ,sysdate()        /* 변경일시 */
+        ,#customerRegNo#  /* 변경자 ID */
+        )
+    </insert>
+
+    <!--
+     * @Method Name        : deleteCustomerAcntOauthToken
+      * @Method description : [일반회원서비스통합계좌]정보를 삭제한다.
+      * @param              : SptCustomerAcntOauthTokenVO
+      * @throws             : Exception
+     -->
+    <update id="spt.myp.intAcnt.IntAcntOauthDAO.deleteCustomerAcntOauthToken" parameterClass="SptCustomerAcntOauthTokenVO">
+        update spt_customer_account_oauth_token_info
+            set delete_date = sysdate()
+            where customer_reg_no = #customerRegNo#
+    </update>
+
+</sqlMap>

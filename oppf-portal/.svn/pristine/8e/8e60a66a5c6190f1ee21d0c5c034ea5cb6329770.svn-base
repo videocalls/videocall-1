@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 자본시장 공동 핀테크 오픈플랫폼 구축
+* @FileName : NotiDAO.java
+* @Comment  : [서비스신청]정보관리를 위한 SQL XML
+* @author   : 포털 이환덕
+* @since    : 2016.05.16
+* @version  : 1.0
+* @see
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2016.05.16   이환덕        최초생성
+-->
+
+<sqlMap namespace="kr.co.koscom.oppf.spt.usr.svcAppl.service.impl.SvcApplDAO">
+       
+    <!-- 기업코드 -->
+    <typeAlias alias="ComOauthTokenVO" type="kr.co.koscom.oppf.cmm.oauth.service.ComOauthTokenVO"/>
+    
+    <!--
+      * @Method Name        : selectComOauthTokenList
+      * @Method description : [OauthToken목록]정보를 조회한다.
+      * @param              : ComOauthTokenVO
+      * @return             : List<ComOauthTokenVO>
+      * @throws             : Exception
+    -->
+    <select id="cmm.oauth.ComOauthTokenDAO.selectComOauthTokenList" parameterClass="ComOauthTokenVO" resultClass="ComOauthTokenVO">
+        select
+            a.reg_no           as regNo,          /* OauthToken.등록번호(yyyymmdd000) */
+            a.access_token     as accessToken,    /* OauthToken.엑세스토큰 */
+            a.client_id        as clientId,       /* OauthToken.클라이언트ID(=API Key) */
+            a.secret_id        as secretId,       /* OauthToken.클라이언트시크릿ID */
+            a.scope            as scope,          /* OauthToken.스코프 */
+            a.expires_in       as expiresIn,      /* OauthToken.유효기간 */
+            a.token_type       as tokenType,      /* OauthToken.토큰타입 */
+            a.use_yn           as useYn,          /* OauthToken.사용여부(Y:사용,N:사용안함) */
+            a.delete_date      as deleteDate,     /* OauthToken.삭제일시 */
+            a.update_date      as updateDate,     /* OauthToken.수정일시 */
+            a.update_id        as updateId,       /* OauthToken.수정자ID */
+            a.create_date      as createDate,     /* OauthToken.생성일시 */
+            a.create_id        as createId        /* OauthToken.생성자ID */
+        from com_oauth_token_info a /* OauthToken */
+        where 1=1
+        and a.delete_date is null
+        and a.use_yn = 'Y'
+        order by a.create_date desc
+    </select>
+    
+    <!--
+      * @Method Name        : selectComOauthTokenInfo
+      * @Method description : [OauthToken]정보를 조회한다.
+      * @param              : ComOauthTokenVO
+      * @return             : ComOauthTokenVO
+      * @throws             : Exception
+    -->
+    <select id="cmm.oauth.ComOauthTokenDAO.selectComOauthTokenInfo" parameterClass="ComOauthTokenVO" resultClass="ComOauthTokenVO">
+       select
+            a.reg_no           as regNo,          /* OauthToken.등록번호(yyyymmdd000) */
+            a.access_token     as accessToken,    /* OauthToken.엑세스토큰 */
+            a.client_id        as clientId,       /* OauthToken.클라이언트ID(=API Key) */
+            a.secret_id        as secretId,       /* OauthToken.클라이언트시크릿ID */
+            a.scope            as scope,          /* OauthToken.스코프 */
+            a.expires_in       as expiresIn,      /* OauthToken.유효기간 */
+            a.token_type       as tokenType,      /* OauthToken.토큰타입 */
+            a.use_yn           as useYn,          /* OauthToken.사용여부(Y:사용,N:사용안함) */
+            a.delete_date      as deleteDate,     /* OauthToken.삭제일시 */
+            a.update_date      as updateDate,     /* OauthToken.수정일시 */
+            a.update_id        as updateId,       /* OauthToken.수정자ID */
+            a.create_date      as createDate,     /* OauthToken.생성일시 */
+            a.create_id        as createId        /* OauthToken.생성자ID */
+        from com_oauth_token_info a /* OauthToken */
+        where 1=1
+        and a.delete_date is null
+        and a.use_yn = 'Y'
+        <isNotEmpty property="regNo">
+            and a.reg_no = #regNo#
+        </isNotEmpty>
+        order by a.reg_no desc
+        limit 0,1
+    </select>
+
+    <!--
+     * @Method Name        : insertComOauthToken
+     * @Method description : [OauthToken]정보를 등록한다.
+     * @param              : ComOauthTokenVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="cmm.oauth.ComOauthTokenDAO.insertComOauthToken" parameterClass="ComOauthTokenVO">
+        <selectKey keyProperty="regNo" resultClass="java.lang.String">
+            select
+                concat(
+                    date_format(sysdate(),'%Y%m%d'), 
+                    lpad((
+                        select ifnull( max(cast(right(reg_no,3) as signed)), 0)+1 
+                        from com_oauth_token_info 
+                        where left(reg_no, 8) = date_format(sysdate(),'%Y%m%d')
+                    ), 3, '0')
+                ) as regNo
+        </selectKey>
+        insert into com_oauth_token_info(
+			reg_no,          /* 등록번호 */             
+            access_token,    /* 엑세스토큰 */            
+            client_id,       /* 클라이언트ID(=API Key) */
+            secret_id,       /* 클라이언트시크릿ID */       
+            scope,           /* 스코프 */              
+            token_type,      /* 유효기간 */             
+            expires_in,      /* 토큰타입 */             
+            use_yn,          /* 사용여부 */             
+            delete_date,     /* 삭제일시 */             
+            update_date,     /* 수정일시 */             
+            update_id,       /* 사용자번호 */            
+            create_date,     /* 등록일시 */             
+            create_id        /* 사용자번호 */            
+        )values(
+            #regNo#,         /* 등록번호 */
+            #accessToken#,   /* 엑세스토큰 */
+            #clientId#,      /* 클라이언트ID(=API Key) */
+            #secretId#,      /* 클라이언트시크릿ID */
+            #scope#,         /* 스코프 */
+            #tokenType#,     /* 토큰타입 */
+            #expiresIn#,     /* 유효기간 */
+            'Y',             /* 사용여부 */
+            null,            /* 삭제일시 */
+            sysdate(),       /* 수정일시 */
+            #customerRegNo#, /* 사용자번호 */
+            sysdate(),       /* 등록일시 */
+            #customerRegNo#  /* 사용자번호 */
+        )
+    </insert>
+    
+    <!--
+     * @Method Name        : updateComOauthToken
+     * @Method description : [OauthToken]정보를 수정한다.
+     * @param              : ComOauthTokenVO
+     * @return             : int
+     * @throws             : Exception
+    -->
+    <update id="cmm.oauth.ComOauthTokenDAO.updateComOauthToken" parameterClass="ComOauthTokenVO">
+        update com_oauth_token_info set
+             update_date = sysdate() /* 수정일시 */
+            ,update_id = #customerRegNo# /* 수정자ID */
+            <isNotEmpty property="accessToken" prepend=",">
+                access_token = #accessToken# /* 엑세스토큰 */
+            </isNotEmpty>            
+            <isNotEmpty property="clientId" prepend=",">
+                client_id = #clientId# /* 클라이언트ID(=API Key) */
+            </isNotEmpty>            
+            <isNotEmpty property="secretId" prepend=",">
+                secret_id = #secretId# /* 클라이언트시크릿ID */
+            </isNotEmpty>            
+            <isNotEmpty property="scope" prepend=",">
+                scope = #scope# /* 스코프 */
+            </isNotEmpty>            
+            <isNotEmpty property="scope" prepend=",">
+                expires_in = #expiresIn# /* 유효기간 */
+            </isNotEmpty>            
+            <isNotEmpty property="tokenType" prepend=",">
+                token_type = #tokenType# /* 토큰타입 */
+            </isNotEmpty>            
+            <isNotEmpty property="useYn">
+                <isEqual property="useYn" compareValue="N">
+                    use_yn = 'N' /* 사용여부(Y:사용,N:사용안함) */
+                   ,delete_date = sysdate() /* 삭제일시 */
+                </isEqual>
+                <isEqual property="useYn" compareValue="Y">
+                    use_yn = 'Y' /* 사용여부(Y:사용,N:사용안함) */
+                   ,delete_date = null /* 삭제일시 */
+                </isEqual>
+            </isNotEmpty>     
+        where reg_no = #regNo#
+    </update>
+    
+</sqlMap>

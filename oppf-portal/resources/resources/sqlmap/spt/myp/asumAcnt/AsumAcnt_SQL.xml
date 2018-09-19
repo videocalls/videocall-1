@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 자본시장 공동 핀테크 오픈플랫폼 구축
+* @FileName : NotiDAO.java
+* @Comment  : [마이페이지:가상계좌]정보관리를 위한 SQL XML
+* @author   : 포털 이환덕
+* @since    : 2016.05.27
+* @version  : 1.0
+* @see
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2016.05.27   이환덕        최초생성
+-->
+
+<sqlMap namespace="kr.co.koscom.oppf.spt.myp.asumAcnt.service.impl.AsumAcntDAO">
+       
+    <!-- 마이페이지:가상계좌 -->
+    <typeAlias alias="AsumAcntVO" 
+    type="kr.co.koscom.oppf.spt.myp.asumAcnt.service.AsumAcntVO"/>
+    
+    <!-- 일반회원가상계좌프로파일 -->
+    <typeAlias alias="SptCustomerAccountProfileVO" 
+    type="kr.co.koscom.oppf.spt.usr.svcAppl.service.SptCustomerAccountProfileVO"/>
+    
+    <!-- 목록조회조건 -->
+  	<sql id="fromWhereAnd">
+        from spt_customer_account_profile a /* 일반회원가상계좌프로파일 */
+        left outer join com_company_profile c /* 기업코드 */
+            on a.company_code_id = c.company_code_id
+            and c.delete_date is null
+        where 1=1
+        and a.customer_vtaccount_expire_date is null
+        and a.customer_reg_no = #customerRegNo#
+        <isNotEmpty property="companyCodeId">
+            and a.company_code_id = #companyCodeId#
+        </isNotEmpty>
+  	    <isNotEmpty property="searchKeyword">
+  	      <isEqual property="searchCondition" compareValue="sj" prepend="and">
+	        upper(a.customer_vtaccount_alias) like upper(concat('%',#searchKeyword#,'%'))
+	      </isEqual>
+  	      <isEqual property="searchCondition" compareValue="cn" prepend="and">
+	        upper(a.customer_vtaccount_alias) like upper(concat('%',#searchKeyword#,'%'))
+	      </isEqual>
+  	      <isEqual property="searchCondition" compareValue="sjcn" prepend="and">
+            ((upper(a.customer_vtaccount_alias) like upper(concat('%',#searchKeyword#,'%'))) or
+             (upper(a.customer_vtaccount_alias) like upper(concat('%',#searchKeyword#,'%'))))
+	      </isEqual>
+        </isNotEmpty>
+  	</sql>
+    
+    <!--
+     * @Method Name        : selectSptCustAccListTotalCount
+     * @Method description : [일반회원가상계좌+기업코드:총갯수]정보를 조회한다.
+     * @param              : AsumAcntVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <select id="myp.AsumAcntDAO.selectSptCustAccListTotalCount" parameterClass="AsumAcntVO" resultClass="int">
+        select count(a.customer_realaccount_no) as totalcount
+        <include refid="fromWhereAnd"/>
+    </select>
+    
+    <!--
+      * @Method Name        : selectSptCustAccList
+      * @Method description : [일반회원가상계좌+기업코드]정보를 조회한다.
+      * @param              : AsumAcntVO
+      * @return             : List<AsumAcntVO> 또는 AsumAcntVO
+      * @throws             : Exception
+    -->
+    <select id="myp.AsumAcntDAO.selectSptCustAccList" parameterClass="AsumAcntVO" resultClass="AsumAcntVO">
+        select
+            a.customer_reg_no                as customerRegNo,                /* 일반회원가상계좌프로파일.회원OP가입번호 */
+            a.company_code_id                as companyCodeId,                /* 일반회원가상계좌프로파일.기업코드 */
+            dec_char_sel(a.customer_realaccount_no,10,'ARIA','spt_customer_account_profile','costomer_realaccount_no',user(),connection_id()) as customerRealaccountNo, /* 일반회원가상계좌프로파일.실계좌번호 */
+            a.customer_vtaccount_no          as customerVtaccountNo,          /* 일반회원가상계좌프로파일.가상계좌번호 */
+            a.customer_vtaccount_alias       as customerVtaccountAlias,       /* 일반회원가상계좌프로파일.가상계좌별칭 */
+            a.customer_vtaccount_status      as customerVtaccountStatus,      /* 일반회원가상계좌프로파일.가상계좌상태 */
+            a.customer_realaccount_type      as customerRealaccountType,      /* 일반회원가상계좌프로파일.실계좌유형 */
+            ifnull((select code_name_kor from com_system_code 
+             where system_grp_code='G010' and a.customer_realaccount_type = concat('G010',system_code)
+             ),'')                           as customerRealaccountTypeNm,    /* 일반회원가상계좌프로파일.실계좌유형명 */
+            ifnull((select code_name_eng from com_system_code 
+             where system_grp_code='G010' and a.customer_realaccount_type = concat('G010',system_code)
+             ),'')                           as customerRealaccountTypeNmEng, /* 일반회원가상계좌프로파일.실계좌유형영문명 */
+            ifnull(date_format(a.customer_vtaccount_reg_date,'%Y-%m-%d'),'')    as customerVtaccountRegDate,    /* 일반회원가상계좌프로파일.가상계좌발급일시 */
+            ifnull(date_format(a.customer_vtaccount_expire_date,'%Y-%m-%d'),'') as customerVtaccountExpireDate, /* 일반회원가상계좌프로파일.가상계좌폐기일시 */
+            a.create_date                    as createDate,                   /* 일반회원가상계좌프로파일.생성일시 */
+            a.create_id                      as createId,                     /* 일반회원가상계좌프로파일.생성자ID */
+            a.update_date                    as updateDate,                   /* 일반회원가상계좌프로파일.변경일시 */
+            a.update_id                      as updateId,                     /* 일반회원가상계좌프로파일.변경자ID */
+            c.company_profile_reg_no         as companyCodeRegNo,             /* 기업코드.기업코드등록번호 */
+            c.company_name_kor               as companyNameKor,               /* 기업코드.기업이름한글 */
+            c.company_name_eng               as companyNameEng,               /* 기업코드.기업이름영문 */
+            c.company_name_kor_alias         as companyNameKorAlias,          /* 기업코드.기업이름Alias한글 */
+            c.company_name_eng_alias         as companyNameEngAlias           /* 기업코드.기업이름Alias영문 */
+        <include refid="fromWhereAnd"/>
+        <include refid="CmmnFuncDAO.CmmnPaging"/>
+    </select>
+        
+    <!--
+     * @Method Name        : updateSptCustomerAccountProfile
+     * @Method description : [일반회원가상계좌]정보를 수정한다.
+     * @param              : SptCustomerAccountProfileVO
+     * @return             : int
+     * @throws             : Exception
+    -->
+    <update id="myp.AsumAcntDAO.updateSptCustomerAccountProfile" parameterClass="SptCustomerAccountProfileVO">
+        update spt_customer_account_profile set
+            update_date = sysdate()
+           ,update_id = #customerRegNo#
+           ,customer_vtaccount_alias = #customerVtaccountAlias# /* 가상계좌별칭 */
+        where 1=1
+        and customer_reg_no = #customerRegNo#
+        and company_code_id = #companyCodeId#
+        and customer_realaccount_no = #customerRealaccountNo#
+        <isNotEmpty property="customerVtaccountNo">
+            and customer_vtaccount_no = #customerVtaccountNo#
+        </isNotEmpty>
+    </update>
+     
+    <!--
+     * @Method Name        : deleteSptCustomerAccountProfile
+     * @Method description : [일반회원가상계좌]정보를 삭제한다.
+     * @param              : SptCustomerAccountProfileVO
+     * @return             : int
+     * @throws             : Exception
+    -->
+    <update id="myp.AsumAcntDAO.deleteSptCustomerAccountProfile" parameterClass="SptCustomerAccountProfileVO">
+        update spt_customer_account_profile set
+            customer_vtaccount_expire_date = sysdate()
+           ,update_date = sysdate()
+           ,customer_vtaccount_expire_date = sysdate() /* 가상계좌폐기일시 */
+           ,customer_vtaccount_status = 'G009003' /* G009:가상계좌상태(001:미사용, 002:사용, 003:폐기) */
+           ,update_id = #customerRegNo#
+        where 1=1
+        and customer_reg_no = #customerRegNo#
+        and company_code_id = #companyCodeId#
+        and customer_realaccount_no = #customerRealaccountNo#
+        <isNotEmpty property="customerVtaccountNo">
+            and customer_vtaccount_no = #customerVtaccountNo#
+        </isNotEmpty>
+    </update>
+     
+    <!--
+     * @Method Name        : insertSptCustomerAccountProfileHist
+     * @Method description : [일반회원가상계좌히스토리]정보를 등록한다.
+     * @param              : SptCustomerAccountProfileVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+    <insert id="myp.AsumAcntDAO.insertSptCustomerAccountProfileHist" parameterClass="SptCustomerAccountProfileVO">
+        insert into spt_customer_account_profile_hist(
+            customer_realaccount_seq,       /* 순번 */
+            customer_reg_no,                /* 회원OP가입번호 */
+            company_code_id,                /* 기업코드 */
+            customer_realaccount_no,        /* 실계좌번호 */
+            customer_vtaccount_no,          /* 가상계좌번호 */
+            customer_vtaccount_alias,       /* 가상계좌별칭 */
+            customer_vtaccount_status,      /* 가상계좌상태 */
+            customer_realaccount_type,      /* 실계좌유형 */
+            customer_vtaccount_reg_date,    /* 가상계좌발급일시 */
+            customer_vtaccount_expire_date, /* 가상계좌폐기일시 */
+            create_date,                    /* 생성일시 */
+            create_id                       /* 생성자ID */
+        )
+        select 
+         ifnull((
+             select ifnull(max(cast(a.customer_realaccount_seq as SIGNED)), 0) + 1
+             from spt_customer_account_profile_hist a
+             where customer_reg_no = a.customer_reg_no
+         ), 1),                    /* 순번 */
+            customer_reg_no,                /* 회원OP가입번호 */
+            company_code_id,                /* 기업코드 */
+            customer_realaccount_no,        /* 실계좌번호 */
+            customer_vtaccount_no,          /* 가상계좌번호 */
+            customer_vtaccount_alias,       /* 가상계좌별칭 */
+            customer_vtaccount_status,      /* 가상계좌상태 */
+            customer_realaccount_type,      /* 실계좌유형 */
+            customer_vtaccount_reg_date,    /* 가상계좌발급일시 */
+            customer_vtaccount_expire_date, /* 가상계좌폐기일시 */
+            create_date,                    /* 생성일시 */
+            create_id                       /* 생성자ID */
+     from spt_customer_account_profile
+        where 1=1
+        and customer_reg_no = #customerRegNo#
+        and company_code_id = #companyCodeId#
+        and customer_realaccount_no = #customerRealaccountNo#
+        <isNotEmpty property="customerVtaccountNo">
+            and customer_vtaccount_no = #customerVtaccountNo#
+        </isNotEmpty>
+    </insert>
+
+    <!--
+      * @Method Name        : selectSptDelCustAccList
+      * @Method description : [탈퇴 일반회원가상계좌+기업코드]정보를 조회한다.
+      * @param              : AsumAcntVO
+      * @return             : List<AsumAcntVO> 또는 AsumAcntVO
+      * @throws             : Exception
+    -->
+    <select id="myp.AsumAcntDAO.selectSptDelCustAccList" parameterClass="AsumAcntVO" resultClass="AsumAcntVO">
+       SELECT a.company_code_id          AS companyCodeId,
+               b.company_name_eng_alias   AS companyCodeName,
+               dec_char_sel(a.customer_realaccount_no,
+                            10,
+                            'ARIA',
+                            'spt_customer_account_profile',
+                            'costomer_realaccount_no',
+                            user(),
+                            connection_id())
+                  AS customerRealaccountNo,
+               a.customer_vtaccount_no    AS customerVtaccountNo,
+               a.customer_vtaccount_alias AS customerVtaccountAlias,
+               ifnull((select code_name_eng from com_system_code
+                     where system_grp_code='G010' and a.customer_realaccount_type = concat('G010',system_code)),'') as customerRealaccountTypeNmEng
+        FROM spt_customer_account_profile    a
+             LEFT JOIN com_company_profile AS b
+                ON a.company_code_id = b.company_code_id AND b.delete_date IS NULL
+        WHERE     a.customer_reg_no = #customerRegNo#
+              AND a.customer_vtaccount_expire_date IS NULL
+              AND a.customer_vtaccount_status = 'G009002'
+    </select>
+
+</sqlMap>

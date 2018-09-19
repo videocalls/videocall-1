@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<title>Java script test</title>
+</head>
+<style>
+.js {
+	color: powderblue;
+	font-weight: bold;
+}
+
+.js1 {
+	color: red;
+	font-weight: bold;
+}
+</style>
+<body>
+	<script src="color.jsp"></script>
+	<input type="button" value="night"
+		onclick="
+			document.querySelector('body').style.backgroundColor = 'black';
+			document.querySelector('body').style.color = 'white';">
+
+	<input type="button" value="day"
+		onclick="
+			document.querySelector('body').style.backgroundColor = 'white';
+			document.querySelector('body').style.color = 'black';">
+
+	<input type="button" value="night" onclick="
+		night_day(this);
+	">
+	<h1 style="color: powderblue">Java script</h1>
+	<span class="js"> WEB2 JavaScript -</span>
+	<li><span>10.CSS 기초 <br></span></li>
+	<span class="js1">(style 태그)<br> . 생활코딩 생활코딩 <br></span>
+	<script>
+		document.write("Hello world!!!\n")
+		document.write("sadjfljsadlkf".toUpperCase())
+	</script>
+	<h1>html</h1>
+	Hello world!!!
+	<br>
+
+	<ol>
+		<li><a href="1.html">HTML</a>
+		<li><a href="2.html">CSS</a>
+		<li><a href="3.html">JavaScript</a>
+	</ol>
+
+	<input type="button" value="night" onclick="
+		night_day(this);
+		">
+<br>
+<p>time : <span id = "time"></span></p>
+<input type = "button" id="excute" value = "excute" />
+<script>
+	document.querySelector('input').addEventListener('click', function(event){
+	var xhr = new XMLHttpRequest();
+	xhr.open('GET', './time1.php');
+	xhr.onreadystatechange = function(){
+		if(xhr.readyState === 4 && xhr.status === 200){
+			document.querySelector('#time').innerHTML = xhr.responseText;
+		}
+	}
+	xhr.send();
+	});
+</script>
+
+
+</body>
+</html>

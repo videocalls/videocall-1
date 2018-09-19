@@ -1,0 +1,1209 @@
+<!doctype html>
+<html lang="ko">
+<head>
+	<title>통합관리시스템 | koscom OpenAPI Platform </title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="stylesheet" href="../../css/apt/import.css">
+	<!-- IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	  <script src="../../js/cmm/html5shiv.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="../../js/cmm/jquery-1.11.3.min.js"></script>
+
+	<script type="text/javascript" src="../../js/apt/common_pub.js"></script>
+	<script type="text/javascript">
+	<!--
+		$(document).ready(function(){
+			// layer_popup
+			$(".content #layer_open").each(function() {
+				$(this).click(function() {
+					//해당 레이어(ID) 노출
+					$(".layer_popup").show();
+					var layerBox = $(this).attr("href"); 
+					$(layerBox).show(); 
+					// layer_popup(화면 중앙정렬)
+					var width_size = $(".layer_box").innerWidth()/2;
+					$(".layer_box").css("margin-left",-width_size);
+					$("body").css("overflow-y","hidden");
+				});		
+
+				// layer_popup(닫기버튼 실행)
+				$(".layer_close").click(function() {
+					$(".layer_box").hide();
+					$(".layer_popup").hide();
+					$("body").css("overflow-y","auto");
+				});	
+
+				// layer_popup(화면 중앙정렬)
+				var width_size = $(".layer_box").innerWidth()/2;
+				$(".layer_box").css("margin-left",-width_size);
+			});
+		});
+	//-->
+	</script>
+</head>
+
+<body>
+	<header class="wrap_top">
+		<div>
+			<h1>
+                <a href="#none"><img src="../../images/apt/logo.png" alt="koscom OpenAPI Platform" /></a>
+				<span>서비스관리시스템</span>
+            </h1>
+			<div>
+				<div class="login_st1">
+					<span>'관리자' 님 안녕하세요</span><a href="#none" class="btn_logout">로그아웃</a>					
+				</div>
+			</div>
+			<div class="timer">최종접속시간 : 2016-06-09 17:20 / <span>30:00</span><a href="#none" class="btn_logout">연장</a></div>
+		</div>
+	</header>
+	<!-- // wrap_top -->
+	<article class="container">
+		<div>
+			<section class="lnbArea">
+				<nav>
+					<ul class="lnb">
+						<li><a href="#none">회원 관리</a><!-- 1depth -->
+							<ul>
+								<li><a href="#none">회원 조회</a></li><!-- 2depth -->
+								<li><a href="#none">메일 발송 이력 조회</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">운영자 관리</a>
+							<ul>
+								<li><a href="#none">운영자 조회</a></li>
+								<li><a href="#none">운영자 추가</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">API 관리</a>
+							<ul>
+								<li><a href="#none">API 조회</a></li>
+								<li><a href="#none">API 속성 추가</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">App. 관리</a>
+							<ul>
+								<li><a href="#none">App 조회</a></li>
+								<li><a href="#none">App 속성 추가</a></li>
+							</ul>
+						</li>
+						<li><a href="#none">통계 관리</a></li>
+						<li><a href="#none">포털 관리</a></li>
+						<li><a href="#none">설정 관리</a></li>
+						<li><a href="#none">내 정보 관리</a></li>
+					</ul>
+				</nav>
+			</section>
+			<!-- // lnb -->
+			<section class="content">
+				<div class="location">
+					<h2>테스트 데이터 관리</h2>
+				</div>
+				<!-- // locatioin -->
+				<h3>기본정보</h3>
+				<div class="tb_write1">
+					<table>
+						<caption>이름, 아이디, 서비스 제공자, 계좌 유형, 가상계좌 정보</caption>
+						<colgroup>
+							<col style="width:20%;">
+							<col style="width:30%;">
+							<col style="width:20%;">
+							<col style="width:30%;">
+						</colgroup>
+						<tbody>
+						<tr>
+							<th scope="row">이름</th>
+							<td class="txt_l">홍길동</td>
+							<th scope="row">아이디</th>
+							<td class="txt_l">gildong1</td>
+						</tr>
+						<tr>
+							<th scope="row">서비스 제공자</th>
+							<td class="txt_l">대신증권</td>
+							<th scope="row">계좌 유형</th>
+							<td class="txt_l">종합</td>
+						</tr>
+						<tr>
+							<th scope="row">가상계좌</th>
+							<td colspan="3" class="txt_l">2152454545845</td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<!-- // tb_list1 -->
+
+				<div class="tab_menu mt30">
+					<ul>
+						<li class="on"><a href="#tab01">계좌잔고</a></li>
+						<li><a href="#tab02">거래내역</a></li>
+						<li><a href="#tab03">포트폴리오</a></li>
+						<li><a href="#tab04">관심종목</a></li>
+					</ul>
+				</div>
+				
+				<!-- 계좌잔고 -->
+				<div class="tab_cont" id="tab01">
+					<h4>- summay</h4>
+					<!-- 테이블 영역 -->
+					<div class="tb_list1">
+						<div class="table_scroll">
+							<div class="table_wrap">
+								<table>
+									<caption>관리, 현금잔고, 대출금, 미수수납금, 대용증거금, 대출/신용금, 유가증권 매수금액, 유가증권 평가금액, 유가증권 평가손액 정보</caption>
+									<colgroup>
+										<col style="width:150px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+									</colgroup>
+									<thead>
+									<tr>
+										<th scope="col">관리</th>
+										<th scope="col">현금잔고</th>
+										<th scope="col">대출금</th>
+										<th scope="col">미수수납금</th>
+										<th scope="col">대용증거금</th>
+										<th scope="col">대출/신용금</th>
+										<th scope="col">유가증권<br>매수금액</th>
+										<th scope="col">유가증권<br>평가금액</th>
+										<th scope="col">유가증권<br>평가손익</th>
+										<th scope="col">--</th>
+										<th scope="col">--</th>
+										<th scope="col">--</th>
+										<th scope="col">--</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td>
+											<span class="btn_type"><a href="#none;">삭제</a></span>
+											<span class="btn_type"><a href="#none;">수정</a></span>
+										</td>
+										<td>
+											<input type="text" title="현금잔고" />
+										</td>
+										<td>
+											<input type="text" title="대출금" />
+										</td>
+										<td>
+											<input type="text" title="미수수납금" />
+										</td>
+										<td>
+											<input type="text" title="대용증거금" />
+										</td>
+										<td>
+											<input type="text" title="대출/신용금" />
+										</td>
+										<td>
+											<input type="text" title="유가증권매수금액" />
+										</td>
+										<td>
+											<input type="text" title="유가증권평가금액" />
+										</td>
+										<td>
+											<input type="text" title="유가증권평가손익" />
+										</td>
+										<td>
+											<input type="text" title="현금잔고" />
+										</td>
+										<td>
+											<input type="text" title="현금잔고" />
+										</td>
+										<td>
+											<input type="text" title="현금잔고" />
+										</td>
+										<td>
+											<input type="text" title="현금잔고" />
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<!--// 테이블 영역 -->
+					
+					<h4 class="mt20">- equityList</h4>
+					<!-- 테이블 영역 -->
+					<div class="tb_list1">
+						<div class="table_scroll">
+							<div class="table_wrap">
+								<table>
+									<caption>관리, 상품구분, ISINCODE, 잔고수량, 매수금액, 평가금액, 수익률 정보</caption>
+									<colgroup>
+										<col style="width:150px;">
+										<col style="width:100px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+									</colgroup>
+									<thead>
+									<tr>
+										<th scope="col">관리</th>
+										<th scope="col">상품구분</th>
+										<th scope="col">ISINCODE</th>
+										<th scope="col">잔고수량</th>
+										<th scope="col">매수금액</th>
+										<th scope="col">평가금액</th>
+										<th scope="col">평가손익</th>
+										<th scope="col">수익률</th>
+										<th scope="col">--</th>
+										<th scope="col">--</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td>
+											<span class="btn_type"><a href="#none;">삭제</a></span>
+											<span class="btn_type disabled">수정</span>
+										</td>
+										<td>
+											<select title="상품구분" id="chk1" style="width:65px;">
+												<option>전체</option>
+												<option>balance</option>
+											</select>
+										</td>
+										<td>
+											<input type="text" class="left" title="ISINCODE" />
+										</td>
+										<td>
+											<input type="text" title="잔고수량" />
+										</td>
+										<td>
+											<input type="text" title="매수금액" />
+										</td>
+										<td>
+											<input type="text" title="평가금액" />
+										</td>
+										<td>
+											<input type="text" title="평가손익" />
+										</td>
+										<td>
+											<input type="text" title="수익률" />
+										</td>
+										<td>
+											<input type="text" title="--" />
+										</td>
+										<td>
+											<input type="text" title="--" />
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<!--// 테이블 영역 -->
+
+					<h4 class="mt20">- equityfundListList</h4>
+					<!-- 테이블 영역 -->
+					<div class="tb_list1">
+						<div class="table_scroll">
+							<div class="table_wrap">
+								<table>
+									<caption>관리, 펀드표준코드, 펀드이름, 매수금액, 평가금액, 평가손액, 최초매수일, 최종매수일, 만기일 정보</caption>
+									<colgroup>
+										<col style="width:150px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+									</colgroup>
+									<thead>
+									<tr>
+										<th scope="col">관리</th>
+										<th scope="col">펀드<br>표준코드</th>
+										<th scope="col">펀드이름</th>
+										<th scope="col">매수금액</th>
+										<th scope="col">평가금액</th>
+										<th scope="col">평가손익</th>
+										<th scope="col">최초매수일</th>
+										<th scope="col">최종매수일</th>
+										<th scope="col">만기일</th>
+										<th scope="col">--</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td>
+											<span class="btn_type"><a href="#none;">삭제</a></span>
+											<span class="btn_type"><a href="#none;">수정</a></span>
+										</td>
+										<td>
+											<input type="text" class="left" title="펀트표준코드" />
+										</td>
+										<td>
+											<input type="text" class="left" title="펀드이름" />
+										</td>
+										<td>
+											<input type="text" title="매수금액" />
+										</td>
+										<td>
+											<input type="text" title="평가금액" />
+										</td>
+										<td>
+											<input type="text" title="평가손익" />
+										</td>
+										<td>
+											<input type="text" title="최초매수일" />
+										</td>
+										<td>
+											<input type="text" title="최종매수일" />
+										</td>
+										<td>
+											<input type="text" title="만기일" />
+										</td>
+										<td>
+											<input type="text" title="--" />
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<!--// 테이블 영역 -->
+
+					<div class="btn_type3 mt20">
+						<div class="left"><span class="btn_gray1"><a href="#none;">목록</a></span></div>
+						<div class="right">
+							<span class="btn_gray1"><a href="#layer01" id="layer_open">복사</a></span>
+							<span class="btn_gray2"><a href="#none;">데이터셋 비활성화</a></span>
+						</div>
+					</div>
+				</div>
+				<!--// 계좌잔고 -->
+
+				<!-- 거래내역 -->
+				<div class="tab_cont" id="tab02">
+					<h4>- summay</h4>
+					<!-- 테이블 영역 -->
+					<div class="tb_list1">
+						<div class="table_scroll">
+							<div class="table_wrap">
+								<table>
+									<caption>관리, 현금잔고, 대출금, 미수수납금, 대용증거금, 대출/신용금, 유가증권 매수금액, 유가증권 평가금액, 유가증권 평가손액 정보</caption>
+									<colgroup>
+										<col style="width:150px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+									</colgroup>
+									<thead>
+									<tr>
+										<th scope="col">관리</th>
+										<th scope="col">현금잔고</th>
+										<th scope="col">대출금</th>
+										<th scope="col">미수수납금</th>
+										<th scope="col">대용증거금</th>
+										<th scope="col">대출/신용금</th>
+										<th scope="col">유가증권<br>매수금액</th>
+										<th scope="col">유가증권<br>평가금액</th>
+										<th scope="col">유가증권<br>평가손익</th>
+										<th scope="col">--</th>
+										<th scope="col">--</th>
+										<th scope="col">--</th>
+										<th scope="col">--</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td>
+											<span class="btn_type"><a href="#none;">삭제</a></span>
+											<span class="btn_type"><a href="#none;">수정</a></span>
+										</td>
+										<td>
+											<input type="text" title="현금잔고" />
+										</td>
+										<td>
+											<input type="text" title="대출금" />
+										</td>
+										<td>
+											<input type="text" title="미수수납금" />
+										</td>
+										<td>
+											<input type="text" title="대용증거금" />
+										</td>
+										<td>
+											<input type="text" title="대출/신용금" />
+										</td>
+										<td>
+											<input type="text" title="유가증권매수금액" />
+										</td>
+										<td>
+											<input type="text" title="유가증권평가금액" />
+										</td>
+										<td>
+											<input type="text" title="유가증권평가손익" />
+										</td>
+										<td>
+											<input type="text" title="현금잔고" />
+										</td>
+										<td>
+											<input type="text" title="현금잔고" />
+										</td>
+										<td>
+											<input type="text" title="현금잔고" />
+										</td>
+										<td>
+											<input type="text" title="현금잔고" />
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<!--// 테이블 영역 -->
+					
+					<h4 class="mt20">- equityList</h4>
+					<!-- 테이블 영역 -->
+					<div class="tb_list1">
+						<div class="table_scroll">
+							<div class="table_wrap">
+								<table>
+									<caption>관리, 상품구분, ISINCODE, 잔고수량, 매수금액, 평가금액, 수익률 정보</caption>
+									<colgroup>
+										<col style="width:150px;">
+										<col style="width:100px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+									</colgroup>
+									<thead>
+									<tr>
+										<th scope="col">관리</th>
+										<th scope="col">상품구분</th>
+										<th scope="col">ISINCODE</th>
+										<th scope="col">잔고수량</th>
+										<th scope="col">매수금액</th>
+										<th scope="col">평가금액</th>
+										<th scope="col">평가손익</th>
+										<th scope="col">수익률</th>
+										<th scope="col">--</th>
+										<th scope="col">--</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td>
+											<span class="btn_type"><a href="#none;">삭제</a></span>
+											<span class="btn_type"><a href="#none;">수정</a></span>
+										</td>
+										<td>
+											<select title="상품구분" id="chk1" style="width:65px;">
+												<option>전체</option>
+												<option>balance</option>
+											</select>
+										</td>
+										<td>
+											<input type="text" class="left" title="ISINCODE" />
+										</td>
+										<td>
+											<input type="text" title="잔고수량" />
+										</td>
+										<td>
+											<input type="text" title="매수금액" />
+										</td>
+										<td>
+											<input type="text" title="평가금액" />
+										</td>
+										<td>
+											<input type="text" title="평가손익" />
+										</td>
+										<td>
+											<input type="text" title="수익률" />
+										</td>
+										<td>
+											<input type="text" title="--" />
+										</td>
+										<td>
+											<input type="text" title="--" />
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<!--// 테이블 영역 -->
+
+					<h4 class="mt20">- equityfundListList</h4>
+					<!-- 테이블 영역 -->
+					<div class="tb_list1">
+						<div class="table_scroll">
+							<div class="table_wrap">
+								<table>
+									<caption>관리, 펀드표준코드, 펀드이름, 매수금액, 평가금액, 평가손액, 최초매수일, 최종매수일, 만기일 정보</caption>
+									<colgroup>
+										<col style="width:150px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+									</colgroup>
+									<thead>
+									<tr>
+										<th scope="col">관리</th>
+										<th scope="col">펀드<br>표준코드</th>
+										<th scope="col">펀드이름</th>
+										<th scope="col">매수금액</th>
+										<th scope="col">평가금액</th>
+										<th scope="col">평가손익</th>
+										<th scope="col">최초매수일</th>
+										<th scope="col">최종매수일</th>
+										<th scope="col">만기일</th>
+										<th scope="col">--</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td>
+											<span class="btn_type"><a href="#none;">삭제</a></span>
+											<span class="btn_type"><a href="#none;">수정</a></span>
+										</td>
+										<td>
+											<input type="text" class="left" title="펀트표준코드" />
+										</td>
+										<td>
+											<input type="text" class="left" title="펀드이름" />
+										</td>
+										<td>
+											<input type="text" title="매수금액" />
+										</td>
+										<td>
+											<input type="text" title="평가금액" />
+										</td>
+										<td>
+											<input type="text" title="평가손익" />
+										</td>
+										<td>
+											<input type="text" title="최초매수일" />
+										</td>
+										<td>
+											<input type="text" title="최종매수일" />
+										</td>
+										<td>
+											<input type="text" title="만기일" />
+										</td>
+										<td>
+											<input type="text" title="--" />
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<!--// 테이블 영역 -->
+
+					<div class="btn_type3 mt20">
+						<div class="left"><span class="btn_gray1"><a href="#none;">목록</a></span></div>
+						<div class="right">
+							<span class="btn_gray1"><a href="#layer01" id="layer_open">복사</a></span>
+							<span class="btn_gray2"><a href="#none;">데이터셋 비활성화</a></span>
+						</div>
+					</div>
+				</div>
+				<!--// 거래내역 -->
+
+				<!-- 포트폴리오 -->
+				<div class="tab_cont" id="tab03">
+					<h4>- summay</h4>
+					<!-- 테이블 영역 -->
+					<div class="tb_list1">
+						<div class="table_scroll">
+							<div class="table_wrap">
+								<table>
+									<caption>관리, 현금잔고, 대출금, 미수수납금, 대용증거금, 대출/신용금, 유가증권 매수금액, 유가증권 평가금액, 유가증권 평가손액 정보</caption>
+									<colgroup>
+										<col style="width:150px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+									</colgroup>
+									<thead>
+									<tr>
+										<th scope="col">관리</th>
+										<th scope="col">현금잔고</th>
+										<th scope="col">대출금</th>
+										<th scope="col">미수수납금</th>
+										<th scope="col">대용증거금</th>
+										<th scope="col">대출/신용금</th>
+										<th scope="col">유가증권<br>매수금액</th>
+										<th scope="col">유가증권<br>평가금액</th>
+										<th scope="col">유가증권<br>평가손익</th>
+										<th scope="col">--</th>
+										<th scope="col">--</th>
+										<th scope="col">--</th>
+										<th scope="col">--</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td>
+											<span class="btn_type"><a href="#none;">삭제</a></span>
+											<span class="btn_type"><a href="#none;">수정</a></span>
+										</td>
+										<td>
+											<input type="text" title="현금잔고" />
+										</td>
+										<td>
+											<input type="text" title="대출금" />
+										</td>
+										<td>
+											<input type="text" title="미수수납금" />
+										</td>
+										<td>
+											<input type="text" title="대용증거금" />
+										</td>
+										<td>
+											<input type="text" title="대출/신용금" />
+										</td>
+										<td>
+											<input type="text" title="유가증권매수금액" />
+										</td>
+										<td>
+											<input type="text" title="유가증권평가금액" />
+										</td>
+										<td>
+											<input type="text" title="유가증권평가손익" />
+										</td>
+										<td>
+											<input type="text" title="현금잔고" />
+										</td>
+										<td>
+											<input type="text" title="현금잔고" />
+										</td>
+										<td>
+											<input type="text" title="현금잔고" />
+										</td>
+										<td>
+											<input type="text" title="현금잔고" />
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<!--// 테이블 영역 -->
+					
+					<h4 class="mt20">- equityList</h4>
+					<!-- 테이블 영역 -->
+					<div class="tb_list1">
+						<div class="table_scroll">
+							<div class="table_wrap">
+								<table>
+									<caption>관리, 상품구분, ISINCODE, 잔고수량, 매수금액, 평가금액, 수익률 정보</caption>
+									<colgroup>
+										<col style="width:150px;">
+										<col style="width:100px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+									</colgroup>
+									<thead>
+									<tr>
+										<th scope="col">관리</th>
+										<th scope="col">상품구분</th>
+										<th scope="col">ISINCODE</th>
+										<th scope="col">잔고수량</th>
+										<th scope="col">매수금액</th>
+										<th scope="col">평가금액</th>
+										<th scope="col">평가손익</th>
+										<th scope="col">수익률</th>
+										<th scope="col">--</th>
+										<th scope="col">--</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td>
+											<span class="btn_type"><a href="#none;">삭제</a></span>
+											<span class="btn_type"><a href="#none;">수정</a></span>
+										</td>
+										<td>
+											<select title="상품구분" id="chk1" style="width:65px;">
+												<option>전체</option>
+												<option>balance</option>
+											</select>
+										</td>
+										<td>
+											<input type="text" class="left" title="ISINCODE" />
+										</td>
+										<td>
+											<input type="text" title="잔고수량" />
+										</td>
+										<td>
+											<input type="text" title="매수금액" />
+										</td>
+										<td>
+											<input type="text" title="평가금액" />
+										</td>
+										<td>
+											<input type="text" title="평가손익" />
+										</td>
+										<td>
+											<input type="text" title="수익률" />
+										</td>
+										<td>
+											<input type="text" title="--" />
+										</td>
+										<td>
+											<input type="text" title="--" />
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<!--// 테이블 영역 -->
+
+					<h4 class="mt20">- equityfundListList</h4>
+					<!-- 테이블 영역 -->
+					<div class="tb_list1">
+						<div class="table_scroll">
+							<div class="table_wrap">
+								<table>
+									<caption>관리, 펀드표준코드, 펀드이름, 매수금액, 평가금액, 평가손액, 최초매수일, 최종매수일, 만기일 정보</caption>
+									<colgroup>
+										<col style="width:150px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+									</colgroup>
+									<thead>
+									<tr>
+										<th scope="col">관리</th>
+										<th scope="col">펀드<br>표준코드</th>
+										<th scope="col">펀드이름</th>
+										<th scope="col">매수금액</th>
+										<th scope="col">평가금액</th>
+										<th scope="col">평가손익</th>
+										<th scope="col">최초매수일</th>
+										<th scope="col">최종매수일</th>
+										<th scope="col">만기일</th>
+										<th scope="col">--</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td>
+											<span class="btn_type"><a href="#none;">삭제</a></span>
+											<span class="btn_type"><a href="#none;">수정</a></span>
+										</td>
+										<td>
+											<input type="text" class="left" title="펀트표준코드" />
+										</td>
+										<td>
+											<input type="text" class="left" title="펀드이름" />
+										</td>
+										<td>
+											<input type="text" title="매수금액" />
+										</td>
+										<td>
+											<input type="text" title="평가금액" />
+										</td>
+										<td>
+											<input type="text" title="평가손익" />
+										</td>
+										<td>
+											<input type="text" title="최초매수일" />
+										</td>
+										<td>
+											<input type="text" title="최종매수일" />
+										</td>
+										<td>
+											<input type="text" title="만기일" />
+										</td>
+										<td>
+											<input type="text" title="--" />
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<!--// 테이블 영역 -->
+
+					<div class="btn_type3 mt20">
+						<div class="left"><span class="btn_gray1"><a href="#none;">목록</a></span></div>
+						<div class="right">
+							<span class="btn_gray1"><a href="#layer01" id="layer_open">복사</a></span>
+							<span class="btn_gray2"><a href="#none;">데이터셋 비활성화</a></span>
+						</div>
+					</div>
+				</div>
+				<!--// 포트폴리오 -->
+
+				<!-- 관심종목 -->
+				<div class="tab_cont" id="tab04">
+					<h4>- summay</h4>
+					<!-- 테이블 영역 -->
+					<div class="tb_list1">
+						<div class="table_scroll">
+							<div class="table_wrap">
+								<table>
+									<caption>관리, 현금잔고, 대출금, 미수수납금, 대용증거금, 대출/신용금, 유가증권 매수금액, 유가증권 평가금액, 유가증권 평가손액 정보</caption>
+									<colgroup>
+										<col style="width:150px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+									</colgroup>
+									<thead>
+									<tr>
+										<th scope="col">관리</th>
+										<th scope="col">현금잔고</th>
+										<th scope="col">대출금</th>
+										<th scope="col">미수수납금</th>
+										<th scope="col">대용증거금</th>
+										<th scope="col">대출/신용금</th>
+										<th scope="col">유가증권<br>매수금액</th>
+										<th scope="col">유가증권<br>평가금액</th>
+										<th scope="col">유가증권<br>평가손익</th>
+										<th scope="col">--</th>
+										<th scope="col">--</th>
+										<th scope="col">--</th>
+										<th scope="col">--</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td>
+											<span class="btn_type"><a href="#none;">삭제</a></span>
+											<span class="btn_type"><a href="#none;">수정</a></span>
+										</td>
+										<td>
+											<input type="text" title="현금잔고" />
+										</td>
+										<td>
+											<input type="text" title="대출금" />
+										</td>
+										<td>
+											<input type="text" title="미수수납금" />
+										</td>
+										<td>
+											<input type="text" title="대용증거금" />
+										</td>
+										<td>
+											<input type="text" title="대출/신용금" />
+										</td>
+										<td>
+											<input type="text" title="유가증권매수금액" />
+										</td>
+										<td>
+											<input type="text" title="유가증권평가금액" />
+										</td>
+										<td>
+											<input type="text" title="유가증권평가손익" />
+										</td>
+										<td>
+											<input type="text" title="현금잔고" />
+										</td>
+										<td>
+											<input type="text" title="현금잔고" />
+										</td>
+										<td>
+											<input type="text" title="현금잔고" />
+										</td>
+										<td>
+											<input type="text" title="현금잔고" />
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<!--// 테이블 영역 -->
+					
+					<h4 class="mt20">- equityList</h4>
+					<!-- 테이블 영역 -->
+					<div class="tb_list1">
+						<div class="table_scroll">
+							<div class="table_wrap">
+								<table>
+									<caption>관리, 상품구분, ISINCODE, 잔고수량, 매수금액, 평가금액, 수익률 정보</caption>
+									<colgroup>
+										<col style="width:150px;">
+										<col style="width:100px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+									</colgroup>
+									<thead>
+									<tr>
+										<th scope="col">관리</th>
+										<th scope="col">상품구분</th>
+										<th scope="col">ISINCODE</th>
+										<th scope="col">잔고수량</th>
+										<th scope="col">매수금액</th>
+										<th scope="col">평가금액</th>
+										<th scope="col">평가손익</th>
+										<th scope="col">수익률</th>
+										<th scope="col">--</th>
+										<th scope="col">--</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td>
+											<span class="btn_type"><a href="#none;">삭제</a></span>
+											<span class="btn_type"><a href="#none;">수정</a></span>
+										</td>
+										<td>
+											<select title="상품구분" id="chk1" style="width:65px;">
+												<option>전체</option>
+												<option>balance</option>
+											</select>
+										</td>
+										<td>
+											<input type="text" class="left" title="ISINCODE" />
+										</td>
+										<td>
+											<input type="text" title="잔고수량" />
+										</td>
+										<td>
+											<input type="text" title="매수금액" />
+										</td>
+										<td>
+											<input type="text" title="평가금액" />
+										</td>
+										<td>
+											<input type="text" title="평가손익" />
+										</td>
+										<td>
+											<input type="text" title="수익률" />
+										</td>
+										<td>
+											<input type="text" title="--" />
+										</td>
+										<td>
+											<input type="text" title="--" />
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<!--// 테이블 영역 -->
+
+					<h4 class="mt20">- equityfundListList</h4>
+					<!-- 테이블 영역 -->
+					<div class="tb_list1">
+						<div class="table_scroll">
+							<div class="table_wrap">
+								<table>
+									<caption>관리, 펀드표준코드, 펀드이름, 매수금액, 평가금액, 평가손액, 최초매수일, 최종매수일, 만기일 정보</caption>
+									<colgroup>
+										<col style="width:150px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+										<col style="width:90px;">
+									</colgroup>
+									<thead>
+									<tr>
+										<th scope="col">관리</th>
+										<th scope="col">펀드<br>표준코드</th>
+										<th scope="col">펀드이름</th>
+										<th scope="col">매수금액</th>
+										<th scope="col">평가금액</th>
+										<th scope="col">평가손익</th>
+										<th scope="col">최초매수일</th>
+										<th scope="col">최종매수일</th>
+										<th scope="col">만기일</th>
+										<th scope="col">--</th>
+									</tr>
+									</thead>
+									<tbody>
+									<tr>
+										<td>
+											<span class="btn_type"><a href="#none;">삭제</a></span>
+											<span class="btn_type"><a href="#none;">수정</a></span>
+										</td>
+										<td>
+											<input type="text" class="left" title="펀트표준코드" />
+										</td>
+										<td>
+											<input type="text" class="left" title="펀드이름" />
+										</td>
+										<td>
+											<input type="text" title="매수금액" />
+										</td>
+										<td>
+											<input type="text" title="평가금액" />
+										</td>
+										<td>
+											<input type="text" title="평가손익" />
+										</td>
+										<td>
+											<input type="text" title="최초매수일" />
+										</td>
+										<td>
+											<input type="text" title="최종매수일" />
+										</td>
+										<td>
+											<input type="text" title="만기일" />
+										</td>
+										<td>
+											<input type="text" title="--" />
+										</td>
+									</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<!--// 테이블 영역 -->
+
+					<div class="btn_type3 mt20">
+						<div class="left"><span class="btn_gray1"><a href="#none;">목록</a></span></div>
+						<div class="right">
+							<span class="btn_gray1"><a href="#layer01" id="layer_open">복사</a></span>
+							<span class="btn_gray2"><a href="#none;">데이터셋 비활성화</a></span>
+						</div>
+					</div>
+				</div>
+				<!--// 관심종목 -->
+				
+			</section>
+			<!-- // content -->
+		</div>
+	</article>
+	<!-- // container -->
+
+	<div class="layer_popup">	
+
+		<div class="dimm"></div>
+
+		<!-- #layer01 -->
+		<div class="layer_box" id="layer01" style="width:620px;"><!-- 가로크기 직접제어, 세로는 최대 500px -->
+			<div class="layer_tit">데이터 셋 복사</div>
+
+			<div class="layer_con">
+
+				<p class="info_right"><span class="icon_basic">*</span> 필수 입력사항</p>
+				<div class="tb_write1">
+					<table>
+						<caption>아이디, 이름, 계좌 정보</caption>
+						<colgroup>
+							<col style="width:30%;">
+							<col style="width:70%;">
+						</colgroup>
+						<tbody>
+						<tr>
+							<th scope="row"><label for="na">아이디<span class="icon_basic">*필수입력</span></label></th>
+							<td class="txt_l">
+								<input type="text" class="w200" id="na">
+								<span class="btn_type"><a href="#none;">확인</a></span>
+							</td>
+						</tr>
+						<tr>
+							<th scope="row">이름</th>
+							<td class="txt_l">-</td>
+						</tr>
+						<tr>
+							<th scope="row">계좌<span class="icon_basic">*필수입력</span></th>
+							<td class="txt_l">조회된 계좌가 없습니다. </td>
+						</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="btn_type3 mt20">
+					<span class="btn_gray1"><a href="#none;">저장</a></span>
+				</div>
+
+			</div>
+
+			<a href="#none" class="layer_close">레이어팝업 닫기</a>
+		</div>
+		
+	</div>
+	<!-- // layer_popup -->
+</body>
+</html>

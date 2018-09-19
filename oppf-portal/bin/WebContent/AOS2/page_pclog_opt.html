@@ -1,0 +1,102 @@
+<!-- 
+ * (C) Copyright AhnLab, Inc.
+ *
+ * Any part of this source code can not be copied with
+ * any method without prior written permission from
+ * the author or authorized person.
+ *
+ * @version		$Revision: 15816 $
+ *
+ -->
+
+<!DOCTYPE HTML> <!-- HTML5 -->
+<html>
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="expires" content="-1" /> 
+<meta http-equiv="pragma" content="no-cache" /> 
+<meta http-equiv="cache-control" content="no-cache" /> 
+<title>astx2(PC-LOG)</title>
+
+<script src="include.js"></script>
+
+<style>
+
+#cmd li { height: 1.8em; }
+
+</style>
+
+</head>
+<body>
+
+<!-- overlay -->
+<div class="bgOverlay">&nbsp;</div>
+
+<p>AhnLab Safe Transaction(PC-LOG)</p>
+
+<div id="content">
+<form name="pclog" action="do_submit_pclog.jsp" onsubmit="return onSubmit()" method="post">
+
+<p><span>pincode: </span><input name="pin" type="text" value=""/></p>
+<p><input name="btn" type="submit" value="Send hddserial"/></p>		
+
+</form>
+</div>
+
+
+<div id="cmd">
+<ul>
+	<li><a href="#" onclick="onVmEnv(); return false;">[IsVmEnv]</a></li>	
+</ul>
+</div>
+
+<script>
+window.onload = function() 
+{
+	checkInstallASTX2();
+	
+	document.pclog.pin.focus();	
+}
+
+function onSubmit()
+{
+	$_astxu.log('onSubmit');
+	
+	$ASTX2.getPCLOGData(
+		null, // unused
+		function onSuccess(data) {
+			$_astxu.log('ASTX.getPCLOGData() success');
+			
+			$ASTX2.setPCLOGData(document.pclog, data);
+			document.pclog.submit();
+		}, 
+		function onFailure() {
+			$_astxu.log('ASTX.getPCLOGData() failure: errno='+$ASTX2.getLastError());
+		},
+		'HdSerial'
+	);
+	
+	return false;
+}
+
+function onVmEnv()
+{
+	$ASTX2.isVmEnv(
+		function onReceive(value, errno) 
+		{
+			if(errno == 0) { // success
+				alert('ASTX.isVmEnv() success. result='+value);
+			}else {
+				alert('ASTX.isVmEnv() errno='+errno);
+			}
+		}
+	);
+}
+
+var debuger = new myDebuger();
+debuger.write_output(document, true);
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>개인 | koscom OpenAPI Platform </title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<link rel="stylesheet" href="../../../css/spt/import.css">
+	<!-- IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]>
+	  <script src="../../../js/cmm/html5shiv.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript" src="../../../js/cmm/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../../../js/spt/common_pub.js"></script>
+</head>
+
+<body>
+
+<div class="wrap">
+
+	<!-- header -->
+	<header class="header">
+		<div class="header_area">
+			<div class="skip_navi">
+				<a href="#gnb">메뉴 바로가기</a>
+				<a href="#content">본문 바로가기</a>		
+			</div>
+
+			<ol class="util">
+				<li class="menu"><a href="#none">로그인</a></li>
+				<li class="menu"><a href="#none">회원가입</a></li>
+				<li class="site on"><a href="#none">개인</a></li>
+				<li class="site"><a href="#none">기업/금투사</a></li>
+			</ol>
+
+			<nav id="gnb">
+				<h1 class="logo"><a href="#none"><img src="../../../images/spt/common/logo.png" alt="Koscom OpenAPI Platform"></a></h1>
+
+				<div class="gnb_menu">
+					<ul>
+						<li><a href="#none">금융투자 핀테크 포털</a></li>
+						<li><a href="#none">핀테크 서비스</a></li>
+						<li><a href="#none">서비스 신청</a></li>
+						<li><a href="#none">서비스지원</a></li>
+					</ul>
+				</div>
+			</nav>
+		</div>
+	</header>
+	<!-- // header -->
+
+	<!-- section -->
+	<section>
+		<!-- location -->
+		<div class="location">
+			<ul>
+				<li class="home"><a href="#none">홈</a></li>
+				<li><a href="#none">서비스 신청</a></li>
+				<li class="on">핀테크 서비스 신청</li>
+			</ul>
+		</div>
+		<!-- // location -->
+
+		<div class="container">
+			<!-- lnb -->
+			<article class="lnb">				
+				<h2>서비스 신청</h2>
+				<ul>
+					<li><a href="#none" class="on">핀테크 서비스 신청</a></li>
+				</ul>
+			</article>
+			<!-- // lnb -->
+
+			<!-- content -->
+			<article id="content">
+
+				<div class="sub_title">
+					<h3>핀테크 서비스 신청</h3>
+				</div>
+
+				<!-- con -->
+				<div class="con">
+					
+					<!-- 2016-07-12 수정 -->
+					<div class="step_area">
+						<ul>
+							<li class="pass"><div>가상계좌 발급</div></li><!-- 지나간step -->
+							<li class="on"><div>핀테크 서비스 선택</div></li><!-- 현재step -->
+							<li><div>약관동의</div></li>
+							<li><div>정보 제공 동의</div></li>							
+							<li class="last"><div>서비스 신청 완료</div></li>
+						</ul>
+                    </div>
+					<!-- // 2016-07-12 수정 -->
+					
+					<p class="title_01">핀테크 서비스 선택</p>
+
+					<div class="title_step step1">
+						<p class="step">STEP.1</p>
+						<p>금융투자사 선택<span>발급받으신 가상계좌를 기반으로 신청이 가능한 핀테크 서비스를 조회 합니다.</span></p>
+					</div>
+					
+					<!-- bg_box01 -->
+					<div class="chk_list_box">
+					   <input type="checkbox" id="check1" checked="checked" title="전체 체크" /><label for="check1" class="chk_box">전체</label>
+					   <input type="checkbox" id="check2" title="신한금융투자 체크" /><label for="check2" class="chk_box">신한금융투자</label>
+					   <input type="checkbox" id="check3" title="키움증권 체크" /><label for="check3" class="chk_box">키움증권</label>
+					   <input type="checkbox" id="check4" title="교보증권 체크" /><label for="check4" class="chk_box">교보증권</label>
+					</div>
+					<!-- // bg_box01 -->
+
+					<div class="title_step step2">
+						<p class="step">STEP.2</p>
+						<p>핀테크 서비스 선택<span>[주요 서비스] 항목에 마우스를 오버 하시면 증권사별 연계 서비스를 확인 하실 수 있습니다.</span></p>
+						<div class="search_box right">
+							<span class="sel_box1">
+								<select style="min-width:;" title="사용여부 선택">
+									<option>사용여부 선택</option>
+									<option>사용중</option>
+									<option>미사용</option>
+								</select>
+							</span>
+						</div>
+					</div>
+					
+					<!-- tbtype_list -->
+					<table class="tbtype_list2 type_hover">
+						<caption>선택, 구분, 핀테크 서비스, 주요 서비스, 사용여부 정보 리스트</caption>
+						<colgroup>
+							<col style="width:8%;">
+							<col style="width:10%;">
+							<col style="width:20%;">
+							<col style="width:62%;">
+						</colgroup>
+						<thead>
+							<tr>
+								<th scope="col">선택</th>
+								<th scope="col">구분</th>
+								<th scope="col">핀테크 서비스</th>
+								<th scope="col">주요 서비스</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><!-- <input type="checkbox" /> --></td>
+								<td>증권</td>
+								<td>
+									<div class="app_small">
+										<img src="../../../images/spt/icon/icon_app_01.png" alt="카카오증권">
+										<p>카카오증권</p>
+									</div>
+								</td>
+								<td class="left tooltip_wrap">
+								    <!-- tooltip_area -->
+									<div class="tooltip_area">
+										<!-- 2016-06-14 수정 -->
+										<textarea class="app_textarea" disabled>
+- 관심종목의 실시간 시세 조회 관심종목의 실시간 시세 조회 관심종목의 실시간 시세 조회 관심종목의 실시간 시세 조회
+- 종목별 뉴스, 공시정보 확인 종목별 뉴스, 공시정보 확인
+- 종목 찾기, 실시간 차트 및 각종 보조지표 제공
+- 증권사 연동거래 및 실시간 호가 보기
+- 관심종목의 실시간 시세 조회
+- 종목별 뉴스, 공시정보 확인
+- 종목 찾기, 실시간 차트 및 각종 보조지표 제공
+- 증권사 연동거래 및 실시간 호가 보기
+- 관심종목의 실시간 시세 조회
+- 종목별 뉴스, 공시정보 확인
+- 종목 찾기, 실시간 차트 및 각종 보조지표 제공
+- 증권사 연동거래 및 실시간 호가 보기
+										</textarea>
+										<!-- // 2016-06-14 수정 -->
+										<span class="btn_type8 on">사용중</span>
+									
+										<div class="tooltip">
+											<dl class="con">
+												<dt>금융투자사별 연계 서비스</dt>
+												<dd>
+													<table class="tbtype_tip">
+														<caption>금융투자사, 연계 서비스 정보</caption>
+														<colgroup>
+															<col style="width:45%;">
+															<col style="">
+														</colgroup>
+														<thead>
+															<tr>
+																<th scope="col">금융투자사</th>
+																<th scope="col">연계 서비스</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr>
+																<th scope="row" rowspan="2">삼성증권</th>
+																<td>계좌조회</td>
+															</tr>
+															<tr>
+																<td>주문</td>
+															</tr>
+															<tr>
+																<th scope="row" >이트레이드증권</th>
+																<td>포트폴리오</td>
+															</tr>
+															<tr>
+																<th scope="row">신한금융투자</th>
+																<td>잔고현황조회</td>
+															</tr>
+														</tbody>
+													</table>
+												</dd>
+											</dl>
+										</div>										
+									</div>		
+									<!-- // tooltip_area -->								    
+                                </td>								
+							</tr>
+							
+							<tr>
+								<td><input type="checkbox" /></td>
+								<td>뉴스</td>
+								<td>
+									<div class="app_small"><img src="../../../images/spt/icon/icon_app_02.png" alt="네이버증권"><p>네이버증권</p></div>
+								</td>
+								<td class="left tooltip_wrap">
+									<!-- tooltip_area -->
+									<div class="tooltip_area">
+										<!-- 2016-06-14 수정 -->
+										<textarea class="app_textarea" disabled>
+- 관심종목의 실시간 시세 조회
+- 종목별 뉴스, 공시정보 확인
+- 관심종목의 실시간 시세 조회
+- 종목별 뉴스, 공시정보 확인
+										</textarea>
+										<!-- // 2016-06-14 수정 -->
+										<span class="btn_type8">미사용</span>
+									
+										<div class="tooltip">
+											<dl class="con">
+												<dt>금융투자사별 연계 서비스</dt>
+												<dd>
+													<table class="tbtype_tip">
+														<caption>금융투자사, 연계 서비스 정보</caption>
+														<colgroup>
+															<col style="width:45%;">
+															<col style="">
+														</colgroup>
+														<thead>
+															<tr>
+																<th scope="col">금융투자사</th>
+																<th scope="col">연계 서비스</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr>
+																<th scope="row" rowspan="2">삼성증권</th>
+																<td>계좌조회</td>
+															</tr>
+															<tr>
+																<td>주문</td>
+															</tr>
+															<tr>
+																<th scope="row" >이트레이드증권</th>
+																<td>포트폴리오</td>
+															</tr>
+															<tr>
+																<th scope="row">신한금융투자</th>
+																<td>잔고현황조회</td>
+															</tr>
+														</tbody>
+													</table>
+												</dd>
+											</dl>
+										</div>										
+									</div>		
+									<!-- // tooltip_area -->	
+								</td>
+								
+							</tr>
+							<tr>
+								<td><input type="checkbox" /></td>
+								<td>금융상품</td>
+								<td><div class="app_small"><img src="../../../images/spt/icon/icon_app_03.png" alt="증권스토리"><p>증권스토리</p></div></td>
+								<td class="left tooltip_wrap">
+									<!-- tooltip_area -->
+									<div class="tooltip_area">
+										<textarea class="app_textarea" disabled>
+- 관심종목의 실시간 시세 조회
+- 종목별 뉴스, 공시정보 확인
+- 관심종목의 실시간 시세 조회
+- 종목별 뉴스, 공시정보 확인
+										</textarea>
+										<!-- // 2016-06-14 수정 -->
+										<span class="btn_type8">미사용</span>
+									
+										<div class="tooltip">
+											<dl class="con">
+												<dt>금융투자사별 연계 서비스</dt>
+												<dd>
+													<table class="tbtype_tip">
+														<caption>금융투자사, 연계 서비스 정보</caption>
+														<colgroup>
+															<col style="width:45%;">
+															<col style="">
+														</colgroup>
+														<thead>
+															<tr>
+																<th scope="col">금융투자사</th>
+																<th scope="col">연계 서비스</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr>
+																<th scope="row" rowspan="2">삼성증권</th>
+																<td>계좌조회</td>
+															</tr>
+															<tr>
+																<td>주문</td>
+															</tr>
+															<tr>
+																<th scope="row" >이트레이드증권</th>
+																<td>포트폴리오</td>
+															</tr>
+															<tr>
+																<th scope="row">신한금융투자</th>
+																<td>잔고현황조회</td>
+															</tr>
+														</tbody>
+													</table>
+												</dd>
+											</dl>
+										</div>										
+									</div>		
+									<!-- // tooltip_area -->									
+								</td>
+								
+							</tr>
+							<tr>
+								<td><!-- <input type="checkbox" /> --></td>
+								<td>증권</td>
+								<td><div class="app_small"><img src="../../../images/spt/icon/icon_app_04.png" alt="주식의 정석"><p>주식의 정석</p></div></td>
+								<td class="left tooltip_wrap">
+									<!-- tooltip_area -->
+									<div class="tooltip_area">
+										<textarea class="app_textarea" disabled>
+- 관심종목의 실시간 시세 조회
+- 종목별 뉴스, 공시정보 확인
+- 관심종목의 실시간 시세 조회
+- 종목별 뉴스, 공시정보 확인
+										</textarea>
+										<!-- // 2016-06-14 수정 -->
+										<span class="btn_type8">미사용</span>
+									
+										<div class="tooltip">
+											<dl class="con">
+												<dt>금융투자사별 연계 서비스</dt>
+												<dd>
+													<table class="tbtype_tip">
+														<caption>금융투자사, 연계 서비스 정보</caption>
+														<colgroup>
+															<col style="width:45%;">
+															<col style="">
+														</colgroup>
+														<thead>
+															<tr>
+																<th scope="col">금융투자사</th>
+																<th scope="col">연계 서비스</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr>
+																<th scope="row" rowspan="2">삼성증권</th>
+																<td>계좌조회</td>
+															</tr>
+															<tr>
+																<td>주문</td>
+															</tr>
+															<tr>
+																<th scope="row" >이트레이드증권</th>
+																<td>포트폴리오</td>
+															</tr>
+															<tr>
+																<th scope="row">신한금융투자</th>
+																<td>잔고현황조회</td>
+															</tr>
+														</tbody>
+													</table>
+												</dd>
+											</dl>
+										</div>										
+									</div>		
+									<!-- // tooltip_area -->									
+								</td>
+								
+							</tr>
+							<tr>
+								<td><!-- <input type="checkbox" /> --></td>
+								<td>뉴스</td>
+								<td><div class="app_small"><img src="../../../images/spt/icon/icon_app_05.png" alt="주식차트"><p>주식차트</p></div></td>
+								<td class="left tooltip_wrap">
+									<!-- tooltip_area -->
+									<div class="tooltip_area">
+										<textarea class="app_textarea" disabled>
+- 관심종목의 실시간 시세 조회
+- 종목별 뉴스, 공시정보 확인
+- 관심종목의 실시간 시세 조회
+- 종목별 뉴스, 공시정보 확인
+										</textarea>
+										<!-- // 2016-06-14 수정 -->
+										<span class="btn_type8">미사용</span>
+									
+										<div class="tooltip">
+											<dl class="con">
+												<dt>금융투자사별 연계 서비스</dt>
+												<dd>
+													<table class="tbtype_tip">
+														<caption>금융투자사, 연계 서비스 정보</caption>
+														<colgroup>
+															<col style="width:45%;">
+															<col style="">
+														</colgroup>
+														<thead>
+															<tr>
+																<th scope="col">금융투자사</th>
+																<th scope="col">연계 서비스</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr>
+																<th scope="row" rowspan="2">삼성증권</th>
+																<td>계좌조회</td>
+															</tr>
+															<tr>
+																<td>주문</td>
+															</tr>
+															<tr>
+																<th scope="row" >이트레이드증권</th>
+																<td>포트폴리오</td>
+															</tr>
+															<tr>
+																<th scope="row">신한금융투자</th>
+																<td>잔고현황조회</td>
+															</tr>
+														</tbody>
+													</table>
+												</dd>
+											</dl>
+										</div>										
+									</div>		
+									<!-- // tooltip_area -->									
+								</td>
+								
+							</tr>
+
+							<tr>
+								<td><!-- <input type="checkbox" /> --></td>
+								<td>뉴스</td>
+								<td><div class="app_small"><img src="../../../images/spt/icon/icon_app_none.png" alt=""><p>주식차트</p></div></td>
+								<td class="left tooltip_wrap">
+									<!-- tooltip_area -->
+									<div class="tooltip_area">
+										<textarea class="app_textarea" disabled>
+- 관심종목의 실시간 시세 조회
+- 종목별 뉴스, 공시정보 확인
+- 관심종목의 실시간 시세 조회
+- 종목별 뉴스, 공시정보 확인
+										</textarea>
+										<!-- // 2016-06-14 수정 -->
+										<span class="btn_type8">미사용</span>
+									
+										<div class="tooltip">
+											<dl class="con">
+												<dt>금융투자사별 연계 서비스</dt>
+												<dd>
+													<table class="tbtype_tip">
+														<caption>금융투자사, 연계 서비스 정보</caption>
+														<colgroup>
+															<col style="width:45%;">
+															<col style="">
+														</colgroup>
+														<thead>
+															<tr>
+																<th scope="col">금융투자사</th>
+																<th scope="col">연계 서비스</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr>
+																<th scope="row" rowspan="2">삼성증권</th>
+																<td>계좌조회</td>
+															</tr>
+															<tr>
+																<td>주문</td>
+															</tr>
+															<tr>
+																<th scope="row" >이트레이드증권</th>
+																<td>포트폴리오</td>
+															</tr>
+															<tr>
+																<th scope="row">신한금융투자</th>
+																<td>잔고현황조회</td>
+															</tr>
+														</tbody>
+													</table>
+												</dd>
+											</dl>
+										</div>										
+									</div>		
+									<!-- // tooltip_area -->									
+								</td>
+								
+							</tr>
+						</tbody>
+					</table>
+					<!-- // tbtype_list -->
+					
+					<!-- btn_area -->
+					<div class="btn_area type2">
+					   <div class="right">
+					       <a href="#" class="btn_type7">핀테크 서비스 선택</a>
+					   </div>
+					</div>
+					<!-- // btn_area -->
+
+					<div class="title_step step3">
+						<p class="step">STEP.3</p>
+						<p>가상계좌 선택</p>
+					</div>
+					
+					<!-- 2016-06-02 수정 -->
+					<!-- tbtype_list -->
+                    <table class="tbtype_list2">
+                        <caption>핀테크 기업, 핀테크 서비스, 증권사, 가상계좌 리스트</caption>
+                        <colgroup>
+                            <col style="width:20%;">
+                            <col style="width:20%;">
+                            <col style="width:25%;">
+                            <col style="">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th scope="col">핀테크 기업</th>
+                                <th scope="col">핀테크 서비스</th>
+                                <th scope="col">증권사</th>
+                                <th scope="col">가상계좌</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th rowspan="2" scope="row">다음 카카오</th>
+                                <th rowspan="2" scope="row"><strong>카카오 증권</strong></th>
+                                <th scope="row">메리츠종합금융증권</th>
+                                <td class="left">
+									<ul class="account_list">
+										<li><input type="checkbox" id="chk01"><label for="chk01" class="chk_box">0000212345678914 / 목돈계좌</label></li>
+										<li><input type="checkbox" id="chk02"><label for="chk02" class="chk_box">0000212345678914 / 내통장</label></li>
+										<li><input type="checkbox" id="chk03"><label for="chk03" class="chk_box">0000212345678914 / 목돈계좌</label></li>
+									</ul>
+                                </td>
+                            </tr>
+							<tr>
+                                <th scope="row">한화투자증권</th>
+                                <td class="left">
+                                   <input type="checkbox" id="chk04"><label for="chk04" class="chk_box">0000212345678914 / 내CMS계좌</label>
+                                </td>
+                            </tr>
+							<tr>
+                                <th scope="row">네이버</th>
+                                <th scope="row"><strong>네이버 증권</strong></th>
+                                <th scope="row">신한금융투자증권</th>
+                                <td class="left">
+                                   <input type="checkbox" id="chk05"><label for="chk05" class="chk_box">0000212345678914 / 내CMS계좌</label>
+                                </td>
+                            </tr>
+							<tr>
+                                <th rowspan="2" scope="row">데이터앤애널리틱스</th>
+                                <th scope="row"><strong>증권스토리</strong></th>
+                                <th scope="row">키움증권</th>
+                                <td class="left">
+									<ul class="account_list">
+										<li><input type="checkbox" id="chk06"><label for="chk06" class="chk_box">0000212345678914 / 목돈계좌</label></li>
+										<li><input type="checkbox" id="chk07"><label for="chk07" class="chk_box">0000212345678914 / 내통장</label></li>
+									</ul>
+                                </td>
+                            </tr>
+							<tr>
+								<th scope="row"><strong>주식의 정석</strong></th>
+                                <th scope="row">이트레이드증권</th>
+                                <td class="left">
+                                   <ul class="account_list">
+										<li><input type="checkbox" id="chk08"><label for="chk08" class="chk_box">0000212345678914 / 목돈계좌</label></li>
+										<li><input type="checkbox" id="chk09"><label for="chk09" class="chk_box">0000212345678914 / 내통장</label></li>
+								   </ul>
+                                </td>
+                            </tr>
+							<tr>
+                                <th scope="row">블루다임</th>
+                                <th scope="row"><strong>주식차트</strong></th>
+                                <th scope="row">교보증권</th>
+                                <td class="left">
+                                   <ul class="account_list">
+										<li><input type="checkbox" id="chk10"><label for="chk10" class="chk_box">0000212345678914 / 목돈계좌</label></li>
+										<li><input type="checkbox" id="chk11"><label for="chk11" class="chk_box">0000212345678914 / 내통장</label></li>
+										<li><input type="checkbox" id="chk12"><label for="chk12" class="chk_box">0000212345678914 / 목돈계좌</label></li>
+								   </ul>
+                                </td>
+                            </tr>
+							<tr>
+                                <th scope="row">에버스핀</th>
+                                <th scope="row"><strong>주식통</strong></th>
+                                <th scope="row">한화투자증권</th>
+                                <td class="left">
+                                   <input type="checkbox" id="chk13"><label for="chk13" class="chk_box">0000212345678914 / 내CMS계좌</label>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- // tbtype_list -->
+					<!-- // 2016-06-02 수정 -->
+
+					<!-- 2017-02-16 이용약관 및 정보제공동의 모두 완료된 경우 -->
+					<ul class="finish">
+						<li>선택된 증권사에 대한 서비스 이용 약관 동의가 완료되어 해당 단계를 건너뜁니다. </li>
+						<li>선택된 핀테크기업에 대한 금융투자사 정보 제공 동의가 완료되어 해당 단계를 건너뜁니다.  </li>
+					</ul>
+					<!--// 2017-02-16 이용약관 및 정보제공동의 모두 완료된 경우 -->
+
+					<!-- 2017-02-16 이용약관동의만 완료된 경우 -->
+					<p class="finish">
+						선택된 증권사에 대한 서비스 이용 약관 동의가 완료되어 해당 단계를 건너뜁니다. 
+					</p>
+					<!--// 2017-02-16 이용약관동의만 완료된 경우 -->
+
+                    
+                    <!-- btn_area -->
+                    <div class="btn_area">
+                        <a href="#" class="btn_type2">이전</a><a href="#" class="btn_type1">다음</a>
+                    </div>
+                    <!-- // btn_area -->
+					
+				</div>
+				<!-- // con -->
+
+			</article>
+			<!-- // content -->
+		</div>
+	</section>
+	<!-- section -->
+
+	<!-- footer -->
+	<footer class="footer">
+		<div class="footer_area">
+			<ul class="link">
+				<li><a href="#none">서비스이용약관</a></li>
+				<li class="point"><a href="#none">개인정보취급방침</a></li>
+			</ul>
+			<address>
+				서울시 영등포구 여의나루로 76 ㈜코스콤  대표전화 : 02-767-7114 <span>이메일 : master@koscom.openplatform.com</span>
+				<span class="copy">COPYRIGHT 2016. KOSCOM CORP. ALL RIGHTS RESERVED.</span>
+			</address>
+
+			<div class="family_site">
+				<!-- selBox2 -->
+				<span class="sel_box2">
+					<select style="min-width:150px">
+						<option>코스콤 사이트</option>
+					</select>
+				</span>
+				<!-- selBox2 -->
+				<span class="sel_box2">
+					<select style="min-width:170px">
+						<option>관련 사이트</option>
+					</select>
+				</span>				
+			</div>
+
+		</div>
+	</footer>
+	<!-- // footer -->
+
+</div>
+
+</body>
+</html>

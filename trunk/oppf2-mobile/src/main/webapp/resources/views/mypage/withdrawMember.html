@@ -1,0 +1,40 @@
+<ion-view view-title="회원탈퇴">
+	<ion-content>
+		<form>
+			<div class="container">
+				<div class="inner_cont type2">
+					<div class="id_star">
+						<p>{{vm.cutomerId}}</p>
+						<p class="ft_black">탈퇴한 아이디는 복구되지 않습니다.<br>탈퇴 후 3일간 재가입이 불가능합니다.</p>
+					</div>
+					<!-- 등록된 앱 -->
+					<div class="midline_txt"><span>등록된 앱</span></div>
+					<ul class="both_box">  <!-- 2쌍씩, 빈태그 넣어주세영..................... -->
+						<li ng-repeat="item in vm.appList">{{item.appName}}</li>
+						
+					</ul>
+					<!--// 등록된 앱 -->
+					<!-- 등록된 계좌 -->
+					<div class="midline_txt"><span>등록된 계좌</span></div>
+					<!--// 등록된 계좌 -->
+					<ul class="acc_list_com">
+						<li ng-repeat="item in vm.resultAccountList">
+							<p class="title_s">{{item.companyNameKorAlias}}</p>
+							<label for="acc1-1" ng-repeat="item2 in item.accountResList" >
+								{{item2.customerVtaccountAlias}}
+								<span class="num_right">{{item2.customerVtaccountNo}}</span>
+							</label>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</form>
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<div class="button_area btn_bottom_area">
+			<button class="btn_middle btn_black_org" ng-click="vm.withDrawMember();">탈퇴신청</button>
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+</ion-view>

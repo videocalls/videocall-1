@@ -1,0 +1,455 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.cmm.service.impl.CmmCronScheduleDAO">
+
+  	<typeAlias alias="SptUserManageVO" type="kr.co.koscom.oppf.apt.sptUsr.service.SptUserManageVO"/>
+
+	<!--
+     * @Method Name        : cmm.CmmCronScheduleDAO.selectSptUserDeleteList
+     * @Method description : 탈퇴 회원 테이블에 탈퇴 미처리 회원 리스트
+     * @return             : SptUserManageVO
+     * @throws             : Exception
+     -->
+	<select id="cmm.CmmCronScheduleDAO.selectSptUserDeleteList" resultClass="SptUserManageVO">
+	  	select customer_reg_no as customerRegNo,
+			   customer_id as customerId
+		  from leave_customer_info_profile
+		 where customer_withdrawal_proc_yn = 'N'
+	</select>
+
+	<!--
+     * @Method Name        : selectSptCustomerVerifyProfile
+     * @Method description : [회원가입:인증CI]정보를 조회한다.
+     * @param              : SptUserManageVO
+     * @return             : SptUserManageVO
+     * @throws             : Exception
+     -->
+	<select id="cmm.CmmCronScheduleDAO.selectSptCustomerVerifyProfile" parameterClass="SptUserManageVO" resultClass="SptUserManageVO" >
+		select
+		v.customer_reg_no               as customerRegNo,      /* 일반회원검증.회원OP등록번호 */
+		v.customer_verify_type          as customerVerifyType, /* 일반회원검증.회원검증종류 */
+		v.customer_verify               as customerVerify      /* 일반회원검증.회원검증값 */
+		from leave_customer_verify_profile v /* 일반회원검증 */
+		where 1=1
+		and v.customer_reg_no = #customerRegNo#
+		and v.customer_verify_type = 'G007001'
+	</select>
+
+	<!--
+     * @Method Name        : cmm.CmmCronScheduleDAO.updateSptUserWithdrawal
+     * @Method description : 일반회원정보 수정 [탈퇴처리]
+     * @param              : SptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+	<update id="cmm.CmmCronScheduleDAO.updateSptUserWithdrawal" parameterClass="SptUserManageVO">
+		update leave_customer_info_profile set
+		customer_withdrawal_proc_yn = 'Y',
+		update_date = sysdate(),
+		update_id = #customerRegNo#
+		where customer_reg_no = #customerRegNo#
+	</update>
+
+	<!--
+     * @Method Name        : cmm.CmmCronScheduleDAO.selectGuestMemberExpireList
+     * @Method description : 비회원 인증 유효기만 만료 안내 메일 대상 리스트 3/1개월
+     * @return             : SptUserManageVO
+     * @throws             : Exception
+     -->
+	<select id="cmm.CmmCronScheduleDAO.selectGuestMemberExpireList" resultClass="SptUserManageVO">
+		select a.customer_reg_no as customerRegNo,
+			    a.customer_id as customerId,
+			    a.customer_name_kor as customerNameKor,
+				dec_char_sel(a.customer_email,10,'ARIA','spt_customer_info_profile','customer_email',user(),connection_id()) as customerEmail,
+				b.terms_start_date as termsStartDate,
+				b.terms_expire_date as termsExpireDate
+		   from spt_customer_info_profile a,
+				spt_customer_common_terms_profile b
+		  where a.customer_reg_status = 'G005002'
+			and a.customer_step = 'G006005'
+			and a.customer_withdrawal_proc_yn = 'N'
+			and a.temporary_member_yn = 'Y'
+			and a.delete_date is null
+			and a.customer_reg_no = b.customer_reg_no
+			and b.terms_auth_yn = 'N'
+			and b.admin_create_yn = 'N'
+			and b.delete_date is null
+			and (date_format(sysdate(), '%Y%m%d') = date_format(b.terms_expire_date - INTERVAL 1 MONTH, '%Y%m%d'))
+				 or
+				(date_format(sysdate(), '%Y%m%d') = date_format(b.terms_expire_date - INTERVAL 3 MONTH, '%Y%m%d'))
+	</select>
+
+	<!--
+     * @Method Name        : cmm.CmmCronScheduleDAO.selectGuestMemberAppList
+     * @Method description : 비회원 이용중인 앱 리스트
+     * @return             : SptUserManageVO
+     * @throws             : Exception
+     -->
+	<select id="cmm.CmmCronScheduleDAO.selectGuestMemberAppList" parameterClass="SptUserManageVO" resultClass="SptUserManageVO">
+		select a.app_id as appId,
+			 b.app_name as appName,
+			 c.company_name_kor_alias as subcompanyName
+		from spt_customer_service_profile a,
+			 com_app_view b,
+			 com_company_profile c
+	   where a.delete_date is null
+		 and a.app_id = b.app_id
+		 and b.app_status = 'G022002'
+		 and b.company_code_id = c.company_code_id
+		 and c.delete_date is null
+		 and c.exposure_yn = 'Y'
+		 and a.customer_reg_no = #customerRegNo#
+	</select>
+
+	<!--
+     * @Method Name        : cmm.CmmCronScheduleDAO.selectDeleteGuestMemberList
+     * @Method description : 비회원 가동의서 만료 후 자동 탈퇴 처리
+     * @return             : SptUserManageVO
+     * @throws             : Exception
+     -->
+	<select id="cmm.CmmCronScheduleDAO.selectDeleteGuestMemberList" resultClass="SptUserManageVO">
+		select a.customer_reg_no as customerRegNo,
+			   a.customer_id as customerId
+		  from spt_customer_info_profile a,
+			   spt_customer_common_terms_profile b
+		 where a.customer_reg_status = 'G005002'
+		   and a.customer_step = 'G006005'
+		   and a.customer_withdrawal_proc_yn = 'N'
+		   and a.temporary_member_yn = 'Y'
+		   and a.delete_date is null
+		   and a.customer_reg_no = b.customer_reg_no
+		   and b.terms_auth_yn = 'N'
+		   and b.admin_create_yn = 'N'
+		   and b.delete_date is null
+		   and <![CDATA[ date_format(sysdate(), '%Y%m%d') >= date_format(b.terms_expire_date + INTERVAL 1 DAY, '%Y%m%d') ]]>
+	</select>
+
+	<!--
+     * @Method Name        : cmm.CmmCronScheduleDAO.insertLeaveGuestMemberInfo
+     * @Method description : 비회원 정보 임시테이블 추가 [탈퇴처리]
+     * @param              : SptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+	<insert id="cmm.CmmCronScheduleDAO.insertLeaveGuestMemberInfo" parameterClass="SptUserManageVO">
+		INSERT INTO leave_customer_info_profile(
+			   customer_reg_no
+			  ,customer_id
+			  ,customer_password
+			  ,customer_temp_password_yn
+			  ,customer_chg_password_date
+			  ,customer_expire_password_date
+			  ,customer_final_password_date
+			  ,customer_password_fail_cnt
+			  ,customer_reg_status
+			  ,customer_step
+			  ,customer_name_kor
+			  ,customer_name_eng
+			  ,customer_phone
+			  ,customer_email
+			  ,customer_email_auth_yn
+			  ,customer_email_reg_date
+			  ,customer_birth_day
+			  ,customer_sex
+			  ,customer_email_receive_yn
+			  ,customer_email_receive_date
+			  ,customer_mobile_push_yn
+			  ,customer_dataset_lock_yn
+			  ,customer_reg_date
+			  ,delete_date
+			  ,integration_account_yn
+			  ,customer_withdrawal_proc_yn
+			  ,customer_join_type
+			  ,temporary_member_yn
+			  ,create_date
+			  ,create_id
+			  ,update_date
+			  ,update_id
+			)
+			select
+			   customer_reg_no
+			  ,customer_id
+			  ,customer_password
+			  ,customer_temp_password_yn
+			  ,customer_chg_password_date
+			  ,customer_expire_password_date
+			  ,customer_final_password_date
+			  ,customer_password_fail_cnt
+			  ,customer_reg_status
+			  ,customer_step
+			  ,customer_name_kor
+			  ,customer_name_eng
+			  ,customer_phone
+			  ,customer_email
+			  ,customer_email_auth_yn
+			  ,customer_email_reg_date
+			  ,customer_birth_day
+			  ,customer_sex
+			  ,customer_email_receive_yn
+			  ,customer_email_receive_date
+			  ,customer_mobile_push_yn
+			  ,customer_dataset_lock_yn
+			  ,customer_reg_date
+			  ,delete_date
+			  ,integration_account_yn
+			  ,customer_withdrawal_proc_yn
+			  ,customer_join_type
+			  ,temporary_member_yn
+			  ,sysdate()
+			  ,#customerRegNo#
+			  ,sysdate()
+			  ,#customerRegNo#
+			from spt_customer_info_profile
+			WHERE customer_reg_no = #customerRegNo#
+	</insert>
+
+	<!--
+     * @Method Name        : cmm.CmmCronScheduleDAO.updateGuestMemberInfo
+     * @Method description : 비회원 정보 [탈퇴처리]
+     * @param              : SptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+	<update id="cmm.CmmCronScheduleDAO.updateGuestMemberInfo" parameterClass="SptUserManageVO">
+		UPDATE spt_customer_info_profile SET
+			  customer_reg_status = 'G005004'
+			  ,delete_date = sysdate()
+			  ,update_date = sysdate()
+			  ,update_id = #customerRegNo#
+			WHERE customer_reg_no = #customerRegNo#
+	</update>
+
+	<!--
+     * @Method Name        : cmm.CmmCronScheduleDAO.insertGuestMemberInfoHistory
+     * @Method description : 비회원 정보 Hist 등록 [탈퇴처리]
+     * @param              : SptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+	<insert id="cmm.CmmCronScheduleDAO.insertGuestMemberInfoHistory" parameterClass="SptUserManageVO">
+		INSERT INTO spt_customer_info_profile_hist(customer_reg_no,
+                                                   customer_seq,
+                                                   customer_id,
+                                                   customer_password,
+                                                   customer_temp_password_yn,
+                                                   customer_chg_password_date,
+                                                   customer_expire_password_date,
+                                                   customer_final_password_date,
+                                                   customer_password_fail_cnt,
+                                                   customer_otp_fail_cnt,
+                                                   customer_reg_status,
+                                                   customer_step,
+                                                   customer_name_kor,
+                                                   customer_name_eng,
+                                                   customer_phone,
+                                                   customer_email,
+                                                   customer_email_auth_yn,
+                                                   customer_email_reg_date,
+                                                   customer_birth_day,
+                                                   customer_sex,
+                                                   customer_email_receive_yn,
+                                                   customer_email_receive_date,
+                                                   customer_reg_date,
+                                                   delete_date,
+                                                   create_date,
+                                                   create_id)
+           SELECT customer_reg_no,
+                  ifnull((SELECT ifnull(max(cast(customer_seq AS SIGNED)), 0) + 1
+                            FROM spt_customer_info_profile_hist
+                           WHERE customer_reg_no = a.customer_reg_no),
+                         1),
+                  customer_id,
+                  customer_password,
+                  customer_temp_password_yn,
+                  customer_chg_password_date,
+                  customer_expire_password_date,
+                  customer_final_password_date,
+                  customer_password_fail_cnt,
+                  customer_otp_fail_cnt,
+                  customer_reg_status,
+                  customer_step,
+                  customer_name_kor,
+                  customer_name_eng,
+                  customer_phone,
+                  customer_email,
+                  customer_email_auth_yn,
+                  customer_email_reg_date,
+                  customer_birth_day,
+                  customer_sex,
+                  customer_email_receive_yn,
+                  customer_email_receive_date,
+                  customer_reg_date,
+                  delete_date,
+                  update_date,
+                  update_id
+             FROM spt_customer_info_profile a
+            WHERE customer_reg_no = #customerRegNo#
+	</insert>
+
+	<!--
+     * @Method Name        : cmm.CmmCronScheduleDAO.insertLeaveGuestMemberVerifyInfo
+     * @Method description : 비회원 Verify 정보 임시테이블 추가 [탈퇴처리]
+     * @param              : SptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+	<insert id="cmm.CmmCronScheduleDAO.insertLeaveGuestMemberVerifyInfo" parameterClass="SptUserManageVO">
+		INSERT INTO leave_customer_verify_profile(
+			   customer_reg_no
+			  ,customer_verify_type
+			  ,customer_verify
+			  ,customer_verify_date
+			  ,delete_date
+			  ,create_date
+			  ,create_id
+			  ,update_date
+			  ,update_id
+			)
+			SELECT
+			   customer_reg_no
+			  ,customer_verify_type
+			  ,customer_verify
+			  ,customer_verify_date
+			  ,delete_date
+			  ,sysdate()
+			  ,#customerRegNo#
+			  ,sysdate()
+			  ,#customerRegNo#
+			FROM spt_customer_verify_profile
+			WHERE customer_reg_no = #customerRegNo#
+			and customer_verify_type = #customerVerifyType#
+	</insert>
+
+	<!--
+     * @Method Name        : cmm.CmmCronScheduleDAO.updateMemberVerifyInfo
+     * @Method description : 회원 Verify 정보 초기화 업데이트 [탈퇴처리]
+     * @param              : SptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+	<update id="cmm.CmmCronScheduleDAO.updateMemberVerifyInfo" parameterClass="SptUserManageVO">
+		UPDATE spt_customer_verify_profile SET
+			  customer_verify = ''
+			  ,delete_date = sysdate()
+			  ,update_date = sysdate()
+			  ,update_id = #customerRegNo#
+			WHERE customer_reg_no = #customerRegNo#
+	</update>
+
+	<!--
+     * @Method Name        : cmm.CmmCronScheduleDAO.updateMemberVerifyInfoHist
+     * @Method description : 회원 Verify Hist 정보 초기화 업데이트 [탈퇴처리]
+     * @param              : SptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+	<update id="cmm.CmmCronScheduleDAO.updateMemberVerifyInfoHist" parameterClass="SptUserManageVO">
+		UPDATE spt_customer_verify_profile_hist SET
+			  customer_verify = ''
+			  ,delete_date = sysdate()
+			  ,create_date = sysdate()
+			  ,create_id = #customerRegNo#
+			WHERE customer_reg_no = #customerRegNo#
+	</update>
+
+	<!--
+     * @Method Name        : cmm.CmmCronScheduleDAO.updateMemberInfo
+     * @Method description : 탈퇴회원 정보 초기화 업데이트
+     * @param              : SptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+	<update id="cmm.CmmCronScheduleDAO.updateMemberInfo" parameterClass="SptUserManageVO">
+		UPDATE spt_customer_info_profile SET
+			   customer_name_kor = #customerRegNo#
+			  ,customer_name_eng = #customerRegNo#
+			  ,customer_phone = #customerRegNo#
+			  ,customer_email = #customerRegNo#
+			  ,customer_birth_day = ''
+			  ,customer_sex = ''
+			  ,customer_withdrawal_proc_yn = 'Y'
+			  ,update_date = sysdate()
+			  ,update_id = #customerRegNo#
+			WHERE customer_reg_no = #customerRegNo#
+	</update>
+
+	<!--
+     * @Method Name        : cmm.CmmCronScheduleDAO.updateMemberInfoHist
+     * @Method description : 탈퇴회원 Hist 정보 초기화 업데이트
+     * @param              : SptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+	<update id="cmm.CmmCronScheduleDAO.updateMemberInfoHist" parameterClass="SptUserManageVO">
+		UPDATE spt_customer_info_profile_hist SET
+		 customer_name_kor = #customerRegNo#
+		,customer_name_eng = #customerRegNo#
+		,customer_phone = #customerRegNo#
+		,customer_email = #customerRegNo#
+		,customer_birth_day = ''
+		,customer_sex = ''
+		,customer_withdrawal_proc_yn = 'Y'
+		,create_date = sysdate()
+		,create_id = #customerRegNo#
+		WHERE customer_reg_no = #customerRegNo#
+	</update>
+
+	<!--
+     * @Method Name        : cmm.CmmCronScheduleDAO.selectDeleteMemberList
+     * @Method description : 회원 탈퇴 3개월 물리 데이터 삭제 대상 리스트
+     * @return             : SptUserManageVO
+     * @throws             : Exception
+     -->
+	<select id="cmm.CmmCronScheduleDAO.selectDeleteMemberList" resultClass="SptUserManageVO">
+		select customer_reg_no as customerRegNo
+		  from leave_customer_info_profile
+		  where customer_withdrawal_proc_yn = 'Y'
+			and <![CDATA[ date_format(sysdate(), '%Y%m%d') >= date_format(create_date + INTERVAL 3 MONTH, '%Y%m%d') ]]>
+	</select>
+
+	<!--
+     * @Method Name        : cmm.CmmCronScheduleDAO.deleteMemberVerifyInfoHist
+     * @Method description : 탈퇴회원 Verify Hist 테이블 삭제
+     * @param              : SptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+	<delete id="cmm.CmmCronScheduleDAO.deleteMemberVerifyInfoHist" parameterClass="SptUserManageVO">
+		delete from leave_customer_verify_profile_hist where customer_reg_no = #customerRegNo#
+	</delete>
+
+	<!--
+     * @Method Name        : cmm.CmmCronScheduleDAO.deleteMemberVerifyInfo
+     * @Method description : 탈퇴회원 Verify 테이블 삭제
+     * @param              : SptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+	<delete id="cmm.CmmCronScheduleDAO.deleteMemberVerifyInfo" parameterClass="SptUserManageVO">
+		delete from leave_customer_verify_profile where customer_reg_no = #customerRegNo#
+	</delete>
+
+	<!--
+     * @Method Name        : cmm.CmmCronScheduleDAO.deleteMemberInfoHist
+     * @Method description : 탈퇴회원 Hist 테이블 삭제
+     * @param              : SptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+	<delete id="cmm.CmmCronScheduleDAO.deleteMemberInfoHist" parameterClass="SptUserManageVO">
+		delete from leave_customer_info_profile_hist where customer_reg_no = #customerRegNo#
+	</delete>
+
+	<!--
+     * @Method Name        : cmm.CmmCronScheduleDAO.deleteMemberInfo
+     * @Method description : 탈퇴회원 테이블 삭제
+     * @param              : SptUserManageVO
+     * @return             : int
+     * @throws             : Exception
+     -->
+	<delete id="cmm.CmmCronScheduleDAO.deleteMemberInfo" parameterClass="SptUserManageVO">
+		delete from leave_customer_info_profile where customer_reg_no = #customerRegNo#
+	</delete>
+
+</sqlMap>

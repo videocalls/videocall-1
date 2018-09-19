@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="kr.co.koscom.oppf.apt.simul.service.impl.SimulatorManageDAO">
+
+  	<typeAlias alias="SimulatorManageVO" type="kr.co.koscom.oppf.apt.simul.service.SimulatorManageVO"/>
+	<typeAlias alias="FixManageVO" type="kr.co.koscom.oppf.apt.fix.service.FixManageVO"/>
+
+	<!--
+	   * @Method Name        : apt.MockUpDAO.selectLoginProfile
+	   * @Method description : MockUp List 조회
+	   * @param              : MockUpVO
+	   * @return             : MockUpVO
+	   * @throws             : Exception
+	-->
+
+	<sql id="fromWhereAnd">
+		<isNotEmpty property="searchKeyword">
+			<!-- CompID -->
+			<isEqual property="searchCondition" compareValue="senderCompId" prepend="and">
+				a.sender_comp_id like concat('%', #searchKeyword#, '%')
+			</isEqual>
+			<!-- 기업코드 -->
+			<isEqual property="searchCondition" compareValue="companyId" prepend="and">
+				a.company_id like concat('%', #searchKeyword#, '%')
+			</isEqual>
+			<!-- 기업코드 -->
+			<isEqual property="searchCondition" compareValue="senderCompName" prepend="and">
+				a.sender_comp_name like concat('%', #searchKeyword#, '%')
+			</isEqual>
+			<!-- 전체 -->
+			<isEqual property="searchCondition" compareValue="all" prepend="and">
+				(
+					a.sender_comp_id like concat('%', #searchKeyword#, '%') or
+					a.company_id like concat('%', #searchKeyword#, '%') or
+					a.sender_comp_name like concat('%', #searchKeyword#, '%')
+				)
+			</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="fixBuySide" prepend="and">
+			<isNotEqual property="fixBuySideAllYn" compareValue="Y">
+				a.sender_comp_id
+				<iterate  property="fixBuySide" prepend="IN" open="(" close=")" conjunction=",">
+					#fixBuySide[]#
+				</iterate>
+			</isNotEqual>
+		</isNotEmpty>
+		<!-- 조회일 -->
+		<isNotEmpty property="searchDateType">
+			<!-- 등록일 -->
+			<isEqual property="searchDateType" compareValue="create" prepend="and">
+				ifnull(date_format(a.create_time, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '')
+			</isEqual>
+			<!-- 수정일 -->
+			<isEqual property="searchDateType" compareValue="update" prepend="and">
+				ifnull(date_format(a.update_time, '%Y%m%d'), '') between replace(#searchDateFrom#, '-', '') and replace(#searchDateTo#, '-', '')
+			</isEqual>
+		</isNotEmpty>
+	</sql>
+
+	<select id="apt.SimulatorManageDAO.selectSimulatorManageList" parameterClass="SimulatorManageVO" resultClass="SimulatorManageVO">
+		select
+		a.sender_comp_id as senderCompId ,
+		a.sender_comp_name as senderCompName,
+		a.company_id as companyId ,
+		a.excution_rate as excutionRate ,
+		a.reject_rate as rejectRate ,
+		a.create_id as createId ,
+		a.create_nm as createName ,
+		a.update_id as updateId ,
+		a.update_nm as updateName ,
+		date_format(a.create_time,'%Y-%m-%d %H:%i') as createDate ,
+		date_format(a.update_time,'%Y-%m-%d %H:%i') as updateDate
+		from ss_conf_tb a
+		where a.sender_comp_id is not null
+        <include refid="fromWhereAnd"/>
+		<include refid="CmmnFuncDAO.CmmnFixPaging"/>
+	</select>
+
+	<select id="apt.SimulatorManageDAO.selectSimulatorManageListCnt" parameterClass="SimulatorManageVO" resultClass="int">
+		select count(*) as totCnt
+		from ss_conf_tb a
+		where a.sender_comp_id is not null
+		<include refid="fromWhereAnd"/>
+	</select>
+
+	<select id="apt.SimulatorManageDAO.simulatorManageListExcel" parameterClass="SimulatorManageVO" resultClass="SimulatorManageVO">
+		select
+		a.sender_comp_id as senderCompId ,
+		a.sender_comp_name as senderCompName,
+		a.company_id as companyId ,
+		a.excution_rate as excutionRate ,
+		a.reject_rate as rejectRate ,
+		a.create_id as createId ,
+		a.create_nm as createName ,
+		a.update_id as updateId ,
+		a.update_nm as updateName ,
+		date_format(a.create_time, '%Y-%m-%d %H:%i') as createDate ,
+		date_format(a.update_time, '%Y-%m-%d %H:%i') as updateDate
+		from ss_conf_tb a
+		where a.sender_comp_id is not null
+		<isEqual property="excelType" compareValue="excel">
+			<include refid="fromWhereAnd"/>
+		</isEqual>
+		order by a.create_time desc
+	</select>
+
+	<!-- buySide 기업정보 팝업창 리스트 : 기등록된 기업은 목록에서 제외 -->
+	<select id="apt.SimulatorManageDAO.simulatorCompPopupList" parameterClass="SimulatorManageVO" resultClass="FixManageVO">
+		select
+		a.sender_comp_name as senderCompName,
+		a.company_id as companyId,
+		a.sender_comp_id as senderCompId,
+		a.fix_queue_id as fixQueueId,
+		if(ifnull(a.use_yn, '') = 'N', '불가능', '가능')  as useYnStatus,
+		a.create_nm as createNm
+		from rs_comp_tb a
+		left join ss_conf_tb b
+		on a.sender_comp_id = b.sender_comp_id
+		where b.sender_comp_id is null
+		<include refid="fromWhereAnd"/>
+		<isEmpty property="listFixOrder">
+			order by a.create_time desc
+		</isEmpty>
+	</select>
+
+	<select id="apt.SimulatorManageDAO.simulatorCompPopupListCnt" parameterClass="SimulatorManageVO" resultClass="int">
+		select
+		count(*) as totCnt
+        from rs_comp_tb a
+        left join ss_conf_tb b
+        on a.sender_comp_id = b.sender_comp_id
+        where b.sender_comp_id is null
+        <include refid="fromWhereAnd"/>
+	</select>
+
+	<select id="apt.SimulatorManageDAO.simulatorManageDtl" parameterClass="SimulatorManageVO" resultClass="SimulatorManageVO">
+		select
+		a.sender_comp_id as senderCompId ,
+		a.sender_comp_name as senderCompName,
+		a.company_id as companyId ,
+		a.excution_rate as excutionRate ,
+		a.reject_rate as rejectRate ,
+		a.create_id as createId ,
+		a.create_nm as createName ,
+		a.update_id as updateId ,
+		a.update_nm as updateName ,
+		date_format(a.create_time, '%Y-%m-%d %H:%i') as createDate ,
+		date_format(a.update_time, '%Y-%m-%d %H:%i') as updateDate
+		from ss_conf_tb a
+		where a.sender_comp_id is not null
+		and a.sender_comp_id = #senderCompId#
+		and a.company_id = #companyId#
+		and a.sender_comp_name = #senderCompName#
+	</select>
+
+    <!--입력-->
+    <insert id="apt.SimulatorManageDAO.insertSimulatorManage" parameterClass="SimulatorManageVO">
+        insert into ss_conf_tb
+        (sender_comp_id, excution_rate, reject_rate,
+        company_id, sender_comp_name, create_id,
+        create_nm, update_id, update_nm,
+        create_time, update_time)
+        values(
+        #senderCompId#, #excutionRate#, #rejectRate#,
+        #companyId#, #senderCompName#, #createId#,
+        #createName#, #createId#, #createName#,
+        now(), now());
+    </insert>
+
+    <!--수정-->
+    <update id="apt.SimulatorManageDAO.updateSimulatorManage" parameterClass="SimulatorManageVO">
+        update ss_conf_tb set
+		excution_rate = #excutionRate#,
+		reject_rate = #rejectRate#,
+		update_id = #createId#,
+		update_nm = #createName#,
+		update_time = now()
+		where sender_comp_id = #senderCompId#
+		and company_id = #companyId#
+    </update>
+
+    <!-- 입력 수정 구분을 위한 count -->
+    <select id="apt.SimulatorManageDAO.simulatorManageDtlCount" parameterClass="SimulatorManageVO" resultClass="int">
+       select
+		count(*) as count
+		from ss_conf_tb a
+		where a.sender_comp_id is not null
+		and a.sender_comp_id = #senderCompId#
+		and a.company_id = #companyId#
+		and a.sender_comp_name = #senderCompName#
+    </select>
+
+    <!--삭제-->
+    <delete id="apt.SimulatorManageDAO.deleteSimulatorManage" parameterClass="SimulatorManageVO">
+       delete from ss_conf_tb
+        where sender_comp_id = #senderCompId#
+        and company_id = #companyId#
+        and sender_comp_name = #senderCompName#
+    </delete>
+
+</sqlMap>

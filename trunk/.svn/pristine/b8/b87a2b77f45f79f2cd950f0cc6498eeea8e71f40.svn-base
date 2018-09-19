@@ -1,0 +1,82 @@
+<ion-modal-view ng-controller="PasswordModifyPopup as vm">
+    <!-- 왼쪽 헤더 버튼 예제 -->
+    <ion-header-bar align-title="center">
+        <h1 class="title">비밀번호 변경</h1>
+        <button type="button" ng-click="vm.close()" class="btn_icon btn_close">닫기</button>
+    </ion-header-bar>
+    <ion-content>
+        <form name="$root.modifyPassword">
+            <div class="container"> <!-- 비밀번호 변경 -->
+                <div class="inner_cont type2">
+                    <div class="top_vi_txt"> <!-- modify -->
+                        소중한 개인정보 보호를 위해<br><span class="ft_org">주기적인 비밀번호 변경</span>을 권장합니다.
+                    </div>
+                    <!-- 정보입력 -->
+                    <ul class="entry_area mt48">
+                        <li>
+                            <div class="title_s">현재 비밀번호</div>
+                            <div class="input_area">
+                                <input type="password"
+                                       placeholder="현재 비밀번호 입력"
+                                       name="customerPassword"
+                                       ng-model="vm.passwordDisplayText"
+                                       ng-blur="vm.customerPasswordCheckMsg = vm.passwordDisplayText == '' ? '비밀번호를 입력해주세요' : '';"
+                                       required ng-click="vm.keypadOpenCust()" readonly />
+                            </div>
+                            <div class="txt_error">{{vm.customerPasswordCheckMsg}}</div>
+                        </li>
+                        <li>
+                            <div class="title_s">새  비밀번호</div>
+                            <div class="input_area">
+                                <input type="password"
+                                       placeholder="새 비밀번호 입력"
+                                       name="newPassword" ng-model="vm.newPasswordDisplayText"
+                                       ng-blur="vm.newPasswordMsg = vm.newPasswordDisplayText == '' ? '새 비밀번호를 입력해주세요' : '';"
+                                       required  ng-click="vm.keypadOpenNew()" readonly />
+                            </div>
+                            <div class="txt_error">{{vm.newPasswordMsg}}</div>
+                            <div class="ft_gray">8~15자의 영문 대/소문자, 숫자, 특수문자 중 3개 이상의 조합</div>
+                        </li>
+                        <li>
+                            <div class="title_s">새  비밀번호 확인</div>
+                            <div class="input_area">
+                                <input type="password"
+                                       placeholder="새 비밀번호 확인"
+                                       name="cfmPassword" ng-model="vm.passwordConfirmDisplayText"
+                                       required ng-click="vm.keypadOpenCon()"
+                                       ng-blur="vm.customerPasswordConfirmMsg = vm.passwordConfirmDisplayText == '' ? '비밀번호 확인을 입력해주세요' : '';" readonly /></div>
+                            <div class="txt_error">{{vm.customerPasswordConfirmMsg}}</div>
+                            <div class="ft_gray">아이디와 동일한 비밀번호는 사용불가</div>
+                        </li>
+                    </ul>
+                    <!--// 정보입력 -->
+                    <!-- 아코디언 메뉴 -->
+                    <div class="accordian-menu" accordion>
+                        <div class="accordian-cont cont_wrap"> <!-- active -->
+                            <a href="#none" class="btn_bar">안전한 비밀번호 변경</a> <!-- add class : not-active : 내용없을때 -->
+                            <div class="detail_cont">
+                                <div class="gray_box">
+                                    <ul class="dot_list">
+                                        <li>영문/숫자/기호 등의 조합으로 비밀번호를 구성해주세요.</li>
+                                        <li>연속숫자, 연속문자, 동일숫자 또는 이름은 비밀번호로 사용할 수 없습니다.</li>
+                                        <li>쉽게 유추해 낼 수 있는 아이디/생일/핸드폰번호 등 개인정보와 관련된 문자, 숫자는 사용하지 않는 것이 좋습니다</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--// 아코디언 메뉴 -->
+                </div>
+            </div><div class="container"> <!-- 비밀번호 변경 -->
+        </div>
+        </form>
+    </ion-content>
+    <ion-footer-bar>
+        <!-- 하단 버튼 -->
+        <div ng-class="vm.loginRes.customerFinalPasswordYn == 'Y' ? 'button_area btn_bottom_area' : 'button_area btn_both btn_bottom_area'" >
+            <button class="btn_middle btn_black_org" ng_click="vm.closePopup();" ng-hide="vm.loginRes.customerFinalPasswordYn == 'Y'">다음에 변경</button>
+            <button class="btn_middle btn_black_org" ng-disabled="vm.passwordButtonDisabled" ng_click="vm.passwordChange();">비밀번호 변경</button>
+        </div>
+        <!--// 하단 버튼 -->
+    </ion-footer-bar>
+</ion-modal-view>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="kr.co.koscom.oppf.spt.direct.company.dao.CompanyDAO" >
+  <typeAlias alias="CompanyDTO"
+     type="kr.co.koscom.oppf.spt.direct.company.dto.CompanyDTO"/>
+    
+  <select id="direct.CompanyDAO.selectFinanceCompany" resultClass="CompanyDTO" parameterClass="java.util.Map">
+        SELECT company_profile_reg_no            as companyProfileRegNo,
+            company_code_id                       as companyCodeId,
+            company_service_type                  as companyServiceType,
+            if(issue_vtaccount = 'Y', true, false) as issueVtaccountYn,
+            if(issue_accountlist = 'Y', true, false) as issueAccountlistYn,
+            company_name_kor                      as companyNameKor,
+            company_name_eng                      as companyNameEng,
+            company_name_kor_alias                as companyNameKorAlias,
+            company_name_eng_alias                as companyNameEngAlias,
+            company_bizreg_no                     as companyBizregNo,
+            company_post_no                       as companyPostNo,
+            company_address                       as companyAddress,
+            company_address_dtl                   as companyAddressDtl,
+            company_ci                            as companyCi,
+            ceo_name                              as ceoName,
+            if(exposure_yn = 'Y', true, false)    as exposureYn,
+            exposure_order                        as exposureOrder,
+            ifnull(token_refrash_life_time, 0)    as tokenRefreshLifeTime,
+            if(terms_transmit_yn = 'Y', true, false) as termsTransmitYn,
+            ifnull(token_life_time, 0)               as tokenLifeTime,
+            if(token_refrash_yn = 'Y', true, false) as tokenRefreshYn,
+            delete_date                           as deleteDate,
+            create_date                           as createDate,
+            create_id                             as createId,
+            update_date                           as updateDate,
+            update_id                             as updateId,
+            (SELECT company_terms_content_ver FROM oppf.spt_customer_company_terms_content_profile
+             where company_code_id = a.company_code_id
+            and company_terms_type = 'G031001'
+            order by company_terms_content_reg_seq DESC
+            limit 1)                              as companyTermsContentVer
+  		FROM 
+		  com_company_profile a
+		WHERE
+		  exposure_yn = 'Y'
+            AND company_service_type = 'G002002'
+        <isNotEmpty property="comId">
+            AND company_code_id = #comId#
+        </isNotEmpty>   
+        <isNotEmpty property="comIdList">     
+            AND ( 
+	            ( company_code_id
+		        <iterate prepend="IN" property="comIdList" open="(" close=")" conjunction=","> 
+		             #comIdList[]# 
+		        </iterate>
+		        ) 
+		           OR 
+		        (
+                  company_name_eng_alias
+                <iterate prepend="IN" property="comIdList" open="(" close=")" conjunction=","> 
+                     #comIdList[]# 
+                </iterate>		        
+		        )
+	        )   
+        </isNotEmpty>     
+  </select>
+<select id="direct.CompanyDAO.selectCompany" resultClass="CompanyDTO" parameterClass="java.util.Map">
+        SELECT company_profile_reg_no            as companyProfileRegNo,
+            company_code_id                       as companyCodeId,
+            company_service_type                  as companyServiceType,
+            if(issue_vtaccount = 'Y', true, false) as issueVtaccountYn,
+            if(issue_accountlist = 'Y', true, false) as issueAccountlistYn,
+            company_name_kor                      as companyNameKor,
+            company_name_eng                      as companyNameEng,
+            company_name_kor_alias                as companyNameKorAlias,
+            company_name_eng_alias                as companyNameEngAlias,
+            company_bizreg_no                     as companyBizregNo,
+            company_post_no                       as companyPostNo,
+            company_address                       as companyAddress,
+            company_address_dtl                   as companyAddressDtl,
+            company_ci                            as companyCi,
+            ceo_name                              as ceoName,
+            if(exposure_yn = 'Y', true, false)    as exposureYn,
+            exposure_order                        as exposureOrder,
+            ifnull(token_refrash_life_time, 0)    as tokenRefreshLifeTime,
+            if(terms_transmit_yn = 'Y', true, false) as termsTransmitYn,
+            ifnull(token_life_time, 0)               as tokenLifeTime,
+            if(token_refrash_yn = 'Y', true, false) as tokenRefreshYn,
+            delete_date                           as deleteDate,
+            create_date                           as createDate,
+            create_id                             as createId,
+            update_date                           as updateDate,
+            update_id                             as updateId,
+            (SELECT company_terms_content_ver FROM oppf.spt_customer_company_terms_content_profile
+             where company_code_id = a.company_code_id
+            and company_terms_type = 'G031001'
+            order by company_terms_content_reg_seq DESC
+            limit 1)                              as companyTermsContentVer
+        FROM 
+          com_company_profile a
+        WHERE
+            1=1
+        <isNotEmpty property="comId">
+            AND company_code_id = #comId#
+        </isNotEmpty>   
+        <isNotEmpty property="comIdList">     
+            AND ( 
+                ( company_code_id
+                <iterate prepend="IN" property="comIdList" open="(" close=")" conjunction=","> 
+                     #comIdList[]# 
+                </iterate>
+                ) 
+                   OR 
+                (
+                  company_name_eng_alias
+                <iterate prepend="IN" property="comIdList" open="(" close=")" conjunction=","> 
+                     #comIdList[]# 
+                </iterate>              
+                )
+            )   
+        </isNotEmpty>     
+  </select>  
+</sqlMap>

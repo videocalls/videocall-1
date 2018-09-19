@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<!-- 
+* @Project  : 자본시장 공동 핀테크 오픈플랫폼 구축
+* @FileName : CmmFile_SQL.xml
+* @Comment  : file 공통기능을 제공하는 SQL XML
+* @author   : 신동진
+* @since    : 2016.06.02
+* @version  : 1.0
+*
+* << 개정이력(Modification Information) >>
+* 수정일                  수정자        수정내용
+* 2016.06.02   신동진        최초생성
+-->
+<sqlMap namespace="kr.co.koscom.oppf.cmm.service.impl.CmmFileDAO">
+    
+    <typeAlias  alias="CmmFileVO"  type="kr.co.koscom.oppf.cmm.service.CmmFileVO"/>
+	
+	<!--
+     * @Method Name        : cmm.CmmFileDAO.selectAppImg
+     * @Method description : app Img를 가져온다.
+     * @param              : CmmFileVO
+     * @return             : CmmFileVO
+     * @throws             : Exception
+     -->
+    <select id="cmm.CmmFileDAO.selectAppImg" parameterClass="CmmFileVO" resultClass="CmmFileVO">
+		select  app_name    as appName,
+		        app_icon    as appIcon
+		from com_app_info
+		where app_id = #appId#		
+    </select>
+    
+    <!--
+     * @Method Name        : cmm.CmmFileDAO.selectCompanyCi
+     * @Method description : company ci Img를 가져온다.
+     * @param              : CmmFileVO
+     * @return             : CmmFileVO
+     * @throws             : Exception
+     -->
+    <select id="cmm.CmmFileDAO.selectCompanyCi" parameterClass="CmmFileVO" resultClass="CmmFileVO">
+		select  company_profile_reg_no      as companyProfileRegNo,
+		        company_name_kor_alias      as companyNameKorAlias,
+		        company_ci                  as companyCi
+		from com_company_profile
+		where company_profile_reg_no = #companyProfileRegNo#        
+    </select>
+    
+    <!--
+     * @Method Name        : cmm.CmmFileDAO.selectNotiFileDown
+     * @Method description : 공지사항 첨부파일을 가져온다.
+     * @param              : CmmFileVO
+     * @return             : CmmFileVO
+     * @throws             : Exception
+     -->
+    <select id="cmm.CmmFileDAO.selectNotiFileDown" parameterClass="CmmFileVO" resultClass="CmmFileVO">
+		select  file_id                     as fileId,
+		        file_seq                    as fileSeq,
+		        file_name                   as fileName,
+		        file_extention              as fileExtention,
+		        round(file_size / 1000)     as fileSize,
+		        file_data                   as fileData
+		from com_file_data
+		where file_id = #fileId#  
+		and file_seq = #fileSeq#   
+    </select>
+</sqlMap>

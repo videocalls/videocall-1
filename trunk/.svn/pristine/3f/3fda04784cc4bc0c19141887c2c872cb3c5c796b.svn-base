@@ -1,0 +1,61 @@
+<ion-view view-title="아이디 찾기">
+    <ion-content>
+        <form name="$root.findId">
+            <div class="container page_membership"> <!-- 아이디찾기 페이지 -->
+                <div class="inner_cont type2">
+                    <!-- 정보입력 -->
+                    <ul class="entry_area">
+                        <li>
+                            <div class="title_s">이름</div>
+                            <div class="btm_enter">
+                                <div class="input_area"><input type="text" name="customerNameKor" ng-model="vm.customerNameKor" required /></div>
+                            </div>
+                            <!--<div class="txt_error">{{vm.nameErrorMessage}}</div>-->
+                            <div ng-messages="$root.findId.customerNameKor.$error" ng-show="!findId.customerNameKor.$pristine">
+                                <div  class="txt_error" ng-message="required">이름을 입력해주세요</div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="title_s">이메일</div>
+                            <div class="email_area">
+                                <div class="top_box">
+                                    <div class="input_area">
+                                        <input type="text" placeholder="이메일" name="customerEmailId" ng-model="vm.customerEmailId" required ng-change="vm.customerEmailChange();"/>
+                                    </div>
+                                    <span class="txt_at">@</span>
+                                    <div class="input_area">
+                                        <input type="text" name="emailPath" ng-disabled="!!vm.emailPathSelect" ng-model="vm.emailPath" required ng-change="vm.customerEmailChange();"/>
+                                    </div>
+                                </div>
+                                <div class="select_box" name="emailPathSelect">
+                                    <select ng-model="vm.emailPathSelect"
+                                            ng-change="vm.emailChange();"
+                                            ng-options="data.data as data.name for data in vm.emailPathSelectList">
+                                    </select>
+                                </div>
+                                <input type="hidden" name="customerEmailHidden" ng-model="vm.customerEmail" required/>
+                            </div>
+                            <div ng-messages="findId.customerEmailHidden.$error" ng-show="!findId.customerEmailHidden.$pristine">
+                                <div class="txt_error" ng-message="required">이메일을 입력하세요.</div>
+                            </div>
+                        </li>
+                    </ul>
+                    <!--// 정보입력 -->
+                    <div class="gray_box">
+                        <ul class="dot_list">
+                            <li>가입 시 입력한 이름과 이메일 주소를 입력해주세요. </li>
+                            <li>입력하신 정보와 등록 정보가 일치 시 아이디를 확인하실 수 있습니다. </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </ion-content>
+    <ion-footer-bar>
+        <!-- 하단 버튼 -->
+        <div class="button_area btn_bottom_area">
+            <button class="btn_middle btn_black_org" ng-click="vm.submit()" ng-disabled="$root.findId.$invalid">확인</button>
+        </div>
+        <!--// 하단 버튼 -->
+    </ion-footer-bar>
+</ion-view>

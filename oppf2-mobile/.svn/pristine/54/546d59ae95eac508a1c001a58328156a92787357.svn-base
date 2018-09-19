@@ -1,0 +1,31 @@
+<ion-view view-title="">
+	<ion-content>
+		<div class="container"> <!-- 비밀번호 찾기 -->
+			<div class="inner_cont type2">
+				<!-- 정보입력 -->
+				<ul class="entry_area mt48">
+					<li>
+						<div class="title_s">새 비밀번호</div>
+						<div class="input_area"><input type="password" placeholder="비밀번호입력" /></div>
+						<div class="txt_error">새 비밀번호를 입력해주세요</div> <!-- add class : hide_set : display:none; 처리  -->
+						<div class="ft_gray">8~15자의 영문 대/소문자, 숫자, 특수문자 중 3개 이상의 조합</div>
+					</li>
+					<li>
+						<div class="title_s">새 비밀번호 확인</div>
+						<div class="input_area"><input type="password" placeholder="비밀번호입력확인" /></div>
+						<div class="txt_error">새 비밀번호 확인을 입력해주세요</div> <!-- add class : hide_set : display:none; 처리  -->
+						<div class="ft_gray">아이디와 동일한 비밀번호는 사용불가</div>
+					</li>
+				</ul>
+				<!--// 정보입력 -->
+			</div>
+		</div>
+	</ion-content>
+	<ion-footer-bar>
+		<!-- 하단 버튼 -->
+		<div class="button_area btn_bottom_area">
+			<a href="#go" class="btn_middle btn_black_org disabled" disabled>확인</a>
+		</div>
+		<!--// 하단 버튼 -->
+	</ion-footer-bar>
+</ion-view>
